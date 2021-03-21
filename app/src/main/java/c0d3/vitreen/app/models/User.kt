@@ -12,6 +12,6 @@ data class User(
     val siret: String? = null,
     val phone: String,
     val contactMethod: String? = null,
-    val listofAdverts: ArrayList<String>? = null,
-    val listSavedAdverts: ArrayList<String>? = null,
+    val advertsId: ArrayList<String>? = null,
+    val favoriteAdvertsId: ArrayList<String>? = null,
 )
