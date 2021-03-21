@@ -8,4 +8,9 @@ data class Advert(
     val size: Int,
     val numberOfConsultations: Int,
     val reported: Boolean,
+    val locationId: String,
+    val categoryId: String,
+    val ownerId: String,
+    val createdAt: String,
+    val modifiedAt: String,
 )
