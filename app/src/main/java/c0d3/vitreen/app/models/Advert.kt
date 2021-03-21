@@ -6,7 +6,7 @@ data class Advert(
     val price: Float,
     val brand: String,
     val size: String?,
-    val numberOfConsultations: Int,
+    val numberOfConsultations: Int?,
     val reported: Boolean,
     val locationId: String,
     val categoryId: String,
