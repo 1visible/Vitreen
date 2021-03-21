@@ -2,9 +2,9 @@ package c0d3.vitreen.app.models
 
 import java.util.ArrayList
 
-data class Users(
-    val name: String,
-    val first_name: String,
+data class User(
+    val lastName: String,
+    val firstName: String,
     val email: String,
     val password: String,
     val roleId: String,
