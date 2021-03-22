@@ -16,10 +16,6 @@ class MainActivity : AppCompatActivity() {
     val TAG: String = "c0d3"
     private lateinit var inscriptionButton: Button
 
-    companion object {
-        val RC_SIGN_IN: Int = 123
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
