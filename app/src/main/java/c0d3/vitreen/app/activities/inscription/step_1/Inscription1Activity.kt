@@ -27,6 +27,7 @@ class Inscription1Activity : AppCompatActivity() {
 
     private lateinit var nextButton: Button
     private lateinit var authWithGoogle: SignInButton
+    private lateinit var anonymousButton: Button
     private lateinit var email: EditText
     private lateinit var password: EditText
 
@@ -46,6 +47,23 @@ class Inscription1Activity : AppCompatActivity() {
         authWithGoogle.setOnClickListener {
             signInWithGoogle()
         }
+
+        anonymousButton = findViewById<Button>(R.id.anonymousButton)
+        anonymousButton.setOnClickListener {
+            startAnonymous()
+        }
+    }
+
+    private fun startAnonymous() {
+        Firebase.auth.signInAnonymously()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    //Direction Accueil
+                } else {
+                    Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+            }
     }
 
     fun startSignInActivity() {
