@@ -7,7 +7,7 @@ data class Advert(
     val brand: String,
     val size: String?,
     val numberOfConsultations: Int?,
-    val reported: Boolean,
+    val reported: ArrayList<String>?,
     val locationId: String,
     val categoryId: String,
     val ownerId: String,

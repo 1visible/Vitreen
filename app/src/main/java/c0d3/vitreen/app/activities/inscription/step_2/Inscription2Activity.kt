@@ -1,29 +1,102 @@
 package c0d3.vitreen.app.activities.inscription.step_2
 
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Toast
+import android.util.Log
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Role
+import c0d3.vitreen.app.models.User
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class Inscription2Activity : AppCompatActivity() {
 
-    private lateinit var roles: ArrayList<Role>
+    val TAG: String = "c0d3"
 
-    private lateinit var textField: TextInputLayout
+    private lateinit var roles: ArrayList<Role>
+    private lateinit var email: String
+
+    private lateinit var lastName: EditText
+    private lateinit var firstName: EditText
+    private lateinit var phoneNumber: EditText
+    private lateinit var contactMethod: EditText
+    private lateinit var companyName: EditText
+    private lateinit var siret: EditText
+    private lateinit var switch: SwitchMaterial
+    private lateinit var submitButton: Button
+
+
+    private val KEYEMAIL = "KEYNAME"
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inscription_step_2)
-        textField = findViewById<TextInputLayout>(R.id.menu)
-        roles = ArrayList<Role>()
-        recupRole()
+        if (intent != null) {
+            email = intent.getStringExtra(KEYEMAIL).toString()
+            lastName = findViewById<EditText>(R.id.lastName)
+            firstName = findViewById<EditText>(R.id.firstName)
+            phoneNumber = findViewById<EditText>(R.id.phoneNumber)
+            contactMethod = findViewById<EditText>(R.id.contactMethod)
+            companyName = findViewById<EditText>(R.id.companyName)
+            siret = findViewById<EditText>(R.id.siret)
+            roles = ArrayList<Role>()
+            recupRole()
+            switch = findViewById<SwitchMaterial>(R.id.switchPro)
+            switch.isChecked = false
+            switch.setOnCheckedChangeListener { buttonview, isChecked ->
+                if (isChecked) {
+                    companyName.visibility = View.VISIBLE
+                    siret.visibility = View.VISIBLE
+                } else {
+                    companyName.visibility = View.GONE
+                    siret.visibility = View.GONE
+                }
+            }
+            submitButton = findViewById<Button>(R.id.submitButton)
+            submitButton.setOnClickListener { it ->
+                val user: User
+                if (switch.isChecked) {
+                    user = User(
+                        lastName.text.toString(),
+                        firstName.text.toString(),
+                        email,
+                        switch.isChecked,
+                        companyName.text.toString(),
+                        siret.text.toString(),
+                        phoneNumber.text.toString(),
+                        contactMethod.text.toString(),
+                        null,
+                        null
+                    )
+                } else {
+                    user = User(
+                        lastName = lastName.text.toString(),
+                        firstName = firstName.text.toString(),
+                        email = email,
+                        isProfessional = switch.isChecked,
+                        phone = phoneNumber.text.toString(),
+                        contactMethod = contactMethod.text.toString()
+                    )
+                }
+                db.collection("user").document().set(user).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Inscription Terminée", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, MainActivity::class.java))
+                    } else {
+                        Toast.makeText(this, "Une erreur s'est produite", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+        }
     }
 
     private fun recupRole() {
@@ -34,12 +107,6 @@ class Inscription2Activity : AppCompatActivity() {
                 for (document in result) {
                     roles.add(Role(document["name"] as String))
                 }
-                val items: Array<String?> = arrayOfNulls<String>(2)
-                for (i in 0..1) {
-                    items[i] = roles.get(i).name
-                }
-                val adapter = ArrayAdapter(this, R.layout.list_item, items)
-                (textField.editText as? AutoCompleteTextView)?.setAdapter(adapter)
             }
     }
 

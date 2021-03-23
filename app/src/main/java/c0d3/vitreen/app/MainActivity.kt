@@ -9,6 +9,9 @@ import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import io.grpc.okhttp.internal.framed.ErrorCode
 import kotlin.math.E
 
@@ -16,14 +19,16 @@ class MainActivity : AppCompatActivity() {
     val TAG: String = "c0d3"
     private lateinit var inscriptionButton: Button
 
+    private val auth = Firebase.auth
+    private val user = auth.currentUser
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         inscriptionButton = findViewById<Button>(R.id.InscriptionButton)
         inscriptionButton.setOnClickListener {
-            startActivity(Intent(this, Inscription1Activity::class.java))
+            if (user == null) startActivity(Intent(this, Inscription1Activity::class.java))
         }
     }
-
-
 }
