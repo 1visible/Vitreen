@@ -34,7 +34,10 @@ class Inscription2Activity : AppCompatActivity() {
                 for (document in result) {
                     roles.add(Role(document["name"] as String))
                 }
-                val items = roles.toList()
+                val items: Array<String?> = arrayOfNulls<String>(2)
+                for (i in 0..1) {
+                    items[i] = roles.get(i).name
+                }
                 val adapter = ArrayAdapter(this, R.layout.list_item, items)
                 (textField.editText as? AutoCompleteTextView)?.setAdapter(adapter)
             }
