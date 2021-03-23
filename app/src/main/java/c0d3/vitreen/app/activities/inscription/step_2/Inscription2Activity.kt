@@ -1,18 +1,14 @@
 package c0d3.vitreen.app.activities.inscription.step_2
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.Role
 import c0d3.vitreen.app.models.User
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -20,7 +16,6 @@ class Inscription2Activity : AppCompatActivity() {
 
     val TAG: String = "c0d3"
 
-    private lateinit var roles: ArrayList<Role>
     private lateinit var email: String
 
     private lateinit var lastName: EditText
@@ -47,8 +42,6 @@ class Inscription2Activity : AppCompatActivity() {
             contactMethod = findViewById<EditText>(R.id.contactMethod)
             companyName = findViewById<EditText>(R.id.companyName)
             siret = findViewById<EditText>(R.id.siret)
-            roles = ArrayList<Role>()
-            recupRole()
             switch = findViewById<SwitchMaterial>(R.id.switchPro)
             switch.isChecked = false
             switch.setOnCheckedChangeListener { buttonview, isChecked ->
@@ -98,16 +91,4 @@ class Inscription2Activity : AppCompatActivity() {
 
         }
     }
-
-    private fun recupRole() {
-        val db = Firebase.firestore
-        db.collection("Role")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    roles.add(Role(document["name"] as String))
-                }
-            }
-    }
-
 }
