@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vitreen">
-        <activity android:name=".activities.inscription.step_1.Inscription1Activity"></activity>
+        <activity android:name=".activities.inscription.step_2.InscriptionStep2"></activity>
+        <activity android:name=".activities.inscription.step_1.Inscription1Activity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
