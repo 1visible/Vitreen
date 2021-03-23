@@ -19,10 +19,6 @@ import com.google.firebase.ktx.Firebase
 
 class Inscription1Activity : AppCompatActivity() {
 
-    companion object {
-        val RC_SIGN_IN: Int = 123
-    }
-
     val TAG: String = "c0d3"
 
     private lateinit var nextButton: Button
@@ -52,7 +48,7 @@ class Inscription1Activity : AppCompatActivity() {
                     //Direction Accueil
                 } else {
                     Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
+                    //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
                 }
             }
     }
@@ -68,7 +64,7 @@ class Inscription1Activity : AppCompatActivity() {
                 Toast.makeText(this, "Connexion Réussie", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java))
+                //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
             }
         }
     }
