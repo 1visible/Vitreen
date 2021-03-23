@@ -6,8 +6,8 @@ data class User(
     val lastName: String,
     val firstName: String,
     val email: String,
-    val password: String,
-    val roleId: String,
+    @field:JvmField
+    val isProfessional: Boolean = false,
     val company: String? = null,
     val siret: String? = null,
     val phone: String,

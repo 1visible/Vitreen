@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Vitreen</string>
+    <string name="submit">S\'inscrire</string>
+    <string name="pro">Professionel</string>
 </resources>

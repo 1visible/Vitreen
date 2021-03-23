@@ -2,18 +2,13 @@ package c0d3.vitreen.app.activities.inscription.step_1
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.GoogleAuthProvider
+import c0d3.vitreen.app.activities.inscription.step_2.Inscription2Activity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -25,6 +20,8 @@ class Inscription1Activity : AppCompatActivity() {
     private lateinit var anonymousButton: Button
     private lateinit var email: EditText
     private lateinit var password: EditText
+
+    private val KEYEMAIL = "KEYNAME"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +43,7 @@ class Inscription1Activity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     //Direction Accueil
+                    startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
                     //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
@@ -60,8 +58,10 @@ class Inscription1Activity : AppCompatActivity() {
         ).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = Firebase.auth.currentUser
-                //Création INTENT afin de partir vers l'étape 2 et transférer user
                 Toast.makeText(this, "Connexion Réussie", Toast.LENGTH_SHORT).show()
+                val goToNextStep = Intent(this, Inscription2Activity::class.java)
+                goToNextStep.putExtra(KEYEMAIL, user.email)
+                startActivity(goToNextStep)
             } else {
                 Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
                 //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
