@@ -21,21 +21,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         inscriptionButton = findViewById<Button>(R.id.InscriptionButton)
-        inscriptionButton.setOnClickListener {
-            if (user == null) startActivity(Intent(this, Inscription1Activity::class.java))
-        }
-        if (user != null) {
-            connexionButton.text = R.string.logout.toString()
-            connexionButton.setOnClickListener {
-                auth.signOut()
-            }
-        }
-
         connexionButton = findViewById<Button>(R.id.signInButton)
         if (user == null) {
-            connexionButton.text = R.string.connexion.toString()
+            inscriptionButton.setOnClickListener {
+                startActivity(Intent(this, Inscription1Activity::class.java))
+            }
+            connexionButton.text = getString(R.string.connexion)
             connexionButton.setOnClickListener {
                 startActivity(Intent(this, ConnectionActivity::class.java))
+            }
+        } else {
+            connexionButton.text = getString(R.string.logout)
+            connexionButton.setOnClickListener {
+                auth.signOut()
+                finish()
+                startActivity(intent)
             }
         }
     }
