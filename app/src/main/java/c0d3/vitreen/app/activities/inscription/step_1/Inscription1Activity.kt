@@ -21,7 +21,9 @@ class Inscription1Activity : AppCompatActivity() {
     private lateinit var email: EditText
     private lateinit var password: EditText
 
-    private val KEYEMAIL = "KEYNAME"
+    companion object {
+        const val KEYEMAIL = "KEYNAME"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

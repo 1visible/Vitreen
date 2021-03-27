@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Vitreen</string>
-    <string name="submit">S\'inscrire</string>
+    <string name="next">Suivant</string>
     <string name="pro">Professionel</string>
+    <string name="signup">Inscription</string>
+    <string name="welcome">Bienvenue sur Vitreen !</string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="ignore_step"><u>Ignorer cette étape</u></string>
+    <string name="bigicon">Icône de la page</string>
+    <string name="lorem">Lorem ipsum</string>
     <string name="logout">Se déconnecter</string>
 </resources>
