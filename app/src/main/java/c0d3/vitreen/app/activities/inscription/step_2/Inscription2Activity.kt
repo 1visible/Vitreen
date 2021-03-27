@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import c0d3.vitreen.app.models.User
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.firestore.ktx.firestore
@@ -41,7 +42,7 @@ class Inscription2Activity : AppCompatActivity() {
             siret = findViewById<EditText>(R.id.siret)
             switch = findViewById<SwitchMaterial>(R.id.switchPro)
             switch.isChecked = false
-            switch.setOnCheckedChangeListener { buttonview, isChecked ->
+            switch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     companyName.visibility = View.VISIBLE
                     siret.visibility = View.VISIBLE
@@ -51,7 +52,7 @@ class Inscription2Activity : AppCompatActivity() {
                 }
             }
             submitButton = findViewById<Button>(R.id.submitButton)
-            submitButton.setOnClickListener { it ->
+            submitButton.setOnClickListener { _ ->
                 val user: User
                 if (switch.isChecked) {
                     user = User(
