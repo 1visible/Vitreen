@@ -3,4 +3,5 @@
     <string name="submit">S\'inscrire</string>
     <string name="pro">Professionel</string>
     <string name="connexion">Se connecter</string>
+    <string name="logout">Se déconnecter</string>
 </resources>

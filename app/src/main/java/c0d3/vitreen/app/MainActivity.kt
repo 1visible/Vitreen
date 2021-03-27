@@ -24,6 +24,12 @@ class MainActivity : AppCompatActivity() {
         inscriptionButton.setOnClickListener {
             if (user == null) startActivity(Intent(this, Inscription1Activity::class.java))
         }
+        if (user != null) {
+            connexionButton.text = R.string.logout.toString()
+            connexionButton.setOnClickListener {
+                auth.signOut()
+            }
+        }
 
         connexionButton = findViewById<Button>(R.id.signInButton)
         if (user == null) {
