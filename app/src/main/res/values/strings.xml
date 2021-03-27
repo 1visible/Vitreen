@@ -9,4 +9,5 @@
     <string name="ignore_step"><u>Ignorer cette étape</u></string>
     <string name="bigicon">Icône de la page</string>
     <string name="lorem">Lorem ipsum</string>
+    <string name="logout">Se déconnecter</string>
 </resources>

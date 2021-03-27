@@ -16,8 +16,8 @@ import io.grpc.okhttp.internal.framed.ErrorCode
 import kotlin.math.E
 
 class MainActivity : AppCompatActivity() {
-    val TAG: String = "c0d3"
     private lateinit var inscriptionButton: Button
+    private lateinit var connexionButton: Button
 
     private val auth = Firebase.auth
     private val user = auth.currentUser
@@ -29,6 +29,12 @@ class MainActivity : AppCompatActivity() {
         inscriptionButton = findViewById<Button>(R.id.InscriptionButton)
         inscriptionButton.setOnClickListener {
             if (user == null) startActivity(Intent(this, Inscription1Activity::class.java))
+        }
+        if (user != null) {
+            connexionButton.text = R.string.logout.toString()
+            connexionButton.setOnClickListener {
+                auth.signOut()
+            }
         }
     }
 }
