@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Vitreen.EditText" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/glass_frame</item>
+        <item name="android:padding">15dp</item>
+    </style>
+
+    <style name="Vitreen.Button" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Vitreen.Link" parent="@android:style/Widget.Button">
+        <item name="android:background">@color/fui_transparent</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/teal</item>
+    </style>
+
+</resources>

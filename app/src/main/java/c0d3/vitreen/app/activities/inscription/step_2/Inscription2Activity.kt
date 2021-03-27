@@ -7,6 +7,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import c0d3.vitreen.app.models.User
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.firestore.ktx.firestore
@@ -28,7 +29,7 @@ class Inscription2Activity : AppCompatActivity() {
     private lateinit var submitButton: Button
 
 
-    private val KEYEMAIL = "KEYNAME"
+    private val KEYEMAIL = Inscription1Activity.KEYEMAIL
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +37,15 @@ class Inscription2Activity : AppCompatActivity() {
         setContentView(R.layout.activity_inscription_step_2)
         if (intent != null) {
             email = intent.getStringExtra(KEYEMAIL).toString()
-            lastName = findViewById<EditText>(R.id.lastName)
-            firstName = findViewById<EditText>(R.id.firstName)
-            phoneNumber = findViewById<EditText>(R.id.phoneNumber)
-            contactMethod = findViewById<EditText>(R.id.contactMethod)
-            companyName = findViewById<EditText>(R.id.companyName)
-            siret = findViewById<EditText>(R.id.siret)
-            switch = findViewById<SwitchMaterial>(R.id.switchPro)
+            lastName = findViewById(R.id.lastName)
+            firstName = findViewById(R.id.firstName)
+            phoneNumber = findViewById(R.id.phoneNumber)
+            contactMethod = findViewById(R.id.contactMethod)
+            companyName = findViewById(R.id.companyName)
+            siret = findViewById(R.id.siret)
+            switch = findViewById(R.id.switchPro)
             switch.isChecked = false
-            switch.setOnCheckedChangeListener { buttonview, isChecked ->
+            switch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     companyName.visibility = View.VISIBLE
                     siret.visibility = View.VISIBLE
@@ -54,7 +55,7 @@ class Inscription2Activity : AppCompatActivity() {
                 }
             }
             submitButton = findViewById<Button>(R.id.submitButton)
-            submitButton.setOnClickListener { it ->
+            submitButton.setOnClickListener { _ ->
                 val user: User
                 if (switch.isChecked) {
                     user = User(
