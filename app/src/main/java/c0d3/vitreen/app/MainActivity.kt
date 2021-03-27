@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import c0d3.vitreen.app.activities.connexion.ConnexionActivity
 import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
@@ -16,8 +17,8 @@ import io.grpc.okhttp.internal.framed.ErrorCode
 import kotlin.math.E
 
 class MainActivity : AppCompatActivity() {
-    val TAG: String = "c0d3"
     private lateinit var inscriptionButton: Button
+    private lateinit var connexionButton: Button
 
     private val auth = Firebase.auth
     private val user = auth.currentUser
@@ -29,6 +30,14 @@ class MainActivity : AppCompatActivity() {
         inscriptionButton = findViewById<Button>(R.id.InscriptionButton)
         inscriptionButton.setOnClickListener {
             if (user == null) startActivity(Intent(this, Inscription1Activity::class.java))
+        }
+
+        connexionButton = findViewById<Button>(R.id.signInButton)
+        if (user == null) {
+            connexionButton.text = R.string.connexion.toString()
+            connexionButton.setOnClickListener {
+                startActivity(Intent(this, ConnexionActivity::class.java))
+            }
         }
     }
 }
