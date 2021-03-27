@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
@@ -14,8 +15,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class Inscription2Activity : AppCompatActivity() {
-
-    val TAG: String = "c0d3"
 
     private lateinit var email: String
 
@@ -28,22 +27,20 @@ class Inscription2Activity : AppCompatActivity() {
     private lateinit var switch: SwitchMaterial
     private lateinit var submitButton: Button
 
-
-    private val KEYEMAIL = Inscription1Activity.KEYEMAIL
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inscription_step_2)
         if (intent != null) {
-            email = intent.getStringExtra(KEYEMAIL).toString()
-            lastName = findViewById(R.id.lastName)
-            firstName = findViewById(R.id.firstName)
-            phoneNumber = findViewById(R.id.phoneNumber)
-            contactMethod = findViewById(R.id.contactMethod)
-            companyName = findViewById(R.id.companyName)
-            siret = findViewById(R.id.siret)
-            switch = findViewById(R.id.switchPro)
+            email = intent.getStringExtra(Constantes.KEYEMAIL).toString()
+            lastName = findViewById<EditText>(R.id.lastName)
+            firstName = findViewById<EditText>(R.id.firstName)
+            phoneNumber = findViewById<EditText>(R.id.phoneNumber)
+            contactMethod = findViewById<EditText>(R.id.contactMethod)
+            companyName = findViewById<EditText>(R.id.companyName)
+            siret = findViewById<EditText>(R.id.siret)
+            switch = findViewById<SwitchMaterial>(R.id.switchPro)
             switch.isChecked = false
             switch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {

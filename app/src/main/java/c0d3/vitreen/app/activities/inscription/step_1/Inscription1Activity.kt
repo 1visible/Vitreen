@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.inscription.step_2.Inscription2Activity
@@ -14,16 +15,10 @@ import com.google.firebase.ktx.Firebase
 
 class Inscription1Activity : AppCompatActivity() {
 
-    val TAG: String = "c0d3"
-
     private lateinit var nextButton: Button
     private lateinit var anonymousButton: Button
     private lateinit var email: EditText
     private lateinit var password: EditText
-
-    companion object {
-        const val KEYEMAIL = "KEYNAME"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +27,7 @@ class Inscription1Activity : AppCompatActivity() {
         password = findViewById<EditText>(R.id.password)
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
-            startSignInActivity()
+            startSignUpActivity()
         }
         anonymousButton = findViewById<Button>(R.id.anonymousButton)
         anonymousButton.setOnClickListener {
@@ -53,7 +48,7 @@ class Inscription1Activity : AppCompatActivity() {
             }
     }
 
-    fun startSignInActivity() {
+    private fun startSignUpActivity() {
         Firebase.auth.createUserWithEmailAndPassword(
             email.text.toString(),
             password.text.toString()
@@ -62,7 +57,7 @@ class Inscription1Activity : AppCompatActivity() {
                 val user = Firebase.auth.currentUser
                 Toast.makeText(this, "Connexion Réussie", Toast.LENGTH_SHORT).show()
                 val goToNextStep = Intent(this, Inscription2Activity::class.java)
-                goToNextStep.putExtra(KEYEMAIL, user.email)
+                goToNextStep.putExtra(Constantes.KEYEMAIL, user.email)
                 startActivity(goToNextStep)
             } else {
                 Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
