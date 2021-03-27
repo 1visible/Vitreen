@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.User
@@ -13,8 +14,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class Inscription2Activity : AppCompatActivity() {
-
-    val TAG: String = "c0d3"
 
     private lateinit var email: String
 
@@ -27,15 +26,13 @@ class Inscription2Activity : AppCompatActivity() {
     private lateinit var switch: SwitchMaterial
     private lateinit var submitButton: Button
 
-
-    private val KEYEMAIL = "KEYNAME"
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inscription_step_2)
         if (intent != null) {
-            email = intent.getStringExtra(KEYEMAIL).toString()
+            email = intent.getStringExtra(Constantes.KEYEMAIL).toString()
             lastName = findViewById<EditText>(R.id.lastName)
             firstName = findViewById<EditText>(R.id.firstName)
             phoneNumber = findViewById<EditText>(R.id.phoneNumber)
