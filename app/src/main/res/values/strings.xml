@@ -12,6 +12,13 @@
     <string name="lorem">Lorem ipsum</string>
     <string name="logout">Se déconnecter</string>
     <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
+    <string name="confirmpassword">Confirmation Mot de Passe</string>
+    <string name="emptyFields">Veuillez remplir tout les champs</string>
+    <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
+    <string name="ErrorMessage">Une erreur s\'est produite</string>
+    <string name="signupSucceed">Authentification réussie</string>
+    <string name="inscriptionOk">Inscription terminée</string>
+    <string name="SignInSucceed">Authentification réussie</string>
     <string name="addAdvert">Ajout d\'un produit</string>
     <string name="title">Titre</string>
     <string name="price">Prix</string>
