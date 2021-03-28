@@ -19,6 +19,7 @@ class Inscription1Activity : AppCompatActivity() {
     private lateinit var anonymousButton: Button
     private lateinit var email: EditText
     private lateinit var password: EditText
+    private lateinit var confirmPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,18 @@ class Inscription1Activity : AppCompatActivity() {
         password = findViewById<EditText>(R.id.password)
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
-            startSignUpActivity()
+            if ((!(email.text.toString().equals(""))) && (!(password.text.toString()
+                    .equals(""))) && (!(confirmPassword.text.toString().equals("")))
+            ) {
+                if (password.text.toString().equals(confirmPassword.text.toString())) {
+                    startSignUpActivity()
+                } else {
+                    Toast.makeText(this, getString(R.string.NoMatchPassword), Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
+            }
         }
         anonymousButton = findViewById<Button>(R.id.anonymousButton)
         anonymousButton.setOnClickListener {
@@ -42,8 +54,8 @@ class Inscription1Activity : AppCompatActivity() {
                     //Direction Accueil
                     startActivity(Intent(this, MainActivity::class.java))
                 } else {
-                    Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
-                    //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
+                    Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
     }
@@ -55,12 +67,12 @@ class Inscription1Activity : AppCompatActivity() {
         ).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = Firebase.auth.currentUser
-                Toast.makeText(this, "Connexion Réussie", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.signupSucceed), Toast.LENGTH_SHORT).show()
                 val goToNextStep = Intent(this, Inscription2Activity::class.java)
                 goToNextStep.putExtra(Constantes.KEYEMAIL, user.email)
                 startActivity(goToNextStep)
             } else {
-                Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
                 //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
             }
         }
