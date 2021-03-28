@@ -29,8 +29,10 @@ class Inscription1Activity : AppCompatActivity() {
         confirmPassword = findViewById<EditText>(R.id.confirmPassword)
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
-            if ((!(email.text.toString().replaceAll("\\s+","").equals(""))) && (!(password.text.toString()
-                    .equals(""))) && (!(confirmPassword.text.toString().replaceAll("\\s+","").equals("")))
+            if ((!(email.text.toString().replace("\\s+", "")
+                    .equals(""))) && (!(password.text.toString()
+                    .equals(""))) && (!(confirmPassword.text.toString().replace("\\s+", "")
+                    .equals("")))
             ) {
 
                 if (password.text.toString().equals(confirmPassword.text.toString())) {
