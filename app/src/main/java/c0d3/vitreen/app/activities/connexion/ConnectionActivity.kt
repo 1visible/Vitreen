@@ -28,8 +28,11 @@ class ConnectionActivity : AppCompatActivity() {
         password = findViewById<EditText>(R.id.password)
         connexionButton = findViewById<Button>(R.id.connexionButton)
         connexionButton.setOnClickListener {
-
-            signInUser()
+            if ((!(email.text.toString().equals(""))) && (!(password.text.toString().equals("")))) {
+                signInUser()
+            } else {
+                Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
