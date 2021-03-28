@@ -69,7 +69,6 @@ class Inscription1Activity : AppCompatActivity() {
         ).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = Firebase.auth.currentUser
-                Toast.makeText(this, getString(R.string.signupSucceed), Toast.LENGTH_SHORT).show()
                 val goToNextStep = Intent(this, Inscription2Activity::class.java)
                 goToNextStep.putExtra(Constantes.KEYEMAIL, user.email)
                 startActivity(goToNextStep)

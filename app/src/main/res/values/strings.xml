@@ -17,4 +17,5 @@
     <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
     <string name="ErrorMessage">Une erreur s\'est produite</string>
     <string name="signupSucceed">Authentification réussie</string>
+    <string name="inscriptionOk">Inscription terminée</string>
 </resources>
