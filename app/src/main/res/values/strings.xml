@@ -18,4 +18,5 @@
     <string name="localisation">Localisation</string>
     <string name="category">Catégorie</string>
     <string name="addAdvertButton">Ajout</string>
+    <string name="description">Description</string>
 </resources>

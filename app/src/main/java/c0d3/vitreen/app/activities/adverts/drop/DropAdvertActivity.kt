@@ -16,9 +16,13 @@ class DropAdvertActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (user == null) {
+
+        if ((user == null)) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+        }
+        if ((user != null) && user.isAnonymous) {
+            //redirige l'utilisateur vers une inscription non anonyme
         }
     }
 

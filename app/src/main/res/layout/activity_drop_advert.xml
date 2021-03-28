@@ -15,7 +15,6 @@
             android:id="@+id/topLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             app:icon="@drawable/bigicon_user"
             app:layout_constraintTop_toTopOf="parent"
             app:subtitle="@string/welcome"
@@ -26,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
+            android:layout_marginTop="30sp"
             android:layout_marginRight="50dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,6 +50,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <EditText
+                android:id="@+id/editTextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -58,6 +59,7 @@
                 android:inputType="text" />
 
             <EditText
+                android:id="@+id/editTextPrix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -66,6 +68,7 @@
                 android:inputType="numberDecimal" />
 
             <EditText
+                android:id="@+id/editTextLocalisation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -74,14 +77,19 @@
                 android:inputType="text" />
 
             <EditText
+                android:id="@+id/editTextDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:gravity="top|start"
+                android:hint="@string/description"
                 android:inputType="textMultiLine"
                 android:lines="6"
-                android:maxLines="10"
-                android:minLines="6"
-                android:scrollbars="vertical" />
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:scrollHorizontally="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
                 android:id="@+id/nextButton"
