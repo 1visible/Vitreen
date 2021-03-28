@@ -1,7 +1,6 @@
 package c0d3.vitreen.app.activities.adverts.drop
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,7 +8,6 @@ import android.location.Criteria
 import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.text.Editable
 import android.util.Log
 import android.widget.*
@@ -18,8 +16,7 @@ import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.Category
-import com.google.android.gms.tasks.OnCompleteListener
+import c0d3.vitreen.app.models.Location
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -34,7 +31,7 @@ class DropAdvertActivity : AppCompatActivity() {
     private lateinit var category: TextInputLayout
     private lateinit var title: EditText
     private lateinit var price: EditText
-    private lateinit var localisation: EditText
+    private lateinit var location: EditText
     private lateinit var description: EditText
     private lateinit var nextButton: Button
 
@@ -42,12 +39,13 @@ class DropAdvertActivity : AppCompatActivity() {
     private val DB = Firebase.firestore
     private val categories = DB.collection("Categories")
     private val categoriesList = ArrayList<String>()
+    private val locations = DB.collection("locations")
 
     private lateinit var locationManager: LocationManager
 
     private lateinit var provider: String
     private lateinit var cityName: String
-    private lateinit var countryCode: String
+    private lateinit var zipCode: String
 
     private var flag = false
 
@@ -68,11 +66,11 @@ class DropAdvertActivity : AppCompatActivity() {
         setContentView(R.layout.activity_drop_advert)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         cityName = ""
-        countryCode = ""
+        zipCode = ""
         category = findViewById(R.id.categories)
         title = findViewById<EditText>(R.id.editTextTitle)
         price = findViewById<EditText>(R.id.editTextPrix)
-        localisation = findViewById<EditText>(R.id.editTextLocalisation)
+        location = findViewById<EditText>(R.id.editTextLocalisation)
         description = findViewById<EditText>(R.id.editTextDescription)
         nextButton = findViewById<Button>(R.id.nextButton2)
         getAllCategory()
@@ -80,8 +78,43 @@ class DropAdvertActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, R.layout.list_item, categoriesList)
         (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         if (!cityName.equals("")) {
-            localisation.text = cityName.toEditable()
+            location.text = cityName.toEditable()
         }
+
+        nextButton.setOnClickListener {
+            val currentLocation = Location(
+                location.text.toString(),
+                if (zipCode == "") null else zipCode.toInt()
+            )
+            locations
+                .whereEqualTo("name", currentLocation.name)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.size() == 1) {
+                        for (document in documents) {
+                            if (document.get("zipCode") == null) {
+                                locations
+                                    .document(document.id)
+                                    .update("zipCode", currentLocation.zipCode)
+                            }
+                        }
+                    } else {
+                        locations.document().set(currentLocation).addOnCompleteListener { task ->
+                            if (!task.isSuccessful) {
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.ErrorMessage),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }.addOnFailureListener { exception ->
+                    Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
+
     }
 
     private fun getAllCategory() {
@@ -91,11 +124,6 @@ class DropAdvertActivity : AppCompatActivity() {
                     categoriesList.add(document.get("name").toString())
                 }
             }
-    }
-
-    private fun addSomeCategories() {
-        categories.document().set(Category("Multimédia"))
-        categories.document().set(Category("Vêtements"))
     }
 
     private fun initializeLocation() {
@@ -134,7 +162,7 @@ class DropAdvertActivity : AppCompatActivity() {
                     1
                 )
                 cityName = adresses.get(0).locality
-                countryCode = adresses.get(0).countryCode
+                zipCode = adresses.get(0).postalCode
             } catch (e: IOException) {
                 Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
                     .show()
@@ -152,7 +180,7 @@ class DropAdvertActivity : AppCompatActivity() {
         when (requestCode) {
             Constantes.LocalisationCode -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    localisation.text.clear()
+                    location.text.clear()
                     Toast.makeText(this, getString(R.string.locationDenied), Toast.LENGTH_SHORT)
                         .show()
                 } else {
