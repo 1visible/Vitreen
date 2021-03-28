@@ -18,4 +18,5 @@
     <string name="ErrorMessage">Une erreur s\'est produite</string>
     <string name="signupSucceed">Authentification réussie</string>
     <string name="inscriptionOk">Inscription terminée</string>
+    <string name="SignInSucceed">Authentification réussie</string>
 </resources>

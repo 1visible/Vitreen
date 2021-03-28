@@ -20,16 +20,15 @@ class ConnectionActivity : AppCompatActivity() {
     private lateinit var email: EditText
     private lateinit var password: EditText
     private lateinit var connexionButton: Button
-    private lateinit var errorMessage: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connection)
         email = findViewById<EditText>(R.id.email)
         password = findViewById<EditText>(R.id.password)
-        errorMessage = findViewById<EditText>(R.id.errorMessage)
         connexionButton = findViewById<Button>(R.id.connexionButton)
         connexionButton.setOnClickListener {
+
             signInUser()
         }
 
@@ -40,14 +39,16 @@ class ConnectionActivity : AppCompatActivity() {
             .signInWithEmailAndPassword(email.text.toString(), password.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d(Constantes.TAG, "Auth Succeed")
+                    Log.d(Constantes.TAG, getString(R.string.SignInSucceed))
+                    Toast.makeText(this, getString(R.string.SignInSucceed), Toast.LENGTH_SHORT)
+                        .show()
                     startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     Log.w(Constantes.TAG, "Auth failed")
-                    Toast.makeText(this, "Auth failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
+                        .show()
                     email.text.clear()
                     password.text.clear()
-                    errorMessage.text = getString(R.string.errorMessage)
                 }
             }
     }
