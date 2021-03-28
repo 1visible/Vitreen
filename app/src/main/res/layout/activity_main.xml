@@ -31,4 +31,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/addProductButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addAdvertButton"
+        app:layout_constraintLeft_toLeftOf="@+id/InscriptionButton"
+        app:layout_constraintTop_toBottomOf="@+id/InscriptionButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

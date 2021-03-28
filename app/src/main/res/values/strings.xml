@@ -12,4 +12,10 @@
     <string name="lorem">Lorem ipsum</string>
     <string name="logout">Se déconnecter</string>
     <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
+    <string name="addAdvert">Ajout d\'un produit</string>
+    <string name="title">Titre</string>
+    <string name="price">Prix</string>
+    <string name="localisation">Localisation</string>
+    <string name="category">Catégorie</string>
+    <string name="addAdvertButton">Ajout</string>
 </resources>
