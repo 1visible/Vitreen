@@ -1,51 +1,29 @@
 package c0d3.vitreen.app
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import c0d3.vitreen.app.activities.adverts.drop.DropAdvertActivity
-import c0d3.vitreen.app.activities.connexion.ConnectionActivity
-import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var inscriptionButton: Button
-    private lateinit var connexionButton: Button
-    private lateinit var addAdvertButton: Button
-
-    private val auth = Firebase.auth
-    private val user = auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        inscriptionButton = findViewById<Button>(R.id.InscriptionButton)
-        connexionButton = findViewById<Button>(R.id.signInButton)
-        addAdvertButton = findViewById<Button>(R.id.addProductButton)
-        if (user == null) {
-            inscriptionButton.setOnClickListener {
-                startActivity(Intent(this, Inscription1Activity::class.java))
-            }
-            connexionButton.text = getString(R.string.connexion)
-            connexionButton.setOnClickListener {
-                startActivity(Intent(this, ConnectionActivity::class.java))
-            }
-            addAdvertButton.visibility = View.GONE
-        } else {
-            connexionButton.text = getString(R.string.logout)
-            connexionButton.setOnClickListener {
-                auth.signOut()
-                finish()
-                startActivity(intent)
-            }
-            addAdvertButton.visibility = View.VISIBLE
-            addAdvertButton.setOnClickListener {
-                startActivity(Intent(this, DropAdvertActivity::class.java))
-            }
-        }
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 }
