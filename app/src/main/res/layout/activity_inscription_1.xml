@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.inscription.step_1.Inscription1Activity">
 
-    <c0d3.vitreen.app.TopLayout
+    <c0d3.vitreen.app.views.TopView
         android:id="@+id/topLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,48 +16,74 @@
         app:title="@string/signup" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/fragment"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topLayout2">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/already_account" />
+
+            <Button
+                android:id="@+id/connectionButton"
+                style="@style/Vitreen.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/connect" />
+
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email_address"
-            android:drawableRight="@drawable/icon_envelope"
             android:layout_marginBottom="20dp"
-            android:inputType="textEmailAddress"
             android:drawableEnd="@drawable/icon_envelope"
-            android:importantForAutofill="no" />
+            android:drawableRight="@drawable/icon_envelope"
+            android:hint="@string/email_address"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:drawableRight="@drawable/icon_lockpad"
             android:layout_marginBottom="20dp"
-            android:inputType="textPassword"
+            android:drawableEnd="@drawable/icon_lockpad"
+            android:drawableRight="@drawable/icon_lockpad"
+            android:hint="@string/password"
             android:importantForAutofill="no"
-            android:drawableEnd="@drawable/icon_lockpad" />
+            android:inputType="textPassword" />
 
         <EditText
-            android:id="@+id/confirmPassword"
+            android:id="@+id/password_confirmation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/confirmpassword"
+            android:layout_marginBottom="35dp"
+            android:drawableEnd="@drawable/icon_lockpad"
             android:drawableRight="@drawable/icon_lockpad"
-            android:layout_marginBottom="50dp"
-            android:inputType="textPassword"
+            android:hint="@string/password_confirmation"
             android:importantForAutofill="no"
-            android:drawableEnd="@drawable/icon_lockpad" />
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/nextButton"
@@ -65,7 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="@string/next" />
-
 
         <Button
             android:id="@+id/anonymousButton"
@@ -75,5 +100,12 @@
             android:text="@string/ignore_step" />
 
     </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="c0d3.vitreen.app.fragments.MenuFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

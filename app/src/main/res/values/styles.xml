@@ -19,4 +19,8 @@
         <item name="android:textColor">@color/teal</item>
     </style>
 
+    <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
+        <item name="backgroundColor">@color/teal</item>
+    </style>
+
 </resources>
