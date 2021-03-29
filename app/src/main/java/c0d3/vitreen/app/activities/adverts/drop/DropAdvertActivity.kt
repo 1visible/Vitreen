@@ -13,8 +13,8 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.MainActivity
+import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Location
 import com.google.android.material.textfield.TextInputLayout
@@ -135,7 +135,7 @@ class DropAdvertActivity : AppCompatActivity() {
         criteria.isCostAllowed = false
         criteria.powerRequirement = Criteria.POWER_LOW
         provider = locationManager.getBestProvider(criteria, true).toString()
-        Log.d(Constantes.TAG, "GPS  meilleur fournisseur ${provider}")
+        Log.d(Constants.TAG, "GPS  meilleur fournisseur ${provider}")
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -147,7 +147,7 @@ class DropAdvertActivity : AppCompatActivity() {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 requestPermissions(
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    Constantes.LocalisationCode
+                    Constants.LocalisationCode
                 )
             }
             return
@@ -178,7 +178,7 @@ class DropAdvertActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            Constantes.LocalisationCode -> {
+            Constants.LocalisationCode -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     location.text.clear()
                     Toast.makeText(this, getString(R.string.locationDenied), Toast.LENGTH_SHORT)

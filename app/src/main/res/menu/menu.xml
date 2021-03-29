@@ -2,33 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_item_1"
+        android:id="@+id/navigation_home"
         android:enabled="true"
         android:icon="@drawable/menu_icon_home"
-        android:title="@string/home"/>
+        android:title="@string/title_home"/>
 
     <item
-        android:id="@+id/menu_item_2"
+        android:id="@+id/navigation_messages"
         android:enabled="true"
         android:icon="@drawable/menu_icon_messages"
-        android:title="@string/messages"/>
+        android:title="@string/title_messages"/>
 
     <item
-        android:id="@+id/menu_item_3"
+        android:id="@+id/navigation_adding"
         android:enabled="true"
-        android:icon="@drawable/menu_icon_add"
-        android:title="@string/add"/>
+        android:icon="@drawable/menu_icon_adding"
+        android:title="@string/title_adding"/>
 
     <item
-        android:id="@+id/menu_item_4"
+        android:id="@+id/navigation_favorites"
         android:enabled="true"
         android:icon="@drawable/menu_icon_favorites"
-        android:title="@string/favorites"/>
+        android:title="@string/title_favorites"/>
 
     <item
-        android:id="@+id/menu_item_5"
+        android:id="@+id/navigation_profile"
         android:enabled="true"
         android:icon="@drawable/menu_icon_profile"
-        android:title="@string/profile"/>
+        android:title="@string/title_profile"/>
 
 </menu>
