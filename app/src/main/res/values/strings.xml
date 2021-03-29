@@ -20,4 +20,19 @@
     <string name="add">Ajout</string>
     <string name="favorites">Favoris</string>
     <string name="profile">Profil</string>
+    <string name="confirmpassword">Confirmation Mot de Passe</string>
+    <string name="emptyFields">Veuillez remplir tout les champs</string>
+    <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
+    <string name="ErrorMessage">Une erreur s\'est produite</string>
+    <string name="signupSucceed">Authentification réussie</string>
+    <string name="inscriptionOk">Inscription terminée</string>
+    <string name="SignInSucceed">Authentification réussie</string>
+    <string name="addAdvert">Ajout d\'un produit</string>
+    <string name="title">Titre</string>
+    <string name="price">Prix</string>
+    <string name="localisation">Localisation</string>
+    <string name="category">Catégorie</string>
+    <string name="addAdvertButton">Ajout</string>
+    <string name="description">Description</string>
+    <string name="locationDenied">Localisation refusée</string>
 </resources>

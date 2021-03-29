@@ -79,14 +79,19 @@ class Inscription2Activity : AppCompatActivity() {
                 }
                 db.collection("user").document().set(user).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Inscription Terminée", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, MainActivity::class.java))
+                        finishActivity(0)
                     } else {
-                        Toast.makeText(this, "Une erreur s'est produite", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
         }
+    }
+
+    override fun onBackPressed() {
+
     }
 }
