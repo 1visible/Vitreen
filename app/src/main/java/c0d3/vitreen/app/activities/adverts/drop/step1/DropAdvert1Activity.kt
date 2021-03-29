@@ -98,8 +98,15 @@ class DropAdvert1Activity : AppCompatActivity() {
                 intent1.putExtra(Constantes.KEYADDADVERTS[2], price.text.toString())
                 intent1.putExtra(Constantes.KEYADDADVERTS[3], getLocationId())
                 intent1.putExtra(Constantes.KEYADDADVERTS[4], description.text.toString())
-                startActivity(intent1)
-                finish()
+                println("--------------------------------------------------------------")
+                println(getCategoryId())
+                println(title.text.toString())
+                println(price.text.toString())
+                println(getLocationId())
+                println(description.text.toString())
+                println("--------------------------------------------------------------")
+//                startActivity(intent1)
+//                finish()
             } else {
                 Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
             }
