@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import c0d3.vitreen.app.activities.adverts.drop.DropAdvertActivity
+import c0d3.vitreen.app.activities.adverts.drop.step1.DropAdvert1Activity
 import c0d3.vitreen.app.activities.connexion.ConnectionActivity
 import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import com.google.firebase.auth.ktx.auth
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             }
             addAdvertButton.visibility = View.VISIBLE
             addAdvertButton.setOnClickListener {
-                startActivity(Intent(this, DropAdvertActivity::class.java))
+                startActivity(Intent(this, DropAdvert1Activity::class.java))
             }
         }
     }

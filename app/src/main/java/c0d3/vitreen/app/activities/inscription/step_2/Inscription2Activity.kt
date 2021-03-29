@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.inscription.step_1.Inscription1Activity
 import c0d3.vitreen.app.models.User
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.firestore.ktx.firestore
@@ -31,7 +30,7 @@ class Inscription2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inscription_step_2)
+        setContentView(R.layout.activity_inscription_2)
         if (intent != null) {
             email = intent.getStringExtra(Constantes.KEYEMAIL).toString()
             lastName = findViewById<EditText>(R.id.lastName)

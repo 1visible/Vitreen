@@ -1,4 +1,4 @@
-package c0d3.vitreen.app.activities.adverts.drop
+package c0d3.vitreen.app.activities.adverts.drop.step1
 
 import android.Manifest
 import android.content.Context
@@ -26,7 +26,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class DropAdvertActivity : AppCompatActivity() {
+class DropAdvert1Activity : AppCompatActivity() {
 
     private lateinit var category: TextInputLayout
     private lateinit var title: EditText
@@ -63,7 +63,7 @@ class DropAdvertActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_drop_advert)
+        setContentView(R.layout.activity_drop_advert_1)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         cityName = ""
         zipCode = ""
