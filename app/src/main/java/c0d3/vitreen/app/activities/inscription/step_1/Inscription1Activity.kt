@@ -30,7 +30,7 @@ class Inscription1Activity : AppCompatActivity() {
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
             if ((!(email.text.toString().replace("\\s+", "")
-                    .equals(""))) && (!(password.text.toString()
+                    .equals(""))) && (!(password.text.toString().replace("\\s+", "")
                     .equals(""))) && (!(confirmPassword.text.toString().replace("\\s+", "")
                     .equals("")))
             ) {
