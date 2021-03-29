@@ -15,7 +15,7 @@
         android:id="@+id/navigation_profile"
         android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_signup" />
+        tools:layout="@layout/fragment_signup1" />
 
 <!--
     <fragment

@@ -1,12 +1,9 @@
 package c0d3.vitreen.app.activities.adverts.drop.step2
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -27,24 +24,24 @@ class DropAdvert2Activity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        if ((user == null)) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-        if ((user != null) && user.isAnonymous) {
-            //redirige l'utilisateur vers une inscription non anonyme
-        }
+//        if ((user == null)) {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
+//        if ((user != null) && user.isAnonymous) {
+//            //redirige l'utilisateur vers une inscription non anonyme
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drop_advert_2)
         if (intent != null) {
-            category = intent.getStringExtra(Constantes.KEYADDADVERTS[0]).toString()
-            title = intent.getStringExtra(Constantes.KEYADDADVERTS[1]).toString()
-            price = intent.getStringExtra(Constantes.KEYADDADVERTS[2]).toString()
-            location = intent.getStringExtra(Constantes.KEYADDADVERTS[3]).toString()
-            description = intent.getStringExtra(Constantes.KEYADDADVERTS[4]).toString()
+            category = intent.getStringExtra(Constants.KEYADDADVERTS[0]).toString()
+            title = intent.getStringExtra(Constants.KEYADDADVERTS[1]).toString()
+            price = intent.getStringExtra(Constants.KEYADDADVERTS[2]).toString()
+            location = intent.getStringExtra(Constants.KEYADDADVERTS[3]).toString()
+            description = intent.getStringExtra(Constants.KEYADDADVERTS[4]).toString()
         }
     }
 
