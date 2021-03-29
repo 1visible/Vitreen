@@ -319,4 +319,7 @@ class AddAdvert1Fragment : Fragment() {
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
+    companion object {
+        fun newInstance(): AddAdvert1Fragment = AddAdvert1Fragment()
+    }
 }
