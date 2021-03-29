@@ -1,6 +1,6 @@
-package c0d3.vitreen.app
+package c0d3.vitreen.app.utils
 
-class Constantes {
+class Constants {
     companion object {
         val KEYEMAIL = "KEYEMAIL"
         val TAG = "C0D3"

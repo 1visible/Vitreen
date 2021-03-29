@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.MainActivity
+import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.User
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -32,7 +32,7 @@ class Inscription2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inscription_2)
         if (intent != null) {
-            email = intent.getStringExtra(Constantes.KEYEMAIL).toString()
+            email = intent.getStringExtra(Constants.KEYEMAIL).toString()
             lastName = findViewById<EditText>(R.id.lastName)
             firstName = findViewById<EditText>(R.id.firstName)
             phoneNumber = findViewById<EditText>(R.id.phoneNumber)

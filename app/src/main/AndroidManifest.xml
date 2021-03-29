@@ -17,7 +17,7 @@
         <activity android:name=".activities.connexion.ConnectionActivity" />
         <activity android:name=".activities.inscription.step_2.Inscription2Activity" />
         <activity android:name=".activities.inscription.step_1.Inscription1Activity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

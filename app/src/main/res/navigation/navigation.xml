@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="c0d3.vitreen.app.fragments.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_signup" />
+
+<!--
+    <fragment
+        android:id="@+id/navigation_messages"
+        android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
+
+    <fragment
+        android:id="@+id/navigation_adding"
+        android:name="c0d3.vitreen.app.fragments.adding.AddingFragment"
+        android:label="@string/title_adding"
+        tools:layout="@layout/fragment_adding" />
+
+    <fragment
+        android:id="@+id/navigation_favorites"
+        android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
+        android:label="@string/title_favorites"
+        tools:layout="@layout/fragment_favorites" />
+        -->
+
+</navigation>
