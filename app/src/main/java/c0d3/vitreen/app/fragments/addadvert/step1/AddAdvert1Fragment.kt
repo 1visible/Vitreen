@@ -2,7 +2,6 @@ package c0d3.vitreen.app.fragments.addadvert.step1
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.LocationManager
@@ -14,11 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.adverts.drop.step2.DropAdvert2Activity
 import c0d3.vitreen.app.fragments.addadvert.step2.AddAdvert2Fragment
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
@@ -263,21 +260,21 @@ class AddAdvert1Fragment : Fragment() {
         }
         val fetchLocation = FetchLocation();
         val listern = object : OnLocationFetchListner {
-            override fun OnComplete(currentLocation: android.location.Location?) {
+            override fun OnComplete(location: android.location.Location?) {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 try {
-                    val adresse = currentLocation?.let {
+                    val adresse = location?.let {
                         geocoder.getFromLocation(
-                            currentLocation.latitude,
-                            currentLocation.longitude,
+                            location.latitude,
+                            location.longitude,
                             1
                         )
                     }
                     if (adresse != null) {
                         cityName = adresse[0].locality
                         zipCode = adresse[0].postalCode
-                        location.text.clear()
-                        location.text = adresse[0].locality.toEditable()
+                        this@AddAdvert1Fragment.location.text.clear()
+                        this@AddAdvert1Fragment.location.text = adresse[0].locality.toEditable()
                     }
                 } catch (e: IOException) {
                     Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
