@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <c0d3.vitreen.app.TopLayout
+    <c0d3.vitreen.app.views.TopView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:icon="@drawable/bigicon_leaf"
