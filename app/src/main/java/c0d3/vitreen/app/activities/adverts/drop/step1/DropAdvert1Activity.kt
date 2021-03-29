@@ -152,6 +152,7 @@ class DropAdvert1Activity : AppCompatActivity() {
                     if (adresse != null) {
                         cityName = adresse[0].locality
                         zipCode = adresse[0].postalCode
+                        location.text.clear()
                         location.text = adresse[0].locality.toEditable()
                     }
                 } catch (e: IOException) {
