@@ -18,6 +18,7 @@ import c0d3.vitreen.app.activities.adverts.drop.step2.DropAdvert2Activity
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
+import c0d3.vitreen.app.models.dto.CategoryDTO
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -39,7 +40,7 @@ class DropAdvert1Activity : AppCompatActivity() {
     private val user = Firebase.auth.currentUser
     private val DB = Firebase.firestore
     private val categories = DB.collection("Categories")
-    private val categoriesList = ArrayList<String>()
+    private val categoriesList = ArrayList<CategoryDTO>()
     private val locations = DB.collection("locations")
 
     private lateinit var locationManager: LocationManager
@@ -74,47 +75,136 @@ class DropAdvert1Activity : AppCompatActivity() {
         location = findViewById<EditText>(R.id.editTextLocalisation)
         description = findViewById<EditText>(R.id.editTextDescription)
         nextButton = findViewById<Button>(R.id.nextButton2)
-        getAllCategory()
-        initializeLocation()
-        val adapter = ArrayAdapter(this, R.layout.list_item, categoriesList)
-        (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-
-        nextButton.setOnClickListener {
-            if (
-                !category.editText?.text.toString().replace("\\s", "").equals("")
-                &&
-                !title.text.toString().replace("\\s", "").equals("")
-                &&
-                !price.text.toString().replace("\\s", "").equals("")
-                &&
-                !location.text.toString().replace("\\s", "").equals("")
-                &&
-                !description.text.toString().replace("\\s", "").equals("")
-            ) {
-                addLocationToDb()
-                val intent1 = Intent(this, DropAdvert2Activity::class.java)
-                intent1.putExtra(Constantes.KEYADDADVERTS[0], category.editText?.text.toString())
-                intent1.putExtra(Constantes.KEYADDADVERTS[1], title.text.toString())
-                intent1.putExtra(Constantes.KEYADDADVERTS[2], price.text.toString())
-                intent1.putExtra(Constantes.KEYADDADVERTS[3], location.text.toString())
-                intent1.putExtra(Constantes.KEYADDADVERTS[4], description.text.toString())
-                startActivity(intent1)
-                finish()
-            } else {
-                Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-    }
-
-    private fun getAllCategory() {
         categories.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    categoriesList.add(document.get("name").toString())
+                    val categoryDTO = CategoryDTO(document.id, document.get("name").toString())
+                    categoriesList.add(categoryDTO)
+                }
+                initializeLocation()
+                val adapter = ArrayAdapter(
+                    this,
+                    R.layout.list_item,
+                    categoriesList.map { it.DtoToModel().name })
+                (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+                nextButton.setOnClickListener {
+                    if (
+                        !category.editText?.text.toString().replace("\\s", "").equals("")
+                        &&
+                        !title.text.toString().replace("\\s", "").equals("")
+                        &&
+                        !price.text.toString().replace("\\s", "").equals("")
+                        &&
+                        !location.text.toString().replace("\\s", "").equals("")
+                        &&
+                        !description.text.toString().replace("\\s", "").equals("")
+                    ) {
+                        val currentLocation = Location(
+                            location.text.toString(),
+                            if (zipCode == "") null else zipCode.toInt()
+                        )
+                        locations
+                            .whereEqualTo("name", currentLocation.name)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (documents.size() == 1) {
+                                    for (document in documents) {
+                                        if (document.get("zipCode") == null) {
+                                            locations
+                                                .document(document.id)
+                                                .update("zipCode", currentLocation.zipCode)
+                                        }
+                                        val intent1 = Intent(this, DropAdvert2Activity::class.java)
+                                        var categoId: String? = null
+                                        for (cat in categoriesList) {
+                                            if (cat.name.equals(category.editText?.text.toString())) {
+                                                categoId = cat.id
+                                            }
+                                        }
+                                        intent1.putExtra(
+                                            Constantes.KEYADDADVERTS[0],
+                                            categoId
+                                        )
+                                        intent1.putExtra(
+                                            Constantes.KEYADDADVERTS[1],
+                                            title.text.toString()
+                                        )
+                                        intent1.putExtra(
+                                            Constantes.KEYADDADVERTS[2],
+                                            price.text.toString()
+                                        )
+                                        intent1.putExtra(
+                                            Constantes.KEYADDADVERTS[3],
+                                            document.id
+                                        )
+                                        intent1.putExtra(
+                                            Constantes.KEYADDADVERTS[4],
+                                            description.text.toString()
+                                        )
+                                        startActivity(intent1)
+                                        finish()
+                                    }
+                                } else {
+                                    locations.add(currentLocation)
+                                        .addOnSuccessListener { document ->
+                                            val intent1 =
+                                                Intent(this, DropAdvert2Activity::class.java)
+                                            var categoId: String? = null
+                                            for (cat in categoriesList) {
+                                                if (cat.name.equals(category.editText?.text.toString())) {
+                                                    categoId = cat.id
+                                                }
+                                            }
+                                            intent1.putExtra(
+                                                Constantes.KEYADDADVERTS[0],
+                                                categoId
+                                            )
+                                            intent1.putExtra(
+                                                Constantes.KEYADDADVERTS[1],
+                                                title.text.toString()
+                                            )
+                                            intent1.putExtra(
+                                                Constantes.KEYADDADVERTS[2],
+                                                price.text.toString()
+                                            )
+                                            intent1.putExtra(
+                                                Constantes.KEYADDADVERTS[3],
+                                                document.id
+                                            )
+                                            intent1.putExtra(
+                                                Constantes.KEYADDADVERTS[4],
+                                                description.text.toString()
+                                            )
+                                            startActivity(intent1)
+                                            finish()
+
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            Toast.makeText(
+                                                this,
+                                                getString(R.string.ErrorMessage),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                }
+                            }.addOnFailureListener { exception ->
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.ErrorMessage),
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+
+                    } else {
+                        Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
     }
+
 
     private fun initializeLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -186,38 +276,5 @@ class DropAdvert1Activity : AppCompatActivity() {
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
-    private fun addLocationToDb() {
-        val currentLocation = Location(
-            location.text.toString(),
-            if (zipCode == "") null else zipCode.toInt()
-        )
-        locations
-            .whereEqualTo("name", currentLocation.name)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.size() == 1) {
-                    for (document in documents) {
-                        if (document.get("zipCode") == null) {
-                            locations
-                                .document(document.id)
-                                .update("zipCode", currentLocation.zipCode)
-                        }
-                    }
-                } else {
-                    locations.document().set(currentLocation).addOnCompleteListener { task ->
-                        if (!task.isSuccessful) {
-                            Toast.makeText(
-                                this,
-                                getString(R.string.ErrorMessage),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-            }.addOnFailureListener { exception ->
-                Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
-                    .show()
-            }
-    }
 
 }

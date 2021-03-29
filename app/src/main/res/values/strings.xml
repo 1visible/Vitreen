@@ -36,4 +36,6 @@
     <string name="description">Description</string>
     <string name="locationDenied">Localisation refusée</string>
     <string name="noLocation">Impossible de récupérer la localisation</string>
+    <string name="brand">Marque</string>
+    <string name="size">Taille</string>
 </resources>
