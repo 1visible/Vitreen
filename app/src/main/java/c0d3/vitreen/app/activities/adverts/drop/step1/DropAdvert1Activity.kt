@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.listeners.FetchLocation
+import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
@@ -43,9 +45,11 @@ class DropAdvert1Activity : AppCompatActivity() {
 
     private lateinit var locationManager: LocationManager
 
-    private lateinit var provider: String
+    private var categoryId = ""
     private lateinit var cityName: String
     private lateinit var zipCode: String
+
+    private val context = this
 
     override fun onStart() {
         super.onStart()
@@ -76,6 +80,7 @@ class DropAdvert1Activity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, R.layout.list_item, categoriesList)
         (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         if (!cityName.equals("")) {
+            println("-------------cityName Edit text = ${cityName}")
             location.text = cityName.toEditable()
         }
 
@@ -93,20 +98,13 @@ class DropAdvert1Activity : AppCompatActivity() {
             ) {
                 addLocationToDb()
                 val intent1 = Intent(this, DropAdvert2Activity::class.java)
-                intent1.putExtra(Constantes.KEYADDADVERTS[0], getCategoryId())
+                intent1.putExtra(Constantes.KEYADDADVERTS[0], category.editText?.text.toString())
                 intent1.putExtra(Constantes.KEYADDADVERTS[1], title.text.toString())
                 intent1.putExtra(Constantes.KEYADDADVERTS[2], price.text.toString())
-                intent1.putExtra(Constantes.KEYADDADVERTS[3], getLocationId())
+                intent1.putExtra(Constantes.KEYADDADVERTS[3], location.text.toString())
                 intent1.putExtra(Constantes.KEYADDADVERTS[4], description.text.toString())
-                println("--------------------------------------------------------------")
-                println(getCategoryId())
-                println(title.text.toString())
-                println(price.text.toString())
-                println(getLocationId())
-                println(description.text.toString())
-                println("--------------------------------------------------------------")
-//                startActivity(intent1)
-//                finish()
+                startActivity(intent1)
+                finish()
             } else {
                 Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
             }
@@ -124,15 +122,6 @@ class DropAdvert1Activity : AppCompatActivity() {
     }
 
     private fun initializeLocation() {
-        val criteria = Criteria()
-        criteria.accuracy = Criteria.ACCURACY_FINE
-        criteria.isAltitudeRequired = true
-        criteria.isBearingRequired = true
-        criteria.isSpeedRequired = false
-        criteria.isCostAllowed = false
-        criteria.powerRequirement = Criteria.POWER_LOW
-        provider = locationManager.getBestProvider(criteria, true).toString()
-        Log.d(Constantes.TAG, "GPS  meilleur fournisseur ${provider}")
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -147,25 +136,37 @@ class DropAdvert1Activity : AppCompatActivity() {
                     Constantes.LocalisationCode
                 )
             }
-            return
         }
-        val lastKnownLocation = locationManager.getLastKnownLocation(provider)
-        if (lastKnownLocation != null) {
-            val geocoder = Geocoder(this, Locale.getDefault())
-            try {
-                val adresses = geocoder.getFromLocation(
-                    lastKnownLocation.latitude,
-                    lastKnownLocation.longitude,
-                    1
-                )
-                cityName = adresses.get(0).locality
-                zipCode = adresses.get(0).postalCode
-            } catch (e: IOException) {
-                Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
-                    .show()
+        val fetchLocation = FetchLocation();
+        val listern = object : OnLocationFetchListner {
+            override fun OnComplete(currentLocation: android.location.Location?) {
+                val geocoder = Geocoder(context, Locale.getDefault())
+                try {
+                    val adresse = currentLocation?.let {
+                        geocoder.getFromLocation(
+                            currentLocation.latitude,
+                            currentLocation.longitude,
+                            1
+                        )
+                    }
+                    if (adresse != null) {
+                        cityName = adresse[0].locality
+                        zipCode = adresse[0].postalCode
+                        location.text = adresse[0].locality.toEditable()
+                    }
+                } catch (e: IOException) {
+                    Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
+                        .show()
 
+                }
             }
+
+            override fun OnFailed(e: String?) {
+                Toast.makeText(context, getString(R.string.noLocation), Toast.LENGTH_SHORT).show()
+            }
+
         }
+        fetchLocation.setOnLocationFetchListner(listern, this)
     }
 
     override fun onRequestPermissionsResult(
@@ -223,33 +224,4 @@ class DropAdvert1Activity : AppCompatActivity() {
             }
     }
 
-    private fun getCategoryId(): String {
-        var res = ""
-        categories
-            .whereEqualTo("name", category.editText?.text.toString())
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.size() == 1) {
-                    for (document in documents) {
-                        res = document.id
-                    }
-                }
-            }
-        return res
-    }
-
-    private fun getLocationId(): String {
-        var res = ""
-        locations
-            .whereEqualTo("name", location.text.toString())
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.size() == 1) {
-                    for (document in documents) {
-                        res = document.id
-                    }
-                }
-            }
-        return res
-    }
 }

@@ -26,7 +26,7 @@ class Inscription1Activity : AppCompatActivity() {
         setContentView(R.layout.activity_inscription_1)
         email = findViewById<EditText>(R.id.email)
         password = findViewById<EditText>(R.id.password)
-        confirmPassword = findViewById<EditText>(R.id.confirmPassword)
+        confirmPassword = findViewById<EditText>(R.id.password_confirmation)
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
             if ((!(email.text.toString().replace("\\s+", "")

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
 
-        <c0d3.vitreen.app.TopLayout
+        <c0d3.vitreen.app.views.TopView
             android:id="@+id/topLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
