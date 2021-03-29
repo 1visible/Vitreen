@@ -4,18 +4,17 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Criteria
 import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.Constantes
 import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.adverts.drop.step2.DropAdvert2Activity
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
@@ -79,10 +78,6 @@ class DropAdvert1Activity : AppCompatActivity() {
         initializeLocation()
         val adapter = ArrayAdapter(this, R.layout.list_item, categoriesList)
         (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-        if (!cityName.equals("")) {
-            println("-------------cityName Edit text = ${cityName}")
-            location.text = cityName.toEditable()
-        }
 
         nextButton.setOnClickListener {
             if (

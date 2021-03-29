@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/vitreen_ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/VitreenTheme">
-        <activity android:name=".activities.adverts.drop.step1.DropAdvert2Activity" />
+        <activity android:name=".activities.adverts.drop.step2.DropAdvert2Activity" />
         <activity android:name=".activities.adverts.drop.step1.DropAdvert1Activity" />
         <activity android:name=".activities.connexion.ConnectionActivity" />
         <activity android:name=".activities.inscription.step_2.Inscription2Activity" />
