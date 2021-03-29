@@ -4,7 +4,7 @@ class Constants {
     companion object {
         val KEYEMAIL = "KEYEMAIL"
         val TAG = "C0D3"
-        val LocalisationCode = 15266848
+        val LocalisationCode = 15266
         val KEYADDADVERTS =
             listOf<String>("KEYCATEGORY", "KEYTITLE", "KEYPRICE", "KEYLOCATION", "KEYDESCRIPTION")
     }

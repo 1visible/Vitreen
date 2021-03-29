@@ -1,6 +1,7 @@
 package c0d3.vitreen.app.listeners
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.Location
@@ -10,12 +11,6 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import android.content.Context
-import android.app.Activity
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.activities.adverts.drop.step1.DropAdvert1Activity
 
 
 class FetchLocation : LocationListener {

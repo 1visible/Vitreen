@@ -11,14 +11,13 @@ import android.text.Editable
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.adverts.drop.step2.DropAdvert2Activity
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
+import c0d3.vitreen.app.utils.Constants
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -54,13 +53,13 @@ class DropAdvert1Activity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        if ((user == null)) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-        if ((user != null) && user.isAnonymous) {
-            //redirige l'utilisateur vers une inscription non anonyme
-        }
+//        if ((user == null)) {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
+//        if ((user != null) && user.isAnonymous) {
+//            //redirige l'utilisateur vers une inscription non anonyme
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,23 +122,23 @@ class DropAdvert1Activity : AppCompatActivity() {
                                             }
                                         }
                                         intent1.putExtra(
-                                            Constantes.KEYADDADVERTS[0],
+                                            Constants.KEYADDADVERTS[0],
                                             categoId
                                         )
                                         intent1.putExtra(
-                                            Constantes.KEYADDADVERTS[1],
+                                            Constants.KEYADDADVERTS[1],
                                             title.text.toString()
                                         )
                                         intent1.putExtra(
-                                            Constantes.KEYADDADVERTS[2],
+                                            Constants.KEYADDADVERTS[2],
                                             price.text.toString()
                                         )
                                         intent1.putExtra(
-                                            Constantes.KEYADDADVERTS[3],
+                                            Constants.KEYADDADVERTS[3],
                                             document.id
                                         )
                                         intent1.putExtra(
-                                            Constantes.KEYADDADVERTS[4],
+                                            Constants.KEYADDADVERTS[4],
                                             description.text.toString()
                                         )
                                         startActivity(intent1)
@@ -157,23 +156,23 @@ class DropAdvert1Activity : AppCompatActivity() {
                                                 }
                                             }
                                             intent1.putExtra(
-                                                Constantes.KEYADDADVERTS[0],
+                                                Constants.KEYADDADVERTS[0],
                                                 categoId
                                             )
                                             intent1.putExtra(
-                                                Constantes.KEYADDADVERTS[1],
+                                                Constants.KEYADDADVERTS[1],
                                                 title.text.toString()
                                             )
                                             intent1.putExtra(
-                                                Constantes.KEYADDADVERTS[2],
+                                                Constants.KEYADDADVERTS[2],
                                                 price.text.toString()
                                             )
                                             intent1.putExtra(
-                                                Constantes.KEYADDADVERTS[3],
+                                                Constants.KEYADDADVERTS[3],
                                                 document.id
                                             )
                                             intent1.putExtra(
-                                                Constantes.KEYADDADVERTS[4],
+                                                Constants.KEYADDADVERTS[4],
                                                 description.text.toString()
                                             )
                                             startActivity(intent1)
@@ -218,7 +217,7 @@ class DropAdvert1Activity : AppCompatActivity() {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 requestPermissions(
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    Constantes.LocalisationCode
+                    Constants.LocalisationCode
                 )
             }
         }
@@ -262,7 +261,7 @@ class DropAdvert1Activity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            Constantes.LocalisationCode -> {
+            Constants.LocalisationCode -> {
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     location.text.clear()
                     Toast.makeText(this, getString(R.string.locationDenied), Toast.LENGTH_SHORT)
