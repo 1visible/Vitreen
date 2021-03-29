@@ -47,8 +47,6 @@ class DropAdvert1Activity : AppCompatActivity() {
     private lateinit var cityName: String
     private lateinit var zipCode: String
 
-    private var flag = false
-
     override fun onStart() {
         super.onStart()
 
@@ -82,37 +80,29 @@ class DropAdvert1Activity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            val currentLocation = Location(
-                location.text.toString(),
-                if (zipCode == "") null else zipCode.toInt()
-            )
-            locations
-                .whereEqualTo("name", currentLocation.name)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.size() == 1) {
-                        for (document in documents) {
-                            if (document.get("zipCode") == null) {
-                                locations
-                                    .document(document.id)
-                                    .update("zipCode", currentLocation.zipCode)
-                            }
-                        }
-                    } else {
-                        locations.document().set(currentLocation).addOnCompleteListener { task ->
-                            if (!task.isSuccessful) {
-                                Toast.makeText(
-                                    this,
-                                    getString(R.string.ErrorMessage),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }.addOnFailureListener { exception ->
-                    Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
-                        .show()
-                }
+            if (
+                !category.editText?.text.toString().replace("\\s", "").equals("")
+                &&
+                !title.text.toString().replace("\\s", "").equals("")
+                &&
+                !price.text.toString().replace("\\s", "").equals("")
+                &&
+                !location.text.toString().replace("\\s", "").equals("")
+                &&
+                !description.text.toString().replace("\\s", "").equals("")
+            ) {
+                addLocationToDb()
+                val intent1 = Intent(this, DropAdvert2Activity::class.java)
+                intent1.putExtra(Constantes.KEYADDADVERTS[0], getCategoryId())
+                intent1.putExtra(Constantes.KEYADDADVERTS[1], title.text.toString())
+                intent1.putExtra(Constantes.KEYADDADVERTS[2], price.text.toString())
+                intent1.putExtra(Constantes.KEYADDADVERTS[3], getLocationId())
+                intent1.putExtra(Constantes.KEYADDADVERTS[4], description.text.toString())
+                startActivity(intent1)
+                finish()
+            } else {
+                Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -191,4 +181,68 @@ class DropAdvert1Activity : AppCompatActivity() {
     }
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
+    private fun addLocationToDb() {
+        val currentLocation = Location(
+            location.text.toString(),
+            if (zipCode == "") null else zipCode.toInt()
+        )
+        locations
+            .whereEqualTo("name", currentLocation.name)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    for (document in documents) {
+                        if (document.get("zipCode") == null) {
+                            locations
+                                .document(document.id)
+                                .update("zipCode", currentLocation.zipCode)
+                        }
+                    }
+                } else {
+                    locations.document().set(currentLocation).addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.ErrorMessage),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    private fun getCategoryId(): String {
+        var res = ""
+        categories
+            .whereEqualTo("name", category.editText?.text.toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    for (document in documents) {
+                        res = document.id
+                    }
+                }
+            }
+        return res
+    }
+
+    private fun getLocationId(): String {
+        var res = ""
+        locations
+            .whereEqualTo("name", location.text.toString())
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    for (document in documents) {
+                        res = document.id
+                    }
+                }
+            }
+        return res
+    }
 }
