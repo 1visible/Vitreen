@@ -6,8 +6,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import c0d3.vitreen.app.Constantes
-import c0d3.vitreen.app.MainActivity
+import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.inscription.step_2.Inscription2Activity
 import com.google.firebase.auth.ktx.auth
@@ -23,10 +23,10 @@ class Inscription1Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inscription_1)
+        setContentView(R.layout.fragment_signup)
         email = findViewById<EditText>(R.id.email)
         password = findViewById<EditText>(R.id.password)
-        confirmPassword = findViewById<EditText>(R.id.confirmPassword)
+        confirmPassword = findViewById<EditText>(R.id.password_confirmation)
         nextButton = findViewById<Button>(R.id.nextButton)
         nextButton.setOnClickListener {
             if ((!(email.text.toString().replace("\\s+", "")
@@ -72,7 +72,7 @@ class Inscription1Activity : AppCompatActivity() {
             if (task.isSuccessful) {
                 val user = Firebase.auth.currentUser
                 val goToNextStep = Intent(this, Inscription2Activity::class.java)
-                goToNextStep.putExtra(Constantes.KEYEMAIL, user.email)
+                goToNextStep.putExtra(Constants.KEYEMAIL, user.email)
                 startActivity(goToNextStep)
             } else {
                 Toast.makeText(this, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()

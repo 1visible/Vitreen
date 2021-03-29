@@ -1,5 +1,14 @@
 <resources>
+    <!-- App title -->
     <string name="app_name">Vitreen</string>
+    <!-- Menu title -->
+    <string name="title_home">Accueil</string>
+    <string name="title_messages">Messages</string>
+    <string name="title_adding">Ajout</string>
+    <string name="title_favorites">Favoris</string>
+    <string name="title_profile">Profil</string>
+    <!-- Other -->
+
     <string name="next">Suivant</string>
     <string name="pro">Professionel</string>
     <string name="connexion">Se connecter</string>
@@ -15,11 +24,6 @@
     <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
     <string name="connect"><u>Se connecter</u></string>
     <string name="already_account">Déjà un compte ?</string>
-    <string name="home">Accueil</string>
-    <string name="messages">Messages</string>
-    <string name="add">Ajout</string>
-    <string name="favorites">Favoris</string>
-    <string name="profile">Profil</string>
     <string name="confirmpassword">Confirmation Mot de Passe</string>
     <string name="emptyFields">Veuillez remplir tout les champs</string>
     <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
