@@ -24,5 +24,6 @@
         <!-- Widgets style -->
         <item name="editTextStyle">@style/Vitreen.EditText</item>
         <item name="materialButtonStyle">@style/Vitreen.Button</item>
+        <item name="badgeStyle">@style/Vitreen.Badge</item>
     </style>
 </resources>

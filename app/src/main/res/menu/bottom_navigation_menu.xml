@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_item_1"
+        android:enabled="true"
+        android:icon="@drawable/menu_icon_home"
+        android:title="@string/home"/>
+
+    <item
+        android:id="@+id/menu_item_2"
+        android:enabled="true"
+        android:icon="@drawable/menu_icon_messages"
+        android:title="@string/messages"/>
+
+    <item
+        android:id="@+id/menu_item_3"
+        android:enabled="true"
+        android:icon="@drawable/menu_icon_add"
+        android:title="@string/add"/>
+
+    <item
+        android:id="@+id/menu_item_4"
+        android:enabled="true"
+        android:icon="@drawable/menu_icon_favorites"
+        android:title="@string/favorites"/>
+
+    <item
+        android:id="@+id/menu_item_5"
+        android:enabled="true"
+        android:icon="@drawable/menu_icon_profile"
+        android:title="@string/profile"/>
+
+</menu>
