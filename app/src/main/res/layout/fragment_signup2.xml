@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.inscription.step_2.Inscription2Activity">
+    tools:context=".fragments.signup.step2.Signup2Fragment">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:checked="true"
-            android:text="@string/pro"/>
+            android:text="@string/pro" />
 
         <EditText
             android:id="@+id/companyName"

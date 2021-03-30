@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.adverts.drop.step2.DropAdvert2Activity">
+    tools:context=".fragments.addadvert.step2.AddAdvert2Fragment">
 
     <c0d3.vitreen.app.views.TopView
         android:id="@+id/topLayout4"
@@ -45,7 +45,6 @@
             android:hint="@string/size"
             android:importantForAutofill="no"
             android:inputType="text" />
-
 
 
         <Button
