@@ -23,7 +23,7 @@ class Inscription1Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_signup1)
+        setContentView(R.layout.fragment_register1)
         email = findViewById<EditText>(R.id.email)
         password = findViewById<EditText>(R.id.password)
         confirmPassword = findViewById<EditText>(R.id.password_confirmation)

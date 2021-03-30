@@ -7,7 +7,7 @@
     tools:context=".activities.MainActivity">
 
     <c0d3.vitreen.app.views.TopView
-        android:id="@+id/top_view"
+        android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:icon="@drawable/bigicon_leaf"
@@ -24,7 +24,7 @@
         android:paddingTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_view">
+        app:layout_constraintTop_toBottomOf="@+id/topView">
 
         <fragment
             android:id="@+id/nav_host_fragment"
@@ -60,6 +60,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/main_menu" />
+        app:menu="@menu/menu_main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

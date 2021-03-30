@@ -11,7 +11,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -36,14 +35,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-    fun showNavigation() {
-        navView.visibility = View.VISIBLE
-    }
-
-    fun hideNavigation() {
-        navView.visibility = View.GONE
-    }
-
     override fun onBackPressed() {
         val navController = findNavController(R.id.nav_host_fragment)
 
@@ -65,6 +56,18 @@ class MainActivity : AppCompatActivity() {
         else {
             super.onBackPressed()
         }
+    }
+
+    fun showNavigation() {
+        navView.visibility = View.VISIBLE
+    }
+
+    fun hideNavigation() {
+        navView.visibility = View.GONE
+    }
+
+    fun setTopViewAttributes(title: String, icon: Int) {
+        topView.setAttributes(title, icon)
     }
 
 }

@@ -223,7 +223,7 @@ class DropAdvert1Activity : AppCompatActivity() {
         }
         val fetchLocation = FetchLocation();
         val listern = object : OnLocationFetchListner {
-            override fun OnComplete(currentLocation: android.location.Location?) {
+            override fun onComplete(currentLocation: android.location.Location?) {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 try {
                     val adresse = currentLocation?.let {
@@ -246,7 +246,7 @@ class DropAdvert1Activity : AppCompatActivity() {
                 }
             }
 
-            override fun OnFailed(e: String?) {
+            override fun onFailed(e: String?) {
                 Toast.makeText(context, getString(R.string.noLocation), Toast.LENGTH_SHORT).show()
             }
 

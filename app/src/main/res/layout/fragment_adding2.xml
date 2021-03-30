@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.addadvert.step2.AddAdvert2Fragment">
+    tools:context=".fragments.adding.Adding2Fragment">
 
     <c0d3.vitreen.app.views.TopView
         android:id="@+id/topLayout4"

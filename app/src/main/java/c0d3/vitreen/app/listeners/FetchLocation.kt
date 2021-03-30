@@ -30,7 +30,7 @@ class FetchLocation : LocationListener {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            onLocationFetchListner?.OnFailed("PERMISSION DENIED")
+            onLocationFetchListner?.onFailed("PERMISSION DENIED")
             return
         }
         val criteria = Criteria()
@@ -45,16 +45,14 @@ class FetchLocation : LocationListener {
                 Looper.getMainLooper()
             )
         } else {
-            onLocationFetchListner?.OnFailed("NO PROVIDERS")
+            onLocationFetchListner?.onFailed("NO PROVIDERS")
         }
     }
 
     override fun onLocationChanged(location: Location) {
-        if (location != null) {
-            onLocationFetchListner?.OnComplete(location)
-            locationManager!!.removeUpdates(this)
-            locationManager = null
-        }
+        onLocationFetchListner?.onComplete(location)
+        locationManager!!.removeUpdates(this)
+        locationManager = null
     }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}

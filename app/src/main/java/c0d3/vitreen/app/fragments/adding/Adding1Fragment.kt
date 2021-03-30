@@ -1,4 +1,4 @@
-package c0d3.vitreen.app.fragments.addadvert.step1
+package c0d3.vitreen.app.fragments.adding
 
 import android.Manifest
 import android.content.Context
@@ -13,10 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.fragments.addadvert.step2.AddAdvert2Fragment
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
@@ -27,18 +25,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddAdvert1Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AddAdvert1Fragment : Fragment() {
-
+class Adding1Fragment : Fragment() {
     private lateinit var category: TextInputLayout
     private lateinit var title: EditText
     private lateinit var price: EditText
@@ -59,15 +49,13 @@ class AddAdvert1Fragment : Fragment() {
     private lateinit var zipCode: String
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add_advert1, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_adding1, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         cityName = ""
@@ -131,7 +119,7 @@ class AddAdvert1Fragment : Fragment() {
                                             .beginTransaction()
                                             .replace(
                                                 R.id.nav_host_fragment,
-                                                AddAdvert2Fragment.newInstance(
+                                                Adding2Fragment.newInstance(
                                                     categoryId,
                                                     title.text.toString(),
                                                     price.text.toString(),
@@ -150,7 +138,7 @@ class AddAdvert1Fragment : Fragment() {
                                                 .beginTransaction()
                                                 .replace(
                                                     R.id.nav_host_fragment,
-                                                    AddAdvert2Fragment.newInstance(
+                                                    Adding2Fragment.newInstance(
                                                         categoryId,
                                                         title.text.toString(),
                                                         price.text.toString(),
@@ -211,7 +199,7 @@ class AddAdvert1Fragment : Fragment() {
         }
         val fetchLocation = FetchLocation();
         val listern = object : OnLocationFetchListner {
-            override fun OnComplete(location: android.location.Location?) {
+            override fun onComplete(location: android.location.Location?) {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 try {
                     val adresse = location?.let {
@@ -224,8 +212,8 @@ class AddAdvert1Fragment : Fragment() {
                     if (adresse != null) {
                         cityName = adresse[0].locality
                         zipCode = adresse[0].postalCode
-                        this@AddAdvert1Fragment.location.text.clear()
-                        this@AddAdvert1Fragment.location.text = adresse[0].locality.toEditable()
+                        this@Adding1Fragment.location.text.clear()
+                        this@Adding1Fragment.location.text = adresse[0].locality.toEditable()
                     }
                 } catch (e: IOException) {
                     Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
@@ -234,7 +222,7 @@ class AddAdvert1Fragment : Fragment() {
                 }
             }
 
-            override fun OnFailed(e: String?) {
+            override fun onFailed(e: String?) {
                 Toast.makeText(context, getString(R.string.noLocation), Toast.LENGTH_SHORT).show()
             }
 
@@ -261,7 +249,7 @@ class AddAdvert1Fragment : Fragment() {
                 } else {
                     parentFragmentManager
                         .beginTransaction()
-                        .replace(R.id.nav_host_fragment, AddAdvert1Fragment.newInstance())
+                        .replace(R.id.nav_host_fragment, newInstance())
                         .commit()
                 }
             }
@@ -272,6 +260,6 @@ class AddAdvert1Fragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(): AddAdvert1Fragment = AddAdvert1Fragment()
+        fun newInstance(): Adding1Fragment = Adding1Fragment()
     }
 }
