@@ -12,16 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_profile"
-        android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
-        android:label="@string/title_profile"
-        tools:layout="@layout/fragment_register1" />
-
-    <!--  <fragment
-          android:id="@+id/navigation_messages"
-          android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
-          android:label="@string/title_messages"
-          tools:layout="@layout/fragment_messages" />-->
+        android:id="@+id/navigation_messages"
+        android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
+        android:label="@string/title_messages"
+        tools:layout="@layout/fragment_messages" />
 
     <fragment
         android:id="@+id/navigation_adding"
@@ -29,10 +23,16 @@
         android:label="@string/title_adding"
         tools:layout="@layout/fragment_adding1" />
 
-    <!-- <fragment
+    <fragment
          android:id="@+id/navigation_favorites"
          android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
          android:label="@string/title_favorites"
-         tools:layout="@layout/fragment_favorites" />-->
+         tools:layout="@layout/fragment_favorites" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>
