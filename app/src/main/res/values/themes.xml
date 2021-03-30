@@ -1,16 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="VitreenTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="VitreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/teal</item>
+        <item name="colorPrimaryDark">@color/darker</item>
         <item name="colorPrimaryVariant">@color/teal</item>
         <item name="colorOnPrimary">@color/dark</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal</item>
         <item name="colorSecondaryVariant">@color/teal</item>
         <item name="colorOnSecondary">@color/dark</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/darker</item>
+        <!-- Action bar -->
+        <item name="actionBarStyle">@style/Vitreen.ActionBar</item>
         <!-- Background color -->
         <item name="android:colorBackground">@color/dark</item>
         <item name="colorOnBackground">@color/white</item>

@@ -24,6 +24,11 @@
     <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
     <string name="connect"><u>Se connecter</u></string>
     <string name="already_account">Déjà un compte ?</string>
+    <string name="home">Accueil</string>
+    <string name="messages">Messages</string>
+    <string name="add">Ajout</string>
+    <string name="favorites">Favoris</string>
+    <string name="profile">Profil</string>
     <string name="confirmpassword">Confirmation Mot de Passe</string>
     <string name="emptyFields">Veuillez remplir tout les champs</string>
     <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
@@ -39,6 +44,9 @@
     <string name="addAdvertButton">Ajout</string>
     <string name="description">Description</string>
     <string name="locationDenied">Localisation refusée</string>
+    <string name="noLocation">Impossible de récupérer la localisation</string>
+    <string name="brand">Marque</string>
+    <string name="size">Taille</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

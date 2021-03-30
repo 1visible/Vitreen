@@ -30,7 +30,7 @@ class Inscription2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inscription_step_2)
+        setContentView(R.layout.activity_inscription_2)
         if (intent != null) {
             email = intent.getStringExtra(Constants.KEYEMAIL).toString()
             lastName = findViewById<EditText>(R.id.lastName)

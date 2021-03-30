@@ -2,7 +2,6 @@
 <resources>
     <declare-styleable name="TopView">
         <attr name="title" format="string"/>
-        <attr name="subtitle" format="string"/>
         <attr name="icon" format="reference"/>
     </declare-styleable>
 </resources>
