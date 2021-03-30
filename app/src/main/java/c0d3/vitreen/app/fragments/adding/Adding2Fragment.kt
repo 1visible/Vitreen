@@ -19,9 +19,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Advert
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -45,6 +47,9 @@ class Adding2Fragment : ChildFragment() {
     private var storage = Firebase.storage
     private var storageRef = storage.reference
     private var imagesRef: StorageReference? = storageRef.child("images")
+
+    private val db = Firebase.firestore
+    private val adverts = db.collection("Adverts")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -84,21 +89,67 @@ class Adding2Fragment : ChildFragment() {
             pickImages()
         }
         addButton.setOnClickListener {
-            var i = 0
-            var metadata = storageMetadata {
-                contentType = "image/jpg"
-            }
-            mArrayInputStream.forEach {
-                imagesRef!!
-                    .child("image$i")
-                    .putStream(it, metadata)
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Images OK", Toast.LENGTH_SHORT).show()
+            if ((!(editTextSize.text.toString().replace("\\s", "")
+                    .equals(""))) && (!(editTextBrand.text.toString().replace("\\s", "")
+                    .equals("")) && (mArrayInputStream.size <= 10))
+            ) {
+                adverts.add(
+                    Advert(
+                        title = title,
+                        description = description,
+                        price = price.toFloat(),
+                        brand = editTextBrand.text.toString(),
+                        size = editTextSize.text.toString(),
+                        locationId = locationId,
+                        categoryId = categoryId,
+                        ownerId = "123455",
+                        createdAt = "Montpellier",
+                        modifiedAt = ""
+                    )
+                )
+                    .addOnSuccessListener { document ->
+                        var i = 0
+                        var metadata = storageMetadata {
+                            contentType = "image/jpg"
+                        }
+                        mArrayInputStream.forEach {
+                            imagesRef!!
+                                .child("${document.id}/image_$i")
+                                .putStream(it, metadata)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Images OK",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Images Failed",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+                            i += 1
+                        }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Images Failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.ErrorMessage),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
                     }
-                i += 1
+
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.emptyFieldsAndImage),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         // Put things here
@@ -138,7 +189,17 @@ class Adding2Fragment : ChildFragment() {
                         val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                         imageEncoded = cursor.getString(columnIndex)
                         countImage.text = "1/10"
+                        mArrayUri.clear()
+                        mArrayUri.add(mImageUri)
                         cursor.close()
+                        mArrayUri.forEach {
+                            mArrayInputStream.clear()
+                            requireContext().contentResolver.openInputStream(it)?.let { it1 ->
+                                mArrayInputStream.add(
+                                    it1
+                                )
+                            }
+                        }
                     } else {
                         if (data.getClipData() != null) {
                             val mClipData: ClipData = data.getClipData()!!
@@ -166,6 +227,7 @@ class Adding2Fragment : ChildFragment() {
                             Log.v("LOG_TAG", "Selected Images " + mArrayUri.size)
                             if (mArrayUri.size <= 10) {
                                 countImage.text = "${mArrayUri.size}/10"
+                                mArrayInputStream.clear()
                                 mArrayUri.forEach {
                                     requireContext().contentResolver?.openInputStream(
                                         it
