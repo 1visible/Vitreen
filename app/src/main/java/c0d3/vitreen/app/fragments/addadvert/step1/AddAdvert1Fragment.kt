@@ -62,17 +62,21 @@ class AddAdvert1Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_add_advert1, container, false)
+        return inflater.inflate(R.layout.fragment_add_advert1, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         cityName = ""
         zipCode = ""
-        category = root.findViewById(R.id.categories)
-        title = root.findViewById<EditText>(R.id.editTextTitle)
-        price = root.findViewById<EditText>(R.id.editTextPrix)
-        location = root.findViewById<EditText>(R.id.editTextLocalisation)
-        description = root.findViewById<EditText>(R.id.editTextDescription)
-        nextButton = root.findViewById<Button>(R.id.nextButton2)
+        category = view.findViewById(R.id.categories)
+        title = view.findViewById<EditText>(R.id.editTextTitle)
+        price = view.findViewById<EditText>(R.id.editTextPrix)
+        location = view.findViewById<EditText>(R.id.editTextLocalisation)
+        description = view.findViewById<EditText>(R.id.editTextDescription)
+        nextButton = view.findViewById<Button>(R.id.nextButton2)
         categories.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -102,6 +106,11 @@ class AddAdvert1Fragment : Fragment() {
                             location.text.toString(),
                             if (zipCode == "") null else zipCode.toInt()
                         )
+                        categoriesList.forEach {
+                            if (it.name.equals(category.editText?.text.toString())) {
+                                categoryId = it.id
+                            }
+                        }
                         locations
                             .whereEqualTo("name", currentLocation.name)
                             .get()
@@ -113,100 +122,41 @@ class AddAdvert1Fragment : Fragment() {
                                                 .document(document.id)
                                                 .update("zipCode", currentLocation.zipCode)
                                         }
-
-                                        categoriesList.forEach { it ->
-                                            if (it.name.equals(category.editText?.text.toString())) {
-                                                categoryId = it.id
-                                            }
-                                        }
-
-                                        println("------------------------------------------------------------")
-                                        println("categorie = $categoryId")
-                                        println("titre = ${title.text.toString()}")
-                                        println("prix = ${price.text.toString()}")
-                                        println("localisation = ${document.id}")
-                                        println("description = ${description.text.toString()}")
-                                        println("------------------------------------------------------------")
-
-                                        val fragmentManager =
-                                            requireActivity().supportFragmentManager
-                                        val fragmentTransaction = fragmentManager.beginTransaction()
-                                        if (container != null) {
-                                            fragmentTransaction.replace(
-                                                container.id,
-                                                AddAdvert2Fragment()
+                                        parentFragmentManager
+                                            .beginTransaction()
+                                            .replace(
+                                                R.id.nav_host_fragment,
+                                                AddAdvert2Fragment.newInstance(
+                                                    categoryId,
+                                                    title.text.toString(),
+                                                    price.text.toString(),
+                                                    document.id,
+                                                    description.text.toString()
+                                                )
                                             )
-                                            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                            fragmentTransaction.addToBackStack(null)
-                                            fragmentTransaction.commit()
+                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                            .commit()
 
-                                        }
-//                                        val intent1 = Intent(this, DropAdvert2Activity::class.java)
-//                                        var categoId: String? = null
-//                                        for (cat in categoriesList) {
-//                                            if (cat.name.equals(category.editText?.text.toString())) {
-//                                                categoId = cat.id
-//                                            }
-//                                        }
-//                                        intent1.putExtra(
-//                                            Constants.KEYADDADVERTS[0],
-//                                            categoId
-//                                        )
-//                                        intent1.putExtra(
-//                                            Constants.KEYADDADVERTS[1],
-//                                            title.text.toString()
-//                                        )
-//                                        intent1.putExtra(
-//                                            Constants.KEYADDADVERTS[2],
-//                                            price.text.toString()
-//                                        )
-//                                        intent1.putExtra(
-//                                            Constants.KEYADDADVERTS[3],
-//                                            document.id
-//                                        )
-//                                        intent1.putExtra(
-//                                            Constants.KEYADDADVERTS[4],
-//                                            description.text.toString()
-//                                        )
-//                                        startActivity(intent1)
-//                                        finish()
                                     }
                                 } else {
                                     locations.add(currentLocation)
                                         .addOnSuccessListener { document ->
-//                                            val intent1 =
-//                                                Intent(this, DropAdvert2Activity::class.java)
-//                                            var categoId: String? = null
-//                                            for (cat in categoriesList) {
-//                                                if (cat.name.equals(category.editText?.text.toString())) {
-//                                                    categoId = cat.id
-//                                                }
-//                                            }
-//                                            intent1.putExtra(
-//                                                Constants.KEYADDADVERTS[0],
-//                                                categoId
-//                                            )
-//                                            intent1.putExtra(
-//                                                Constants.KEYADDADVERTS[1],
-//                                                title.text.toString()
-//                                            )
-//                                            intent1.putExtra(
-//                                                Constants.KEYADDADVERTS[2],
-//                                                price.text.toString()
-//                                            )
-//                                            intent1.putExtra(
-//                                                Constants.KEYADDADVERTS[3],
-//                                                document.id
-//                                            )
-//                                            intent1.putExtra(
-//                                                Constants.KEYADDADVERTS[4],
-//                                                description.text.toString()
-//                                            )
-//                                            startActivity(intent1)
-//                                            finish()
-
+                                            parentFragmentManager
+                                                .beginTransaction()
+                                                .replace(
+                                                    R.id.nav_host_fragment,
+                                                    AddAdvert2Fragment.newInstance(
+                                                        categoryId,
+                                                        title.text.toString(),
+                                                        price.text.toString(),
+                                                        document.id,
+                                                        description.text.toString()
+                                                    )
+                                                )
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                .commit()
                                         }
-                                        .addOnFailureListener { exception ->
+                                        .addOnFailureListener {
                                             Toast.makeText(
                                                 requireContext(),
                                                 getString(R.string.ErrorMessage),
@@ -214,7 +164,7 @@ class AddAdvert1Fragment : Fragment() {
                                             ).show()
                                         }
                                 }
-                            }.addOnFailureListener { exception ->
+                            }.addOnFailureListener {
                                 Toast.makeText(
                                     requireContext(),
                                     getString(R.string.ErrorMessage),
@@ -233,14 +183,8 @@ class AddAdvert1Fragment : Fragment() {
                     }
                 }
             }
-        return root
     }
 
-    inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
-        val fragmentTransaction = beginTransaction()
-        fragmentTransaction.func()
-        fragmentTransaction.commit()
-    }
 
     private fun initializeLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -299,7 +243,7 @@ class AddAdvert1Fragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             Constants.LocalisationCode -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     location.text.clear()
                     Toast.makeText(
                         requireContext(),
@@ -308,7 +252,10 @@ class AddAdvert1Fragment : Fragment() {
                     )
                         .show()
                 } else {
-//                    startActivity(intent)
+                    parentFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment, AddAdvert1Fragment.newInstance())
+                        .commit()
                 }
             }
         }
@@ -317,6 +264,7 @@ class AddAdvert1Fragment : Fragment() {
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
     companion object {
+        @JvmStatic
         fun newInstance(): AddAdvert1Fragment = AddAdvert1Fragment()
     }
 }
