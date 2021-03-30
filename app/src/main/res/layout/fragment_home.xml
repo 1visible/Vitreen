@@ -7,14 +7,6 @@
     tools:context=".fragments.home.HomeFragment"
     android:orientation="vertical">
 
-    <c0d3.vitreen.app.views.TopView
-        android:id="@+id/top_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/bigicon_leaf"
-        app:subtitle="@string/welcome"
-        app:title="@string/title_home" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

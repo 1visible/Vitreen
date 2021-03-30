@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- EditText: glassmorphism style -->
     <style name="Vitreen.EditText" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/glass_frame</item>
         <item name="android:padding">15dp</item>
     </style>
 
+    <!-- Button: alternative MD style -->
     <style name="Vitreen.Button" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/rounded_button</item>
         <item name="android:padding">15dp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!-- Button: link style -->
     <style name="Vitreen.Link" parent="@android:style/Widget.Button">
         <item name="android:background">@color/fui_transparent</item>
         <item name="android:padding">5dp</item>
@@ -19,8 +22,17 @@
         <item name="android:textColor">@color/teal</item>
     </style>
 
+    <!-- Badge: alternative MD style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">@color/teal</item>
+        <item name="android:background">@color/teal</item>
+    </style>
+
+    <!-- ActionBar: alternative MD style -->
+    <style name="Vitreen.ActionBar" parent="@style/Widget.MaterialComponents.ActionBar.Primary">
+        <item name="background">@color/darker</item>
+        <item name="android:background">@color/darker</item>
+        <item name="elevation">0dp</item>
     </style>
 
 </resources>
