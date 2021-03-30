@@ -22,7 +22,12 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.android.synthetic.main.fragment_adding2.*
+import java.io.InputStream
 
 
 class Adding2Fragment : ChildFragment() {
@@ -32,8 +37,14 @@ class Adding2Fragment : ChildFragment() {
     private var locationId: String = ""
     private var description: String = ""
 
-    var imageEncoded: String? = null
-    var imagesEncodedList: ArrayList<String>? = null
+    private var imageEncoded: String? = null
+    private var imagesEncodedList: ArrayList<String>? = null
+    private var mArrayUri = ArrayList<Uri>()
+    private var mArrayInputStream = ArrayList<InputStream>()
+
+    private var storage = Firebase.storage
+    private var storageRef = storage.reference
+    private var imagesRef: StorageReference? = storageRef.child("images")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -72,6 +83,24 @@ class Adding2Fragment : ChildFragment() {
         imageButton.setOnClickListener {
             pickImages()
         }
+        addButton.setOnClickListener {
+            var i = 0
+            var metadata = storageMetadata {
+                contentType = "image/jpg"
+            }
+            mArrayInputStream.forEach {
+                imagesRef!!
+                    .child("image$i")
+                    .putStream(it, metadata)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Images OK", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Images Failed", Toast.LENGTH_SHORT).show()
+                    }
+                i += 1
+            }
+        }
         // Put things here
     }
 
@@ -108,11 +137,12 @@ class Adding2Fragment : ChildFragment() {
                         cursor.moveToFirst()
                         val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                         imageEncoded = cursor.getString(columnIndex)
+                        countImage.text = "1/10"
                         cursor.close()
                     } else {
                         if (data.getClipData() != null) {
                             val mClipData: ClipData = data.getClipData()!!
-                            val mArrayUri = ArrayList<Uri>()
+                            mArrayUri.clear()
                             for (i in 0 until mClipData.itemCount) {
                                 val item = mClipData.getItemAt(i)
                                 val uri = item.uri
@@ -134,11 +164,25 @@ class Adding2Fragment : ChildFragment() {
                                 cursor.close()
                             }
                             Log.v("LOG_TAG", "Selected Images " + mArrayUri.size)
-                            if (imagesEncodedList!!.size <= 10) {
-                                countImage.text = "${imagesEncodedList!!.size}/10"
+                            if (mArrayUri.size <= 10) {
+                                countImage.text = "${mArrayUri.size}/10"
+                                mArrayUri.forEach {
+                                    requireContext().contentResolver?.openInputStream(
+                                        it
+                                    )?.let { it1 ->
+                                        mArrayInputStream.add(
+                                            it1
+                                        )
+                                    }
+
+                                }
                             } else {
                                 countImage.text = "0/10"
-                                Toast.makeText(context, getString(R.string.tooMuchImages), Toast.LENGTH_SHORT)
+                                Toast.makeText(
+                                    context,
+                                    getString(R.string.tooMuchImages),
+                                    Toast.LENGTH_SHORT
+                                )
                                     .show()
                             }
                         }
