@@ -27,6 +27,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -77,17 +78,21 @@ class AddAdvert1Fragment : Fragment() {
         location = view.findViewById<EditText>(R.id.editTextLocalisation)
         description = view.findViewById<EditText>(R.id.editTextDescription)
         nextButton = view.findViewById<Button>(R.id.nextButton2)
+
+        context?.let { initializeLocation(it) }
+
         categories.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val categoryDTO = CategoryDTO(document.id, document.get("name").toString())
                     categoriesList.add(categoryDTO)
                 }
-                initializeLocation()
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    R.layout.list_item,
-                    categoriesList.map { it.DtoToModel().name })
+                val adapter = context?.let {
+                    ArrayAdapter(
+                        it,
+                        R.layout.list_item,
+                        categoriesList.map { it.DtoToModel().name })
+                }
                 (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
                 nextButton.setOnClickListener {
@@ -158,7 +163,7 @@ class AddAdvert1Fragment : Fragment() {
                                         }
                                         .addOnFailureListener {
                                             Toast.makeText(
-                                                requireContext(),
+                                                context,
                                                 getString(R.string.ErrorMessage),
                                                 Toast.LENGTH_SHORT
                                             ).show()
@@ -166,7 +171,7 @@ class AddAdvert1Fragment : Fragment() {
                                 }
                             }.addOnFailureListener {
                                 Toast.makeText(
-                                    requireContext(),
+                                    context,
                                     getString(R.string.ErrorMessage),
                                     Toast.LENGTH_SHORT
                                 )
@@ -175,7 +180,7 @@ class AddAdvert1Fragment : Fragment() {
 
                     } else {
                         Toast.makeText(
-                            requireContext(),
+                            context,
                             getString(R.string.emptyFields),
                             Toast.LENGTH_SHORT
                         )
@@ -183,15 +188,17 @@ class AddAdvert1Fragment : Fragment() {
                     }
                 }
             }
+
+
     }
 
 
-    private fun initializeLocation() {
+    private fun initializeLocation(context: Context) {
         if (ActivityCompat.checkSelfPermission(
-                requireContext(),
+                context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
+                context,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -205,7 +212,7 @@ class AddAdvert1Fragment : Fragment() {
         val fetchLocation = FetchLocation();
         val listern = object : OnLocationFetchListner {
             override fun OnComplete(location: android.location.Location?) {
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val geocoder = Geocoder(context, Locale.getDefault())
                 try {
                     val adresse = location?.let {
                         geocoder.getFromLocation(
@@ -232,7 +239,7 @@ class AddAdvert1Fragment : Fragment() {
             }
 
         }
-        fetchLocation.setOnLocationFetchListner(listern, requireContext())
+        fetchLocation.setOnLocationFetchListner(listern, context)
     }
 
     override fun onRequestPermissionsResult(
@@ -246,7 +253,7 @@ class AddAdvert1Fragment : Fragment() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     location.text.clear()
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         getString(R.string.locationDenied),
                         Toast.LENGTH_SHORT
                     )
