@@ -6,34 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <c0d3.vitreen.app.views.TopView
-        android:id="@+id/topView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/bigicon_leaf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/welcome" />
-
     <ScrollView
+        android:overScrollMode="never"
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="100dp"
-        android:paddingTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topView">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/navigation"
-            tools:ignore="FragmentTagUsage" />
+            android:layout_height="wrap_content">
+
+            <c0d3.vitreen.app.views.TopView
+                android:id="@+id/topView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/bigicon_leaf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="@string/welcome" />
+
+            <fragment
+                android:id="@+id/nav_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/navigation"
+                tools:ignore="FragmentTagUsage" />
+
+        </LinearLayout>
 
     </ScrollView>
 
@@ -46,7 +53,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/navView">
-
     </View>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

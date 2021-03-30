@@ -42,7 +42,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="@string/connect" />
+                android:text="@string/connect"
+                tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>
 
@@ -83,15 +84,7 @@
             android:id="@+id/nextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:text="@string/next" />
-
-        <Button
-            android:id="@+id/anonymousButton"
-            style="@style/Vitreen.Link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ignore_step" />
 
     </LinearLayout>
 

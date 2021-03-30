@@ -21,7 +21,11 @@
         android:id="@+id/navigation_adding"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
         android:label="@string/title_adding"
-        tools:layout="@layout/fragment_adding1" />
+        tools:layout="@layout/fragment_adding1" >
+        <action
+            android:id="@+id/action_navigation_adding_to_adding2Fragment"
+            app:destination="@id/adding2Fragment" />
+    </fragment>
 
     <fragment
          android:id="@+id/navigation_favorites"
@@ -33,6 +37,11 @@
         android:id="@+id/navigation_profile"
         android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_register1" />
+    <fragment
+        android:id="@+id/adding2Fragment"
+        android:name="c0d3.vitreen.app.fragments.adding.Adding2Fragment"
+        android:label="fragment_adding2"
+        tools:layout="@layout/fragment_adding2" />
 
 </navigation>

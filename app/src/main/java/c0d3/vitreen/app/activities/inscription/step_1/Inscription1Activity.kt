@@ -45,7 +45,7 @@ class Inscription1Activity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
             }
         }
-        anonymousButton = findViewById<Button>(R.id.anonymousButton)
+        anonymousButton = findViewById<Button>(R.id.anonymous_button)
         anonymousButton.setOnClickListener {
             startAnonymous()
         }
