@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
         android:title="@string/signup"
         android:icon="@drawable/menu_icon_profile"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

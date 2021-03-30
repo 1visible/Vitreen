@@ -25,4 +25,14 @@ class HomeFragment : Fragment() {
         inflater.inflate(R.menu.search_menu, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_search -> {
+                // navigate to search screen
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 }
