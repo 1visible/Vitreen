@@ -14,6 +14,7 @@ import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,6 +37,7 @@ class LoginFragment : ChildFragment() {
     // TODO: Remove this if not needed
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         connexionButton.setOnClickListener {
             if ((!(email.text.toString().equals(""))) && (!(password.text.toString().equals("")))) {
                 if (user == null) {
@@ -63,6 +65,7 @@ class LoginFragment : ChildFragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         user!!.delete()
+                        user = null
                         println("------------------------------- utilisateur effacée")
                         signInUser()
                     } else {
@@ -102,7 +105,6 @@ class LoginFragment : ChildFragment() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
-                    email.text.clear()
                     password.text.clear()
                 }
             }
