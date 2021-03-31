@@ -5,15 +5,31 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class HomeFragment : Fragment() {
+
+    private val auth = Firebase.auth
+    private var user = auth.currentUser
+
+    override fun onStart() {
+        super.onStart()
+        if (user == null) {
+            auth.signInAnonymously()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -23,7 +39,10 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setTopViewAttributes(getString(R.string.welcome), R.drawable.bigicon_leaf)
+        (activity as MainActivity).setTopViewAttributes(
+            getString(R.string.welcome),
+            R.drawable.bigicon_leaf
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

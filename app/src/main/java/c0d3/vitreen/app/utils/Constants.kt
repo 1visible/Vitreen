@@ -1,5 +1,9 @@
 package c0d3.vitreen.app.utils
 
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+
 class Constants {
     companion object {
         const val KEYEMAIL = "KEYEMAIL"
