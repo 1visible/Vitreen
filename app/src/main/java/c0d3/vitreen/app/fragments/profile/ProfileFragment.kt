@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.fragments.auth.Register1Fragment
+import c0d3.vitreen.app.fragments.home.HomeFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -75,7 +76,7 @@ class ProfileFragment : Fragment() {
                                 .signOut()
                             parentFragmentManager
                                 .beginTransaction()
-                                .replace(R.id.nav_host_fragment, ProfileFragment.newInstance())
+                                .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
                                 .commit()
                         }
                     } else {
