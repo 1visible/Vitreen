@@ -22,7 +22,6 @@ import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.models.Advert
-import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
@@ -35,6 +34,11 @@ import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.android.synthetic.main.fragment_adding2.*
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Adding2Fragment : ChildFragment() {
@@ -141,7 +145,7 @@ class Adding2Fragment : ChildFragment() {
                                             locationId = locationId,
                                             categoryId = categoryId,
                                             ownerId = userDTO!!.id,
-                                            createdAt = location.get("name").toString(),
+                                            createdAt = Calendar.getInstance().time.toString("dd/MM/yyyy HH:mm:ss"),
                                             modifiedAt = ""
                                         )
                                     )
@@ -330,5 +334,10 @@ class Adding2Fragment : ChildFragment() {
     }
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
+    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
 
 }
