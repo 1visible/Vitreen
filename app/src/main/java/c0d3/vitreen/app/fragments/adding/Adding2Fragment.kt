@@ -20,9 +20,12 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Advert
+import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -43,13 +46,17 @@ class Adding2Fragment : ChildFragment() {
     private var imagesEncodedList: ArrayList<String>? = null
     private var mArrayUri = ArrayList<Uri>()
     private var mArrayInputStream = ArrayList<InputStream>()
+    private var nbImageMax = 0
 
     private var storage = Firebase.storage
     private var storageRef = storage.reference
     private var imagesRef: StorageReference? = storageRef.child("images")
 
+    private val user = Firebase.auth.currentUser
     private val db = Firebase.firestore
     private val adverts = db.collection("Adverts")
+    private val users = db.collection("Users")
+    private val locations = db.collection("locations")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -84,75 +91,120 @@ class Adding2Fragment : ChildFragment() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        countImage.text = "0/10"
-        imageButton.setOnClickListener {
-            pickImages()
-        }
-        addButton.setOnClickListener {
-            if ((!(editTextSize.text.toString().replace("\\s", "")
-                    .equals(""))) && (!(editTextBrand.text.toString().replace("\\s", "")
-                    .equals("")) && (mArrayInputStream.size <= 10))
-            ) {
-                adverts.add(
-                    Advert(
-                        title = title,
-                        description = description,
-                        price = price.toFloat(),
-                        brand = editTextBrand.text.toString(),
-                        size = editTextSize.text.toString(),
-                        locationId = locationId,
-                        categoryId = categoryId,
-                        ownerId = "123455",
-                        createdAt = "Montpellier",
-                        modifiedAt = ""
-                    )
-                )
-                    .addOnSuccessListener { document ->
-                        var i = 0
-                        var metadata = storageMetadata {
-                            contentType = "image/jpg"
-                        }
-                        mArrayInputStream.forEach {
-                            imagesRef!!
-                                .child("${document.id}/image_$i")
-                                .putStream(it, metadata)
-                                .addOnSuccessListener {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Images OK",
-                                        Toast.LENGTH_SHORT
+        users
+            .whereEqualTo("email", user!!.email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    var userDTO: UserDTO? = null
+                    for (document in documents) {
+                        userDTO = UserDTO(
+                            document.id,
+                            document.get("lastName") as String,
+                            document.get("firstName") as String,
+                            document.get("email") as String,
+                            document.get("isProfessional") as Boolean,
+                            document.get("company") as String?,
+                            document.get("siret") as String?,
+                            document.get("phone") as String,
+                            document.get("contactMethod") as String?,
+                            document.get("advertsId") as ArrayList<String>?,
+                            document.get("favoriteAdversId") as ArrayList<String>?,
+
+                            )
+                    }
+                    if (userDTO != null) {
+                        nbImageMax = if (userDTO.isProfessional) 5 else 3
+                    }
+                    countImage.text = "0/${nbImageMax}"
+                    imageButton.setOnClickListener {
+                        pickImages()
+                    }
+                    addButton.setOnClickListener {
+                        if ((!(editTextSize.text.toString().replace("\\s", "")
+                                .equals(""))) && (!(editTextBrand.text.toString().replace("\\s", "")
+                                .equals("")) && (mArrayInputStream.size <= nbImageMax))
+                        ) {
+                            locations
+                                .document(locationId)
+                                .get()
+                                .addOnSuccessListener { location ->
+                                    adverts.add(
+                                        Advert(
+                                            title = title,
+                                            description = description,
+                                            price = price.toFloat(),
+                                            brand = editTextBrand.text.toString(),
+                                            size = editTextSize.text.toString(),
+                                            locationId = locationId,
+                                            categoryId = categoryId,
+                                            ownerId = userDTO!!.id,
+                                            createdAt = location.get("name").toString(),
+                                            modifiedAt = ""
+                                        )
                                     )
-                                        .show()
+                                        .addOnSuccessListener { advert ->
+                                            var i = 0
+                                            val metadata = storageMetadata {
+                                                contentType = "image/jpg"
+                                            }
+                                            mArrayInputStream.forEach {
+                                                imagesRef!!
+                                                    .child("${advert.id}/image_$i")
+                                                    .putStream(it, metadata)
+                                                    .addOnSuccessListener {
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Images OK",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Images Failed",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    }
+                                                i += 1
+                                            }
+                                            mArrayUri.clear()
+                                            mArrayInputStream.clear()
+                                            userDTO.advertsId =
+                                                if (userDTO.advertsId == null) ArrayList<String>() else userDTO.advertsId
+                                            userDTO.advertsId!!.add(advert.id)
+                                            users.document(userDTO.id)
+                                                .update("advertsId", userDTO.advertsId)
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(
+                                                requireContext(),
+                                                getString(R.string.ErrorMessage),
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                        }
+
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(
                                         requireContext(),
-                                        "Images Failed",
+                                        getString(R.string.ErrorMessage),
                                         Toast.LENGTH_SHORT
-                                    )
-                                        .show()
+                                    ).show()
                                 }
-                            i += 1
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.emptyFieldsAndImage),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.ErrorMessage),
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.emptyFieldsAndImage),
-                    Toast.LENGTH_SHORT
-                ).show()
+                }
             }
-        }
-        // Put things here
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -188,7 +240,7 @@ class Adding2Fragment : ChildFragment() {
                         cursor.moveToFirst()
                         val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                         imageEncoded = cursor.getString(columnIndex)
-                        countImage.text = "1/10"
+                        countImage.text = "1/$nbImageMax"
                         mArrayUri.clear()
                         mArrayUri.add(mImageUri)
                         cursor.close()
@@ -225,8 +277,8 @@ class Adding2Fragment : ChildFragment() {
                                 cursor.close()
                             }
                             Log.v("LOG_TAG", "Selected Images " + mArrayUri.size)
-                            if (mArrayUri.size <= 10) {
-                                countImage.text = "${mArrayUri.size}/10"
+                            if (mArrayUri.size <= nbImageMax) {
+                                countImage.text = "${mArrayUri.size}/$nbImageMax"
                                 mArrayInputStream.clear()
                                 mArrayUri.forEach {
                                     requireContext().contentResolver?.openInputStream(
@@ -239,7 +291,7 @@ class Adding2Fragment : ChildFragment() {
 
                                 }
                             } else {
-                                countImage.text = "0/10"
+                                countImage.text = "0/$nbImageMax"
                                 Toast.makeText(
                                     context,
                                     getString(R.string.tooMuchImages),

@@ -15,9 +15,6 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (user == null) {
-            auth.signInAnonymously()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +32,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (user == null) {
+            auth.signInAnonymously()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
