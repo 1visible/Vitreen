@@ -1,6 +1,5 @@
 package c0d3.vitreen.app.fragments.auth
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.inscription.step_2.Inscription2Activity
 import c0d3.vitreen.app.utils.ChildFragment
-import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_register1.*
-import java.util.*
 
 class Register1Fragment : ChildFragment() {
 
@@ -41,7 +37,7 @@ class Register1Fragment : ChildFragment() {
             ) {
 
                 if (password.text.toString().equals(password_confirmation.text.toString())) {
-                    if ((user != null) && (user.isAnonymous)) {
+                    if ((user!!.isAnonymous)) {
                         linkAnonymousToCredential()
                     } else if (user == null) {
                         registerUser()
@@ -65,7 +61,11 @@ class Register1Fragment : ChildFragment() {
             }
         }
         connectionButton.setOnClickListener {
-            removeUser()
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, LoginFragment.newInstance())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
     }
 
@@ -117,28 +117,6 @@ class Register1Fragment : ChildFragment() {
                     ).show()
                 }
             }
-    }
-
-    //Déplacer le code et exécuter au moment de la connexion du user
-    private fun removeUser() {
-        if ((user != null) && (user!!.isAnonymous)) {
-            val credential = EmailAuthProvider.getCredential(
-                "${UUID.randomUUID().toString()}@exemple.com",
-                "xu\$dqùdlqkfgo@^`4521"
-            )
-            user!!.linkWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        user!!.delete()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.ErrorMessage),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-        }
     }
 
     companion object {

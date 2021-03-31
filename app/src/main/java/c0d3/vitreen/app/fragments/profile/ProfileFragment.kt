@@ -12,7 +12,6 @@ import c0d3.vitreen.app.fragments.auth.Register1Fragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
@@ -23,9 +22,12 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (user == null) {
-            Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
-                .show()
+        if ((user == null)) {
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         } else if (user.isAnonymous) {
             parentFragmentManager
                 .beginTransaction()
@@ -55,7 +57,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (user != null) {
             db
-                .collection("User")
+                .collection("Users")
                 .whereEqualTo("email", user.email)
                 .get()
                 .addOnSuccessListener { documents ->
@@ -71,8 +73,17 @@ class ProfileFragment : Fragment() {
                         signOutButton.setOnClickListener {
                             auth
                                 .signOut()
+                            parentFragmentManager
+                                .beginTransaction()
+                                .replace(R.id.nav_host_fragment, ProfileFragment.newInstance())
+                                .commit()
                         }
+                    } else {
+                        println("--------------------------------documents size > 1")
                     }
+                }
+                .addOnFailureListener {
+                    println("-------------------------problème")
                 }
         } else {
             signOutButton.visibility = View.INVISIBLE

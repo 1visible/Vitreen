@@ -76,7 +76,7 @@ class Register2Fragment : ChildFragment() {
                     contactMethod = contactMethod.text.toString()
                 )
             }
-            db.collection("User").document().set(user).addOnCompleteListener { task ->
+            db.collection("Users").document().set(user).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(
                         requireContext(),
