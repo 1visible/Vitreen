@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinationIds = setOf (
+            topLevelDestinationIds = setOf(
                 R.id.navigation_home,
                 R.id.navigation_messages,
                 R.id.navigation_adding,
@@ -52,8 +52,7 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed(2000) {
                 backPressedOnce = false
             }
-        }
-        else {
+        } else {
             super.onBackPressed()
         }
     }
@@ -68,6 +67,10 @@ class MainActivity : AppCompatActivity() {
 
     fun setTopViewAttributes(title: String, icon: Int) {
         topView.setAttributes(title, icon)
+    }
+
+    fun setBottomNavMenuIcon(id: Int) {
+        navView.menu.findItem(id).isChecked = true
     }
 
 }

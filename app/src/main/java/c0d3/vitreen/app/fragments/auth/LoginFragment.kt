@@ -16,6 +16,7 @@ import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import java.util.*
 
@@ -87,6 +88,7 @@ class LoginFragment : ChildFragment() {
                         Toast.LENGTH_SHORT
                     )
                         .show()
+                    (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
                     parentFragmentManager
                         .beginTransaction()
                         .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
