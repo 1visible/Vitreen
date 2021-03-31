@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.fragments.auth.Register1Fragment
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
@@ -48,8 +49,28 @@ class Adding1Fragment : Fragment() {
     private lateinit var cityName: String
     private lateinit var zipCode: String
 
+    override fun onStart() {
+        super.onStart()
+        if ((user == null)) {
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+        } else if (user.isAnonymous) {
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+        }
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_adding1, container, false)
     }
 
