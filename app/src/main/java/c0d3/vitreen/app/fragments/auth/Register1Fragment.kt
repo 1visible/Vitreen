@@ -1,12 +1,17 @@
 package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.MainActivity
+import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.utils.ChildFragment
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -14,7 +19,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_register1.*
 
 class Register1Fragment : ChildFragment() {
-
     private val auth = Firebase.auth
     private var user = auth.currentUser
 

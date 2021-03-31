@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.fragments.auth.Register1Fragment
@@ -23,19 +24,8 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if ((user == null)) {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        } else if (user.isAnonymous) {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        }
+        if(user == null || user.isAnonymous)
+            findNavController().navigate(R.id.action_navigation_profile_to_navigation_register1)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +38,7 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_register1, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     @SuppressLint("SetTextI18n")
