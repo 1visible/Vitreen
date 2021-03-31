@@ -18,7 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.models.Advert
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.models.dto.UserDTO
@@ -152,22 +154,6 @@ class Adding2Fragment : ChildFragment() {
                                                 imagesRef!!
                                                     .child("${advert.id}/image_$i")
                                                     .putStream(it, metadata)
-                                                    .addOnSuccessListener {
-                                                        Toast.makeText(
-                                                            requireContext(),
-                                                            "Images OK",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                            .show()
-                                                    }
-                                                    .addOnFailureListener {
-                                                        Toast.makeText(
-                                                            requireContext(),
-                                                            "Images Failed",
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                            .show()
-                                                    }
                                                 i += 1
                                             }
                                             mArrayUri.clear()
@@ -177,6 +163,14 @@ class Adding2Fragment : ChildFragment() {
                                             userDTO.advertsId!!.add(advert.id)
                                             users.document(userDTO.id)
                                                 .update("advertsId", userDTO.advertsId)
+                                            parentFragmentManager
+                                                .beginTransaction()
+                                                .replace(
+                                                    R.id.nav_host_fragment,
+                                                    HomeFragment.newInstance()
+                                                )
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                .commit()
                                         }
                                         .addOnFailureListener {
                                             Toast.makeText(

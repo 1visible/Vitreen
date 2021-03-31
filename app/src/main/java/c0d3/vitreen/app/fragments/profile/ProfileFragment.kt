@@ -38,7 +38,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    // TODO: Remove this if not needed
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -52,7 +51,6 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    // TODO: Remove this if not needed
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,6 +72,7 @@ class ProfileFragment : Fragment() {
                         signOutButton.setOnClickListener {
                             auth
                                 .signOut()
+                            (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
                             parentFragmentManager
                                 .beginTransaction()
                                 .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
@@ -99,12 +98,10 @@ class ProfileFragment : Fragment() {
         )
     }
 
-    // TODO: Remove this if not needed
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_profile, menu)
     }
 
-    // TODO: Remove this if not needed
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             // Put things here
