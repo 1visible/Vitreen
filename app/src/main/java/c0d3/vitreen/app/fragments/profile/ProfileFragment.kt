@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.fragments.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -12,6 +13,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
 
@@ -48,9 +50,33 @@ class ProfileFragment : Fragment() {
     }
 
     // TODO: Remove this if not needed
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Put things here
+        if (user != null) {
+            db
+                .collection("User")
+                .whereEqualTo("email", user.email)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.size() == 1) {
+                        for (document in documents) {
+                            welcomeMessage.text = "${getString(R.string.welcomeUser)} ${
+                                document.get(
+                                    "lastName"
+                                )
+                            } ${document.get("firstName")}"
+                        }
+                        signOutButton.visibility = View.VISIBLE
+                        signOutButton.setOnClickListener {
+                            auth
+                                .signOut()
+                        }
+                    }
+                }
+        } else {
+            signOutButton.visibility = View.INVISIBLE
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
