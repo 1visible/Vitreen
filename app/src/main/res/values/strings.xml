@@ -1,34 +1,55 @@
 <resources>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
+    <!-- Fragment label -->
+    <string name="label_home">Accueil</string>
+    <string name="label_messages">Mes messages</string>
+    <string name="label_adding">Ajouter une annonce</string>
+    <string name="label_favorites">Mes favoris</string>
+    <string name="label_profile">Mon profil</string>
+    <string name="label_register">Inscription</string>
+    <string name="label_login">Connexion</string>
     <!-- Menu title -->
     <string name="title_home">Accueil</string>
     <string name="title_messages">Messages</string>
     <string name="title_adding">Ajout</string>
     <string name="title_favorites">Favoris</string>
     <string name="title_profile">Profil</string>
-    <!-- Other -->
-
+    <!-- Login -->
+    <string name="have_no_account">Pas de compte ?</string>
+    <string name="register_underline"><u>S\'inscrire</u></string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Se connecter</string>
+    <!-- Register1 fragment -->
+    <string name="have_an_account">Déjà un compte ?</string>
+    <string name="login_underline"><u>Se connecter</u></string>
+    <string name="confirmation">Confirmation</string>
     <string name="next">Suivant</string>
+    <!-- Register2 fragment -->
+    <string name="fullname">Nom complet</string>
+    <string name="phone_number">N° de téléphone</string>
+    <string name="contact_by_phone">Je veux être contacté par téléphone</string>
+    <string name="contact_by_email">Je veux être contacté par e-mail</string>
+    <string name="professional_account">Je suis un professionnel</string>
+    <string name="company_name">Nom de l\'entreprise</string>
+    <string name="siret_number">N° de SIRET</string>
+    <string name="register">S\'inscrire</string>
+    <!-- Placeholder text -->
+    <string name="NIY">Not implemented yet</string>
+
+    <!-- TODO: Delete this soon -->
     <string name="pro">Professionel</string>
     <string name="connexion">Se connecter</string>
     <string name="signup">Inscription</string>
     <string name="welcome">Bienvenue sur Vitreen !</string>
-    <string name="email_address">Adresse e-mail</string>
-    <string name="password">Mot de passe</string>
-    <string name="password_confirmation">Confirmation</string>
+
     <string name="ignore_step"><u>Ignorer cette étape</u></string>
     <string name="bigicon">Icône de la page</string>
     <string name="lorem">Lorem ipsum</string>
     <string name="logout">Se déconnecter</string>
     <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
-    <string name="connect"><u>Se connecter</u></string>
-    <string name="already_account">Déjà un compte ?</string>
-    <string name="home">Accueil</string>
-    <string name="messages">Messages</string>
-    <string name="add">Ajout</string>
-    <string name="favorites">Favoris</string>
-    <string name="profile">Profil</string>
+
     <string name="confirmpassword">Confirmation Mot de Passe</string>
     <string name="emptyFields">Veuillez remplir tout les champs</string>
     <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
@@ -48,7 +69,7 @@
     <string name="brand">Marque</string>
     <string name="size">Taille</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Placeholder text</string>
     <string name="tooMuchImages">Vous avez sélectionné trop d\'images</string>
     <string name="emptyFieldsAndImage">Veuillez renseigner tous les champs et ajouter au moins une image</string>
     <string name="signoutButton">Se déconnecter</string>

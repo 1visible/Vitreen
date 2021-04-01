@@ -19,94 +19,78 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_register2.*
 
 class Register2Fragment : ChildFragment() {
-
-    private var email: String = ""
     private val db = Firebase.firestore
+    private var emailAddress: String = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         arguments?.getString(Constants.KEYEMAIL)?.let {
-            email = it
+            emailAddress = it
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_register2, container, false)
     }
 
     // TODO: Remove this if not needed
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        switchPro.isChecked = false
-        switchPro.setOnCheckedChangeListener { _, isChecked ->
+
+        switchProfessionalAccount.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                companyName.visibility = View.VISIBLE
-                siret.visibility = View.VISIBLE
+                editTextCompany.visibility = View.VISIBLE
+                editTextSiret.visibility = View.VISIBLE
             } else {
-                companyName.visibility = View.GONE
-                siret.visibility = View.GONE
+                editTextCompany.visibility = View.GONE
+                editTextSiret.visibility = View.GONE
             }
         }
-        submitButton.setOnClickListener {
+
+        buttonSubmitRegister.setOnClickListener {
             val user: User
-            if (switchPro.isChecked) {
+
+            if (switchProfessionalAccount.isChecked) {
                 user = User(
-                    lastName.text.toString(),
-                    firstName.text.toString(),
-                    email,
-                    switchPro.isChecked,
-                    companyName.text.toString(),
-                    siret.text.toString(),
-                    phoneNumber.text.toString(),
-                    contactMethod.text.toString(),
-                    null,
-                    null
+                    editTextFullname.text.toString(),
+                    emailAddress,
+                    editTextPhoneNumber.text.toString(),
+                    radioButtonPhone.isChecked,
+                    true,
+                    editTextCompany.text.toString(),
+                    editTextSiret.text.toString()
                 )
             } else {
                 user = User(
-                    lastName = lastName.text.toString(),
-                    firstName = firstName.text.toString(),
-                    email = email,
-                    isProfessional = switchPro.isChecked,
-                    phone = phoneNumber.text.toString(),
-                    contactMethod = contactMethod.text.toString()
+                        editTextFullname.text.toString(),
+                        emailAddress,
+                        editTextPhoneNumber.text.toString(),
+                        radioButtonPhone.isChecked,
+                        false
                 )
             }
+
             db.collection("Users").document().set(user).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.inscriptionOk),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    Toast.makeText(requireContext(), getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
+                    // TODO: Remplacer par la navigation
                     parentFragmentManager
                         .beginTransaction()
                         .replace(R.id.nav_host_fragment, ProfileFragment.newInstance())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.ErrorMessage),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
+                } else
+                    Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
             }
+
         }
+
     }
 
     companion object {
         @JvmStatic
         fun newInstance(email: String): Register2Fragment = Register2Fragment().apply {
-            arguments = Bundle().apply {
-                putString(Constants.KEYEMAIL, email)
-            }
+            arguments = Bundle().apply { putString(Constants.KEYEMAIL, email) }
         }
     }
 
