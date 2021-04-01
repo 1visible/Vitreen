@@ -1,66 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.auth.Register2Fragment">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lg"
+    android:layout_marginLeft="@dimen/spacing_lg"
+    android:layout_marginEnd="@dimen/spacing_lg"
+    android:layout_marginRight="@dimen/spacing_lg"
+    android:orientation="vertical"
+    tools:context=".fragments.auth.Register2Fragment" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editTextFullname"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:drawableEnd="@drawable/icon_envelope"
+        android:drawableRight="@drawable/icon_envelope"
+        android:hint="@string/fullname"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/lastName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/editTextPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:drawableEnd="@drawable/icon_lockpad"
+        android:drawableRight="@drawable/icon_lockpad"
+        android:hint="@string/phone_number"
+        android:importantForAutofill="no"
+        android:inputType="phone" />
 
-        <EditText
-            android:id="@+id/firstName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    <RadioGroup
+        android:checkedButton="@+id/radioButtonPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md" >
 
-        <EditText
-            android:id="@+id/phoneNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="phone" />
-
-        <EditText
-            android:id="@+id/contactMethod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchPro"
-            android:layout_width="wrap_content"
+        <RadioButton
+            android:textColor="@color/white"
+            android:id="@+id/radioButtonPhone"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:checked="true"
-            android:text="@string/pro" />
+            android:text="@string/contact_by_phone"/>
 
-        <EditText
-            android:id="@+id/companyName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+        <RadioButton
+            android:textColor="@color/white"
+            android:id="@+id/radioButtonEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/contact_by_email"/>
 
-        <EditText
-            android:id="@+id/siret"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:visibility="gone" />
+    </RadioGroup>
 
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/next" />
-    </LinearLayout>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:textColor="@color/white"
+        android:id="@+id/switchProfessionalAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:text="@string/professional_account" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/editTextCompany"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:drawableEnd="@drawable/icon_envelope"
+        android:drawableRight="@drawable/icon_envelope"
+        android:hint="@string/company_name"
+        android:importantForAutofill="no"
+        android:visibility="gone"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextSiret"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:drawableEnd="@drawable/icon_envelope"
+        android:drawableRight="@drawable/icon_envelope"
+        android:hint="@string/siret_number"
+        android:importantForAutofill="no"
+        android:visibility="gone"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/buttonSubmitRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register" />
+
+</LinearLayout>
