@@ -4,29 +4,27 @@ import c0d3.vitreen.app.models.User
 import java.util.ArrayList
 
 data class UserDTO(
-    val id: String,
-    val lastName: String,
-    val firstName: String,
-    val email: String,
-    @field:JvmField
+        val id: String,
+        val fullname: String,
+        val emailAddress: String,
+        val phoneNumber: String,
+        val contactByPhone: Boolean = true,
+        @field:JvmField
     val isProfessional: Boolean = false,
-    val company: String? = null,
-    val siret: String? = null,
-    val phone: String,
-    val contactMethod: String? = null,
-    var advertsId: ArrayList<String>? = null,
-    val favoriteAdvertsId: ArrayList<String>? = null,
+        val companyName: String? = null,
+        val siretNumber: String? = null,
+        var advertsId: ArrayList<String>? = null,
+        val favoriteAdvertsId: ArrayList<String>? = null
 ) {
     fun userDTOtoModel(): User {
         return User(
-            lastName,
-            firstName,
-            email,
+            fullname,
+            emailAddress,
+            phoneNumber,
+            contactByPhone,
             isProfessional,
-            company,
-            siret,
-            phone,
-            contactMethod,
+            companyName,
+            siretNumber,
             advertsId,
             favoriteAdvertsId
         )
