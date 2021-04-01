@@ -3,6 +3,7 @@
 
     <!-- EditText: glassmorphism style -->
     <style name="Vitreen.EditText" parent="@android:style/Widget.EditText">
+        <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/glass_frame</item>
         <item name="android:padding">15dp</item>
     </style>

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="c0d3.vitreen.app.fragments.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/label_home"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navigation_home_to_navigation_register1"
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/navigation_messages"
         android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
-        android:label="@string/title_messages"
+        android:label="@string/label_messages"
         tools:layout="@layout/fragment_messages" >
         <action
             android:id="@+id/action_navigation_messages_to_navigation_register1"
@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/navigation_adding"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
-        android:label="@string/title_adding"
+        android:label="@string/label_adding"
         tools:layout="@layout/fragment_adding1" >
         <action
             android:id="@+id/action_navigation_adding_to_adding2Fragment"
@@ -41,13 +41,13 @@
     <fragment
          android:id="@+id/navigation_favorites"
          android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
-         android:label="@string/title_favorites"
+         android:label="@string/label_favorites"
          tools:layout="@layout/fragment_favorites" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
-        android:label="@string/title_profile"
+        android:label="@string/label_profile"
         tools:layout="@layout/fragment_profile" >
         <action
             android:id="@+id/action_navigation_profile_to_navigation_register1"
@@ -63,7 +63,7 @@
     <fragment
         android:id="@+id/navigation_register1"
         android:name="c0d3.vitreen.app.fragments.auth.Register1Fragment"
-        android:label="fragment_register1"
+        android:label="@string/label_register"
         tools:layout="@layout/fragment_register1" >
         <action
             android:id="@+id/action_navigation_register1_to_register2Fragment"
@@ -71,12 +71,25 @@
         <action
             android:id="@+id/action_navigation_register1_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_register1_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_register2"
         android:name="c0d3.vitreen.app.fragments.auth.Register2Fragment"
-        android:label="fragment_register2"
+        android:label="@string/label_register"
         tools:layout="@layout/fragment_register2" />
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="c0d3.vitreen.app.fragments.auth.LoginFragment"
+        android:label="@string/label_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_register1"
+            app:destination="@id/navigation_register1" />
+    </fragment>
 
 </navigation>
