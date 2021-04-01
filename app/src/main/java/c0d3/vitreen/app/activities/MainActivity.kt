@@ -19,14 +19,13 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.fragments.auth.LoginFragment
 import c0d3.vitreen.app.fragments.auth.Register1Fragment
 import c0d3.vitreen.app.fragments.home.HomeFragment
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var backPressedOnce = false
-    private val auth = Firebase.auth
-    private val user = auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
