@@ -35,8 +35,6 @@ import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.android.synthetic.main.fragment_adding2.*
 import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -106,14 +104,13 @@ class Adding2Fragment : ChildFragment() {
                     for (document in documents) {
                         userDTO = UserDTO(
                             document.id,
-                            document.get("lastName") as String,
-                            document.get("firstName") as String,
-                            document.get("email") as String,
+                            document.get("fullname") as String,
+                            document.get("emailAddress") as String,
+                            document.get("phoneNumber") as String,
+                            document.get("contactByPhone") as Boolean,
                             document.get("isProfessional") as Boolean,
-                            document.get("company") as String?,
-                            document.get("siret") as String?,
-                            document.get("phone") as String,
-                            document.get("contactMethod") as String?,
+                            document.get("companyName") as String?,
+                            document.get("siretNumber") as String?,
                             document.get("advertsId") as ArrayList<String>?,
                             document.get("favoriteAdversId") as ArrayList<String>?,
 

@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.fragments.auth.Register1Fragment
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListner
@@ -199,6 +200,11 @@ class Adding1Fragment : Fragment() {
             }
 
 
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as MainActivity).setTopViewAttributes("", R.drawable.bigicon_leaf)
     }
 
 
