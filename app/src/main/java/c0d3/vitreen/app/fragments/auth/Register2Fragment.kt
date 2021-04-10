@@ -245,7 +245,7 @@ class Register2Fragment : ChildFragment() {
                 } else {
                     parentFragmentManager
                             .beginTransaction()
-                            .replace(R.id.nav_host_fragment, Adding1Fragment.newInstance())
+                            .replace(R.id.nav_host_fragment, newInstance(emailAddress))
                             .commit()
                 }
             }
