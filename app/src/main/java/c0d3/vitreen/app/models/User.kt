@@ -9,6 +9,7 @@ data class User(
     val contactByPhone: Boolean = true,
     @field:JvmField
     val isProfessional: Boolean = false,
+    val locationId: String,
     val companyName: String? = null,
     val siretNumber: String? = null,
     val advertsId: ArrayList<String>? = null,

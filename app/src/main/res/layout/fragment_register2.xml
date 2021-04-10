@@ -33,6 +33,18 @@
         android:importantForAutofill="no"
         android:inputType="phone" />
 
+    <EditText
+        android:id="@+id/editTextLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:drawableEnd="@drawable/icon_lockpad"
+        android:drawableRight="@drawable/icon_lockpad"
+        android:hint="@string/localisation"
+        android:importantForAutofill="no"
+        android:inputType="text" />
+
+
     <RadioGroup
         android:checkedButton="@+id/radioButtonPhone"
         android:layout_width="match_parent"
