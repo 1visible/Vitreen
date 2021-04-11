@@ -5,13 +5,21 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
+import c0d3.vitreen.app.models.dto.AdvertDTO
+import c0d3.vitreen.app.models.mini.AdvertMini
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
 
     private val auth = Firebase.auth
     private var user = auth.currentUser
+    private val db = Firebase.firestore
+
+    private var locationId = ""
+    private var listAdvert: ArrayList<AdvertMini> = ArrayList()
 
     override fun onStart() {
         super.onStart()
@@ -23,9 +31,9 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -34,14 +42,52 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (user == null) {
             auth.signInAnonymously()
+            homeTextViewNoConnection.visibility = View.VISIBLE
+            homeTextViewNPY.visibility = View.GONE
+        } else {
+            if (user.isAnonymous) {
+                homeTextViewNoConnection.visibility = View.VISIBLE
+                homeTextViewNPY.visibility = View.GONE
+            } else {
+                db.collection("Users")
+                        .whereEqualTo("emailAddress", user.email)
+                        .get()
+                        .addOnSuccessListener {
+                            if (it.documents.size == 1) {
+                                for (document in it.documents) {
+                                    locationId = document.get("locationId") as String
+                                }
+
+                                db.collection("Advert")
+                                        .whereEqualTo("locationId", locationId)
+                                        .get()
+                                        .addOnSuccessListener {
+                                            if (it.documents.size > 0) {
+                                                for (document in it.documents) {
+                                                    listAdvert.add(AdvertMini(
+                                                            document.id,
+                                                            document.get("title") as String,
+                                                            document.get("description") as String,
+                                                            document.get("price") as Float
+                                                    ))
+                                                }
+                                            } else {
+                                                homeTextViewNoConnection.visibility = View.GONE
+                                                homeTextViewNPY.visibility = View.VISIBLE
+                                            }
+                                        }
+                            }
+                        }
+
+            }
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as MainActivity).setTopViewAttributes(
-            getString(R.string.welcome),
-            R.drawable.bigicon_leaf
+                getString(R.string.welcome),
+                R.drawable.bigicon_leaf
         )
     }
 
