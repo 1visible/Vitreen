@@ -56,18 +56,6 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<Adv
             }.addOnFailureListener {
                 // Handle any errors
             }
-
-            /* advertImageRef.downloadUrl.addOnSuccessListener {
-                 // Got the download URL for 'users/me/profile.png'
-                 if (currentAdvert != null) {
-                     itemView.homeAdvertImageView.setImageURI(it)
-                     itemView.homeAdvertTitle.text = currentAdvert!!.title
-                     itemView.homeAdvertDescription.text = currentAdvert!!.description
-                     itemView.homeAdvertPrice.text = currentAdvert!!.price.toString()
-                 }
-             }.addOnFailureListener {
-                 Toast.makeText(itemView.context, "Une erreur est suvenue sur la récupération de l'image", Toast.LENGTH_SHORT).show()
-             }*/
         }
     }
 

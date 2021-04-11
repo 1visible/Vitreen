@@ -2,6 +2,7 @@ package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
@@ -9,6 +10,7 @@ import c0d3.vitreen.app.adapter.AdvertAdapter
 import c0d3.vitreen.app.models.mini.AdvertMini
 import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -20,6 +22,7 @@ class HomeFragment : Fragment() {
     private val db = Firebase.firestore
 
     private var locationId = ""
+    private var userId = ""
     private var listAdvert: ArrayList<AdvertMini> = ArrayList()
 
     override fun onStart() {
@@ -49,25 +52,33 @@ class HomeFragment : Fragment() {
             if (user.isAnonymous) {
                 homeTextViewNoConnection.visibility = View.VISIBLE
                 homeTextViewNPY.visibility = View.GONE
+                homeRecyclerView.visibility = View.GONE
             } else {
+                homeTextViewNoConnection.visibility = View.GONE
+                homeTextViewNPY.visibility = View.GONE
+                homeRecyclerView.visibility = View.VISIBLE
                 val advertAdapter: AdvertAdapter = AdvertAdapter { advert -> adapterOnClick(advert) }
                 homeRecyclerView.adapter = advertAdapter
                 db.collection("Users")
                         .whereEqualTo("emailAddress", user.email)
                         .get()
                         .addOnSuccessListener {
+
                             if (it.documents.size == 1) {
                                 for (document in it.documents) {
                                     locationId = document.get("locationId") as String
+                                    userId = document.id
                                 }
-
+                                println("--------------------------------------")
+                                println("--------------${userId}")
+                                println("--------------------------------------")
                                 db.collection("Adverts")
                                         .whereEqualTo("locationId", locationId)
+                                        .whereNotEqualTo("ownerId", userId)
                                         .limit(Constants.HomeLimit.toLong())
                                         .get()
                                         .addOnSuccessListener {
                                             if (it.documents.size > 0) {
-                                                println("------------- on a trouvé des documents")
                                                 for (document in it.documents) {
                                                     listAdvert.add(AdvertMini(
                                                             document.id,
@@ -78,11 +89,18 @@ class HomeFragment : Fragment() {
                                                 }
 
                                                 advertAdapter.submitList(listAdvert)
-
                                             } else {
+                                                homeRecyclerView.visibility = View.GONE
                                                 homeTextViewNoConnection.visibility = View.GONE
                                                 homeTextViewNPY.visibility = View.VISIBLE
+                                                Toast.makeText(requireContext(), "docuement.size<0", Toast.LENGTH_SHORT).show()
                                             }
+                                        }
+                                        .addOnFailureListener(requireActivity()) {
+                                            homeRecyclerView.visibility = View.GONE
+                                            homeTextViewNoConnection.visibility = View.GONE
+                                            homeTextViewNPY.visibility = View.VISIBLE
+                                            Toast.makeText(context, "Une erreur s'est produite", Toast.LENGTH_SHORT).show()
                                         }
                             }
                         }
