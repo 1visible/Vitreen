@@ -122,6 +122,7 @@ class Adding2Fragment : ChildFragment() {
                         }
                         countImage.text = "0/${nbImageMax}"
                         imageButton.setOnClickListener {
+                            println("----------------------------------Bouton image appuyé")
                             pickImages()
                         }
                         addButton.setOnClickListener {

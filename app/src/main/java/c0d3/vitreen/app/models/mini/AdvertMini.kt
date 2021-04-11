@@ -4,5 +4,5 @@ data class AdvertMini(
         val id:String,
         val title: String,
         val description: String,
-        val price: Float
+        val price: Long
 )

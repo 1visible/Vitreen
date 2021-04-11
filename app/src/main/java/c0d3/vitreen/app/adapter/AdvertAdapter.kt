@@ -1,8 +1,10 @@
 package c0d3.vitreen.app.adapter
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,6 @@ import c0d3.vitreen.app.models.mini.AdvertMini
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.advert_item.view.*
-import java.io.File
 
 class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<AdvertMini, AdvertAdapter.AdvertViewHolder>(AdvertDiffCallback) {
 
@@ -33,7 +34,7 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<Adv
 
         fun bind(advert: AdvertMini) {
             currentAdvert = advert
-            val advertImageRef = storageRef.child("images/${currentAdvert!!.id}/image_0.jpg")
+            val advertImageRef = storageRef.child("images/${currentAdvert!!.id}/image_0.png")
             /*val localFile = File.createTempFile("image", "jpg")
             advertImageRef.getFile(localFile)
                     .addOnSuccessListener {
@@ -44,29 +45,29 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<Adv
                             itemView.homeAdvertPrice.text = currentAdvert!!.price.toString()
                         }
                     }*/
-            /*val ONE_MEGABYTE: Long = 1024 * 1024
+            val ONE_MEGABYTE: Long = 1024 * 1024
             advertImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 if (currentAdvert != null) {
-                    itemView.homeAdvertImageView.setImageBitmap()
+                    itemView.homeAdvertImageView.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
                     itemView.homeAdvertTitle.text = currentAdvert!!.title
                     itemView.homeAdvertDescription.text = currentAdvert!!.description
-                    itemView.homeAdvertPrice.text = currentAdvert!!.price.toString()
-                }
-            }.addOnFailureListener {
-                // Handle any errors
-            }*/
-
-            advertImageRef.downloadUrl.addOnSuccessListener {
-                // Got the download URL for 'users/me/profile.png'
-                if (currentAdvert != null) {
-                    itemView.homeAdvertImageView.setImageURI(it)
-                    itemView.homeAdvertTitle.text = currentAdvert!!.title
-                    itemView.homeAdvertDescription.text = currentAdvert!!.description
-                    itemView.homeAdvertPrice.text = currentAdvert!!.price.toString()
+                    itemView.homeAdvertPrice.text = "${currentAdvert!!.price.toString()}€"
                 }
             }.addOnFailureListener {
                 // Handle any errors
             }
+
+            /* advertImageRef.downloadUrl.addOnSuccessListener {
+                 // Got the download URL for 'users/me/profile.png'
+                 if (currentAdvert != null) {
+                     itemView.homeAdvertImageView.setImageURI(it)
+                     itemView.homeAdvertTitle.text = currentAdvert!!.title
+                     itemView.homeAdvertDescription.text = currentAdvert!!.description
+                     itemView.homeAdvertPrice.text = currentAdvert!!.price.toString()
+                 }
+             }.addOnFailureListener {
+                 Toast.makeText(itemView.context, "Une erreur est suvenue sur la récupération de l'image", Toast.LENGTH_SHORT).show()
+             }*/
         }
     }
 

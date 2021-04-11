@@ -5,8 +5,9 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.models.dto.AdvertDTO
+import c0d3.vitreen.app.adapter.AdvertAdapter
 import c0d3.vitreen.app.models.mini.AdvertMini
+import c0d3.vitreen.app.utils.Constants
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -49,6 +50,8 @@ class HomeFragment : Fragment() {
                 homeTextViewNoConnection.visibility = View.VISIBLE
                 homeTextViewNPY.visibility = View.GONE
             } else {
+                val advertAdapter: AdvertAdapter = AdvertAdapter { advert -> adapterOnClick(advert) }
+                homeRecyclerView.adapter = advertAdapter
                 db.collection("Users")
                         .whereEqualTo("emailAddress", user.email)
                         .get()
@@ -58,19 +61,24 @@ class HomeFragment : Fragment() {
                                     locationId = document.get("locationId") as String
                                 }
 
-                                db.collection("Advert")
+                                db.collection("Adverts")
                                         .whereEqualTo("locationId", locationId)
+                                        .limit(Constants.HomeLimit.toLong())
                                         .get()
                                         .addOnSuccessListener {
                                             if (it.documents.size > 0) {
+                                                println("------------- on a trouvé des documents")
                                                 for (document in it.documents) {
                                                     listAdvert.add(AdvertMini(
                                                             document.id,
                                                             document.get("title") as String,
                                                             document.get("description") as String,
-                                                            document.get("price") as Float
+                                                            document.get("price") as Long
                                                     ))
                                                 }
+
+                                                advertAdapter.submitList(listAdvert)
+
                                             } else {
                                                 homeTextViewNoConnection.visibility = View.GONE
                                                 homeTextViewNPY.visibility = View.VISIBLE
@@ -103,6 +111,10 @@ class HomeFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    /* Opens Advert  when RecyclerView item is clicked. */
+    private fun adapterOnClick(advert: AdvertMini) {
     }
 
     companion object {
