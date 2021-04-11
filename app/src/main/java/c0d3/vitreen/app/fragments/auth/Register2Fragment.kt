@@ -66,7 +66,7 @@ class Register2Fragment : ChildFragment() {
         buttonSubmitRegister.setOnClickListener {
             var user: User
             val currentLocation = Location(
-                    editTextLocation.text.toString(),
+                    editTextLocation.text.toString().replaceFirst(editTextLocation.text.toString()[0],editTextLocation.text.toString()[0].toUpperCase()),
                     if (zipCode == "") null else zipCode.toInt()
             )
 
