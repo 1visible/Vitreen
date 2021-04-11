@@ -20,8 +20,27 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/advertDefaultName"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/homeAdvertDescription"
         app:layout_constraintStart_toEndOf="@+id/homeAdvertImageView"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/homeAdvertDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Une description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/homeAdvertImageView"
+        app:layout_constraintTop_toTopOf="@id/homeAdvertTitle" />
+
+    <TextView
+        android:id="@+id/homeAdvertPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="15€"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
