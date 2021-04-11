@@ -75,6 +75,8 @@ class HomeFragment : Fragment() {
                                 db.collection("Adverts")
                                         .whereEqualTo("locationId", locationId)
                                         .whereNotEqualTo("ownerId", userId)
+                                        .orderBy("ownerId")
+                                        .orderBy("createdAt", Query.Direction.DESCENDING)
                                         .limit(Constants.HomeLimit.toLong())
                                         .get()
                                         .addOnSuccessListener {
