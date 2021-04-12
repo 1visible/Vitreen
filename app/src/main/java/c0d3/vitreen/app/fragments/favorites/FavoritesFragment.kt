@@ -1,34 +1,20 @@
 package c0d3.vitreen.app.fragments.favorites
 
-import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.MenuItem
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.utils.VFragment
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment :VFragment(
+    R.layout.fragment_favorites,
+    R.drawable.bigicon_leaf,
+    -1,
+    true,
+    R.menu.menu_favorites,
+    true,
+    R.id.action_navigation_favorites_to_navigation_login
+) {
 
-    // TODO: Remove this if not needed
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_favorites, container, false)
-    }
-
-    // TODO: Remove this if not needed
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Put things here
-    }
-
-    // TODO: Remove this if not needed
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_favorites, menu)
-    }
-
-    // TODO: Remove this if not needed
+    // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             // Put things here

@@ -1,26 +1,20 @@
 package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.FragmentTransaction
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.ChildFragment
+import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_register1.*
 
-class Register1Fragment : ChildFragment() {
-    private val auth = Firebase.auth
-    private val user = auth.currentUser
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_register1, container, false)
-    }
+class Register1Fragment : VFragment(
+    R.layout.fragment_register1,
+    R.drawable.bigicon_user,
+    -1
+) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,7 +27,7 @@ class Register1Fragment : ChildFragment() {
                 if (editTextPassword.text.toString() == editTextPasswordConfirmation.text.toString()) {
                     if (user == null)
                         registerUser()
-                    else if (user.isAnonymous)
+                    else if (user!!.isAnonymous)
                         linkAnonymousToCredential()
                 } else {
                     editTextPassword.text.clear()
@@ -52,17 +46,11 @@ class Register1Fragment : ChildFragment() {
     }
 
     private fun registerUser() {
-        auth
-            .createUserWithEmailAndPassword(editTextEmail.text.toString(), editTextPassword.text.toString())
+        auth.createUserWithEmailAndPassword(editTextEmail.text.toString(), editTextPassword.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // TODO: Replace this with navigation
-                    parentFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.nav_host_fragment,
-                            Register2Fragment.newInstance(editTextEmail.text.toString()))
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+                    val bundle = bundleOf("email" to editTextEmail.text.toString())
+                    findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
                     // TODO: Gérer les erreurs
@@ -73,19 +61,11 @@ class Register1Fragment : ChildFragment() {
 
     private fun linkAnonymousToCredential() {
         val credential = EmailAuthProvider.getCredential(editTextEmail.text.toString(), editTextPassword.text.toString())
-        user!!
-            .linkWithCredential(credential)
+        user!!.linkWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // TODO: Replace this with navigation
-                    parentFragmentManager
-                        .beginTransaction()
-                        .replace(
-                            R.id.nav_host_fragment,
-                            Register2Fragment.newInstance(editTextEmail.text.toString())
-                        )
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit()
+                    val bundle = bundleOf("email" to editTextEmail.text.toString())
+                    findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
                     // TODO: Gérer les erreurs
@@ -93,8 +73,4 @@ class Register1Fragment : ChildFragment() {
             }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(): Register1Fragment = Register1Fragment()
-    }
 }

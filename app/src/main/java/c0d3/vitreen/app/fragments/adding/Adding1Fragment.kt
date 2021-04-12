@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.fragments.auth.Register1Fragment
@@ -22,6 +23,7 @@ import c0d3.vitreen.app.listeners.OnLocationFetchListner
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
 import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.VFragment
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -30,7 +32,12 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Adding1Fragment : Fragment() {
+class Adding1Fragment : VFragment(
+    R.layout.fragment_adding1,
+    R.drawable.bigicon_leaf,
+    -1
+) {
+
     private lateinit var category: TextInputLayout
     private lateinit var title: EditText
     private lateinit var price: EditText
@@ -38,14 +45,11 @@ class Adding1Fragment : Fragment() {
     private lateinit var description: EditText
     private lateinit var nextButton: Button
 
-    private val user = Firebase.auth.currentUser
-    private val DB = Firebase.firestore
-    private val categories = DB.collection("Categories")
+    private val categories = db.collection("Categories")
     private val categoriesList = ArrayList<CategoryDTO>()
-    private val locations = DB.collection("locations")
+    private val locations = db.collection("locations")
 
     private lateinit var locationManager: LocationManager
-
     private var categoryId = ""
     private lateinit var cityName: String
     private lateinit var zipCode: String
@@ -67,11 +71,9 @@ class Adding1Fragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (user == null || user.isAnonymous)
+            findNavController().navigate(R.id.action_navigation_messages_to_navigation_login)
         return inflater.inflate(R.layout.fragment_adding1, container, false)
     }
 

@@ -18,14 +18,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.models.Advert
 import c0d3.vitreen.app.models.dto.UserDTO
-import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -39,7 +40,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class Adding2Fragment : ChildFragment() {
+class Adding2Fragment : VFragment(
+    R.layout.fragment_adding2,
+    R.drawable.bigicon_leaf,
+    -1
+) {
+
     private var categoryId: String = ""
     private var title: String = ""
     private var price: String = ""
@@ -56,8 +62,6 @@ class Adding2Fragment : ChildFragment() {
     private var storageRef = storage.reference
     private var imagesRef: StorageReference? = storageRef.child("images")
 
-    private val user = Firebase.auth.currentUser
-    private val db = Firebase.firestore
     private val adverts = db.collection("Adverts")
     private val users = db.collection("Users")
     private val locations = db.collection("locations")

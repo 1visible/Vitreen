@@ -11,8 +11,8 @@
         android:label="@string/label_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_navigation_home_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_home_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
@@ -21,8 +21,8 @@
         android:label="@string/label_messages"
         tools:layout="@layout/fragment_messages" >
         <action
-            android:id="@+id/action_navigation_messages_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_messages_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
@@ -34,15 +34,19 @@
             android:id="@+id/action_navigation_adding_to_adding2Fragment"
             app:destination="@id/navigation_adding2" />
         <action
-            android:id="@+id/action_navigation_adding_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_adding_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
          android:id="@+id/navigation_favorites"
          android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
          android:label="@string/label_favorites"
-         tools:layout="@layout/fragment_favorites" />
+         tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
@@ -50,8 +54,11 @@
         android:label="@string/label_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_navigation_profile_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_profile_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_home"
+            app:destination="@id/navigation_home" />
     </fragment>
 
     <fragment
@@ -66,11 +73,8 @@
         android:label="@string/label_register"
         tools:layout="@layout/fragment_register1" >
         <action
-            android:id="@+id/action_navigation_register1_to_register2Fragment"
+            android:id="@+id/action_navigation_register1_to_navigation_register2"
             app:destination="@id/navigation_register2" />
-        <action
-            android:id="@+id/action_navigation_register1_to_navigation_home"
-            app:destination="@id/navigation_home" />
         <action
             android:id="@+id/action_navigation_register1_to_navigation_login"
             app:destination="@id/navigation_login" />
@@ -80,7 +84,15 @@
         android:id="@+id/navigation_register2"
         android:name="c0d3.vitreen.app.fragments.auth.Register2Fragment"
         android:label="@string/label_register"
-        tools:layout="@layout/fragment_register2" />
+        tools:layout="@layout/fragment_register2" >
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_navigation_register2_self"
+            app:destination="@id/navigation_register2" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_login"
@@ -90,6 +102,9 @@
         <action
             android:id="@+id/action_navigation_login_to_navigation_register1"
             app:destination="@id/navigation_register1" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_home"
+            app:destination="@id/navigation_home" />
     </fragment>
 
 </navigation>
