@@ -10,7 +10,8 @@ data class UserDTO(
         val phoneNumber: String,
         val contactByPhone: Boolean = true,
         @field:JvmField
-    val isProfessional: Boolean = false,
+        val isProfessional: Boolean = false,
+        val locationId: String,
         val companyName: String? = null,
         val siretNumber: String? = null,
         var advertsId: ArrayList<String>? = null,
@@ -18,15 +19,16 @@ data class UserDTO(
 ) {
     fun userDTOtoModel(): User {
         return User(
-            fullname,
-            emailAddress,
-            phoneNumber,
-            contactByPhone,
-            isProfessional,
-            companyName,
-            siretNumber,
-            advertsId,
-            favoriteAdvertsId
+                fullname,
+                emailAddress,
+                phoneNumber,
+                contactByPhone,
+                isProfessional,
+                locationId,
+                companyName,
+                siretNumber,
+                advertsId,
+                favoriteAdvertsId
         )
     }
 }

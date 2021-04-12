@@ -23,11 +23,11 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        if(user == null || user.isAnonymous)
+        if (user == null || user.isAnonymous)
             findNavController().navigate(R.id.action_navigation_profile_to_navigation_register1)
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -35,32 +35,33 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (user != null) {
+
+            signOutButton.visibility = View.VISIBLE
+            signOutButton.setOnClickListener {
+                auth
+                        .signOut()
+                (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
+                parentFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
+                        .commit()
+            }
             db
-                .collection("Users")
-                .whereEqualTo("email", user.email)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.size() == 1) {
-                        for (document in documents) {
-                            niy.text = "${getString(R.string.welcomeUser)} ${document.get("fullname")}"
+                    .collection("Users")
+                    .whereEqualTo("emailAddress", user.email)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (documents.size() == 1) {
+                            for (document in documents) {
+                                niy.text = "${getString(R.string.welcomeUser)} ${document.get("fullname")}"
+                            }
+                        } else {
+                            println("--------------------------------documents size > 1")
                         }
-                        signOutButton.visibility = View.VISIBLE
-                        signOutButton.setOnClickListener {
-                            auth
-                                .signOut()
-                            (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
-                            parentFragmentManager
-                                .beginTransaction()
-                                .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
-                                .commit()
-                        }
-                    } else {
-                        println("--------------------------------documents size > 1")
                     }
-                }
-                .addOnFailureListener {
-                    println("-------------------------problème")
-                }
+                    .addOnFailureListener {
+                        println("-------------------------problème")
+                    }
         } else {
             signOutButton.visibility = View.INVISIBLE
         }

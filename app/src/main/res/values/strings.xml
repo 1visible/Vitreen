@@ -74,4 +74,7 @@
     <string name="emptyFieldsAndImage">Veuillez renseigner tous les champs et ajouter au moins une image</string>
     <string name="signoutButton">Se déconnecter</string>
     <string name="welcomeUser">Bienvenue</string>
+    <string name="NPY">No Product Yet</string>
+    <string name="HTBC">You have to be connected</string>
+    <string name="advertDefaultName">Titre d\'annonce par défaut</string>
 </resources>

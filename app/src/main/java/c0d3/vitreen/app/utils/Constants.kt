@@ -11,6 +11,7 @@ class Constants {
         const val LocalisationCode = 15266
         val KEYADDADVERTS =
             listOf("KEYCATEGORY", "KEYTITLE", "KEYPRICE", "KEYLOCATION", "KEYDESCRIPTION")
-        val GALLERY_REQUEST = 12254
+        const val GALLERY_REQUEST = 12254
+        const val HomeLimit = 25
     }
 }

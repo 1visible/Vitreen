@@ -33,15 +33,12 @@
             android:id="@+id/imageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Images" />
+            android:text="Images"
+            android:clickable="true"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/countImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -118,7 +118,7 @@ class Adding1Fragment : Fragment() {
                         !description.text.toString().replace("\\s", "").equals("")
                     ) {
                         val currentLocation = Location(
-                            location.text.toString(),
+                            location.text.toString().replaceFirst(location.text.toString()[0].toChar(),location.text.toString()[0].toUpperCase()),
                             if (zipCode == "") null else zipCode.toInt()
                         )
                         categoriesList.forEach {
