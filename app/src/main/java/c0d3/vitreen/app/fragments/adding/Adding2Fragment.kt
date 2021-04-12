@@ -140,7 +140,7 @@ class Adding2Fragment : ChildFragment() {
                                                     Advert(
                                                             title = title,
                                                             description = description,
-                                                            price = price.toFloat(),
+                                                            price = price.toLong(),
                                                             brand = editTextBrand.text.toString(),
                                                             size = editTextSize.text.toString(),
                                                             locationId = locationId,

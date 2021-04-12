@@ -1,6 +1,7 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
