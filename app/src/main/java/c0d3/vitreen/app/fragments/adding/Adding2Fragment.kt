@@ -26,6 +26,8 @@ import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.ChildFragment
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.PERSO_LIMIT_IMAGES
+import c0d3.vitreen.app.utils.Constants.Companion.PRO_LIMIT_IMAGES
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -118,7 +120,7 @@ class Adding2Fragment : ChildFragment() {
                                     )
                         }
                         if (userDTO != null) {
-                            nbImageMax = if (userDTO.isProfessional) 5 else 3
+                            nbImageMax = if (userDTO.isProfessional) PRO_LIMIT_IMAGES else PERSO_LIMIT_IMAGES
                         }
                         countImage.text = "0/${nbImageMax}"
                         imageButton.setOnClickListener {

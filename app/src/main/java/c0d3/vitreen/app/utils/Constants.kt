@@ -12,6 +12,9 @@ class Constants {
         val KEYADDADVERTS =
             listOf("KEYCATEGORY", "KEYTITLE", "KEYPRICE", "KEYLOCATION", "KEYDESCRIPTION")
         const val GALLERY_REQUEST = 12254
+        const val PERSO_LIMIT_IMAGES = 3
+        const val PRO_LIMIT_IMAGES = 5
         const val HomeLimit = 25
+        const val KEYADVERTID = "KEYADVERTID"
     }
 }
