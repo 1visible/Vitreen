@@ -10,6 +10,7 @@ data class Advert(
     val reported: ArrayList<String>? = null,
     val locationId: String,
     val categoryId: String,
+    val nbImages: Long,
     val ownerId: String,
     val createdAt: String,
     val modifiedAt: String,
