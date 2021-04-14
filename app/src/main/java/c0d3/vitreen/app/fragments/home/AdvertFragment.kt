@@ -32,9 +32,9 @@ import kotlin.collections.ArrayList
  */
 class AdvertFragment : Fragment() {
     private var advertId: String? = null
-    private var imagesList: ArrayList<Bitmap> = ArrayList()
 
     private val imagesListView: AdvertImageViewModel by viewModels()
+    private var imageList = ArrayList<Bitmap>()
 
     private val db = Firebase.firestore
     private val adverts = db.collection("Adverts")
@@ -90,13 +90,15 @@ class AdvertFragment : Fragment() {
                         val advertImageRef = storageRef.child("images/${advertDTO.id}/image_$i.png")
                         val ONE_MEGABYTE: Long = 1024 * 1024
                         advertImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
-                            imagesListView.advertImages.value?.add(
+                            imageList.add(
                                 BitmapFactory.decodeByteArray(
                                     it,
                                     0,
                                     it.size
                                 )
                             )
+                            imagesListView.advertImages.value = imageList
+                            println(imagesListView.advertImages.value!!.size)
                         }.addOnFailureListener {
                             // Handle any errors
                         }
@@ -111,6 +113,11 @@ class AdvertFragment : Fragment() {
                     imagesListView.advertImages.observe(viewLifecycleOwner, observer)
                 }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        imageList.clear()
     }
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)

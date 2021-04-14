@@ -61,7 +61,7 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) :
                     itemView.homeAdvertTitle.text = currentAdvert!!.title
                     itemView.homeAdvertDescription.text = currentAdvert!!.description
                     itemView.homeAdvertPrice.text =
-                        "${currentAdvert!!.price.toString()}${(itemView as Fragment).getString(euros)}"
+                        "${currentAdvert!!.price.toString()}€"
                 }
             }.addOnFailureListener {
                 // Handle any errors
