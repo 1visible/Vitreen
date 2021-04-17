@@ -97,8 +97,11 @@ class AdvertFragment : Fragment() {
                                     it.size
                                 )
                             )
-                            imagesListView.advertImages.value = imageList
-                            println(imagesListView.advertImages.value!!.size)
+                            println("----------------------${imageList.size}")
+                            if (imageList.size.toLong() == advertDTO.nbImages) {
+                                imagesListView.advertImages.value = imageList
+                                println(imagesListView.advertImages.value?.size)
+                            }
                         }.addOnFailureListener {
                             // Handle any errors
                         }
