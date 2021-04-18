@@ -5,20 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.R.string.euros
 import c0d3.vitreen.app.models.mini.AdvertMini
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.advert_item.view.*
 
-class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<AdvertMini, AdvertAdapter.AdvertViewHolder>(AdvertDiffCallback) {
+class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) :
+    ListAdapter<AdvertMini, AdvertAdapter.AdvertViewHolder>(AdvertDiffCallback) {
 
 
     class AdvertViewHolder(itemView: View, val onClick: (AdvertMini) -> Unit) :
-            RecyclerView.ViewHolder(itemView) {
+        RecyclerView.ViewHolder(itemView) {
         private var currentAdvert: AdvertMini? = null
 
         private val storage = Firebase.storage
@@ -48,10 +51,17 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<Adv
             val ONE_MEGABYTE: Long = 1024 * 1024
             advertImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 if (currentAdvert != null) {
-                    itemView.homeAdvertImageView.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
+                    itemView.homeAdvertImageView.setImageBitmap(
+                        BitmapFactory.decodeByteArray(
+                            it,
+                            0,
+                            it.size
+                        )
+                    )
                     itemView.homeAdvertTitle.text = currentAdvert!!.title
                     itemView.homeAdvertDescription.text = currentAdvert!!.description
-                    itemView.homeAdvertPrice.text = "${currentAdvert!!.price.toString()}€"
+                    itemView.homeAdvertPrice.text =
+                        "${currentAdvert!!.price.toString()}€"
                 }
             }.addOnFailureListener {
                 // Handle any errors
@@ -62,7 +72,7 @@ class AdvertAdapter(private val onClick: (AdvertMini) -> Unit) : ListAdapter<Adv
     /* Creates and inflates view and return FlowerViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdvertViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.advert_item, parent, false)
+            .inflate(R.layout.advert_item, parent, false)
         return AdvertViewHolder(view, onClick)
     }
 

@@ -77,4 +77,5 @@
     <string name="NPY">No Product Yet</string>
     <string name="HTBC">You have to be connected</string>
     <string name="advertDefaultName">Titre d\'annonce par défaut</string>
+    <string name="euros">€</string>
 </resources>
