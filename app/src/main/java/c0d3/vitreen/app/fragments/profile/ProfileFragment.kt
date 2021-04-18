@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.fragments.home.HomeFragment
+import c0d3.vitreen.app.models.dto.UserDTO
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -14,6 +15,8 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
     private val db = Firebase.firestore
+    private val userDb = db.collection("Users")
+
     private val auth = Firebase.auth
     private val user = auth.currentUser
 
@@ -23,9 +26,9 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         if (user == null || user.isAnonymous)
             findNavController().navigate(R.id.action_navigation_profile_to_navigation_register1)
@@ -39,29 +42,43 @@ class ProfileFragment : Fragment() {
             signOutButton.visibility = View.VISIBLE
             signOutButton.setOnClickListener {
                 auth
-                        .signOut()
+                    .signOut()
                 (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
                 parentFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
-                        .commit()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
+                    .commit()
             }
             db
-                    .collection("Users")
-                    .whereEqualTo("emailAddress", user.email)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        if (documents.size() == 1) {
-                            for (document in documents) {
-                                niy.text = "${getString(R.string.welcomeUser)} ${document.get("fullname")}"
-                            }
-                        } else {
-                            println("--------------------------------documents size > 1")
+                .collection("Users")
+                .whereEqualTo("emailAddress", user.email)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.size() == 1) {
+                        var userDTO: UserDTO? = null
+                        for (document in documents) {
+                            userDTO = UserDTO(
+                                document.id,
+                                document.get("fullname") as String,
+                                document.get("emailAddress") as String,
+                                document.get("phoneNumber") as String,
+                                document.get("contactByPhone") as Boolean,
+                                document.get("isProfessional") as Boolean,
+                                document.get("locationId") as String,
+                                document.get("companyName") as String?,
+                                document.get("siretNumber") as String?,
+                                document.get("advertsId") as ArrayList<String>?,
+                                document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
+                            )
                         }
+
+                    } else {
+                        println("--------------------------------documents size > 1")
                     }
-                    .addOnFailureListener {
-                        println("-------------------------problème")
-                    }
+                }
+                .addOnFailureListener {
+                    println("-------------------------problème")
+                }
         } else {
             signOutButton.visibility = View.INVISIBLE
         }

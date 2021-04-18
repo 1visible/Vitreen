@@ -6,12 +6,7 @@
     android:orientation="vertical"
     tools:context=".fragments.profile.ProfileFragment">
 
-    <TextView
-        android:id="@+id/niy"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/NIY" />
+
 
     <Button
         android:visibility="gone"
