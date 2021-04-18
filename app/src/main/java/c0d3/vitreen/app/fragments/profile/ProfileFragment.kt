@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment : Fragment() {
     private val db = Firebase.firestore
     private val userDb = db.collection("Users")
+    private val locationDB = db.collection("locations")
 
     private val auth = Firebase.auth
     private val user = auth.currentUser
@@ -49,8 +50,7 @@ class ProfileFragment : Fragment() {
                     .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
                     .commit()
             }
-            db
-                .collection("Users")
+            userDb
                 .whereEqualTo("emailAddress", user.email)
                 .get()
                 .addOnSuccessListener { documents ->
@@ -70,6 +70,29 @@ class ProfileFragment : Fragment() {
                                 document.get("advertsId") as ArrayList<String>?,
                                 document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
                             )
+                        }
+                        if (userDTO != null) {
+                            println("-------------------${userDTO.locationId}")
+                            locationDB
+                                .document(userDTO.locationId)
+                                .get()
+                                .addOnSuccessListener {
+                                    profilFullName.text = userDTO.fullname
+                                    profilEmailAddress.text = userDTO.emailAddress
+                                    profilPhoneNumber.text = userDTO.phoneNumber
+                                    profilContactByPhone.text =
+                                        if (userDTO.contactByPhone) "contactez moi par téléphone" else "Contactez moi par mail"
+                                    profilLocation.text =
+                                        "${it.get("name") as String}(${it.get("zipCode") as Long?})"
+                                    profilIsProfessional.text =
+                                        if (userDTO.isProfessional) "Je suis un professionnel" else "Je ne suis pas un professionnel"
+                                    if (userDTO.isProfessional) {
+                                        profilCompanyName.visibility = View.VISIBLE
+                                        profilCompanyName.text = userDTO.companyName
+                                        profilSiret.visibility = View.VISIBLE
+                                        profilSiret.text = userDTO.siretNumber
+                                    }
+                                }
                         }
 
                     } else {
