@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,7 +53,8 @@
         android:id="@+id/profilStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profilStat" />
+        android:text="@string/profilStat"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/signOutButton"
@@ -60,5 +62,13 @@
         android:layout_height="wrap_content"
         android:text="@string/signoutButton"
         android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/profilRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
 
 </LinearLayout>

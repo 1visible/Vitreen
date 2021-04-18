@@ -3,23 +3,31 @@ package c0d3.vitreen.app.fragments.profile
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
+import c0d3.vitreen.app.adapter.AdvertAdapter
+import c0d3.vitreen.app.fragments.home.AdvertFragment
 import c0d3.vitreen.app.fragments.home.HomeFragment
 import c0d3.vitreen.app.models.dto.UserDTO
+import c0d3.vitreen.app.models.mini.AdvertMini
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
     private val db = Firebase.firestore
     private val userDb = db.collection("Users")
     private val locationDB = db.collection("locations")
+    private val advertDB = db.collection("Adverts")
 
     private val auth = Firebase.auth
     private val user = auth.currentUser
+
+    private var advertList = ArrayList<AdvertMini>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +99,35 @@ class ProfileFragment : Fragment() {
                                         profilCompanyName.text = userDTO.companyName
                                         profilSiret.visibility = View.VISIBLE
                                         profilSiret.text = userDTO.siretNumber
+                                        profilStats.visibility = View.VISIBLE
+                                    } else {
+                                        profilCompanyName.visibility = View.INVISIBLE
+                                        profilSiret.visibility = View.INVISIBLE
+                                        profilStats.visibility = View.INVISIBLE
+                                    }
+                                    if ((userDTO.advertsId != null) && (userDTO.advertsId!!.size > 0)) {
+                                        profilRecyclerView.visibility = View.VISIBLE
+                                        val advertAdapter: AdvertAdapter =
+                                            AdvertAdapter { advert -> adapterOnClick(advert) }
+                                        profilRecyclerView.adapter = advertAdapter
+                                        userDTO.advertsId!!.forEach { advertId ->
+                                            advertDB
+                                                .document(advertId)
+                                                .get()
+                                                .addOnSuccessListener {
+                                                    advertList.add(
+                                                        AdvertMini(
+                                                            it.id,
+                                                            it.get("title") as String,
+                                                            it.get("description") as String,
+                                                            it.get("price") as Long
+                                                        )
+                                                    )
+                                                    if (advertList.size == userDTO.advertsId!!.size) {
+                                                        advertAdapter.submitList(advertList)
+                                                    }
+                                                }
+                                        }
                                     }
                                 }
                         }
@@ -121,6 +158,11 @@ class ProfileFragment : Fragment() {
             // Put things here
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    /* Opens Advert  when RecyclerView item is clicked. */
+    private fun adapterOnClick(advert: AdvertMini) {
+
     }
 
     companion object {
