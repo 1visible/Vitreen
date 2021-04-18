@@ -99,11 +99,11 @@ class ProfileFragment : Fragment() {
                                         profilCompanyName.text = userDTO.companyName
                                         profilSiret.visibility = View.VISIBLE
                                         profilSiret.text = userDTO.siretNumber
-                                        profilStats.visibility = View.VISIBLE
+                                        profilStatsButton.visibility = View.VISIBLE
                                     } else {
                                         profilCompanyName.visibility = View.INVISIBLE
                                         profilSiret.visibility = View.INVISIBLE
-                                        profilStats.visibility = View.INVISIBLE
+                                        profilStatsButton.visibility = View.INVISIBLE
                                     }
                                     if ((userDTO.advertsId != null) && (userDTO.advertsId!!.size > 0)) {
                                         profilRecyclerView.visibility = View.VISIBLE

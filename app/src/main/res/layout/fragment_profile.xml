@@ -50,11 +50,17 @@
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/profilStats"
+        android:id="@+id/profilStatsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/profilStat"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/profilModifyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profilModify" />
 
     <Button
         android:id="@+id/signOutButton"

@@ -79,4 +79,5 @@
     <string name="advertDefaultName">Titre d\'annonce par défaut</string>
     <string name="euros">€</string>
     <string name="profilStat">Afficher les statistiques</string>
+    <string name="profilModify">Modifier mon profil</string>
 </resources>
