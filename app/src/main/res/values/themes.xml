@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/teal</item>
         <item name="colorPrimaryDark">@color/darker</item>
         <item name="colorPrimaryVariant">@color/teal</item>
+        <item name="colorSurface">@color/dark</item>
         <item name="colorOnPrimary">@color/dark</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal</item>
@@ -26,5 +27,6 @@
         <item name="editTextStyle">@style/Vitreen.EditText</item>
         <item name="materialButtonStyle">@style/Vitreen.Button</item>
         <item name="badgeStyle">@style/Vitreen.Badge</item>
+        <item name="textInputStyle">@style/Vitreen.TextInputLayout</item>
     </style>
 </resources>

@@ -36,4 +36,19 @@
         <item name="elevation">0dp</item>
     </style>
 
+    <!-- TextInputLayout: alternative MD style -->
+    <style name="Vitreen.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="hintTextColor">@color/white_20</item>
+        <item name="android:textColorHint">@color/white_20</item>
+        <item name="placeholderTextColor">@color/white_20</item>
+        <item name="endIconTint">@color/white_20</item>
+        <item name="boxBackgroundColor">@color/white_10</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeCorners</item>
+    </style>
+
+    <style name="Vitreen.ShapeCorners" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
 </resources>
