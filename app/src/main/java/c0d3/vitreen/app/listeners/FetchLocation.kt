@@ -9,48 +9,34 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.ActivityCompat
 
 
 class FetchLocation : LocationListener {
-
-    private var onLocationFetchListner: OnLocationFetchListner? = null
+    private var onLocationFetchListener: OnLocationFetchListener? = null
     private var locationManager: LocationManager? = null
 
-    fun setOnLocationFetchListner(fetchListner: OnLocationFetchListner?, context: Context) {
-        onLocationFetchListner = fetchListner
+    fun setOnLocationFetchListner(fetchListener: OnLocationFetchListener?, context: Context) {
+        onLocationFetchListener = fetchListener
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            onLocationFetchListner?.onFailed("PERMISSION DENIED")
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            onLocationFetchListener?.onFailed("PERMISSION DENIED")
             return
         }
+
         val criteria = Criteria()
         val provider = locationManager!!.getBestProvider(criteria, false)
-        Log.d("TAG", "BestProvider: $provider")
-        if (provider != null) {
-            locationManager!!.requestLocationUpdates(
-                provider,
-                1,
-                0.0f,
-                this,
-                Looper.getMainLooper()
-            )
-        } else {
-            onLocationFetchListner?.onFailed("NO PROVIDERS")
-        }
+
+        if (provider != null)
+            locationManager!!.requestLocationUpdates(provider, 1, 0.0f, this, Looper.getMainLooper())
+        else
+            onLocationFetchListener?.onFailed("NO PROVIDERS")
     }
 
     override fun onLocationChanged(location: Location) {
-        onLocationFetchListner?.onComplete(location)
+        onLocationFetchListener?.onComplete(location)
         locationManager!!.removeUpdates(this)
         locationManager = null
     }
