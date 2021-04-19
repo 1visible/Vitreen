@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.favorites.FavoritesFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragments.favorites.FavoritesFragment">
 
     <TextView
-        android:gravity="center"
+        android:id="@+id/favoriteHaveToConnect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/NIY" />
+        android:gravity="center"
+        android:text="@string/HTBC" />
+
+    <TextView
+        android:id="@+id/favoriteNoFavorite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/NFav"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favoriteRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>
