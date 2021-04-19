@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="@+id/glass_frame"
         app:layout_constraintStart_toStartOf="@+id/glass_frame"
         app:layout_constraintTop_toTopOf="@+id/glass_frame"
-        android:src="@drawable/bigicon_leaf"
+        android:src="@drawable/bigicon_logo"
         android:contentDescription="@string/bigicon" />
 
     <TextView
