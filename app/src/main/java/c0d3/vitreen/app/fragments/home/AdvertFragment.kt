@@ -17,6 +17,7 @@ import c0d3.vitreen.app.models.dto.AdvertDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEYADVERTID
 import c0d3.vitreen.app.viewModel.AdvertImageViewModel
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -37,7 +38,13 @@ class AdvertFragment : Fragment() {
     private var imageList = ArrayList<Bitmap>()
 
     private val db = Firebase.firestore
+
+    private val auth = Firebase.auth
+    private val user = auth.currentUser
+
     private val adverts = db.collection("Adverts")
+    private val userDb = db.collection("Users")
+
     private val storage = Firebase.storage
     private val storageRef = storage.reference
 
@@ -114,6 +121,35 @@ class AdvertFragment : Fragment() {
                         }
                     }
                     imagesListView.advertImages.observe(viewLifecycleOwner, observer)
+                    advertFavButton.setOnClickListener {
+                        userDb
+                            .whereEqualTo("emailAddress", user.email)
+                            .get()
+                            .addOnSuccessListener { documents ->
+                                if (documents.size() == 1) {
+                                    for (document in documents) {
+                                        println("-------------${advertDTO.id}")
+                                        var listFavorite =
+                                            document.get("favoriteAdvertsId") as ArrayList<String>?
+                                        if (listFavorite != null) {
+                                            if ((!listFavorite.contains(advertDTO.id))
+                                            ) {
+                                                listFavorite.add(advertDTO.id)
+                                            } else {
+                                                listFavorite.remove(advertDTO.id)
+
+                                            }
+                                            userDb
+                                                .document(document.id)
+                                                .update(
+                                                    "favoriteAdvertsId",
+                                                    listFavorite
+                                                )
+                                        }
+                                    }
+                                }
+                            }
+                    }
                 }
         }
     }
