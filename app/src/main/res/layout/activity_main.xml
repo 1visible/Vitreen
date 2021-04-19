@@ -22,14 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <c0d3.vitreen.app.views.TopView
+            <c0d3.vitreen.app.utils.TopView
                 android:id="@+id/topView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                app:icon="@drawable/bigicon_leaf"
+                app:icon="@drawable/bigicon_logo"
                 app:title="@string/welcome">
-            </c0d3.vitreen.app.views.TopView>
+            </c0d3.vitreen.app.utils.TopView>
 
             <fragment
                 android:id="@+id/nav_host_fragment"

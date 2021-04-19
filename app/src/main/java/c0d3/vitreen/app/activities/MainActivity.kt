@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.postDelayed
 import androidx.core.view.forEach
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
     }
 
-    fun setTopViewAttributes(title: String, icon: Int) {
+    fun setTopViewAttributes(title: String, @DrawableRes icon: Int) {
         topView.setAttributes(title, icon)
     }
 
