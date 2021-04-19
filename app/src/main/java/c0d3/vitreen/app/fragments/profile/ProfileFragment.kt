@@ -162,8 +162,13 @@ class ProfileFragment : Fragment() {
 
     /* Opens Advert  when RecyclerView item is clicked. */
     private fun adapterOnClick(advert: AdvertMini) {
-
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment, AdvertFragment.newInstance(advert.id))
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
     }
+
 
     companion object {
         @JvmStatic
