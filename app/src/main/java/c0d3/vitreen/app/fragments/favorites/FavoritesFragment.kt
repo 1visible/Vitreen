@@ -3,8 +3,10 @@ package c0d3.vitreen.app.fragments.favorites
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.AdvertAdapter
+import c0d3.vitreen.app.fragments.home.AdvertFragment
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.models.mini.AdvertMini
 import com.google.firebase.auth.ktx.auth
@@ -115,6 +117,10 @@ class FavoritesFragment : Fragment() {
 
     /* Opens Advert  when RecyclerView item is clicked. */
     private fun adapterOnClick(advert: AdvertMini) {
-
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment, AdvertFragment.newInstance(advert.id))
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .commit()
     }
 }
