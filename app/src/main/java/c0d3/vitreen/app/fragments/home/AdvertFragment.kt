@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import c0d3.vitreen.app.R
@@ -135,9 +136,18 @@ class AdvertFragment : Fragment() {
                                             if ((!listFavorite.contains(advertDTO.id))
                                             ) {
                                                 listFavorite.add(advertDTO.id)
+                                                Toast.makeText(
+                                                    context,
+                                                    getString(R.string.addFavorite),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             } else {
                                                 listFavorite.remove(advertDTO.id)
-
+                                                Toast.makeText(
+                                                    context,
+                                                    getString(R.string.removeFavorite),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                             userDb
                                                 .document(document.id)
