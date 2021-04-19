@@ -6,7 +6,7 @@ import c0d3.vitreen.app.utils.VFragment
 
 class FavoritesFragment :VFragment(
     R.layout.fragment_favorites,
-    R.drawable.bigicon_leaf,
+    R.drawable.bigicon_favorites,
     -1,
     true,
     R.menu.menu_favorites,

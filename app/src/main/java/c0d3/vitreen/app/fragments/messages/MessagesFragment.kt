@@ -6,7 +6,7 @@ import c0d3.vitreen.app.utils.VFragment
 
 class MessagesFragment : VFragment(
     R.layout.fragment_messages,
-    R.drawable.bigicon_user,
+    R.drawable.bigicon_messages,
     -1,
     true,
     R.menu.menu_messages,

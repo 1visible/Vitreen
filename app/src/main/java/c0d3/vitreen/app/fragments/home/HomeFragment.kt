@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : VFragment(
     R.layout.fragment_home,
-    R.drawable.bigicon_leaf,
+    R.drawable.bigicon_logo,
     R.string.welcome,
     true,
     R.menu.menu_messages

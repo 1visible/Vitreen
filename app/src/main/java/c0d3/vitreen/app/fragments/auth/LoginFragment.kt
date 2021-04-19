@@ -12,7 +12,7 @@ import java.util.*
 
 class LoginFragment : VFragment(
     R.layout.fragment_login,
-    R.drawable.bigicon_user,
+    R.drawable.bigicon_authentification,
     -1
 ) {
 
