@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_register1.*
 
 class Register1Fragment : VFragment(
     R.layout.fragment_register1,
-    R.drawable.bigicon_user,
+    R.drawable.bigicon_authentification,
     -1
 ) {
 

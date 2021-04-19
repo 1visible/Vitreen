@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -14,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.listeners.FetchLocation
-import c0d3.vitreen.app.listeners.OnLocationFetchListner
+import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.Constants
@@ -25,7 +24,7 @@ import java.util.*
 
 class Register2Fragment : VFragment(
     R.layout.fragment_register2,
-    R.drawable.bigicon_user,
+    R.drawable.bigicon_authentification,
     -1
 ) {
 
@@ -151,7 +150,7 @@ class Register2Fragment : VFragment(
         }
 
         val fetchLocation = FetchLocation()
-        val listern = object : OnLocationFetchListner {
+        val listern = object : OnLocationFetchListener {
             override fun onComplete(location: android.location.Location?) {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 try {
@@ -164,7 +163,7 @@ class Register2Fragment : VFragment(
                         cityName = adresse[0].locality
                         zipCode = adresse[0].postalCode
                         editTextLocation.text.clear()
-                        editTextLocation.text = adresse[0].locality.toEditable()
+                        editTextLocation.setText(adresse[0].locality)
                     }
 
                 } catch (e: IOException) {
@@ -194,7 +193,5 @@ class Register2Fragment : VFragment(
             }
         }
     }
-
-    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
 }
