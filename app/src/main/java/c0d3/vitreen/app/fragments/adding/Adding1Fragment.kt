@@ -4,291 +4,175 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
-import android.location.LocationManager
 import android.os.Bundle
-import android.text.Editable
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.fragments.auth.Register1Fragment
 import c0d3.vitreen.app.listeners.FetchLocation
-import c0d3.vitreen.app.listeners.OnLocationFetchListner
+import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
-import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import java.io.IOException
+import kotlinx.android.synthetic.main.fragment_adding1.*
+import kotlinx.android.synthetic.main.fragment_register1.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 class Adding1Fragment : VFragment(
-    R.layout.fragment_adding1,
-    R.drawable.bigicon_leaf,
-    -1
+        R.layout.fragment_adding1,
+        R.drawable.bigicon_adding,
+        -1,
+        true,
+        R.menu.menu_adding,
+        true,
+        R.id.action_navigation_adding1_to_navigation_login
 ) {
 
-    private lateinit var category: TextInputLayout
-    private lateinit var title: EditText
-    private lateinit var price: EditText
-    private lateinit var location: EditText
-    private lateinit var description: EditText
-    private lateinit var nextButton: Button
-
-    private val categories = db.collection("Categories")
+    private val categoriesCollection = db.collection("categories")
+    private val locationsCollection = db.collection("locations")
     private val categoriesList = ArrayList<CategoryDTO>()
-    private val locations = db.collection("locations")
 
-    private lateinit var locationManager: LocationManager
-    private var categoryId = ""
-    private lateinit var cityName: String
-    private lateinit var zipCode: String
-
-    override fun onStart() {
-        super.onStart()
-        if ((user == null)) {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        } else if (user.isAnonymous) {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, Register1Fragment.newInstance())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (user == null || user.isAnonymous)
-            findNavController().navigate(R.id.action_navigation_messages_to_navigation_login)
-        return inflater.inflate(R.layout.fragment_adding1, container, false)
-    }
+    private var zipCode: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        cityName = ""
-        zipCode = ""
-        category = view.findViewById(R.id.categories)
-        title = view.findViewById<EditText>(R.id.editTextTitle)
-        price = view.findViewById<EditText>(R.id.editTextPrix)
-        location = view.findViewById<EditText>(R.id.editTextLocalisation)
-        description = view.findViewById<EditText>(R.id.editTextDescription)
-        nextButton = view.findViewById<Button>(R.id.nextButton2)
-
         context?.let { initializeLocation(it) }
 
-        categories.get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val categoryDTO = CategoryDTO(document.id, document.get("name").toString())
-                    categoriesList.add(categoryDTO)
-                }
-                val adapter = context?.let {
-                    ArrayAdapter(
-                        it,
-                        R.layout.list_item,
-                        categoriesList.map { it.DtoToModel().name })
-                }
-                (category.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        // Récupération des catégories depuis la BDD
+        categoriesCollection.get().addOnSuccessListener { documents ->
 
-                nextButton.setOnClickListener {
-                    if (
-                        !category.editText?.text.toString().replace("\\s", "").equals("")
-                        &&
-                        !title.text.toString().replace("\\s", "").equals("")
-                        &&
-                        !price.text.toString().replace("\\s", "").equals("")
-                        &&
-                        !location.text.toString().replace("\\s", "").equals("")
-                        &&
-                        !description.text.toString().replace("\\s", "").equals("")
-                    ) {
-                        val currentLocation = Location(
-                            location.text.toString().replaceFirst(location.text.toString()[0].toChar(),location.text.toString()[0].toUpperCase()),
-                            if (zipCode == "") null else zipCode.toInt()
-                        )
-                        categoriesList.forEach {
-                            if (it.name.equals(category.editText?.text.toString())) {
-                                categoryId = it.id
-                            }
-                        }
-                        locations
-                            .whereEqualTo("name", currentLocation.name)
-                            .get()
-                            .addOnSuccessListener { documents ->
-                                if (documents.size() == 1) {
-                                    for (document in documents) {
-                                        if (document.get("zipCode") == null) {
-                                            locations
-                                                .document(document.id)
-                                                .update("zipCode", currentLocation.zipCode)
-                                        }
-                                        parentFragmentManager
-                                            .beginTransaction()
-                                            .replace(
-                                                R.id.nav_host_fragment,
-                                                Adding2Fragment.newInstance(
-                                                    categoryId,
-                                                    title.text.toString(),
-                                                    price.text.toString(),
-                                                    document.id,
-                                                    description.text.toString()
-                                                )
-                                            )
-                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                            .commit()
-
-                                    }
-                                } else {
-                                    locations.add(currentLocation)
-                                        .addOnSuccessListener { document ->
-                                            parentFragmentManager
-                                                .beginTransaction()
-                                                .replace(
-                                                    R.id.nav_host_fragment,
-                                                    Adding2Fragment.newInstance(
-                                                        categoryId,
-                                                        title.text.toString(),
-                                                        price.text.toString(),
-                                                        document.id,
-                                                        description.text.toString()
-                                                    )
-                                                )
-                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                                .commit()
-                                        }
-                                        .addOnFailureListener {
-                                            Toast.makeText(
-                                                context,
-                                                getString(R.string.ErrorMessage),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                }
-                            }.addOnFailureListener {
-                                Toast.makeText(
-                                    context,
-                                    getString(R.string.ErrorMessage),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-
-                    } else {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.emptyFields),
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-                }
+            // Ajout des catégories dans une liste exploitable
+            documents.forEach { document ->
+                val categoryDTO = CategoryDTO(document.id, document.get("name").toString())
+                categoriesList.add(categoryDTO)
             }
 
+            // Ajout des catégories au menu déroulant du formulaire
+            val adapter = context?.let { context ->
+                ArrayAdapter(context, R.layout.dropdown_menu_item, categoriesList.map { it.DtoToModel().name })
+            }
+
+            (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+        }
+
+        // Bouton de navigation vers le formulaire d'ajout (2/2)
+        buttonToAdding2.setOnClickListener {
+            // Vérifie que les champs du formulaire ne sont pas vides
+            if(isAnyInputEmpty(textInputCategory.editText, editTextTitle, editTextPrice, editTextLocation, editTextDescription)) {
+                showError(R.string.errorMessage)
+                return@setOnClickListener
+            }
+
+            // Récupération de l'ID correspondant à la catégorie choisie
+            var categoryId: String? = null
+
+            categoriesList.forEach { category ->
+                if (category.name == textInputCategory.editText?.text.toString())
+                    categoryId = category.id
+            }
+
+            if(categoryId == null) {
+                showError(R.string.errorMessage)
+                return@setOnClickListener
+            }
+
+            // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
+            val currentLocation = Location(editTextLocation.text.toString().capitalize(Locale.getDefault()), zipCode?.toInt())
+            // Récupération de la localisation renseignée
+            locationsCollection.whereEqualTo("name", currentLocation.name).get().addOnSuccessListener { documents ->
+
+                // Ajout du code postal à la localisation (s'il n'existe pas)
+                if(documents.size() > 0) {
+                    val location = documents.first()
+                    if(location.get("zipCode") == null)
+                        locationsCollection.document(location.id).update("zipCode", currentLocation.zipCode)
+                    // Navigation vers le formulaire d'ajout (2/2) en y passant les données
+                    navigateToAdding2(categoryId, location.id)
+
+                // Ajout de la nouvelle localisation dans la BDD (si elle n'existe pas)
+                } else locationsCollection.add(currentLocation).addOnSuccessListener { location ->
+                    // Navigation vers le formulaire d'ajout (2/2) en y passant les données
+                    navigateToAdding2(categoryId, location.id)
+                }.addOnFailureListener {
+                    showError(R.string.errorMessage)
+                }
+
+            }.addOnFailureListener {
+                showError(R.string.errorMessage)
+            }
+
+        }
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setTopViewAttributes("", R.drawable.bigicon_leaf)
-    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-
-    private fun initializeLocation(context: Context) {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    Constants.LocalisationCode
-                )
+        when (requestCode) {
+            Constants.LocalisationCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    editTextLocation.text.clear()
+                    showError(R.string.locationDenied)
+                    return
+                }
+                navigateTo(R.id.action_navigation_adding1_self)
             }
         }
-        val fetchLocation = FetchLocation();
-        val listern = object : OnLocationFetchListner {
-            override fun onComplete(location: android.location.Location?) {
-                val geocoder = Geocoder(context, Locale.getDefault())
-                try {
-                    val adresse = location?.let {
-                        geocoder.getFromLocation(
-                            location.latitude,
-                            location.longitude,
-                            1
-                        )
-                    }
-                    if (adresse != null) {
-                        cityName = adresse[0].locality
-                        zipCode = adresse[0].postalCode
-                        this@Adding1Fragment.location.text.clear()
-                        this@Adding1Fragment.location.text = adresse[0].locality.toEditable()
-                    }
-                } catch (e: IOException) {
-                    Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT)
-                        .show()
 
+    }
+
+    private fun initializeLocation(context: Context) {
+        // Demande de permission pour la récupération de la localisation
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constants.LocalisationCode)
+
+        // Listener de récupération de localisation
+        FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
+    }
+
+    private fun navigateToAdding2(categoryId: String?, locationId: String) {
+        navigateTo(
+                R.id.action_navigation_adding1_to_navigation_adding2,
+                "categoryId" to categoryId,
+                "title" to editTextTitle.text.toString(),
+                "price" to editTextPrice.text.toString(),
+                "locationId" to locationId,
+                "description" to editTextDescription.text.toString()
+        )
+    }
+
+    private fun getLocationListener(): OnLocationFetchListener {
+        return object: OnLocationFetchListener {
+            override fun onComplete(location: android.location.Location?) {
+                super.onComplete(location)
+                try {
+
+                    val address = location?.let {
+                        Geocoder(context, Locale.getDefault()).getFromLocation(location.latitude, location.longitude, 1)
+                    }
+
+                    if (address != null) {
+                        zipCode = address[0].postalCode
+                        editTextLocation.text.clear()
+                        editTextLocation.setText(address[0].locality)
+                    }
+
+                } catch (_: Exception) {
+                    showError(R.string.errorMessage)
                 }
             }
 
             override fun onFailed(e: String?) {
-                Toast.makeText(context, getString(R.string.noLocation), Toast.LENGTH_SHORT).show()
-            }
-
-        }
-        fetchLocation.setOnLocationFetchListner(listern, context)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            Constants.LocalisationCode -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    location.text.clear()
-                    Toast.makeText(
-                        context,
-                        getString(R.string.locationDenied),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                } else {
-                    parentFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.nav_host_fragment, newInstance())
-                        .commit()
-                }
+                super.onFailed(e)
+                showError(R.string.errorMessage)
             }
         }
     }
 
-    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
-
-    companion object {
-        @JvmStatic
-        fun newInstance(): Adding1Fragment = Adding1Fragment()
-    }
 }

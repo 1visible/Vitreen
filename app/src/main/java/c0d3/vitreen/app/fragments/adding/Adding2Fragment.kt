@@ -11,14 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.fragments.home.HomeFragment
@@ -27,8 +25,6 @@ import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.VFragment
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -41,9 +37,13 @@ import kotlin.collections.ArrayList
 
 
 class Adding2Fragment : VFragment(
-    R.layout.fragment_adding2,
-    R.drawable.bigicon_leaf,
-    -1
+        R.layout.fragment_adding2,
+        R.drawable.bigicon_adding,
+        -1,
+        true,
+        R.menu.menu_adding,
+        true,
+        R.id.action_navigation_adding2_to_navigation_home
 ) {
 
     private var categoryId: String = ""
@@ -65,7 +65,7 @@ class Adding2Fragment : VFragment(
     private val adverts = db.collection("Adverts")
     private val users = db.collection("Users")
     private val locations = db.collection("locations")
-
+/*
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -336,11 +336,10 @@ class Adding2Fragment : VFragment(
         }
     }
 
-    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
-
     fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
         return formatter.format(this)
     }
 
+*/*/
 }
