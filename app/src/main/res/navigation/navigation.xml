@@ -26,16 +26,19 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_adding"
+        android:id="@+id/navigation_adding1"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
         android:label="@string/label_adding"
         tools:layout="@layout/fragment_adding1" >
         <action
-            android:id="@+id/action_navigation_adding_to_adding2Fragment"
+            android:id="@+id/action_navigation_adding1_to_navigation_adding2"
             app:destination="@id/navigation_adding2" />
         <action
-            android:id="@+id/action_navigation_adding_to_navigation_login"
+            android:id="@+id/action_navigation_adding1_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_adding1_self"
+            app:destination="@id/navigation_adding1" />
     </fragment>
 
     <fragment
@@ -65,7 +68,11 @@
         android:id="@+id/navigation_adding2"
         android:name="c0d3.vitreen.app.fragments.adding.Adding2Fragment"
         android:label="fragment_adding2"
-        tools:layout="@layout/fragment_adding2" />
+        tools:layout="@layout/fragment_adding2" >
+        <action
+            android:id="@+id/action_navigation_adding2_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_register1"

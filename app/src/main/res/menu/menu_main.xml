@@ -14,7 +14,7 @@
         android:title="@string/title_messages"/>
 
     <item
-        android:id="@+id/navigation_adding"
+        android:id="@+id/navigation_adding1"
         android:enabled="true"
         android:icon="@drawable/menu_icon_adding"
         android:title="@string/title_adding"/>
