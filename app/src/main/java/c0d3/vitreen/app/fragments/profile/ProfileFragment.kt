@@ -3,14 +3,13 @@ package c0d3.vitreen.app.fragments.profile
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : VFragment(
     R.layout.fragment_profile,
-    R.drawable.bigicon_user,
+    R.drawable.bigicon_profile,
     -1,
     true,
     R.menu.menu_profile,
@@ -37,7 +36,7 @@ class ProfileFragment : VFragment(
 
         signOutButton.setOnClickListener {
             auth.signOut()
-            findNavController().navigate(R.id.action_navigation_profile_to_navigation_home)
+            navigateTo(R.id.action_navigation_profile_to_navigation_home)
         }
 
     }
