@@ -72,14 +72,7 @@ class FavoritesFragment : Fragment() {
                                         .document(it)
                                         .get()
                                         .addOnSuccessListener { advert ->
-                                            advertList.add(
-                                                AdvertMini(
-                                                    advert.id,
-                                                    advert.get("title") as String,
-                                                    advert.get("description") as String,
-                                                    advert.get("price") as Long
-                                                )
-                                            )
+                                            advertList.add(AdvertMini(advert.id, advert.get("title") as String, advert.get("description") as String, advert.get("price") as Long))
                                             if (advertList.size == favAdvertIds.size) {
                                                 advertAdapter.submitList(advertList)
                                             }
