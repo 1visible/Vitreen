@@ -23,6 +23,12 @@
         <item name="android:textColor">@color/teal</item>
     </style>
 
+    <!-- Button: outline style -->
+    <style name="Vitreen.Button.Outline" parent="Vitreen.Button">
+        <item name="android:background">@drawable/outline_button</item>
+        <item name="android:textColor">@color/teal</item>
+    </style>
+
     <!-- Badge: alternative MD style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">@color/teal</item>
