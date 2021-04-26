@@ -9,7 +9,7 @@
     android:layout_marginEnd="@dimen/spacing_lg"
     android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
-    tools:context=".fragments.auth.LoginFragment">
+    tools:context=".fragments.adding.Adding1Fragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputCategory"
