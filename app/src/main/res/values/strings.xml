@@ -80,4 +80,7 @@
     <string name="euros">€</string>
     <string name="profilStat">Afficher les statistiques</string>
     <string name="profilModify">Modifier mon profil</string>
+    <string name="addFavorite">Ajouter aux Favoris</string>
+    <string name="removeFavorite">Retirer des Favoris</string>
+    <string name="NFav">Aucun favoris. Ajouter des favoris</string>
 </resources>
