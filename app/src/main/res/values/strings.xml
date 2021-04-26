@@ -1,4 +1,6 @@
 <resources>
+    <!-- Placeholder text -->
+    <string name="NIY">Not implemented yet</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->
@@ -41,46 +43,8 @@
     <string name="product_price">Prix</string>
     <string name="product_location">Ville</string>
     <string name="product_description">Description</string>
-    <!-- Placeholder text -->
-    <string name="NIY">Not implemented yet</string>
-
-    <!-- TODO: Delete this soon -->
-    <string name="pro">Professionel</string>
-    <string name="connexion">Se connecter</string>
-    <string name="signup">Inscription</string>
-    <string name="welcome">Bienvenue sur Vitreen !</string>
-
-    <string name="ignore_step"><u>Ignorer cette étape</u></string>
-    <string name="bigicon">Icône de la page</string>
-    <string name="lorem">Lorem ipsum</string>
-    <string name="logout">Se déconnecter</string>
-    <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
-
-    <string name="confirmpassword">Confirmation Mot de Passe</string>
-    <string name="emptyFields">Veuillez remplir tout les champs</string>
-    <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
-    <string name="ErrorMessage">Une erreur s\'est produite</string>
-    <string name="signupSucceed">Authentification réussie</string>
-    <string name="inscriptionOk">Inscription terminée</string>
-    <string name="SignInSucceed">Authentification réussie</string>
-    <string name="addAdvert">Ajout d\'un produit</string>
-    <string name="title">Titre</string>
-    <string name="price">Prix</string>
-    <string name="localisation">Localisation</string>
-    <string name="category">Catégorie</string>
-    <string name="addAdvertButton">Ajout</string>
-    <string name="description">Description</string>
-    <string name="locationDenied">Localisation refusée</string>
-    <string name="noLocation">Impossible de récupérer la localisation</string>
-    <string name="brand">Marque</string>
-    <string name="size">Taille</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Placeholder text</string>
-    <string name="tooMuchImages">Vous avez sélectionné trop d\'images</string>
-    <string name="emptyFieldsAndImage">Veuillez renseigner tous les champs et ajouter au moins une image</string>
-    <string name="signoutButton">Se déconnecter</string>
-    <string name="welcomeUser">Bienvenue</string>
-    <string name="NPY">No Product Yet</string>
-    <string name="HTBC">You have to be connected</string>
-    <string name="advertDefaultName">Titre d\'annonce par défaut</string>
+    <!-- Adding2 fragment -->
+    <string name="product_brand">Marque</string>
+    <string name="product_dimensions">Dimensions</string>
+    <string name="add_image">Ajouter une image</string>
 </resources>
