@@ -5,8 +5,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.adapter.AdvertAdapter
-import c0d3.vitreen.app.models.mini.AdvertMini
+import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.mini.ProductMini
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
@@ -22,7 +22,7 @@ class HomeFragment : VFragment(
 
     private var locationId = ""
     private var userId = ""
-    private var listAdvert: ArrayList<AdvertMini> = ArrayList()
+    private var listProduct: ArrayList<ProductMini> = ArrayList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,8 +40,8 @@ class HomeFragment : VFragment(
                 homeTextViewNoConnection.visibility = View.GONE
                 homeTextViewNPY.visibility = View.GONE
                 homeRecyclerView.visibility = View.VISIBLE
-                val advertAdapter = AdvertAdapter { advert -> adapterOnClick(advert) }
-                homeRecyclerView.adapter = advertAdapter
+                val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
+                homeRecyclerView.adapter = productAdapter
                 db.collection("Users")
                         .whereEqualTo("emailAddress", user!!.email)
                         .get()
@@ -55,7 +55,7 @@ class HomeFragment : VFragment(
                                 println("--------------------------------------")
                                 println("--------------${userId}")
                                 println("--------------------------------------")
-                                db.collection("Adverts")
+                                db.collection("Products")
                                         .whereEqualTo("locationId", locationId)
                                         .whereNotEqualTo("ownerId", userId)
                                         .orderBy("ownerId")
@@ -65,7 +65,7 @@ class HomeFragment : VFragment(
                                         .addOnSuccessListener {
                                             if (it.documents.size > 0) {
                                                 for (document in it.documents) {
-                                                    listAdvert.add(AdvertMini(
+                                                    listProduct.add(ProductMini(
                                                             document.id,
                                                             document.get("title") as String,
                                                             document.get("description") as String,
@@ -73,7 +73,7 @@ class HomeFragment : VFragment(
                                                     ))
                                                 }
 
-                                                advertAdapter.submitList(listAdvert)
+                                                productAdapter.submitList(listProduct)
                                             } else {
                                                 homeRecyclerView.visibility = View.GONE
                                                 homeTextViewNoConnection.visibility = View.GONE
@@ -105,7 +105,7 @@ class HomeFragment : VFragment(
         }
     }
 
-    /* Opens Advert  when RecyclerView item is clicked. */
-    private fun adapterOnClick(advert: AdvertMini) { }
+    /* Opens Product when RecyclerView item is clicked. */
+    private fun adapterOnClick(product: ProductMini) { }
 
 }

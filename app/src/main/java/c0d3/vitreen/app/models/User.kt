@@ -12,6 +12,6 @@ data class User(
     val locationId: String,
     val companyName: String? = null,
     val siretNumber: String? = null,
-    val advertsId: ArrayList<String>? = null,
-    val favoriteAdvertsId: ArrayList<String>? = null
+    val productsId: ArrayList<String>? = null,
+    val favoriteProductsId: ArrayList<String>? = null
 )

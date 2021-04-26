@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             topLevelDestinationIds = setOf(
                 R.id.navigation_home,
                 R.id.navigation_messages,
-                R.id.navigation_adding,
+                R.id.navigation_adding1,
                 R.id.navigation_favorites,
                 R.id.navigation_profile,
             )

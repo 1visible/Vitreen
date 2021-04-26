@@ -29,15 +29,13 @@ class Register2Fragment : VFragment(
 ) {
 
     private val locations = db.collection("locations")
-    private var emailAddress: String = ""
+    private lateinit var emailAddress: String
     private var cityName = ""
     private var zipCode = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        arguments?.getString("email")?.let {
-            emailAddress = it
-        }
+        emailAddress = arguments?.getString("email").orEmpty()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 abstract class VFragment(
         @LayoutRes private val layoutId: Int,
@@ -23,8 +24,9 @@ abstract class VFragment(
         private val requireAuth: Boolean = false,
         @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
-
+    
     val db = Firebase.firestore
+    val storage = Firebase.storage
     val auth = Firebase.auth
     var user: FirebaseUser? = auth.currentUser
 
@@ -50,10 +52,6 @@ abstract class VFragment(
             inflater.inflate(topMenuId, menu)
     }
 
-    fun highlightMenuIcon(id: Int) {
-        (activity as MainActivity).highlightMenuIcon(id)
-    }
-
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
         val bundle = bundleOf(*args)
         findNavController().navigate(destinationId, bundle)
@@ -61,7 +59,15 @@ abstract class VFragment(
 
     fun isAnyInputEmpty(vararg editTexts: EditText?): Boolean {
         editTexts.forEach { editText ->
-            if(editText?.text.toString().trim().isEmpty())
+            if(editText?.text.isNullOrBlank())
+                return true
+        }
+        return false
+    }
+
+    fun isAnyStringEmpty(vararg texts: String?): Boolean {
+        texts.forEach { text ->
+            if(text.isNullOrBlank())
                 return true
         }
         return false
