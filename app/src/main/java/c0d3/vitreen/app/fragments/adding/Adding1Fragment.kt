@@ -139,11 +139,11 @@ class Adding1Fragment : VFragment(
     private fun navigateToAdding2(categoryId: String?, locationId: String) {
         navigateTo(
                 R.id.action_navigation_adding1_to_navigation_adding2,
-                "categoryId" to categoryId,
-                "title" to editTextTitle.text.toString(),
-                "price" to editTextPrice.text.toString(),
-                "locationId" to locationId,
-                "description" to editTextDescription.text.toString()
+                Constants.CATEGORY_ID to categoryId,
+                Constants.TITLE to editTextTitle.text.toString(),
+                Constants.PRICE to editTextPrice.text.toString(),
+                Constants.LOCATION_ID to locationId,
+                Constants.DESCRIPTION to editTextDescription.text.toString()
         )
     }
 
