@@ -1,6 +1,6 @@
 package c0d3.vitreen.app.models.mini
 
-data class AdvertMini(
+data class ProductMini(
         val id:String,
         val title: String,
         val description: String,

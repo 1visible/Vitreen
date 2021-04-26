@@ -1,6 +1,6 @@
 package c0d3.vitreen.app.models
 
-data class Advert(
+data class Product(
     val title: String,
     val description: String,
     val price: Float,

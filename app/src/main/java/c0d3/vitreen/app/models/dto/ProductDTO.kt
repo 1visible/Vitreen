@@ -1,8 +1,8 @@
 package c0d3.vitreen.app.models.dto
 
-import c0d3.vitreen.app.models.Advert
+import c0d3.vitreen.app.models.Product
 
-data class AdvertDTO(
+data class ProductDTO(
         val id: String,
         val title: String,
         val description: String,
@@ -17,8 +17,8 @@ data class AdvertDTO(
         val createdAt: String,
         val modifiedAt: String,
 ) {
-    fun AdvertDTOToModel(): Advert {
-        return Advert(
+    fun ProductDTOToModel(): Product {
+        return Product(
                 title,
                 description,
                 price,
