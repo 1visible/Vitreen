@@ -132,6 +132,27 @@ class ProfileFragment : VFragment(
 
     }
 
+    //Supprimer un compte
+    private fun deleteAccount() {
+        if ((user != null) && (!user!!.isAnonymous)) {
+            usersCollection
+                .whereEqualTo("emailAddress", user!!.email)
+                .get()
+                .addOnSuccessListener { dbusers ->
+                    if (dbusers.size() == 1) {
+                        for (dbuser in dbusers) {
+                            usersCollection.document(dbuser.id).delete()
+                            user!!.delete()
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    showError(R.string.errorMessage)
+                }
+
+        }
+    }
+
     // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
