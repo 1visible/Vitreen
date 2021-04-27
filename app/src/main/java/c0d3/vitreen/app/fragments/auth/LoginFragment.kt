@@ -2,7 +2,6 @@ package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.VFragment
@@ -29,7 +28,7 @@ class LoginFragment : VFragment(
                     removeAnonymousUser()
 
             } else
-                Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
+                showError(R.string.errorMessage)
         }
 
         buttonToRegister1.setOnClickListener {
@@ -50,7 +49,7 @@ class LoginFragment : VFragment(
                     user = null
                     signInUser()
                 } else
-                    Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                    showError(R.string.errorMessage)
             }
     }
 
@@ -58,10 +57,9 @@ class LoginFragment : VFragment(
         auth.signInWithEmailAndPassword(editTextEmail.text.toString(), editTextPassword.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(requireContext(), getString(R.string.SignInSucceed), Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_navigation_login_to_navigation_home)
                 } else {
-                    Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                    showError(R.string.errorMessage)
                     editTextPassword.text.clear()
                 }
             }

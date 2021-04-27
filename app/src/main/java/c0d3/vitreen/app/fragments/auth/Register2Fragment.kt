@@ -16,7 +16,6 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register2.*
@@ -28,8 +27,6 @@ class Register2Fragment : VFragment(
     R.drawable.bigicon_authentification,
     -1
 ) {
-
-    private val locations = db.collection("locations")
     private lateinit var emailAddress: String
     private var cityName = ""
     private var zipCode = ""
@@ -43,108 +40,120 @@ class Register2Fragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
         context?.let { initializeLocation(it) }
         switchProfessionalAccount.setOnCheckedChangeListener { _, isChecked ->
-            editTextCompany.visibility = if(isChecked) View.VISIBLE else View.GONE
-            editTextSiret.visibility = if(isChecked) View.VISIBLE else View.GONE
+            editTextCompany.visibility = if (isChecked) View.VISIBLE else View.GONE
+            editTextSiret.visibility = if (isChecked) View.VISIBLE else View.GONE
         }
 
         buttonSubmitRegister.setOnClickListener {
             var user: User
             val currentLocation = Location(
-                    editTextLocation.text.toString().replaceFirst(editTextLocation.text.toString()[0],editTextLocation.text.toString()[0].toUpperCase()),
-                    if (zipCode == "") null else zipCode.toInt()
+                editTextLocation.text.toString().replaceFirst(
+                    editTextLocation.text.toString()[0],
+                    editTextLocation.text.toString()[0].toUpperCase()
+                ),
+                if (zipCode == "") null else zipCode.toInt()
             )
 
-            locations.whereEqualTo("name", currentLocation.name)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        if (documents.size() == 1) {
-                            for (document in documents) {
-                                if (document.get("zipCode") == null) {
-                                    locations
-                                            .document(document.id)
-                                            .update("zipCode", currentLocation.zipCode)
-                                }
-                                if (switchProfessionalAccount.isChecked) {
-                                    user = User(
-                                            editTextFullname.text.toString(),
-                                            emailAddress,
-                                            editTextPhoneNumber.text.toString(),
-                                            radioButtonPhone.isChecked,
-                                            true,
-                                            document.id,
-                                            editTextCompany.text.toString(),
-                                            editTextSiret.text.toString()
-                                    )
-                                } else {
-                                    user = User(
-                                            editTextFullname.text.toString(),
-                                            emailAddress,
-                                            editTextPhoneNumber.text.toString(),
-                                            radioButtonPhone.isChecked,
-                                            false,
-                                            document.id
-                                    )
-                                }
-
-                                db.collection("Users").document().set(user).addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        Toast.makeText(requireContext(), getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
-                                        (activity as MainActivity).onBackPressed()
-                                    } else
-                                        Toast.makeText(requireContext(), getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
-                                }
-
+            locationsCollection.whereEqualTo("name", currentLocation.name)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.size() == 1) {
+                        for (document in documents) {
+                            if (document.get("zipCode") == null) {
+                                locationsCollection
+                                    .document(document.id)
+                                    .update("zipCode", currentLocation.zipCode)
                             }
-                        } else {
-                            locations.add(currentLocation)
-                                    .addOnSuccessListener {
-                                        if (switchProfessionalAccount.isChecked) {
-                                            user = User(
-                                                    editTextFullname.text.toString(),
-                                                    emailAddress,
-                                                    editTextPhoneNumber.text.toString(),
-                                                    radioButtonPhone.isChecked,
-                                                    true,
-                                                    it.id,
-                                                    editTextCompany.text.toString(),
-                                                    editTextSiret.text.toString()
-                                            )
-                                        } else {
-                                            user = User(
-                                                    editTextFullname.text.toString(),
-                                                    emailAddress,
-                                                    editTextPhoneNumber.text.toString(),
-                                                    radioButtonPhone.isChecked,
-                                                    false,
-                                                    it.id
-                                            )
-                                        }
+                            user = if (switchProfessionalAccount.isChecked) {
+                                User(
+                                    editTextFullname.text.toString(),
+                                    emailAddress,
+                                    editTextPhoneNumber.text.toString(),
+                                    radioButtonPhone.isChecked,
+                                    true,
+                                    document.id,
+                                    editTextCompany.text.toString(),
+                                    editTextSiret.text.toString()
+                                )
+                            } else {
+                                User(
+                                    editTextFullname.text.toString(),
+                                    emailAddress,
+                                    editTextPhoneNumber.text.toString(),
+                                    radioButtonPhone.isChecked,
+                                    false,
+                                    document.id
+                                )
+                            }
+                            usersCollection.document().set(user).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    (activity as MainActivity).onBackPressed()
+                                } else
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.errorMessage),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                            }
 
-                                        db.collection("Users").document().set(user).addOnCompleteListener { task ->
-                                            if (task.isSuccessful) {
-                                                Toast.makeText(requireContext(), getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
-                                                (activity as MainActivity).onBackPressed()
-                                            } else
-                                                Toast.makeText(requireContext(), getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
-                                    }
                         }
+                    } else {
+                        locationsCollection.add(currentLocation)
+                            .addOnSuccessListener {
+                                user = if(switchProfessionalAccount.isChecked){
+                                    User(
+                                        editTextFullname.text.toString(),
+                                        emailAddress,
+                                        editTextPhoneNumber.text.toString(),
+                                        radioButtonPhone.isChecked,
+                                        true,
+                                        it.id,
+                                        editTextCompany.text.toString(),
+                                        editTextSiret.text.toString()
+                                    )
+                                }else{
+                                    User(
+                                        editTextFullname.text.toString(),
+                                        emailAddress,
+                                        editTextPhoneNumber.text.toString(),
+                                        radioButtonPhone.isChecked,
+                                        false,
+                                        it.id
+                                    )
+                                }
+
+                                usersCollection.document().set(user).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        (activity as MainActivity).onBackPressed()
+                                    } else{
+                                        showError(R.string.errorMessage)
+                                    }
+                                }
+                            }
+                            .addOnFailureListener {
+                                showError(R.string.errorMessage)
+                            }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
-                    }
+                }
+                .addOnFailureListener {
+                    showError(R.string.errorMessage)
+                }
         }
     }
 
     private fun initializeLocation(context: Context) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCALISATION_REQUEST
+                )
             }
         }
 
@@ -166,7 +175,8 @@ class Register2Fragment : VFragment(
                     }
 
                 } catch (e: IOException) {
-                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -178,13 +188,18 @@ class Register2Fragment : VFragment(
         fetchLocation.setOnLocationFetchListner(listern, context)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     editTextLocation.text.clear()
-                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT)
+                        .show()
                 } else {
                     val bundle = bundleOf("email" to emailAddress)
                     findNavController().navigate(R.id.action_navigation_register2_self, bundle)

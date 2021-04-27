@@ -32,7 +32,6 @@
     <!-- Register2 fragment -->
     <string name="fullname">Nom complet</string>
     <string name="phone_number">N° de téléphone</string>
-    <string name="postal_address">Adresse postale</string>
     <string name="contact_by_phone">Je veux être contacté par téléphone</string>
     <string name="contact_by_email">Je veux être contacté par e-mail</string>
     <string name="professional_account">Je suis un professionnel</string>
