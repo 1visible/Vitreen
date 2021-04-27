@@ -131,10 +131,10 @@ class ProfileFragment : VFragment(
                 println("-------------------------problème")
             }
 
-        /*signOutButton.setOnClickListener {
+        signOutButton.setOnClickListener {
             auth.signOut()
             navigateTo(R.id.action_navigation_profile_to_navigation_home)
-        }*/
+        }
 
     }
 

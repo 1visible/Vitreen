@@ -44,9 +44,6 @@ class Adding1Fragment : VFragment(
 
         context?.let { initializeLocation(it) }
 
-        categoriesCollection.document().set(Category("multimédia"))
-        categoriesCollection.document().set(Category("vêtement"))
-
         // Récupération des catégories depuis la BDD
         categoriesCollection.get().addOnSuccessListener { documents ->
 
@@ -64,7 +61,7 @@ class Adding1Fragment : VFragment(
                     categoriesList.map { it.DtoToModel().name })
             }
 
-            (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
         }
 
