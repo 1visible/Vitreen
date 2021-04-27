@@ -2,7 +2,6 @@ package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
@@ -32,11 +31,11 @@ class Register1Fragment : VFragment(
                 } else {
                     editTextPassword.text.clear()
                     editTextPasswordConfirmation.text.clear()
-                    Toast.makeText(requireContext(), getString(R.string.NoMatchPassword), Toast.LENGTH_SHORT).show()
+                    showError(R.string.errorMessage)
                 }
 
             } else
-                Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_SHORT).show()
+                showError(R.string.errorMessage)
         }
 
         buttonToLogin.setOnClickListener {
@@ -52,7 +51,7 @@ class Register1Fragment : VFragment(
                     val bundle = bundleOf("email" to editTextEmail.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
-                    Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                    showError(R.string.errorMessage)
                     // TODO: Gérer les erreurs
                     //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
                 }
@@ -67,7 +66,7 @@ class Register1Fragment : VFragment(
                     val bundle = bundleOf("email" to editTextEmail.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
-                    Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                   showError(R.string.errorMessage)
                     // TODO: Gérer les erreurs
                 }
             }

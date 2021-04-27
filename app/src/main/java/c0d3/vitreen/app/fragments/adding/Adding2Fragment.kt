@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.fragments.adding
 
+import android.R.attr
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
@@ -15,8 +16,6 @@ import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST_TAG
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
-import c0d3.vitreen.app.utils.Constants.Companion.PERSO_LIMIT_IMAGES
-import c0d3.vitreen.app.utils.Constants.Companion.PRO_LIMIT_IMAGES
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.TITLE
@@ -39,11 +38,6 @@ class Adding2Fragment : VFragment(
         true,
         R.id.action_navigation_adding2_to_navigation_home
 ) {
-
-    private val productsCollection = db.collection("products")
-    private val usersCollection = db.collection("users")
-    private val locationsCollection = db.collection("locations")
-
     private var imageEncoded: String? = null
     private var imagesEncodedList: ArrayList<String>? = null
     private var mArrayUri = ArrayList<Uri>()

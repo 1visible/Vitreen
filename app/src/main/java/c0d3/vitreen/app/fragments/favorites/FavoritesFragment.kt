@@ -1,14 +1,15 @@
 package c0d3.vitreen.app.fragments.favorites
 
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.view.MenuItem
+import android.view.View
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.fragment_favorites.*
 
-class FavoritesFragment :VFragment(
+class FavoritesFragment : VFragment(
     R.layout.fragment_favorites,
     R.drawable.bigicon_favorites,
     -1,
@@ -20,7 +21,7 @@ class FavoritesFragment :VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (user == null || user.isAnonymous) {
+        if (user == null || user!!.isAnonymous) {
             favoriteHaveToConnect.visibility = View.VISIBLE
             favoriteRecyclerView.visibility = View.GONE
             favoriteNoFavorite.visibility = View.GONE
@@ -29,32 +30,39 @@ class FavoritesFragment :VFragment(
             favoriteRecyclerView.visibility = View.VISIBLE
             favoriteNoFavorite.visibility = View.GONE
             //Récupération de la liste d'annonces en favori de l'utilisateur courant
-            userDb
-                .whereEqualTo("emailAddress", user.email)
+            usersCollection
+                .whereEqualTo("emailAddress", user!!.email)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.size() == 1) {
-                        var favAdvertIds: ArrayList<String>? = null
+                        var favoritesProductsIdsList: ArrayList<String>? = null
                         for (document in documents) {
-                            favAdvertIds =
+                            favoritesProductsIdsList =
                                 document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
                         }
                         //Si la liste existe et possède des éléments
-                        if (favAdvertIds != null) {
-                            if (favAdvertIds.size > 0) {
-                                var advertList: ArrayList<AdvertMini> = ArrayList()
-                                val advertAdapter: AdvertAdapter =
-                                    AdvertAdapter { advert -> adapterOnClick(advert) }
-                                favoriteRecyclerView.adapter = advertAdapter
+                        if (favoritesProductsIdsList != null) {
+                            if (favoritesProductsIdsList.size > 0) {
+                                var productsList: ArrayList<ProductSDTO> = ArrayList()
+                                val productAdapter: ProductAdapter =
+                                    ProductAdapter { product -> adapterOnClick(product) }
+                                favoriteRecyclerView.adapter = productAdapter
                                 //Récupération des infos des annonces présentes dans cette liste
-                                favAdvertIds.forEach {
-                                    advertDB
+                                favoritesProductsIdsList.forEach {
+                                    productsCollection
                                         .document(it)
                                         .get()
-                                        .addOnSuccessListener { advert ->
-                                            advertList.add(AdvertMini(advert.id, advert.get("title") as String, advert.get("description") as String, advert.get("price") as Long))
-                                            if (advertList.size == favAdvertIds.size) {
-                                                advertAdapter.submitList(advertList)
+                                        .addOnSuccessListener { product ->
+                                            productsList.add(
+                                                ProductSDTO(
+                                                    product.id,
+                                                    product.get("title") as String,
+                                                    product.get("description") as String,
+                                                    product.get("price") as Long
+                                                )
+                                            )
+                                            if (productsList.size == favoritesProductsIdsList.size) {
+                                                productAdapter.submitList(productsList)
                                             }
                                         }
                                 }
@@ -74,9 +82,6 @@ class FavoritesFragment :VFragment(
                 }
         }
     }
-    private val userDb = db.collection("Users")
-    private val locationDB = db.collection("locations")
-    private val advertDB = db.collection("Adverts")
 
     // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -87,11 +92,7 @@ class FavoritesFragment :VFragment(
     }
 
     /* Opens Advert  when RecyclerView item is clicked. */
-    private fun adapterOnClick(advert: AdvertMini) {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.nav_host_fragment, AdvertFragment.newInstance(advert.id))
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
+    private fun adapterOnClick(product: ProductSDTO) {
+
     }
 }
