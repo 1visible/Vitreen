@@ -122,9 +122,6 @@
         android:name="c0d3.vitreen.app.fragments.error.ErrorFragment"
         android:label="@string/label_error"
         tools:layout="@layout/fragment_error">
-        <action
-            android:id="@+id/action_navigation_error_to_navigation_favorites"
-            app:destination="@+id/navigation_favorites" />
     </fragment>
 
 </navigation>
