@@ -12,6 +12,11 @@ class Constants {
         const val GALLERY_REQUEST_TAG: String = "Select picture"
         const val IMAGES_LIMIT_USER: Int = 3
         const val IMAGES_LIMIT_PROFESSIONAL: Int = 5
+        const val USER_COLLECTION = "users"
+        const val PRODUCT_COLLECTION = "products"
+        const val LOCATION_COLLECTION = "locations"
+        const val CATEGORY_COLLECTION = "categories"
+        const val DISCUSSION_COLLECTION = "discussions"
 
         // TODO : Remove if not necessary
         const val HomeLimit = 25
