@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_error"
+            app:destination="@id/navigation_error" />
     </fragment>
 
     <fragment
@@ -121,7 +124,6 @@
         android:id="@+id/navigation_error"
         android:name="c0d3.vitreen.app.fragments.error.ErrorFragment"
         android:label="@string/label_error"
-        tools:layout="@layout/fragment_error">
-    </fragment>
+        tools:layout="@layout/fragment_error"/>
 
 </navigation>
