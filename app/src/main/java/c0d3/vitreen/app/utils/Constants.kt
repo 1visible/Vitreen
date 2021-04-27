@@ -8,10 +8,9 @@ class Constants {
         const val LOCATION_ID = "locationId"
         const val DESCRIPTION = "description"
         const val GALLERY_REQUEST = 12254
+        const val LOCALISATION_REQUEST = 15266
 
-        const val KEYEMAIL = "KEYEMAIL"
-        const val TAG = "C0D3"
-        const val LocalisationCode = 15266
+        // TODO : Remove if not necessary
         const val HomeLimit = 25
     }
 }

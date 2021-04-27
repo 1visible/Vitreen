@@ -1,6 +1,10 @@
 <resources>
     <!-- Placeholder text -->
+    <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
+    <string name="placeholder_title">Titre</string>
+    <string name="placeholder_category">Catégorie</string>
+    <string name="placeholder_location">Lieu</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->
@@ -47,4 +51,6 @@
     <string name="product_brand">Marque</string>
     <string name="product_dimensions">Dimensions</string>
     <string name="add_image">Ajouter une image</string>
+    <!-- Product item -->
+    <string name="price">%1$d€</string>
 </resources>

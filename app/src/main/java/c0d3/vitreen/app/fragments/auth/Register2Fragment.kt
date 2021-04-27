@@ -17,6 +17,7 @@ import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register2.*
 import java.io.IOException
@@ -90,7 +91,7 @@ class Register2Fragment : VFragment(
                                         Toast.makeText(requireContext(), getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
                                         (activity as MainActivity).onBackPressed()
                                     } else
-                                        Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(requireContext(), getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                                 }
 
                             }
@@ -124,16 +125,16 @@ class Register2Fragment : VFragment(
                                                 Toast.makeText(requireContext(), getString(R.string.inscriptionOk), Toast.LENGTH_SHORT).show()
                                                 (activity as MainActivity).onBackPressed()
                                             } else
-                                                Toast.makeText(requireContext(), getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(requireContext(), getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     .addOnFailureListener {
-                                        Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                                     }
                         }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                     }
         }
     }
@@ -143,7 +144,7 @@ class Register2Fragment : VFragment(
             != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constants.LocalisationCode)
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
             }
         }
 
@@ -165,12 +166,12 @@ class Register2Fragment : VFragment(
                     }
 
                 } catch (e: IOException) {
-                    Toast.makeText(context, getString(R.string.ErrorMessage), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailed(e: String?) {
-                Toast.makeText(context, getString(R.string.noLocation), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -180,10 +181,10 @@ class Register2Fragment : VFragment(
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            Constants.LocalisationCode -> {
+            LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     editTextLocation.text.clear()
-                    Toast.makeText(context, getString(R.string.locationDenied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                 } else {
                     val bundle = bundleOf("email" to emailAddress)
                     findNavController().navigate(R.id.action_navigation_register2_self, bundle)

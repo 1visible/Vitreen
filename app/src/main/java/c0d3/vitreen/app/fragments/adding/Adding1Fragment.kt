@@ -13,7 +13,12 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
-import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
+import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
+import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
+import c0d3.vitreen.app.utils.Constants.Companion.PRICE
+import c0d3.vitreen.app.utils.Constants.Companion.TITLE
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_register1.*
@@ -113,10 +118,10 @@ class Adding1Fragment : VFragment(
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            Constants.LocalisationCode -> {
+            LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     editTextLocation.text.clear()
-                    showError(R.string.locationDenied)
+                    showError(R.string.errorMessage)
                     return
                 }
                 navigateTo(R.id.action_navigation_adding1_self)
@@ -130,7 +135,7 @@ class Adding1Fragment : VFragment(
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), Constants.LocalisationCode)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
 
         // Listener de récupération de localisation
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
@@ -139,11 +144,11 @@ class Adding1Fragment : VFragment(
     private fun navigateToAdding2(categoryId: String?, locationId: String) {
         navigateTo(
                 R.id.action_navigation_adding1_to_navigation_adding2,
-                Constants.CATEGORY_ID to categoryId,
-                Constants.TITLE to editTextTitle.text.toString(),
-                Constants.PRICE to editTextPrice.text.toString(),
-                Constants.LOCATION_ID to locationId,
-                Constants.DESCRIPTION to editTextDescription.text.toString()
+                CATEGORY_ID to categoryId,
+                TITLE to editTextTitle.text.toString(),
+                PRICE to editTextPrice.text.toString(),
+                LOCATION_ID to locationId,
+                DESCRIPTION to editTextDescription.text.toString()
         )
     }
 

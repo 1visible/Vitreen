@@ -1,8 +1,10 @@
 package c0d3.vitreen.app.fragments.adding
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
@@ -125,10 +127,17 @@ class Adding2Fragment : VFragment(
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && attr.data != null) {
+            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+        }
+    }
+
 /*
     @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        try {
             // When an Image is picked
             if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && null != attr.data) {
                 // Get the Image from data
@@ -209,18 +218,7 @@ class Adding2Fragment : VFragment(
                         }
                     }
                 }
-            } else {
-                Toast.makeText(
-                        context, "You haven't picked Image",
-                        Toast.LENGTH_LONG
-                ).show()
             }
-        } catch (e: Exception) {
-            Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG)
-                    .show()
-        }
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
 */
