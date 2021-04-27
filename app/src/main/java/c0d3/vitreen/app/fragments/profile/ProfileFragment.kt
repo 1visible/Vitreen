@@ -42,8 +42,8 @@ class ProfileFragment : VFragment(
                             document.get("locationId") as String,
                             document.get("companyName") as String?,
                             document.get("siretNumber") as String?,
-                            document.get("productId") as ArrayList<String>?,
-                            document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
+                            document.get("productsId") as ArrayList<String>?,
+                            document.get("favoriteProductsId") as java.util.ArrayList<String>?
                         )
                     }
                     if (userDTO != null) {
@@ -111,12 +111,16 @@ class ProfileFragment : VFragment(
                                 }
                                 if ((userDTO.productsId != null) && (userDTO.productsId!!.size > 0)) {
                                     recyclerViewProducts.visibility = View.VISIBLE
+                                    textViewNoProducts.visibility = View.GONE
                                     val productAdapter: ProductAdapter =
                                         ProductAdapter { product -> adapterOnClick(product) }
                                     recyclerViewProducts.adapter = productAdapter
-                                    userDTO.productsId!!.forEach { advertId ->
+                                    userDTO.productsId!!.forEach { productId ->
+                                        println("------------------------------------")
+                                        println("je rend le recyclerView visible ${productId}")
+                                        println("------------------------------------")
                                         productsCollection
-                                            .document(advertId)
+                                            .document(productId)
                                             .get()
                                             .addOnSuccessListener {
                                                 categoriesCollection
@@ -136,13 +140,19 @@ class ProfileFragment : VFragment(
                                                                         it.get("price") as Long
                                                                     )
                                                                 )
+                                                                if (productsList.size == userDTO.productsId!!.size) {
+                                                                    productAdapter.submitList(
+                                                                        productsList
+                                                                    )
+                                                                }
                                                             }
                                                     }
-                                                if (productsList.size == userDTO.productsId!!.size) {
-                                                    productAdapter.submitList(productsList)
-                                                }
+
                                             }
                                     }
+                                } else {
+                                    recyclerViewProducts.visibility = View.GONE
+                                    textViewNoProducts.visibility = View.VISIBLE
                                 }
                             }
                     }
