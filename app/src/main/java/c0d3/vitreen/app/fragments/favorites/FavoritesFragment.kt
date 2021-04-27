@@ -47,14 +47,25 @@ class FavoritesFragment : VFragment(
                                     .document(it)
                                     .get()
                                     .addOnSuccessListener { product ->
-                                        productsList.add(
-                                            ProductSDTO(
-                                                product.id,
-                                                product.get("title") as String,
-                                                product.get("description") as String,
-                                                product.get("price") as Long
-                                            )
-                                        )
+                                        categoriesCollection
+                                            .document(product.get("categoryId") as String)
+                                            .get()
+                                            .addOnSuccessListener { category ->
+                                                locationsCollection
+                                                    .document(product.get("locationId") as String)
+                                                    .get()
+                                                    .addOnSuccessListener { location ->
+                                                        productsList.add(
+                                                            ProductSDTO(
+                                                                product.id,
+                                                                product.get("title") as String,
+                                                                category.get("name") as String,
+                                                                location.get("name") as String,
+                                                                product.get("price") as Long
+                                                            )
+                                                        )
+                                                    }
+                                            }
                                         if (productsList.size == favoritesProductsIdsList.size) {
                                             productAdapter.submitList(productsList)
                                         }

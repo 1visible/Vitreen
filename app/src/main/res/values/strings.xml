@@ -63,4 +63,9 @@
     <string name="no_favorites">Aucun favori à afficher.</string>
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
+    <string name="postal_address">Ville</string>
+    <string name="signup">Se connecter</string>
+    <string name="label_error">erreur</string>
+    <string name="label_product">produit</string>
+    <string name="welcome">Bienvenue</string>
 </resources>

@@ -58,17 +58,38 @@ class HomeFragment : VFragment(
                                 .addOnSuccessListener {
                                     if (it.documents.size > 0) {
                                         for (document in it.documents) {
-                                            listProduct.add(
-                                                ProductSDTO(
-                                                    document.id,
-                                                    document.get("title") as String,
-                                                    document.get("description") as String,
-                                                    document.get("price") as Long
-                                                )
-                                            )
+                                            categoriesCollection
+                                                .document(document.get("categoryId") as String)
+                                                .get()
+                                                .addOnSuccessListener { category ->
+                                                    println("----------------------------")
+                                                    println(category.get("name") as String)
+                                                    println("----------------------------")
+                                                    locationsCollection
+                                                        .document(document.get("locationId") as String)
+                                                        .get()
+                                                        .addOnSuccessListener { location ->
+                                                            println("----------------------------")
+                                                            println(location.get("name") as String)
+                                                            println("----------------------------")
+                                                            listProduct.add(
+                                                                ProductSDTO(
+                                                                    document.id,
+                                                                    document.get("title") as String,
+                                                                    category.get("name") as String,
+                                                                    location.get("name") as String,
+                                                                    document.get("price") as Long
+                                                                )
+                                                            )
+                                                            if(listProduct.size == it.documents.size){
+                                                                println("-----------------------------")
+                                                                println(listProduct.size)
+                                                                println("-----------------------------")
+                                                                productAdapter.submitList(listProduct)
+                                                            }
+                                                        }
+                                                }
                                         }
-
-                                        productAdapter.submitList(listProduct)
                                     } else {
                                         recyclerViewProducts.visibility = View.GONE
                                         textViewNoProducts.visibility = View.VISIBLE
@@ -104,6 +125,6 @@ class HomeFragment : VFragment(
 
     /* Opens Product when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
-     }
+    }
 
 }

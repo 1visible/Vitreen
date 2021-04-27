@@ -18,7 +18,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.KEYADVERTID
 import c0d3.vitreen.app.utils.ProductImageViewModel
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.product_item.view.*
-import kotlinx.android.synthetic.main.fragment_advert.*
+import kotlinx.android.synthetic.main.fragment_product.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,7 +28,7 @@ import kotlin.collections.ArrayList
  * create an instance of this fragment.
  */
 class ProductFragment : VFragment(
-    R.layout.fragment_advert,
+    R.layout.fragment_product,
     R.drawable.bigicon_adding,
     -1,
     false,
@@ -76,14 +76,15 @@ class ProductFragment : VFragment(
                         product.get("modifiedAt") as String
                     )
 
-                    advertTitle.setText(productDTO.title)
-                    advertBrand.setText(productDTO.brand)
-                    advertDescription.setText(productDTO.description)
-                    advertPrice.setText(productDTO.price.toString())
-                    advertSize.setText(productDTO.size ?: "")
+                    textViewTitle.setText(productDTO.title)
+                    textViewBrand.setText(productDTO.brand)
+                    textViewDescription.setText(productDTO.description)
+                    textViewPrice.setText(getString(R.string.price, productDTO.price))
+                    textViewDimensions.setText(productDTO.size ?: "")
 
                     for (i in 0..productDTO.nbImages) {
-                        val productImageRef = storageRef.child("images/${productDTO.id}/image_$i.png")
+                        val productImageRef =
+                            storageRef.child("images/${productDTO.id}/image_$i.png")
                         val ONE_MEGABYTE: Long = 1024 * 1024
                         productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                             imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
@@ -100,11 +101,11 @@ class ProductFragment : VFragment(
                         newList.forEach { image ->
                             var imageView = ImageView(requireContext())
                             imageView.setImageBitmap(image)
-                            ImageLayout.addView(imageView)
+                           // ImageLayout.addView(imageView)
                         }
                     }
                     imagesListView.advertImages.observe(viewLifecycleOwner, observer)
-                    advertFavButton.setOnClickListener {
+                    /*advertFavButton.setOnClickListener {
                         usersCollection
                             .whereEqualTo("emailAddress", user!!.email)
                             .get()
@@ -128,7 +129,7 @@ class ProductFragment : VFragment(
                                     }
                                 }
                             }
-                    }
+                    }*/
                 }
         }
     }

@@ -58,9 +58,8 @@ class Adding2Fragment : VFragment(
         val price: String = arguments?.getString(PRICE).orEmpty()
         val locationId: String = arguments?.getString(LOCATION_ID).orEmpty()
         val description: String = arguments?.getString(DESCRIPTION).orEmpty()
-
         usersCollection
-            .whereEqualTo("email", user?.email)
+            .whereEqualTo("emailAddress", user?.email)
             .get()
             .addOnSuccessListener { documents ->
 
@@ -75,6 +74,9 @@ class Adding2Fragment : VFragment(
                     if (user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
 
                 buttonConfirmation.setOnClickListener {
+                    println("-------------------------------------")
+                    println("j'ai appuyé sur un bouton")
+                    println("-------------------------------------")
                     // Vérifie que les champs du formulaire ne sont pas vides
                     if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
                         showError(R.string.errorMessage)
@@ -116,6 +118,7 @@ class Adding2Fragment : VFragment(
                                 if (user.productsId == null) ArrayList() else user.productsId
                             user.productsId?.add(product.id)
                             usersCollection.document(user.id).update("productsId", user.productsId)
+                            navigateTo(R.id.action_navigation_adding2_to_navigation_home)
                             // TODO : Naviguer vers fragment du produit + Ajouter les OnFailure + Vérifier ce code
                         }
 

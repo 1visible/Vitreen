@@ -56,8 +56,10 @@ class ProfileFragment : VFragment(
                                 textViewEmailAddress.text = userDTO.emailAddress
                                 textViewPhoneNumber.text = userDTO.phoneNumber
                                 if (userDTO.contactByPhone) {
-                                    textViewPhoneNumber.setCompoundDrawables(
-                                        null, null,
+                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                        }, null,
                                         context?.let { it1 ->
                                             ContextCompat.getDrawable(
                                                 it1,
@@ -65,15 +67,19 @@ class ProfileFragment : VFragment(
                                             )
                                         }, null
                                     )
-                                    textViewEmailAddress.setCompoundDrawables(
-                                        null,
+                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                        },
                                         null,
                                         null,
                                         null
                                     )
                                 } else {
-                                    textViewEmailAddress.setCompoundDrawables(
-                                        null, null,
+                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                        }, null,
                                         context?.let { it1 ->
                                             ContextCompat.getDrawable(
                                                 it1,
@@ -81,7 +87,14 @@ class ProfileFragment : VFragment(
                                             )
                                         }, null
                                     )
-                                    textViewPhoneNumber.setCompoundDrawables(null, null, null, null)
+                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                        },
+                                        null,
+                                        null,
+                                        null
+                                    )
                                 }
                                 textViewPostalAddress.text =
                                     "${it.get("name") as String}(${it.get("zipCode") as Long?})"
@@ -106,14 +119,25 @@ class ProfileFragment : VFragment(
                                             .document(advertId)
                                             .get()
                                             .addOnSuccessListener {
-                                                productsList.add(
-                                                    ProductSDTO(
-                                                        it.id,
-                                                        it.get("title") as String,
-                                                        it.get("description") as String,
-                                                        it.get("price") as Long
-                                                    )
-                                                )
+                                                categoriesCollection
+                                                    .document(it.get("categoryId") as String)
+                                                    .get()
+                                                    .addOnSuccessListener { category ->
+                                                        locationsCollection
+                                                            .document(it.get("locationId") as String)
+                                                            .get()
+                                                            .addOnSuccessListener { location ->
+                                                                productsList.add(
+                                                                    ProductSDTO(
+                                                                        it.id,
+                                                                        it.get("title") as String,
+                                                                        category.get("name") as String,
+                                                                        location.get("name") as String,
+                                                                        it.get("price") as Long
+                                                                    )
+                                                                )
+                                                            }
+                                                    }
                                                 if (productsList.size == userDTO.productsId!!.size) {
                                                     productAdapter.submitList(productsList)
                                                 }
