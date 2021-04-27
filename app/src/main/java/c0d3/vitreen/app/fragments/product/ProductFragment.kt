@@ -17,7 +17,7 @@ import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEYADVERTID
 import c0d3.vitreen.app.utils.ProductImageViewModel
 import c0d3.vitreen.app.utils.VFragment
-import kotlinx.android.synthetic.main.advert_item.view.*
+import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.android.synthetic.main.fragment_advert.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -83,7 +83,7 @@ class ProductFragment : VFragment(
                     advertTitle.text = productDTO.title.toEditable()
                     advertBrand.text = productDTO.brand.toEditable()
                     advertDescription.text = productDTO.description.toEditable()
-                    advertPrice.text = "${productDTO.price}${getString(R.string.euros)}".toEditable()
+                    advertPrice.text = "${productDTO.price}".toEditable()
                     advertSize.text = productDTO.size?.toEditable()
 
                     for (i in 0..productDTO.nbImages) {

@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.dto.UserDTO
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -17,29 +20,23 @@ class ProfileFragment : VFragment(
     R.id.action_navigation_profile_to_navigation_login
 ) {
 
-    private val userDb = db.collection("Users")
-    private val locationDB = db.collection("locations")
-    private val advertDB = db.collection("Adverts")
+    private var productsList = ArrayList<ProductSDTO>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        signOutButton.visibility = if(user == null) View.INVISIBLE else View.VISIBLE
+        signOutButton.visibility = if (user == null) View.INVISIBLE else View.VISIBLE
 
-        if (user != null) {
+        if (user != null && !user!!.isAnonymous) {
 
             signOutButton.visibility = View.VISIBLE
             signOutButton.setOnClickListener {
                 auth
                     .signOut()
-                (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
-                parentFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
-                    .commit()
+                navigateTo(R.id.action_navigation_profile_to_navigation_home)
             }
-            userDb
-                .whereEqualTo("emailAddress", user.email)
+            usersCollection
+                .whereEqualTo("emailAddress", user!!.email)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.size() == 1) {
@@ -55,13 +52,13 @@ class ProfileFragment : VFragment(
                                 document.get("locationId") as String,
                                 document.get("companyName") as String?,
                                 document.get("siretNumber") as String?,
-                                document.get("advertsId") as ArrayList<String>?,
+                                document.get("productId") as ArrayList<String>?,
                                 document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
                             )
                         }
                         if (userDTO != null) {
                             println("-------------------${userDTO.locationId}")
-                            locationDB
+                            locationsCollection
                                 .document(userDTO.locationId)
                                 .get()
                                 .addOnSuccessListener {
@@ -85,26 +82,26 @@ class ProfileFragment : VFragment(
                                         profilSiret.visibility = View.GONE
                                         profilStatsButton.visibility = View.GONE
                                     }
-                                    if ((userDTO.advertsId != null) && (userDTO.advertsId!!.size > 0)) {
+                                    if ((userDTO.productsId != null) && (userDTO.productsId!!.size > 0)) {
                                         profilRecyclerView.visibility = View.VISIBLE
-                                        val advertAdapter: AdvertAdapter =
-                                            AdvertAdapter { advert -> adapterOnClick(advert) }
-                                        profilRecyclerView.adapter = advertAdapter
-                                        userDTO.advertsId!!.forEach { advertId ->
-                                            advertDB
+                                        val productAdapter: ProductAdapter =
+                                            ProductAdapter { product -> adapterOnClick(product) }
+                                        profilRecyclerView.adapter = productAdapter
+                                        userDTO.productsId!!.forEach { advertId ->
+                                            productsCollection
                                                 .document(advertId)
                                                 .get()
                                                 .addOnSuccessListener {
-                                                    advertList.add(
-                                                        AdvertMini(
+                                                    productsList.add(
+                                                        ProductSDTO(
                                                             it.id,
                                                             it.get("title") as String,
                                                             it.get("description") as String,
                                                             it.get("price") as Long
                                                         )
                                                     )
-                                                    if (advertList.size == userDTO.advertsId!!.size) {
-                                                        advertAdapter.submitList(advertList)
+                                                    if (productsList.size == userDTO.productsId!!.size) {
+                                                        productAdapter.submitList(productsList)
                                                     }
                                                 }
                                         }
@@ -127,6 +124,11 @@ class ProfileFragment : VFragment(
             auth.signOut()
             navigateTo(R.id.action_navigation_profile_to_navigation_home)
         }
+
+    }
+
+    /* Opens Advert  when RecyclerView item is clicked. */
+    private fun adapterOnClick(product: ProductSDTO) {
 
     }
 
