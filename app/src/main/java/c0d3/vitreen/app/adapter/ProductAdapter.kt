@@ -8,18 +8,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.mini.ProductMini
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val onClick: (ProductMini) -> Unit) :
-        ListAdapter<ProductMini, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
+        ListAdapter<ProductSDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
 
-    class ProductViewHolder(itemView: View, val onClick: (ProductMini) -> Unit) :
+    class ProductViewHolder(itemView: View, val onClick: (ProductSDTO) -> Unit) :
             RecyclerView.ViewHolder(itemView) {
-        private var currentProduct: ProductMini? = null
+        private var currentProduct: ProductSDTO? = null
 
         private val storage = Firebase.storage
         private val storageRef = storage.reference
@@ -32,7 +32,7 @@ class ProductAdapter(private val onClick: (ProductMini) -> Unit) :
             }
         }
 
-        fun bind(product: ProductMini) {
+        fun bind(product: ProductSDTO) {
             currentProduct = product
             val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0.png")
             /*val localFile = File.createTempFile("image", "jpg")
@@ -81,12 +81,12 @@ class ProductAdapter(private val onClick: (ProductMini) -> Unit) :
     }
 }
 
-object ProductDiffCallback : DiffUtil.ItemCallback<ProductMini>() {
-    override fun areItemsTheSame(oldItem: ProductMini, newItem: ProductMini): Boolean {
+object ProductDiffCallback : DiffUtil.ItemCallback<ProductSDTO>() {
+    override fun areItemsTheSame(oldItem: ProductSDTO, newItem: ProductSDTO): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: ProductMini, newItem: ProductMini): Boolean {
+    override fun areContentsTheSame(oldItem: ProductSDTO, newItem: ProductSDTO): Boolean {
         return oldItem.id == newItem.id
     }
 }

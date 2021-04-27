@@ -1,4 +1,4 @@
-package c0d3.vitreen.app.fragments.home
+package c0d3.vitreen.app.fragments.product
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,11 +13,9 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.Advert
 import c0d3.vitreen.app.models.dto.AdvertDTO
-import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEYADVERTID
-import c0d3.vitreen.app.viewModel.AdvertImageViewModel
+import c0d3.vitreen.app.utils.ProductImageViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -29,13 +27,13 @@ import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AdvertFragment.newInstance] factory method to
+ * Use the [ProductFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AdvertFragment : Fragment() {
+class ProductFragment : Fragment() {
     private var advertId: String? = null
 
-    private val imagesListView: AdvertImageViewModel by viewModels()
+    private val imagesListView: ProductImageViewModel by viewModels()
     private var imageList = ArrayList<Bitmap>()
 
     private val db = Firebase.firestore
@@ -94,7 +92,7 @@ class AdvertFragment : Fragment() {
                     advertPrice.text = "${advertDTO.price}${getString(R.string.euros)}".toEditable()
                     advertSize.text = advertDTO.size?.toEditable()
 
-                    for (i in 0 until advertDTO.nbImages) {
+                    for (i in 0..advertDTO.nbImages) {
                         val advertImageRef = storageRef.child("images/${advertDTO.id}/image_$i.png")
                         val ONE_MEGABYTE: Long = 1024 * 1024
                         advertImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
@@ -151,10 +149,7 @@ class AdvertFragment : Fragment() {
                                             }
                                             userDb
                                                 .document(document.id)
-                                                .update(
-                                                    "favoriteAdvertsId",
-                                                    listFavorite
-                                                )
+                                                .update("favoriteAdvertsId", listFavorite)
                                         }
                                     }
                                 }
@@ -164,17 +159,12 @@ class AdvertFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        imageList.clear()
-    }
-
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
     companion object {
         @JvmStatic
         fun newInstance(advertId: String) =
-            AdvertFragment().apply {
+            ProductFragment().apply {
                 arguments = Bundle().apply {
                     putString(KEYADVERTID, advertId)
                 }

@@ -1,6 +1,6 @@
-package c0d3.vitreen.app.models.mini
+package c0d3.vitreen.app.models.dto.sdto
 
-data class ProductMini(
+data class ProductSDTO(
         val id:String,
         val title: String,
         val description: String,

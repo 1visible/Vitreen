@@ -1,13 +1,12 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
-import c0d3.vitreen.app.models.mini.ProductMini
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
@@ -23,7 +22,7 @@ class HomeFragment : VFragment(
 
     private var locationId = ""
     private var userId = ""
-    private var listProduct: ArrayList<ProductMini> = ArrayList()
+    private var listProduct: ArrayList<ProductSDTO> = ArrayList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,7 +63,7 @@ class HomeFragment : VFragment(
                                     if (it.documents.size > 0) {
                                         for (document in it.documents) {
                                             listProduct.add(
-                                                ProductMini(
+                                                ProductSDTO(
                                                     document.id,
                                                     document.get("title") as String,
                                                     document.get("description") as String,
@@ -114,6 +113,6 @@ class HomeFragment : VFragment(
     }
 
     /* Opens Product when RecyclerView item is clicked. */
-    private fun adapterOnClick(product: ProductMini) { // TODO : Déplacement vers fragment annonce }
+    private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce }
 
 }
