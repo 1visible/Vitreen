@@ -43,10 +43,6 @@ class ProductFragment : VFragment(
 
     private val storageRef = storage.reference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -80,23 +76,17 @@ class ProductFragment : VFragment(
                         product.get("modifiedAt") as String
                     )
 
-                    advertTitle.text = productDTO.title.toEditable()
-                    advertBrand.text = productDTO.brand.toEditable()
-                    advertDescription.text = productDTO.description.toEditable()
-                    advertPrice.text = "${productDTO.price}".toEditable()
-                    advertSize.text = productDTO.size?.toEditable()
+                    advertTitle.setText(productDTO.title)
+                    advertBrand.setText(productDTO.brand)
+                    advertDescription.setText(productDTO.description)
+                    advertPrice.setText(productDTO.price.toString())
+                    advertSize.setText(productDTO.size ?: "")
 
                     for (i in 0..productDTO.nbImages) {
                         val productImageRef = storageRef.child("images/${productDTO.id}/image_$i.png")
                         val ONE_MEGABYTE: Long = 1024 * 1024
                         productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
-                            imageList.add(
-                                BitmapFactory.decodeByteArray(
-                                    it,
-                                    0,
-                                    it.size
-                                )
-                            )
+                            imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
                             println("----------------------${imageList.size}")
                             if (imageList.size.toLong() == productDTO.nbImages) {
                                 imagesListView.advertImages.value = imageList
@@ -142,7 +132,5 @@ class ProductFragment : VFragment(
                 }
         }
     }
-
-    fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
 }
