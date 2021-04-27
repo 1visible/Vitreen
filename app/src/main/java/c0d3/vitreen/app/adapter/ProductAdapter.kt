@@ -13,7 +13,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val onClick: (ProductMini) -> Unit) : ListAdapter<ProductMini, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val onClick: (ProductMini) -> Unit) :
+        ListAdapter<ProductMini, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
 
     class ProductViewHolder(itemView: View, val onClick: (ProductMini) -> Unit) :
@@ -47,10 +48,17 @@ class ProductAdapter(private val onClick: (ProductMini) -> Unit) : ListAdapter<P
             val ONE_MEGABYTE: Long = 1024 * 1024
             productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 if (currentProduct != null) {
-                    itemView.homeProductImageView.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
+                    itemView.homeProductImageView.setImageBitmap(
+                            BitmapFactory.decodeByteArray(
+                                    it,
+                                    0,
+                                    it.size
+                            )
+                    )
                     itemView.homeProductTitle.text = currentProduct!!.title
                     itemView.homeProductDescription.text = currentProduct!!.description
-                    itemView.homeProductPrice.text = "${currentProduct!!.price.toString()}€"
+                    itemView.homeProductPrice.text =
+                            "${currentProduct!!.price.toString()}€"
                 }
             }.addOnFailureListener {
                 // Handle any errors
