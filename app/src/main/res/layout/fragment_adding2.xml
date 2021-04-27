@@ -32,7 +32,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/spacing_sm"
         android:layout_marginBottom="@dimen/spacing_md"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -68,8 +68,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 app:icon="@drawable/icon_angle_left"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginLeft="@dimen/spacing_sm"
+                android:layout_marginStart="@dimen/spacing_sm"
                 style="@style/Vitreen.Link" />
 
             <com.google.android.material.button.MaterialButton
@@ -80,8 +80,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 app:icon="@drawable/icon_angle_right"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginRight="@dimen/spacing_sm"
+                android:layout_marginEnd="@dimen/spacing_sm"
                 style="@style/Vitreen.Link"
                 tools:ignore="RelativeOverlap" />
 

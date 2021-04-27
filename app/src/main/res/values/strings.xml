@@ -2,9 +2,6 @@
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
-    <string name="placeholder_title">Titre</string>
-    <string name="placeholder_category">Catégorie</string>
-    <string name="placeholder_location">Lieu</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->
@@ -35,6 +32,7 @@
     <!-- Register2 fragment -->
     <string name="fullname">Nom complet</string>
     <string name="phone_number">N° de téléphone</string>
+    <string name="postal_address">Adresse postale</string>
     <string name="contact_by_phone">Je veux être contacté par téléphone</string>
     <string name="contact_by_email">Je veux être contacté par e-mail</string>
     <string name="professional_account">Je suis un professionnel</string>
@@ -53,4 +51,15 @@
     <string name="add_image">Ajouter une image</string>
     <!-- Product item -->
     <string name="price">%1$d€</string>
+    <string name="placeholder_title">Titre</string>
+    <string name="placeholder_category">Catégorie</string>
+    <string name="placeholder_location">Lieu</string>
+    <!-- Profile fragment -->
+    <string name="personal_informations">Informations personnelles</string>
+    <string name="professional_informations">Informations professionnelles</string>
+    <string name="my_products">Mes annonces</string>
+    <string name="delete_account">Supprimer mon compte</string>
+    <string name="no_products">Aucune annonce à afficher.</string>
+    <!-- Favorites fragment -->
+    <string name="no_favorites">Aucun favori à afficher.</string>
 </resources>
