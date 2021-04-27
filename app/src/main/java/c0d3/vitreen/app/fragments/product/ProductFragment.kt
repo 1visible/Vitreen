@@ -13,13 +13,10 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.dto.AdvertDTO
+import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEYADVERTID
 import c0d3.vitreen.app.utils.ProductImageViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.advert_item.view.*
 import kotlinx.android.synthetic.main.fragment_advert.*
 import java.util.*
@@ -30,28 +27,24 @@ import kotlin.collections.ArrayList
  * Use the [ProductFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProductFragment : Fragment() {
-    private var advertId: String? = null
+class ProductFragment : VFragment(
+    R.layout.fragment_advert,
+    R.drawable.bigicon_adding,
+    -1,
+    false,
+    -1,
+    true,
+    R.id.action_navigation_product_to_navigation_login
+) {
+    private var productId: String? = null
 
     private val imagesListView: ProductImageViewModel by viewModels()
     private var imageList = ArrayList<Bitmap>()
 
-    private val db = Firebase.firestore
-
-    private val auth = Firebase.auth
-    private val user = auth.currentUser
-
-    private val adverts = db.collection("Adverts")
-    private val userDb = db.collection("Users")
-
-    private val storage = Firebase.storage
     private val storageRef = storage.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            advertId = it.getString(KEYADVERTID)
-        }
     }
 
     override fun onCreateView(
@@ -64,38 +57,39 @@ class ProductFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        advertId?.let {
-            adverts
+        productId = arguments?.getString(KEYADVERTID).orEmpty()
+        productId?.let {
+            productsCollection
                 .document(it)
                 .get()
-                .addOnSuccessListener { advert ->
-                    val advertDTO = AdvertDTO(
-                        advert.id,
-                        advert.get("title") as String,
-                        advert.get("description") as String,
-                        advert.get("price") as Long,
-                        advert.get("brand") as String,
-                        advert.get("size") as String?,
-                        advert.get("numberOfConsultations") as Long,
-                        advert.get("reported") as ArrayList<String>?,
-                        advert.get("locationId") as String,
-                        advert.get("categoryId") as String,
-                        advert.get("nbImages") as Long,
-                        advert.get("ownerId") as String,
-                        advert.get("createdAt") as String,
-                        advert.get("modifiedAt") as String
+                .addOnSuccessListener { product ->
+                    val productDTO = ProductDTO(
+                        product.id,
+                        product.get("title") as String,
+                        product.get("description") as String,
+                        product.get("price") as Long,
+                        product.get("brand") as String,
+                        product.get("size") as String?,
+                        product.get("numberOfConsultations") as Long,
+                        product.get("reported") as ArrayList<String>?,
+                        product.get("locationId") as String,
+                        product.get("categoryId") as String,
+                        product.get("nbImages") as Long,
+                        product.get("ownerId") as String,
+                        product.get("createdAt") as String,
+                        product.get("modifiedAt") as String
                     )
 
-                    advertTitle.text = advertDTO.title.toEditable()
-                    advertBrand.text = advertDTO.brand.toEditable()
-                    advertDescription.text = advertDTO.description.toEditable()
-                    advertPrice.text = "${advertDTO.price}${getString(R.string.euros)}".toEditable()
-                    advertSize.text = advertDTO.size?.toEditable()
+                    advertTitle.text = productDTO.title.toEditable()
+                    advertBrand.text = productDTO.brand.toEditable()
+                    advertDescription.text = productDTO.description.toEditable()
+                    advertPrice.text = "${productDTO.price}${getString(R.string.euros)}".toEditable()
+                    advertSize.text = productDTO.size?.toEditable()
 
-                    for (i in 0..advertDTO.nbImages) {
-                        val advertImageRef = storageRef.child("images/${advertDTO.id}/image_$i.png")
+                    for (i in 0..productDTO.nbImages) {
+                        val productImageRef = storageRef.child("images/${productDTO.id}/image_$i.png")
                         val ONE_MEGABYTE: Long = 1024 * 1024
-                        advertImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
+                        productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                             imageList.add(
                                 BitmapFactory.decodeByteArray(
                                     it,
@@ -104,7 +98,7 @@ class ProductFragment : Fragment() {
                                 )
                             )
                             println("----------------------${imageList.size}")
-                            if (imageList.size.toLong() == advertDTO.nbImages) {
+                            if (imageList.size.toLong() == productDTO.nbImages) {
                                 imagesListView.advertImages.value = imageList
                                 println(imagesListView.advertImages.value?.size)
                             }
@@ -121,35 +115,25 @@ class ProductFragment : Fragment() {
                     }
                     imagesListView.advertImages.observe(viewLifecycleOwner, observer)
                     advertFavButton.setOnClickListener {
-                        userDb
-                            .whereEqualTo("emailAddress", user.email)
+                        usersCollection
+                            .whereEqualTo("emailAddress", user!!.email)
                             .get()
                             .addOnSuccessListener { documents ->
                                 if (documents.size() == 1) {
                                     for (document in documents) {
-                                        println("-------------${advertDTO.id}")
+                                        println("-------------${productDTO.id}")
                                         var listFavorite =
-                                            document.get("favoriteAdvertsId") as ArrayList<String>?
+                                            document.get("favoriteProductsId") as ArrayList<String>?
                                         if (listFavorite != null) {
-                                            if ((!listFavorite.contains(advertDTO.id))
+                                            if ((!listFavorite.contains(productDTO.id))
                                             ) {
-                                                listFavorite.add(advertDTO.id)
-                                                Toast.makeText(
-                                                    context,
-                                                    getString(R.string.addFavorite),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                listFavorite.add(productDTO.id)
                                             } else {
-                                                listFavorite.remove(advertDTO.id)
-                                                Toast.makeText(
-                                                    context,
-                                                    getString(R.string.removeFavorite),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                listFavorite.remove(productDTO.id)
                                             }
-                                            userDb
+                                            usersCollection
                                                 .document(document.id)
-                                                .update("favoriteAdvertsId", listFavorite)
+                                                .update("favoriteProductsId", listFavorite)
                                         }
                                     }
                                 }
@@ -161,13 +145,4 @@ class ProductFragment : Fragment() {
 
     fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
-    companion object {
-        @JvmStatic
-        fun newInstance(advertId: String) =
-            ProductFragment().apply {
-                arguments = Bundle().apply {
-                    putString(KEYADVERTID, advertId)
-                }
-            }
-    }
 }
