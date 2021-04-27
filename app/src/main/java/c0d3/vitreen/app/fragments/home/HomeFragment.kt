@@ -33,16 +33,13 @@ class HomeFragment : VFragment(
             homeTextViewNPY.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {
-                homeTextViewNoConnection.visibility = View.VISIBLE
-                homeTextViewNPY.visibility = View.GONE
-                homeRecyclerView.visibility = View.GONE
+                navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                homeTextViewNoConnection.visibility = View.GONE
                 homeTextViewNPY.visibility = View.GONE
                 homeRecyclerView.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 homeRecyclerView.adapter = productAdapter
-                db.collection("Users")
+                usersCollection
                     .whereEqualTo("emailAddress", user!!.email)
                     .get()
                     .addOnSuccessListener {
@@ -52,7 +49,7 @@ class HomeFragment : VFragment(
                                 locationId = document.get("locationId") as String
                                 userId = document.id
                             }
-                            db.collection("Products")
+                            productsCollection
                                 .whereEqualTo("locationId", locationId)
                                 .whereNotEqualTo("ownerId", userId)
                                 .orderBy("ownerId")
@@ -75,7 +72,6 @@ class HomeFragment : VFragment(
                                         productAdapter.submitList(listProduct)
                                     } else {
                                         homeRecyclerView.visibility = View.GONE
-                                        homeTextViewNoConnection.visibility = View.GONE
                                         homeTextViewNPY.visibility = View.VISIBLE
                                         Toast.makeText(
                                             requireContext(),
@@ -86,13 +82,8 @@ class HomeFragment : VFragment(
                                 }
                                 .addOnFailureListener(requireActivity()) {
                                     homeRecyclerView.visibility = View.GONE
-                                    homeTextViewNoConnection.visibility = View.GONE
                                     homeTextViewNPY.visibility = View.VISIBLE
-                                    Toast.makeText(
-                                        context,
-                                        "Une erreur s'est produite",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    showError(R.string.errorMessage)
                                 }
                         }
                     }
@@ -113,6 +104,7 @@ class HomeFragment : VFragment(
     }
 
     /* Opens Product when RecyclerView item is clicked. */
-    private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce }
+    private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
+     }
 
 }

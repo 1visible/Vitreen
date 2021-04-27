@@ -54,4 +54,5 @@
     <!-- Product item -->
     <string name="price">%1$d€</string>
     <string name="label_error">Erreur</string>
+    <string name="welcome">Bienvenue sur Vitreen</string>
 </resources>

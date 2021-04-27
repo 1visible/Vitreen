@@ -16,71 +16,62 @@ class FavoritesFragment : VFragment(
     true,
     R.menu.menu_favorites,
     true,
-    R.id.action_navigation_favorites_to_navigation_login
+    R.id.action_navigation_favorites_to_navigation_error
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (user == null || user!!.isAnonymous) {
-            favoriteHaveToConnect.visibility = View.VISIBLE
-            favoriteRecyclerView.visibility = View.GONE
-            favoriteNoFavorite.visibility = View.GONE
-        } else {
-            favoriteHaveToConnect.visibility = View.GONE
-            favoriteRecyclerView.visibility = View.VISIBLE
-            favoriteNoFavorite.visibility = View.GONE
-            //Récupération de la liste d'annonces en favori de l'utilisateur courant
-            usersCollection
-                .whereEqualTo("emailAddress", user!!.email)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.size() == 1) {
-                        var favoritesProductsIdsList: ArrayList<String>? = null
-                        for (document in documents) {
-                            favoritesProductsIdsList =
-                                document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
-                        }
-                        //Si la liste existe et possède des éléments
-                        if (favoritesProductsIdsList != null) {
-                            if (favoritesProductsIdsList.size > 0) {
-                                var productsList: ArrayList<ProductSDTO> = ArrayList()
-                                val productAdapter: ProductAdapter =
-                                    ProductAdapter { product -> adapterOnClick(product) }
-                                favoriteRecyclerView.adapter = productAdapter
-                                //Récupération des infos des annonces présentes dans cette liste
-                                favoritesProductsIdsList.forEach {
-                                    productsCollection
-                                        .document(it)
-                                        .get()
-                                        .addOnSuccessListener { product ->
-                                            productsList.add(
-                                                ProductSDTO(
-                                                    product.id,
-                                                    product.get("title") as String,
-                                                    product.get("description") as String,
-                                                    product.get("price") as Long
-                                                )
+        favoriteRecyclerView.visibility = View.VISIBLE
+        favoriteNoFavorite.visibility = View.GONE
+        //Récupération de la liste d'annonces en favori de l'utilisateur courant
+        usersCollection
+            .whereEqualTo("emailAddress", user!!.email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    var favoritesProductsIdsList: ArrayList<String>? = null
+                    for (document in documents) {
+                        favoritesProductsIdsList =
+                            document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
+                    }
+                    //Si la liste existe et possède des éléments
+                    if (favoritesProductsIdsList != null) {
+                        if (favoritesProductsIdsList.size > 0) {
+                            var productsList: ArrayList<ProductSDTO> = ArrayList()
+                            val productAdapter: ProductAdapter =
+                                ProductAdapter { product -> adapterOnClick(product) }
+                            favoriteRecyclerView.adapter = productAdapter
+                            //Récupération des infos des annonces présentes dans cette liste
+                            favoritesProductsIdsList.forEach {
+                                productsCollection
+                                    .document(it)
+                                    .get()
+                                    .addOnSuccessListener { product ->
+                                        productsList.add(
+                                            ProductSDTO(
+                                                product.id,
+                                                product.get("title") as String,
+                                                product.get("description") as String,
+                                                product.get("price") as Long
                                             )
-                                            if (productsList.size == favoritesProductsIdsList.size) {
-                                                productAdapter.submitList(productsList)
-                                            }
+                                        )
+                                        if (productsList.size == favoritesProductsIdsList.size) {
+                                            productAdapter.submitList(productsList)
                                         }
-                                }
-                            } else {
-                                //Affichage du text "Aucun favori"
-                                favoriteHaveToConnect.visibility = View.GONE
-                                favoriteRecyclerView.visibility = View.GONE
-                                favoriteNoFavorite.visibility = View.VISIBLE
+                                    }
                             }
                         } else {
                             //Affichage du text "Aucun favori"
-                            favoriteHaveToConnect.visibility = View.GONE
                             favoriteRecyclerView.visibility = View.GONE
                             favoriteNoFavorite.visibility = View.VISIBLE
                         }
+                    } else {
+                        //Affichage du text "Aucun favori"
+                        favoriteRecyclerView.visibility = View.GONE
+                        favoriteNoFavorite.visibility = View.VISIBLE
                     }
                 }
-        }
+            }
     }
 
     // TODO : Ajouter les items
