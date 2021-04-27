@@ -48,24 +48,23 @@ class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
             val ONE_MEGABYTE: Long = 1024 * 1024
             productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 if (currentProduct != null) {
-                    itemView.homeProductImageView.setImageBitmap(
+                    itemView.imageViewProduct.setImageBitmap(
                             BitmapFactory.decodeByteArray(
                                     it,
                                     0,
                                     it.size
                             )
                     )
-                    itemView.homeProductTitle.text = currentProduct!!.title
-                    itemView.homeProductDescription.text = currentProduct!!.description
-                    itemView.homeProductPrice.text =
-                            "${currentProduct!!.price.toString()}€"
+                    itemView.textViewTitle.text = currentProduct!!.title
+                    itemView.textViewCategory.text = currentProduct!!.description
+                    itemView.textViewLocation.text = ""
+                    itemView.textViewPrice.text = ""
                 }
             }.addOnFailureListener {
                 // Handle any errors
             }
         }
     }
-
     /* Creates and inflates view and return FlowerViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)

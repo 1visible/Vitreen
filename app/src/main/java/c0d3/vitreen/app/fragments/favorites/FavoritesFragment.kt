@@ -21,8 +21,8 @@ class FavoritesFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        favoriteRecyclerView.visibility = View.VISIBLE
-        favoriteNoFavorite.visibility = View.GONE
+        recyclerViewProducts.visibility = View.VISIBLE
+        textViewNoFavorites.visibility = View.GONE
         //Récupération de la liste d'annonces en favori de l'utilisateur courant
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)
@@ -40,7 +40,7 @@ class FavoritesFragment : VFragment(
                             var productsList: ArrayList<ProductSDTO> = ArrayList()
                             val productAdapter: ProductAdapter =
                                 ProductAdapter { product -> adapterOnClick(product) }
-                            favoriteRecyclerView.adapter = productAdapter
+                            recyclerViewProducts.adapter = productAdapter
                             //Récupération des infos des annonces présentes dans cette liste
                             favoritesProductsIdsList.forEach {
                                 productsCollection
@@ -62,13 +62,13 @@ class FavoritesFragment : VFragment(
                             }
                         } else {
                             //Affichage du text "Aucun favori"
-                            favoriteRecyclerView.visibility = View.GONE
-                            favoriteNoFavorite.visibility = View.VISIBLE
+                            recyclerViewProducts.visibility = View.GONE
+                            textViewNoFavorites.visibility = View.VISIBLE
                         }
                     } else {
                         //Affichage du text "Aucun favori"
-                        favoriteRecyclerView.visibility = View.GONE
-                        favoriteNoFavorite.visibility = View.VISIBLE
+                        recyclerViewProducts.visibility = View.GONE
+                        textViewNoFavorites.visibility = View.VISIBLE
                     }
                 }
             }

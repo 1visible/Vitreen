@@ -64,4 +64,6 @@
     <string name="label_error">Erreur</string>
     <string name="welcome">Bienvenue sur Vitreen</string>
     <string name="label_product">Product</string>
+    <string name="postal_address">Ville</string>
+    <string name="signup">Se connecter</string>
 </resources>

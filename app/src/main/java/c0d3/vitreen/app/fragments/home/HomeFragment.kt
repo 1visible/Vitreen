@@ -29,16 +29,15 @@ class HomeFragment : VFragment(
 
         if (user == null) {
             auth.signInAnonymously()
-            homeTextViewNoConnection.visibility = View.VISIBLE
-            homeTextViewNPY.visibility = View.GONE
+            textViewNoProducts.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                homeTextViewNPY.visibility = View.GONE
-                homeRecyclerView.visibility = View.VISIBLE
+                textViewNoProducts.visibility = View.GONE
+                recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
-                homeRecyclerView.adapter = productAdapter
+                recyclerViewProducts.adapter = productAdapter
                 usersCollection
                     .whereEqualTo("emailAddress", user!!.email)
                     .get()
@@ -71,8 +70,8 @@ class HomeFragment : VFragment(
 
                                         productAdapter.submitList(listProduct)
                                     } else {
-                                        homeRecyclerView.visibility = View.GONE
-                                        homeTextViewNPY.visibility = View.VISIBLE
+                                        recyclerViewProducts.visibility = View.GONE
+                                        textViewNoProducts.visibility = View.VISIBLE
                                         Toast.makeText(
                                             requireContext(),
                                             "docuement.size<0",
@@ -81,8 +80,8 @@ class HomeFragment : VFragment(
                                     }
                                 }
                                 .addOnFailureListener(requireActivity()) {
-                                    homeRecyclerView.visibility = View.GONE
-                                    homeTextViewNPY.visibility = View.VISIBLE
+                                    recyclerViewProducts.visibility = View.GONE
+                                    textViewNoProducts.visibility = View.VISIBLE
                                     showError(R.string.errorMessage)
                                 }
                         }

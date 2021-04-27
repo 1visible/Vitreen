@@ -87,7 +87,7 @@ abstract class VFragment(
     }
 
     fun showError(@StringRes errorId: Int) {
-        Toast.makeText(context, getString(errorId), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(errorId), Toast.LENGTH_SHORT).show()
     }
 
 }

@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
+import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
@@ -42,6 +43,9 @@ class Adding1Fragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         context?.let { initializeLocation(it) }
+
+        categoriesCollection.document().set(Category("multimédia"))
+        categoriesCollection.document().set(Category("vêtement"))
 
         // Récupération des catégories depuis la BDD
         categoriesCollection.get().addOnSuccessListener { documents ->
@@ -186,7 +190,7 @@ class Adding1Fragment : VFragment(
                 try {
 
                     val address = location?.let {
-                        Geocoder(context, Locale.getDefault()).getFromLocation(
+                        Geocoder(requireContext(), Locale.getDefault()).getFromLocation(
                             location.latitude,
                             location.longitude,
                             1
