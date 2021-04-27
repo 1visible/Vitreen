@@ -62,4 +62,6 @@
     <string name="no_products">Aucune annonce à afficher.</string>
     <!-- Favorites fragment -->
     <string name="no_favorites">Aucun favori à afficher.</string>
+    <!-- Product fragment -->
+    <string name="further_informations">Informations complémentaires</string>
 </resources>

@@ -49,6 +49,8 @@
         android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableRight="@drawable/icon_location"
+        android:drawableEnd="@drawable/icon_location"
         android:layout_marginBottom="@dimen/spacing_md"
         android:hint="@string/product_location"
         android:importantForAutofill="no"
