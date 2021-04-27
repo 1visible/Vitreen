@@ -12,6 +12,8 @@ import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
 import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.PERSO_LIMIT_IMAGES
+import c0d3.vitreen.app.utils.Constants.Companion.PRO_LIMIT_IMAGES
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.TITLE
@@ -62,13 +64,14 @@ class Adding2Fragment : VFragment(
                 .addOnSuccessListener { documents ->
 
                     if(documents.size() == 0) {
-                        showError(R.string.errorMessage)
-                        return@addOnSuccessListener
+                    showError(R.string.errorMessage)
+                    return@addOnSuccessListener
                     }
 
                     val document = documents.first()
                     val user = UserDTO(document)
-                    val imagesCountMax: Int = if (user.isProfessional) 5 else 3
+                    val imagesCountMax: Int =
+                            if (user.isProfessional) PRO_LIMIT_IMAGES else PERSO_LIMIT_IMAGES
 
                     buttonConfirmation.setOnClickListener {
                         // Vérifie que les champs du formulaire ne sont pas vides
@@ -90,11 +93,11 @@ class Adding2Fragment : VFragment(
                                     val product = Product(
                                             title = title,
                                             description = description,
-                                            price = price.toFloat(),
+                                            price = price.toLong(),
                                             brand = editTextBrand.text.toString(),
                                             size = editTextDimensions.text.toString(),
                                             locationId = locationId,
-                                            categoryId = categoryId,
+                                            categoryId = categoryId,nbImages = mArrayInputStream.size.toLong(),
                                             ownerId = user.id,
                                             createdAt = Calendar.getInstance().time.toString(),
                                             modifiedAt = ""
@@ -149,8 +152,8 @@ class Adding2Fragment : VFragment(
 
                         // Get the cursor
                         val cursor: Cursor = requireContext().contentResolver.query(
-                                mImageUri,
-                                filePathColumn, null, null, null
+                            mImageUri,
+                            filePathColumn, null, null, null
                         )!!
                         // Move to first row
                         cursor.moveToFirst()
@@ -164,7 +167,7 @@ class Adding2Fragment : VFragment(
                             mArrayInputStream.clear()
                             requireContext().contentResolver.openInputStream(it)?.let { it1 ->
                                 mArrayInputStream.add(
-                                        it1
+                                    it1
                                 )
                             }
                         }
@@ -178,13 +181,13 @@ class Adding2Fragment : VFragment(
                                 mArrayUri.add(uri)
                                 // Get the cursor
                                 val cursor: Cursor =
-                                        requireContext().contentResolver.query(
-                                                uri,
-                                                filePathColumn,
-                                                null,
-                                                null,
-                                                null
-                                        )!!
+                                    requireContext().contentResolver.query(
+                                        uri,
+                                        filePathColumn,
+                                        null,
+                                        null,
+                                        null
+                                    )!!
                                 // Move to first row
                                 cursor.moveToFirst()
                                 val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
@@ -198,10 +201,10 @@ class Adding2Fragment : VFragment(
                                 mArrayInputStream.clear()
                                 mArrayUri.forEach {
                                     requireContext().contentResolver?.openInputStream(
-                                            it
+                                        it
                                     )?.let { it1 ->
                                         mArrayInputStream.add(
-                                                it1
+                                            it1
                                         )
                                     }
 
@@ -209,11 +212,11 @@ class Adding2Fragment : VFragment(
                             } else {
                                 countImage.text = "0/$nbImageMax"
                                 Toast.makeText(
-                                        context,
-                                        getString(R.string.tooMuchImages),
-                                        Toast.LENGTH_SHORT
+                                    context,
+                                    getString(R.string.tooMuchImages),
+                                    Toast.LENGTH_SHORT
                                 )
-                                        .show()
+                                    .show()
                             }
                         }
                     }

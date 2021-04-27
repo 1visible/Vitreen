@@ -1,6 +1,7 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -43,52 +44,59 @@ class HomeFragment : VFragment(
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 homeRecyclerView.adapter = productAdapter
                 db.collection("Users")
-                        .whereEqualTo("emailAddress", user!!.email)
-                        .get()
-                        .addOnSuccessListener {
+                    .whereEqualTo("emailAddress", user!!.email)
+                    .get()
+                    .addOnSuccessListener {
 
-                            if (it.documents.size == 1) {
-                                for (document in it.documents) {
-                                    locationId = document.get("locationId") as String
-                                    userId = document.id
-                                }
-                                println("--------------------------------------")
-                                println("--------------${userId}")
-                                println("--------------------------------------")
-                                db.collection("Products")
-                                        .whereEqualTo("locationId", locationId)
-                                        .whereNotEqualTo("ownerId", userId)
-                                        .orderBy("ownerId")
-                                        .orderBy("createdAt", Query.Direction.DESCENDING)
-                                        .limit(Constants.HomeLimit.toLong())
-                                        .get()
-                                        .addOnSuccessListener {
-                                            if (it.documents.size > 0) {
-                                                for (document in it.documents) {
-                                                    listProduct.add(ProductMini(
-                                                            document.id,
-                                                            document.get("title") as String,
-                                                            document.get("description") as String,
-                                                            document.get("price") as Long
-                                                    ))
-                                                }
-
-                                                productAdapter.submitList(listProduct)
-                                            } else {
-                                                homeRecyclerView.visibility = View.GONE
-                                                homeTextViewNoConnection.visibility = View.GONE
-                                                homeTextViewNPY.visibility = View.VISIBLE
-                                                Toast.makeText(requireContext(), "docuement.size<0", Toast.LENGTH_SHORT).show()
-                                            }
-                                        }
-                                        .addOnFailureListener(requireActivity()) {
-                                            homeRecyclerView.visibility = View.GONE
-                                            homeTextViewNoConnection.visibility = View.GONE
-                                            homeTextViewNPY.visibility = View.VISIBLE
-                                            Toast.makeText(context, "Une erreur s'est produite", Toast.LENGTH_SHORT).show()
-                                        }
+                        if (it.documents.size == 1) {
+                            for (document in it.documents) {
+                                locationId = document.get("locationId") as String
+                                userId = document.id
                             }
+                            db.collection("Products")
+                                .whereEqualTo("locationId", locationId)
+                                .whereNotEqualTo("ownerId", userId)
+                                .orderBy("ownerId")
+                                .orderBy("createdAt", Query.Direction.DESCENDING)
+                                .limit(Constants.HomeLimit.toLong())
+                                .get()
+                                .addOnSuccessListener {
+                                    if (it.documents.size > 0) {
+                                        for (document in it.documents) {
+                                            listProduct.add(
+                                                ProductMini(
+                                                    document.id,
+                                                    document.get("title") as String,
+                                                    document.get("description") as String,
+                                                    document.get("price") as Long
+                                                )
+                                            )
+                                        }
+
+                                        productAdapter.submitList(listProduct)
+                                    } else {
+                                        homeRecyclerView.visibility = View.GONE
+                                        homeTextViewNoConnection.visibility = View.GONE
+                                        homeTextViewNPY.visibility = View.VISIBLE
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "docuement.size<0",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                                .addOnFailureListener(requireActivity()) {
+                                    homeRecyclerView.visibility = View.GONE
+                                    homeTextViewNoConnection.visibility = View.GONE
+                                    homeTextViewNPY.visibility = View.VISIBLE
+                                    Toast.makeText(
+                                        context,
+                                        "Une erreur s'est produite",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         }
+                    }
 
             }
         }
@@ -106,6 +114,6 @@ class HomeFragment : VFragment(
     }
 
     /* Opens Product when RecyclerView item is clicked. */
-    private fun adapterOnClick(product: ProductMini) { }
+    private fun adapterOnClick(product: ProductMini) { // TODO : Déplacement vers fragment annonce }
 
 }

@@ -11,6 +11,9 @@ class Constants {
         const val LOCALISATION_REQUEST = 15266
 
         // TODO : Remove if not necessary
+        const val PERSO_LIMIT_IMAGES = 3
+        const val PRO_LIMIT_IMAGES = 5
         const val HomeLimit = 25
+        const val KEYADVERTID = "KEYADVERTID"
     }
 }
