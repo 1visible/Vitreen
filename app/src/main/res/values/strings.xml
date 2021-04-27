@@ -53,4 +53,5 @@
     <string name="add_image">Ajouter une image</string>
     <!-- Product item -->
     <string name="price">%1$d€</string>
+    <string name="label_error">Erreur</string>
 </resources>
