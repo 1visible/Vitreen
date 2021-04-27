@@ -2,9 +2,6 @@
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
-    <string name="placeholder_title">Titre</string>
-    <string name="placeholder_category">Catégorie</string>
-    <string name="placeholder_location">Lieu</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->
@@ -53,6 +50,17 @@
     <string name="add_image">Ajouter une image</string>
     <!-- Product item -->
     <string name="price">%1$d€</string>
+    <string name="placeholder_title">Titre</string>
+    <string name="placeholder_category">Catégorie</string>
+    <string name="placeholder_location">Lieu</string>
+    <!-- Profile fragment -->
+    <string name="personal_informations">Informations personnelles</string>
+    <string name="professional_informations">Informations professionnelles</string>
+    <string name="my_products">Mes annonces</string>
+    <string name="delete_account">Supprimer mon compte</string>
+    <string name="no_products">Aucune annonce à afficher.</string>
+    <!-- Favorites fragment -->
+    <string name="no_favorites">Aucun favori à afficher.</string>
     <string name="label_error">Erreur</string>
     <string name="welcome">Bienvenue sur Vitreen</string>
     <string name="label_product">Product</string>

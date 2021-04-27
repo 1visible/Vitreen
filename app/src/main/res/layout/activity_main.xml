@@ -26,9 +26,9 @@
                 android:id="@+id/topView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="@dimen/spacing_md"
                 app:icon="@drawable/bigicon_logo"
-                app:title="@string/welcome">
+                app:title="@string/app_name">
             </c0d3.vitreen.app.utils.TopView>
 
             <fragment
@@ -59,7 +59,7 @@
         android:id="@+id/navView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/spacing_md"
         android:background="@drawable/glass_frame"
         app:itemIconTint="@color/navigation_item_color"
         app:itemTextColor="@color/navigation_item_color"

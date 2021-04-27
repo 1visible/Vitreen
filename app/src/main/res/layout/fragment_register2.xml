@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_envelope"
-        android:drawableRight="@drawable/icon_envelope"
+        android:drawableEnd="@drawable/icon_user"
+        android:drawableRight="@drawable/icon_user"
         android:hint="@string/fullname"
         android:importantForAutofill="no"
         android:inputType="textPersonName" />
@@ -27,8 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_lockpad"
-        android:drawableRight="@drawable/icon_lockpad"
+        android:drawableEnd="@drawable/icon_phone"
+        android:drawableRight="@drawable/icon_phone"
         android:hint="@string/phone_number"
         android:importantForAutofill="no"
         android:inputType="phone" />
@@ -38,9 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_lockpad"
-        android:drawableRight="@drawable/icon_lockpad"
-        android:hint="@string/localisation"
+        android:drawableEnd="@drawable/icon_location"
+        android:drawableRight="@drawable/icon_location"
+        android:hint="@string/postal_address"
         android:importantForAutofill="no"
         android:inputType="text" />
 
@@ -81,11 +81,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_envelope"
-        android:drawableRight="@drawable/icon_envelope"
+        android:drawableEnd="@drawable/icon_company"
+        android:drawableRight="@drawable/icon_company"
         android:hint="@string/company_name"
         android:importantForAutofill="no"
-        android:visibility="gone"
         android:inputType="text" />
 
     <EditText
@@ -93,11 +92,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lg"
-        android:drawableEnd="@drawable/icon_envelope"
-        android:drawableRight="@drawable/icon_envelope"
+        android:drawableEnd="@drawable/icon_number"
+        android:drawableRight="@drawable/icon_number"
         android:hint="@string/siret_number"
         android:importantForAutofill="no"
-        android:visibility="gone"
         android:inputType="number" />
 
     <Button
