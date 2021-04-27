@@ -34,17 +34,7 @@ class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
 
         fun bind(product: ProductSDTO) {
             currentProduct = product
-            val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0.png")
-            /*val localFile = File.createTempFile("image", "jpg")
-            productImageRef.getFile(localFile)
-                    .addOnSuccessListener {
-                        if (currentProduct != null) {
-                            itemView.homeProductImageView.setImageURI()
-                            itemView.homeProductTitle.text = currentProduct!!.title
-                            itemView.homeProductDescription.text = currentProduct!!.description
-                            itemView.homeProductPrice.text = currentProduct!!.price.toString()
-                        }
-                    }*/
+            val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0")
             val ONE_MEGABYTE: Long = 1024 * 1024
             productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                 if (currentProduct != null) {
@@ -56,9 +46,9 @@ class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
                             )
                     )
                     itemView.textViewTitle.text = currentProduct!!.title
-                    itemView.textViewCategory.text = currentProduct!!.description
-                    itemView.textViewLocation.text = ""
-                    itemView.textViewPrice.text = ""
+                    itemView.textViewCategory.text = currentProduct!!.category
+                    itemView.textViewLocation.text = currentProduct!!.location
+                    itemView.textViewPrice.text = "${currentProduct!!.price}€"
                 }
             }.addOnFailureListener {
                 // Handle any errors
