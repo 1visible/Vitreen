@@ -127,6 +127,9 @@ class Adding2Fragment : VFragment(
             }
 
         buttonAddImage.setOnClickListener {
+            println("---------------------------------")
+            println("j'ai appuyé sur le bouton ajout d'image")
+            println("---------------------------------")
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(

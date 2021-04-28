@@ -53,7 +53,7 @@ class HomeFragment : VFragment(
                                 .whereNotEqualTo("ownerId", userId)
                                 .orderBy("ownerId")
                                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                                .limit(Constants.LIMIT_IMAGES_HOME_PAGE.toLong())
+                                .limit(Constants.IMAGES_LIMIT_HOME_PAGE.toLong())
                                 .get()
                                 .addOnSuccessListener {
                                     if (it.documents.size > 0) {
