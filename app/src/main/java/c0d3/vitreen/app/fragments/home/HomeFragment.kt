@@ -129,7 +129,7 @@ class HomeFragment : VFragment(
     private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
         navigateTo(
             R.id.action_navigation_home_to_navigation_product,
-            Constants.KEYADVERTID to product.id
+            Constants.KEY_PRODUCT_ID to product.id
         )
     }
 

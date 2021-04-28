@@ -20,6 +20,6 @@ class Constants {
 
         // TODO : Remove if not necessary
         const val HomeLimit = 25
-        const val KEYADVERTID = "KEYADVERTID"
+        const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"
     }
 }
