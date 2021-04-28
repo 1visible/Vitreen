@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.dto.UserDTO
@@ -49,10 +51,10 @@ class Adding2Fragment : VFragment(
     private var mArrayUri = ArrayList<Uri>()
     private var mArrayInputStream = ArrayList<InputStream>()
     private var nbImageMax = 0
+    private var counter = 0
 
     private var imagesRef: StorageReference = storage.reference.child("images")
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,6 +77,7 @@ class Adding2Fragment : VFragment(
                 val user = UserDTO(document)
                 val imagesCountMax =
                     if (user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
+                nbImageMax = imagesCountMax
 
                 buttonConfirmation.setOnClickListener {
                     println("-------------------------------------")
@@ -134,7 +137,9 @@ class Adding2Fragment : VFragment(
             println("j'ai appuyé sur le bouton ajout d'image")
             println("---------------------------------")
             val intent = Intent(Intent.ACTION_PICK)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
             intent.type = "image/*"
             startActivityForResult(
                 intent,
@@ -184,16 +189,35 @@ class Adding2Fragment : VFragment(
                             )
                         }
                     }
+                    imageViewProduct.setImageURI(mImageUri)
+                    buttonPreviousImage.visibility = View.GONE
+                    buttonNextImage.visibility = View.GONE
+                    buttonRemoveImage.setOnClickListener {
+                        mArrayUri.clear()
+                        mArrayInputStream.clear()
+                        context?.let { it ->
+                            imageViewProduct.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    it,
+                                    R.drawable.image_placeholder
+                                )
+                            )
+                        }
+                    }
                 } else {
                     println("---------------------------------")
                     println("getData null")
                     println("---------------------------------")
                     if (data.getClipData() != null) {
+                        buttonRemoveImage.visibility = View.VISIBLE
+                        buttonNextImage.visibility = View.VISIBLE
+                        buttonPreviousImage.visibility = View.VISIBLE
                         println("---------------------------------")
                         println("clip data non null")
                         println("---------------------------------")
                         val mClipData: ClipData = data.getClipData()!!
                         mArrayUri.clear()
+
                         for (i in 0 until mClipData.itemCount) {
                             val item = mClipData.getItemAt(i)
                             val uri = item.uri
@@ -228,8 +252,43 @@ class Adding2Fragment : VFragment(
                                 }
 
                             }
+                            imageViewProduct.setImageURI(mArrayUri.get(counter))
+                            buttonPreviousImage.setOnClickListener {
+                                counter = if (counter <= 0) (mArrayUri.size - 1) else counter--
+                                imageViewProduct.setImageURI(mArrayUri.get(counter))
+                            }
+                            buttonNextImage.setOnClickListener {
+                                counter = if (counter >= (mArrayUri.size - 1)) 0 else counter++
+                                imageViewProduct.setImageURI(mArrayUri.get(counter))
+                            }
+                            buttonRemoveImage.setOnClickListener {
+                                mArrayUri.remove(mArrayUri.get(counter))
+                                mArrayInputStream.remove(mArrayInputStream.get(counter))
+                                if (counter > 0) {
+                                    counter -= 1
+                                    imageViewProduct.setImageURI(mArrayUri.get(counter))
+                                } else {
+                                    buttonRemoveImage.visibility = View.GONE
+                                    buttonNextImage.visibility = View.GONE
+                                    buttonPreviousImage.visibility = View.GONE
+                                    context?.let { it ->
+                                        imageViewProduct.setImageDrawable(
+                                            ContextCompat.getDrawable(
+                                                it,
+                                                R.drawable.image_placeholder
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         } else {
-                            //countImage.text = "0/$nbImageMax"
+                            context?.let {
+                                Toast.makeText(
+                                    it,
+                                    "Le nombre d'image est trop élevé",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }
