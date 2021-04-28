@@ -61,7 +61,7 @@ class FavoritesFragment : VFragment(
                                                                 product.get("title") as String,
                                                                 category.get("name") as String,
                                                                 location.get("name") as String,
-                                                                product.get("price") as Long
+                                                                product.get("price") as Double
                                                             )
                                                         )
                                                     }

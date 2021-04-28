@@ -136,9 +136,12 @@ class ProfileFragment : VFragment(
                                                                         it.get("title") as String,
                                                                         category.get("name") as String,
                                                                         location.get("name") as String,
-                                                                        it.get("price") as Long
+                                                                        it.get("price") as Double
                                                                     )
                                                                 )
+                                                                println("--------------------------")
+                                                                println(it.get("price") as Double)
+                                                                println("--------------------------")
                                                                 if (productsList.size == userDTO.productsId!!.size) {
                                                                     productAdapter.submitList(
                                                                         productsList
@@ -198,14 +201,15 @@ class ProfileFragment : VFragment(
                             val currentUserId = dbuser.id
                             //Suppression des données de l'utilisateur
                             usersCollection.document(dbuser.id).delete()
-                            //Suppression des infos de connexion de l'utilisateur
-                            user!!.delete()
                             //Suppression de tout les produits déposé par cet utilisateur
                             productsCollection
                                 .whereEqualTo("ownerId", currentUserId)
                                 .get()
                                 .addOnSuccessListener { products ->
                                     for (product in products.documents) {
+                                        val fileRef =
+                                            storage.reference.child("images/${product.id}")
+                                        fileRef.delete()
                                         productsIdsList.add(product.id)
                                         productsCollection
                                             .document(product.id)
@@ -228,11 +232,13 @@ class ProfileFragment : VFragment(
                                                         .document(user.id)
                                                         .update("favoriteProductsId", favorites)
                                                 }
-                                                navigateTo(R.id.action_navigation_profile_to_navigation_login)
                                             }
-
                                         }
                                 }
+                            //Suppression des infos de connexion de l'utilisateur
+                            user!!.delete()
+                            auth.signOut()
+                            navigateTo(R.id.action_navigation_profile_to_navigation_login)
                         }
                     }
                 }

@@ -61,7 +61,7 @@ class ProductFragment : VFragment(
                         product.id,
                         product.get("title") as String,
                         product.get("description") as String,
-                        product.get("price") as Long,
+                        product.get("price") as Double,
                         product.get("brand") as String,
                         product.get("size") as String?,
                         product.get("numberOfConsultations") as Long,
@@ -101,9 +101,9 @@ class ProductFragment : VFragment(
                     for (i in 0..productDTO.nbImages-1) {
                         val productImageRef =
                             storageRef.child("images/${productDTO.id}/image_$i")
-                        val ONE_MEGABYTE: Long = 1024 * 1024
+                        val TWO_MEGABYTE: Long = 1024 * 1024 * 2
                         //Téléchargement d'une image
-                        productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
+                        productImageRef.getBytes(TWO_MEGABYTE).addOnSuccessListener {
                             imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
                             //Une fois que toutes les images téléchargées faire le traitement suivant
                             //Logique de la card

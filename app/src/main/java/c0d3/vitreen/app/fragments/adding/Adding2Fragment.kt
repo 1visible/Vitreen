@@ -100,7 +100,7 @@ class Adding2Fragment : VFragment(
                     val product = Product(
                         title = title,
                         description = description,
-                        price = price.toLong(),
+                        price = price.toDouble(),
                         brand = editTextBrand.text.toString(),
                         size = editTextDimensions.text.toString(),
                         locationId = locationId,

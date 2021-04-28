@@ -78,7 +78,7 @@ class HomeFragment : VFragment(
                                                                     document.get("title") as String,
                                                                     category.get("name") as String,
                                                                     location.get("name") as String,
-                                                                    document.get("price") as Long
+                                                                    document.get("price") as Double
                                                                 )
                                                             )
                                                             if (listProduct.size == it.documents.size) {
@@ -93,8 +93,12 @@ class HomeFragment : VFragment(
                                                 }
                                         }
                                     } else {
-                                        recyclerViewProducts.visibility = View.GONE
-                                        textViewNoProducts.visibility = View.VISIBLE
+                                        if(recyclerViewProducts != null) {
+                                            recyclerViewProducts.visibility = View.GONE
+                                        }
+                                        if(textViewNoProducts != null) {
+                                            textViewNoProducts.visibility = View.VISIBLE
+                                        }
                                         Toast.makeText(
                                             requireContext(),
                                             "docuement.size<0",

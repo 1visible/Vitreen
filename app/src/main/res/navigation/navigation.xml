@@ -114,6 +114,11 @@
         <action
             android:id="@+id/action_navigation_register2_self"
             app:destination="@id/navigation_register2" />
+
+        <action
+            android:id="@+id/action_navigation_register2_to_navigation_profil"
+            app:destination="@id/navigation_profile"
+            />
     </fragment>
 
     <fragment

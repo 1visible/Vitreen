@@ -5,5 +5,5 @@ data class ProductSDTO(
     val title: String,
     val category: String,
     val location: String,
-    val price: Long
+    val price: Double
 )

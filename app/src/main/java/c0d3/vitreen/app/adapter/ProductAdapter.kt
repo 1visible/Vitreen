@@ -35,8 +35,8 @@ class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
         fun bind(product: ProductSDTO) {
             currentProduct = product
             val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0")
-            val ONE_MEGABYTE: Long = 1024 * 1024
-            productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
+            val TWO_MEGABYTE: Long = 1024 * 1024 * 2
+            productImageRef.getBytes(TWO_MEGABYTE).addOnSuccessListener {
                 if (currentProduct != null) {
                     itemView.imageViewProduct.setImageBitmap(
                             BitmapFactory.decodeByteArray(
@@ -48,7 +48,7 @@ class ProductAdapter(private val onClick: (ProductSDTO) -> Unit) :
                     itemView.textViewTitle.text = currentProduct!!.title
                     itemView.textViewCategory.text = currentProduct!!.category
                     itemView.textViewLocation.text = currentProduct!!.location
-                    itemView.textViewPrice.text = "${currentProduct!!.price}€"
+                    itemView.textViewPrice.text = itemView.context.getString(R.string.price,currentProduct!!.price)
                 }
             }.addOnFailureListener {
                 // Handle any errors

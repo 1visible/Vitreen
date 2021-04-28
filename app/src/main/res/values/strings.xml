@@ -49,7 +49,7 @@
     <string name="product_dimensions">Dimensions</string>
     <string name="add_image">Ajouter une image</string>
     <!-- Product item -->
-    <string name="price">%1$d€</string>
+    <string name="price">%.2f€</string>
     <string name="placeholder_title">Titre</string>
     <string name="placeholder_category">Catégorie</string>
     <string name="placeholder_location">Lieu</string>

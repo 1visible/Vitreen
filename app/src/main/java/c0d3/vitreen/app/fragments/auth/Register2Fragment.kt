@@ -39,6 +39,9 @@ class Register2Fragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { initializeLocation(it) }
+        switchProfessionalAccount.isChecked = false
+        editTextCompany.visibility = View.GONE
+        editTextSiret.visibility = View.GONE
         switchProfessionalAccount.setOnCheckedChangeListener { _, isChecked ->
             editTextCompany.visibility = if (isChecked) View.VISIBLE else View.GONE
             editTextSiret.visibility = if (isChecked) View.VISIBLE else View.GONE
@@ -87,7 +90,7 @@ class Register2Fragment : VFragment(
                             }
                             usersCollection.document().set(user).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    (activity as MainActivity).onBackPressed()
+                                    navigateTo(R.id.action_navigation_register2_to_navigation_profil)
                                 } else
                                     Toast.makeText(
                                         requireContext(),
@@ -124,7 +127,7 @@ class Register2Fragment : VFragment(
 
                                 usersCollection.document().set(user).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        (activity as MainActivity).onBackPressed()
+                                        navigateTo(R.id.action_navigation_register2_to_navigation_profil)
                                     } else{
                                         showError(R.string.errorMessage)
                                     }
