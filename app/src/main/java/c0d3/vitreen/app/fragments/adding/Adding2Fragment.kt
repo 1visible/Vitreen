@@ -92,6 +92,11 @@ class Adding2Fragment : VFragment(
                         return@setOnClickListener
                     }
 
+                    if (mArrayInputStream.size == 0) {
+                        showError(R.string.errorMessage)
+                        return@setOnClickListener
+                    }
+
                     val product = Product(
                         title = title,
                         description = description,
