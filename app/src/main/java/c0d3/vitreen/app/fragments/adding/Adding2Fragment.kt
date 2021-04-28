@@ -80,9 +80,6 @@ class Adding2Fragment : VFragment(
                 nbImageMax = imagesCountMax
 
                 buttonConfirmation.setOnClickListener {
-                    println("-------------------------------------")
-                    println("j'ai appuyé sur un bouton")
-                    println("-------------------------------------")
                     // Vérifie que les champs du formulaire ne sont pas vides
                     if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
                         showError(R.string.errorMessage)
@@ -133,10 +130,9 @@ class Adding2Fragment : VFragment(
             }
 
         buttonAddImage.setOnClickListener {
-            println("---------------------------------")
-            println("j'ai appuyé sur le bouton ajout d'image")
-            println("---------------------------------")
+            //Ouverture de la galerie afin de récupérer des images
             val intent = Intent(Intent.ACTION_PICK)
+            //On autorise l'utilisation de plusieurs images unquement dans le cas où l'api est compatible
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }
@@ -152,20 +148,15 @@ class Adding2Fragment : VFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && null != attr.data) {
-            println("---------------------------------")
-            println("je suis à la récupération des images")
-            println("---------------------------------")
+            //propriété qui va permettre de suivre les éléments lors de l'utilisation des prvious et next button
+            counter = 0
             // Get the Image from data
             val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
             imagesEncodedList = ArrayList<String>()
+            //Vérifie que l'utilsateur a bien récupéré des données
             if (data != null) {
-                println("---------------------------------")
-                println("data non null")
-                println("---------------------------------")
+                //Cas où l'utilisateur récupère qu'une seule image
                 if (data.getData() != null) {
-                    println("---------------------------------")
-                    println("data.getData non null")
-                    println("---------------------------------")
                     val mImageUri: Uri = data.getData()!!
 
                     // Get the cursor
@@ -177,10 +168,11 @@ class Adding2Fragment : VFragment(
                     cursor.moveToFirst()
                     val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
                     imageEncoded = cursor.getString(columnIndex)
-                    //countImage.text = "1/$nbImageMax"
+                    //Reset du tableau
                     mArrayUri.clear()
                     mArrayUri.add(mImageUri)
                     cursor.close()
+                    //Convertion des images en InputStream afin de pouvoir envoyer les images vers le serveur
                     mArrayUri.forEach {
                         mArrayInputStream.clear()
                         requireContext().contentResolver.openInputStream(it)?.let { it1 ->
@@ -189,6 +181,7 @@ class Adding2Fragment : VFragment(
                             )
                         }
                     }
+                    //Logique de la Card
                     imageViewProduct.setImageURI(mImageUri)
                     buttonPreviousImage.visibility = View.GONE
                     buttonNextImage.visibility = View.GONE
@@ -205,19 +198,16 @@ class Adding2Fragment : VFragment(
                         }
                     }
                 } else {
-                    println("---------------------------------")
-                    println("getData null")
-                    println("---------------------------------")
+                    //L'utilisateur a sélectionné plusieurs images
                     if (data.getClipData() != null) {
+                        //On rend visible les éléments de la cards qui sont nécessaires
                         buttonRemoveImage.visibility = View.VISIBLE
                         buttonNextImage.visibility = View.VISIBLE
                         buttonPreviousImage.visibility = View.VISIBLE
-                        println("---------------------------------")
-                        println("clip data non null")
-                        println("---------------------------------")
                         val mClipData: ClipData = data.getClipData()!!
+                        //Reset de la tab
                         mArrayUri.clear()
-
+                        //Parcours des images selectionnées
                         for (i in 0 until mClipData.itemCount) {
                             val item = mClipData.getItemAt(i)
                             val uri = item.uri
@@ -239,9 +229,11 @@ class Adding2Fragment : VFragment(
                             cursor.close()
                         }
                         Log.v("LOG_TAG", "Selected Images " + mArrayUri.size)
+                        //Vérification des droits de sélections d'images de l'utilisateur
                         if (mArrayUri.size <= nbImageMax) {
-                            //countImage.text = "${mArrayUri.size}/$nbImageMax"
+                            //Reset du tab InputeStream
                             mArrayInputStream.clear()
+                            //Conversion
                             mArrayUri.forEach {
                                 requireContext().contentResolver?.openInputStream(
                                     it
@@ -252,22 +244,25 @@ class Adding2Fragment : VFragment(
                                 }
 
                             }
+                            //Logique Card
                             imageViewProduct.setImageURI(mArrayUri.get(counter))
                             buttonPreviousImage.setOnClickListener {
-                                counter = if (counter <= 0) (mArrayUri.size - 1) else counter--
+                                counter = if (counter-- <= 0) (mArrayUri.size - 1) else counter--
                                 imageViewProduct.setImageURI(mArrayUri.get(counter))
                             }
                             buttonNextImage.setOnClickListener {
-                                counter = if (counter >= (mArrayUri.size - 1)) 0 else counter++
+                                counter = if (counter++ >= (mArrayUri.size - 1)) 0 else counter++
                                 imageViewProduct.setImageURI(mArrayUri.get(counter))
                             }
                             buttonRemoveImage.setOnClickListener {
                                 mArrayUri.remove(mArrayUri.get(counter))
                                 mArrayInputStream.remove(mArrayInputStream.get(counter))
-                                if (counter > 0) {
-                                    counter -= 1
+                                counter = if (counter < 0) 0 else counter - 1
+                                if (mArrayUri.size > 0) {
                                     imageViewProduct.setImageURI(mArrayUri.get(counter))
                                 } else {
+                                    //Une fois qu'on a supprimé toutes les images
+                                    //Disparition des boutons + Affichage du placeholder
                                     buttonRemoveImage.visibility = View.GONE
                                     buttonNextImage.visibility = View.GONE
                                     buttonPreviousImage.visibility = View.GONE
