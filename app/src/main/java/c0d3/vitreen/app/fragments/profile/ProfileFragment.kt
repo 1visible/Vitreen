@@ -23,6 +23,7 @@ class ProfileFragment : VFragment(
 ) {
 
     private var productsList = ArrayList<ProductSDTO>()
+    private var productsIdsList = ArrayList<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,9 +118,6 @@ class ProfileFragment : VFragment(
                                         ProductAdapter { product -> adapterOnClick(product) }
                                     recyclerViewProducts.adapter = productAdapter
                                     userDTO.productsId!!.forEach { productId ->
-                                        println("------------------------------------")
-                                        println("je rend le recyclerView visible ${productId}")
-                                        println("------------------------------------")
                                         productsCollection
                                             .document(productId)
                                             .get()
@@ -171,6 +169,10 @@ class ProfileFragment : VFragment(
             navigateTo(R.id.action_navigation_profile_to_navigation_home)
         }
 
+        buttonDeleteAccount.setOnClickListener {
+            deleteAccount()
+        }
+
     }
 
     /* Opens Advert  when RecyclerView item is clicked. */
@@ -183,15 +185,54 @@ class ProfileFragment : VFragment(
 
     //Supprimer un compte
     private fun deleteAccount() {
+        //Vérification que l'utilisateur est connecté et non anonyme
         if ((user != null) && (!user!!.isAnonymous)) {
+            //Recherche des infos de l'utilisateur courant
             usersCollection
                 .whereEqualTo("emailAddress", user!!.email)
                 .get()
                 .addOnSuccessListener { dbusers ->
+                    //Vérification que l'utilisateur est bien unique
                     if (dbusers.size() == 1) {
                         for (dbuser in dbusers) {
+                            val currentUserId = dbuser.id
+                            //Suppression des données de l'utilisateur
                             usersCollection.document(dbuser.id).delete()
+                            //Suppression des infos de connexion de l'utilisateur
                             user!!.delete()
+                            //Suppression de tout les produits déposé par cet utilisateur
+                            productsCollection
+                                .whereEqualTo("ownerId", currentUserId)
+                                .get()
+                                .addOnSuccessListener { products ->
+                                    for (product in products.documents) {
+                                        productsIdsList.add(product.id)
+                                        productsCollection
+                                            .document(product.id)
+                                            .delete()
+                                    }
+                                    //Parcours de tout les utilisateurs
+                                    //Retirer des favoris l'ensemble des produits effaçés
+                                    usersCollection
+                                        .get()
+                                        .addOnSuccessListener { users ->
+                                            for (user in users) {
+                                                val favorites =
+                                                    user.get("favoriteProductsId") as ArrayList<String>?
+                                                if (favorites != null) {
+                                                    for (productId in productsIdsList) {
+                                                        favorites.remove(productId)
+                                                    }
+                                                    //Mise à jour de la liste de favoris
+                                                    usersCollection
+                                                        .document(user.id)
+                                                        .update("favoriteProductsId", favorites)
+                                                }
+                                                navigateTo(R.id.action_navigation_profile_to_navigation_login)
+                                            }
+
+                                        }
+                                }
                         }
                     }
                 }
