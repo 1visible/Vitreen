@@ -81,11 +81,13 @@ class HomeFragment : VFragment(
                                                                     document.get("price") as Long
                                                                 )
                                                             )
-                                                            if(listProduct.size == it.documents.size){
+                                                            if (listProduct.size == it.documents.size) {
                                                                 println("-----------------------------")
                                                                 println(listProduct.size)
                                                                 println("-----------------------------")
-                                                                productAdapter.submitList(listProduct)
+                                                                productAdapter.submitList(
+                                                                    listProduct
+                                                                )
                                                             }
                                                         }
                                                 }
@@ -125,6 +127,10 @@ class HomeFragment : VFragment(
 
     /* Opens Product when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
+        navigateTo(
+            R.id.action_navigation_home_to_navigation_product,
+            Constants.KEYADVERTID to product.id
+        )
     }
 
 }

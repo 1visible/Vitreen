@@ -16,6 +16,10 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_error"
             app:destination="@id/navigation_error" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_product"
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
@@ -124,18 +128,16 @@
         android:id="@+id/navigation_error"
         android:name="c0d3.vitreen.app.fragments.error.ErrorFragment"
         android:label="@string/label_error"
-        tools:layout="@layout/fragment_error"/>
+        tools:layout="@layout/fragment_error" />
 
     <fragment
         android:id="@+id/navigation_product"
         android:name="c0d3.vitreen.app.fragments.product.ProductFragment"
         android:label="@string/label_product"
-        tools:layout="@layout/fragment_product"
-        >
+        tools:layout="@layout/fragment_product">
         <action
             android:id="@+id/action_navigation_product_to_navigation_login"
-            app:destination="@id/navigation_login"
-            />
+            app:destination="@id/navigation_login" />
     </fragment>
 
 </navigation>

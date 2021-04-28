@@ -37,7 +37,7 @@ class ProductFragment : VFragment(
     R.id.action_navigation_product_to_navigation_login
 ) {
     private var productId: String? = null
-
+    private var counter = 0
     private val imagesListView: ProductImageViewModel by viewModels()
     private var imageList = ArrayList<Bitmap>()
 
@@ -84,12 +84,13 @@ class ProductFragment : VFragment(
 
                     for (i in 0..productDTO.nbImages) {
                         val productImageRef =
-                            storageRef.child("images/${productDTO.id}/image_$i.png")
+                            storageRef.child("images/${productDTO.id}/image_$i")
                         val ONE_MEGABYTE: Long = 1024 * 1024
                         productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                             imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
                             println("----------------------${imageList.size}")
                             if (imageList.size.toLong() == productDTO.nbImages) {
+                                imageViewProduct.setImageBitmap(imageList.get(counter))
                                 imagesListView.advertImages.value = imageList
                                 println(imagesListView.advertImages.value?.size)
                             }
@@ -101,8 +102,17 @@ class ProductFragment : VFragment(
                         newList.forEach { image ->
                             var imageView = ImageView(requireContext())
                             imageView.setImageBitmap(image)
-                           // ImageLayout.addView(imageView)
+                            // ImageLayout.addView(imageView)
                         }
+                    }
+                    buttonPreviousImage.setOnClickListener {
+                        counter = if (counter == 0) 0 else counter--
+                        imageViewProduct.setImageBitmap(imageList.get(counter))
+                    }
+
+                    buttonNextImage.setOnClickListener {
+                        counter = if (counter == (imageList.size - 1)) 0 else counter++
+                        imageViewProduct.setImageBitmap(imageList.get(counter))
                     }
                     imagesListView.advertImages.observe(viewLifecycleOwner, observer)
                     /*advertFavButton.setOnClickListener {
