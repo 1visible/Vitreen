@@ -162,6 +162,7 @@ class Adding2Fragment : VFragment(
             if (data != null) {
                 //Cas où l'utilisateur récupère qu'une seule image
                 if (data.getData() != null) {
+                    buttonRemoveImage.visibility = View.VISIBLE
                     val mImageUri: Uri = data.getData()!!
 
                     // Get the cursor
@@ -193,6 +194,7 @@ class Adding2Fragment : VFragment(
                     buttonRemoveImage.setOnClickListener {
                         mArrayUri.clear()
                         mArrayInputStream.clear()
+                        buttonRemoveImage.visibility = View.GONE
                         context?.let { it ->
                             imageViewProduct.setImageDrawable(
                                 ContextCompat.getDrawable(
