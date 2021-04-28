@@ -36,7 +36,6 @@ class ProductFragment : VFragment(
 ) {
     private var productId: String? = null
     private var counter = 0
-    private val imagesListView: ProductImageViewModel by viewModels()
     private var imageList = ArrayList<Bitmap>()
 
     private val storageRef = storage.reference
@@ -52,6 +51,7 @@ class ProductFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productId = arguments?.getString(KEY_PRODUCT_ID).orEmpty()
+        //Récupération du produit courant
         productId?.let {
             productsCollection
                 .document(it)
@@ -73,46 +73,56 @@ class ProductFragment : VFragment(
                         product.get("createdAt") as String,
                         product.get("modifiedAt") as String
                     )
-
-                    textViewTitle.setText(productDTO.title)
-                    textViewBrand.setText(productDTO.brand)
-                    textViewDescription.setText(productDTO.description)
-                    textViewPrice.setText(getString(R.string.price, productDTO.price))
-                    textViewDimensions.setText(productDTO.size ?: "")
-
-                    for (i in 0..productDTO.nbImages) {
+                    categoriesCollection
+                        .document(productDTO.categoryId)
+                        .get()
+                        .addOnSuccessListener { category ->
+                            locationsCollection
+                                .document(productDTO.locationId)
+                                .get()
+                                .addOnSuccessListener { location ->
+                                    val zipCode =
+                                        if (location.get("zipCode") as Long? == null) "" else "(${
+                                            location.get("zipCode") as Long?
+                                        })"
+                                    //Affichage des infos
+                                    textViewTitle.setText(productDTO.title)
+                                    textViewBrand.setText(productDTO.brand)
+                                    textViewDescription.setText(productDTO.description)
+                                    textViewPrice.setText(getString(R.string.price, productDTO.price))
+                                    textViewDimensions.setText(productDTO.size ?: "")
+                                    textViewCategory.setText(category.get("name") as String)
+                                    textViewLocation.setText("${location.get("name") as String}${zipCode}")
+                                    textViewBrand.setText(productDTO.brand)
+                                    textViewDimensions.setText(productDTO.size)
+                                }
+                        }
+                    //Téléchargement des images
+                    for (i in 0..productDTO.nbImages-1) {
                         val productImageRef =
                             storageRef.child("images/${productDTO.id}/image_$i")
                         val ONE_MEGABYTE: Long = 1024 * 1024
+                        //Téléchargement d'une image
                         productImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener {
                             imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
-                            println("----------------------${imageList.size}")
+                            //Une fois que toutes les images téléchargées faire le traitement suivant
+                            //Logique de la card
                             if (imageList.size.toLong() == productDTO.nbImages) {
                                 imageViewProduct.setImageBitmap(imageList.get(counter))
-                                imagesListView.advertImages.value = imageList
-                                println(imagesListView.advertImages.value?.size)
+                                buttonPreviousImage.setOnClickListener {
+                                    counter = if (counter-- <= 0) (imageList.size - 1) else counter--
+                                    imageViewProduct.setImageBitmap(imageList.get(counter))
+                                }
+
+                                buttonNextImage.setOnClickListener {
+                                    counter = if (counter++ >= (imageList.size - 1)) 0 else counter++
+                                    imageViewProduct.setImageBitmap(imageList.get(counter))
+                                }
                             }
                         }.addOnFailureListener {
                             // Handle any errors
                         }
                     }
-                    val observer = Observer<ArrayList<Bitmap>> { newList ->
-                        newList.forEach { image ->
-                            var imageView = ImageView(requireContext())
-                            imageView.setImageBitmap(image)
-                            // ImageLayout.addView(imageView)
-                        }
-                    }
-                    buttonPreviousImage.setOnClickListener {
-                        counter = if (counter == 0) 0 else counter--
-                        imageViewProduct.setImageBitmap(imageList.get(counter))
-                    }
-
-                    buttonNextImage.setOnClickListener {
-                        counter = if (counter == (imageList.size - 1)) 0 else counter++
-                        imageViewProduct.setImageBitmap(imageList.get(counter))
-                    }
-                    imagesListView.advertImages.observe(viewLifecycleOwner, observer)
                     /*advertFavButton.setOnClickListener {
                         usersCollection
                             .whereEqualTo("emailAddress", user!!.email)
