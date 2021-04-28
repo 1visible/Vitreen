@@ -6,11 +6,13 @@ import android.content.ClipData
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.dto.UserDTO
@@ -50,6 +52,7 @@ class Adding2Fragment : VFragment(
 
     private var imagesRef: StorageReference = storage.reference.child("images")
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -130,10 +133,11 @@ class Adding2Fragment : VFragment(
             println("---------------------------------")
             println("j'ai appuyé sur le bouton ajout d'image")
             println("---------------------------------")
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.type = "image/*"
             startActivityForResult(
-                Intent.createChooser(intent, GALLERY_REQUEST_TAG),
+                intent,
                 GALLERY_REQUEST
             )
         }
@@ -143,11 +147,20 @@ class Adding2Fragment : VFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && null != attr.data) {
+            println("---------------------------------")
+            println("je suis à la récupération des images")
+            println("---------------------------------")
             // Get the Image from data
             val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
             imagesEncodedList = ArrayList<String>()
             if (data != null) {
+                println("---------------------------------")
+                println("data non null")
+                println("---------------------------------")
                 if (data.getData() != null) {
+                    println("---------------------------------")
+                    println("data.getData non null")
+                    println("---------------------------------")
                     val mImageUri: Uri = data.getData()!!
 
                     // Get the cursor
@@ -172,7 +185,13 @@ class Adding2Fragment : VFragment(
                         }
                     }
                 } else {
+                    println("---------------------------------")
+                    println("getData null")
+                    println("---------------------------------")
                     if (data.getClipData() != null) {
+                        println("---------------------------------")
+                        println("clip data non null")
+                        println("---------------------------------")
                         val mClipData: ClipData = data.getClipData()!!
                         mArrayUri.clear()
                         for (i in 0 until mClipData.itemCount) {
