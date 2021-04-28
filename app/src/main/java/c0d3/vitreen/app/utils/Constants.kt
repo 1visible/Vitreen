@@ -19,7 +19,7 @@ class Constants {
         const val DISCUSSION_COLLECTION = "discussions"
 
         // TODO : Remove if not necessary
-        const val HomeLimit = 25
+        const val LIMIT_IMAGES_HOME_PAGE = 25
         const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"
     }
 }
