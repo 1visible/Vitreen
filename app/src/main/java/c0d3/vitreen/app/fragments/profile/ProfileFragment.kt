@@ -8,6 +8,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
+import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -174,7 +175,10 @@ class ProfileFragment : VFragment(
 
     /* Opens Advert  when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) {
-
+        navigateTo(
+            R.id.action_navigation_profile_to_navigation_product,
+            Constants.KEY_PRODUCT_ID to product.id
+        )
     }
 
     //Supprimer un compte
