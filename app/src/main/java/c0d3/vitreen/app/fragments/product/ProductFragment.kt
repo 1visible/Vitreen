@@ -31,7 +31,7 @@ class ProductFragment : VFragment(
     R.drawable.bigicon_adding,
     -1,
     true,
-    R.menu.menu_favorites,
+    R.menu.menu_product,
     true,
     R.id.action_navigation_product_to_navigation_login
 ) {
@@ -141,17 +141,16 @@ class ProductFragment : VFragment(
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.favorite_icon) {
-            println("-----------------------")
-            println("appuie sur le bouton")
-            println("-----------------------")
-            return addRemoveToFavorites()
-        } else {
-            return super.onOptionsItemSelected(item)
+        return when(item.itemId){
+            R.id.action_favorite->{
+                addRemoveToFavorites()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    fun addRemoveToFavorites(): Boolean {
+    fun addRemoveToFavorites() {
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)
             .get()
@@ -185,7 +184,6 @@ class ProductFragment : VFragment(
 
                 }
             }
-        return true
     }
 
 }

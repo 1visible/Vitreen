@@ -6,6 +6,7 @@ import android.view.View
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
+import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_favorites.*
 
@@ -23,6 +24,8 @@ class FavoritesFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
         recyclerViewProducts.visibility = View.VISIBLE
         textViewNoFavorites.visibility = View.GONE
+        val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
+        recyclerViewProducts.adapter = productAdapter
         //Récupération de la liste d'annonces en favori de l'utilisateur courant
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)
@@ -32,15 +35,12 @@ class FavoritesFragment : VFragment(
                     var favoritesProductsIdsList: ArrayList<String>? = null
                     for (document in documents) {
                         favoritesProductsIdsList =
-                            document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
+                            document.get("favoriteProductsId") as java.util.ArrayList<String>?
                     }
                     //Si la liste existe et possède des éléments
                     if (favoritesProductsIdsList != null) {
                         if (favoritesProductsIdsList.size > 0) {
                             var productsList: ArrayList<ProductSDTO> = ArrayList()
-                            val productAdapter: ProductAdapter =
-                                ProductAdapter { product -> adapterOnClick(product) }
-                            recyclerViewProducts.adapter = productAdapter
                             //Récupération des infos des annonces présentes dans cette liste
                             favoritesProductsIdsList.forEach {
                                 productsCollection
@@ -64,11 +64,13 @@ class FavoritesFragment : VFragment(
                                                                 product.get("price") as Double
                                                             )
                                                         )
+                                                        //Au moment où nous avons récupérer toutes les infos des produits favoris
+                                                        if (productsList.size == favoritesProductsIdsList.size) {
+                                                            //On les passe à l'adapteur
+                                                            productAdapter.submitList(productsList)
+                                                        }
                                                     }
                                             }
-                                        if (productsList.size == favoritesProductsIdsList.size) {
-                                            productAdapter.submitList(productsList)
-                                        }
                                     }
                             }
                         } else {
@@ -95,6 +97,9 @@ class FavoritesFragment : VFragment(
 
     /* Opens Advert  when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) {
-
+        navigateTo(
+            R.id.action_navigation_favorites_to_navigation_product,
+            Constants.KEY_PRODUCT_ID to product.id
+        )
     }
 }

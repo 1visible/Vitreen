@@ -59,6 +59,11 @@
         <action
             android:id="@+id/action_navigation_favorites_to_navigation_error"
             app:destination="@+id/navigation_error" />
+
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_product"
+            app:destination="@id/navigation_product"
+            />
     </fragment>
 
     <fragment

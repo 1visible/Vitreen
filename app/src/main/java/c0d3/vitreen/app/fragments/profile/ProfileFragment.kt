@@ -167,11 +167,6 @@ class ProfileFragment : VFragment(
                 println("-------------------------problème")
             }
 
-        signOutButton.setOnClickListener {
-            auth.signOut()
-            navigateTo(R.id.action_navigation_profile_to_navigation_home)
-        }
-
         buttonDeleteAccount.setOnClickListener {
             deleteAccount()
         }
@@ -249,7 +244,11 @@ class ProfileFragment : VFragment(
     // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            // Put things here
+            R.id.action_logout -> {
+                auth.signOut()
+                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
