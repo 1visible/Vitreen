@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -29,8 +30,8 @@ class ProductFragment : VFragment(
     R.layout.fragment_product,
     R.drawable.bigicon_adding,
     -1,
-    false,
-    -1,
+    true,
+    R.menu.menu_favorites,
     true,
     R.id.action_navigation_product_to_navigation_login
 ) {
@@ -89,7 +90,12 @@ class ProductFragment : VFragment(
                                     textViewTitle.setText(productDTO.title)
                                     textViewBrand.setText(productDTO.brand)
                                     textViewDescription.setText(productDTO.description)
-                                    textViewPrice.setText(getString(R.string.price, productDTO.price))
+                                    textViewPrice.setText(
+                                        getString(
+                                            R.string.price,
+                                            productDTO.price
+                                        )
+                                    )
                                     textViewDimensions.setText(productDTO.size ?: "")
                                     textViewCategory.setText(category.get("name") as String)
                                     textViewLocation.setText("${location.get("name") as String}${zipCode}")
@@ -98,24 +104,26 @@ class ProductFragment : VFragment(
                                 }
                         }
                     //Téléchargement des images
-                    for (i in 0..productDTO.nbImages-1) {
+                    for (i in 0..productDTO.nbImages - 1) {
                         val productImageRef =
                             storageRef.child("images/${productDTO.id}/image_$i")
-                        val TWO_MEGABYTE: Long = 1024 * 1024 * 2
+                        val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
                         //Téléchargement d'une image
-                        productImageRef.getBytes(TWO_MEGABYTE).addOnSuccessListener {
+                        productImageRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener {
                             imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
                             //Une fois que toutes les images téléchargées faire le traitement suivant
                             //Logique de la card
                             if (imageList.size.toLong() == productDTO.nbImages) {
                                 imageViewProduct.setImageBitmap(imageList.get(counter))
                                 buttonPreviousImage.setOnClickListener {
-                                    counter = if (counter-- <= 0) (imageList.size - 1) else counter--
+                                    counter =
+                                        if (counter-- <= 0) (imageList.size - 1) else counter--
                                     imageViewProduct.setImageBitmap(imageList.get(counter))
                                 }
 
                                 buttonNextImage.setOnClickListener {
-                                    counter = if (counter++ >= (imageList.size - 1)) 0 else counter++
+                                    counter =
+                                        if (counter++ >= (imageList.size - 1)) 0 else counter++
                                     imageViewProduct.setImageBitmap(imageList.get(counter))
                                 }
                             }
@@ -123,33 +131,61 @@ class ProductFragment : VFragment(
                             // Handle any errors
                         }
                     }
+
+
                     /*advertFavButton.setOnClickListener {
-                        usersCollection
-                            .whereEqualTo("emailAddress", user!!.email)
-                            .get()
-                            .addOnSuccessListener { documents ->
-                                if (documents.size() == 1) {
-                                    for (document in documents) {
-                                        println("-------------${productDTO.id}")
-                                        var listFavorite =
-                                            document.get("favoriteProductsId") as ArrayList<String>?
-                                        if (listFavorite != null) {
-                                            if ((!listFavorite.contains(productDTO.id))
-                                            ) {
-                                                listFavorite.add(productDTO.id)
-                                            } else {
-                                                listFavorite.remove(productDTO.id)
-                                            }
-                                            usersCollection
-                                                .document(document.id)
-                                                .update("favoriteProductsId", listFavorite)
-                                        }
-                                    }
-                                }
-                            }
+
                     }*/
                 }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite_icon) {
+            println("-----------------------")
+            println("appuie sur le bouton")
+            println("-----------------------")
+            return addRemoveToFavorites()
+        } else {
+            return super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun addRemoveToFavorites(): Boolean {
+        usersCollection
+            .whereEqualTo("emailAddress", user!!.email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    for (document in documents) {
+                        println("-------------${productId}")
+                        var listFavorite =
+                            document.get("favoriteProductsId") as ArrayList<String>?
+                        if (listFavorite != null) {
+                            if ((!listFavorite.contains(productId))
+                            ) {
+                                listFavorite.add(productId!!)
+                                println("-----------------------")
+                                println("ajout")
+                                println("-----------------------")
+                            } else {
+                                listFavorite.remove(productId!!)
+                                println("-----------------------")
+                                println("retrait")
+                                println("-----------------------")
+                            }
+                            usersCollection
+                                .document(document.id)
+                                .update("favoriteProductsId", listFavorite)
+                            println("-----------------------")
+                            println("maj")
+                            println("-----------------------")
+                        }
+                    }
+
+                }
+            }
+        return true
     }
 
 }

@@ -207,14 +207,14 @@ class ProfileFragment : VFragment(
                                 .get()
                                 .addOnSuccessListener { products ->
                                     for (product in products.documents) {
-                                        val fileRef =
-                                            storage.reference.child("images/${product.id}")
-                                        fileRef.delete()
                                         productsIdsList.add(product.id)
                                         productsCollection
                                             .document(product.id)
                                             .delete()
                                     }
+                                    //Suppression des infos de connexion de l'utilisateur
+                                    user!!.delete()
+                                    auth.signOut()
                                     //Parcours de tout les utilisateurs
                                     //Retirer des favoris l'ensemble des produits effaçés
                                     usersCollection
@@ -235,9 +235,6 @@ class ProfileFragment : VFragment(
                                             }
                                         }
                                 }
-                            //Suppression des infos de connexion de l'utilisateur
-                            user!!.delete()
-                            auth.signOut()
                             navigateTo(R.id.action_navigation_profile_to_navigation_login)
                         }
                     }
