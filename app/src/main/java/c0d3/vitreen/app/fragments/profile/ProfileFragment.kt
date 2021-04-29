@@ -202,14 +202,25 @@ class ProfileFragment : VFragment(
                                 .get()
                                 .addOnSuccessListener { products ->
                                     for (product in products.documents) {
+                                        for (i in 0..((product.get("nbImages") as Long) - 1)) {
+                                            val image =
+                                                storage.reference.child("images/${product.id}/image_$i")
+                                            image.delete()
+                                                .addOnSuccessListener {
+                                                    if(i == ((product.get("nbImages") as Long)-1)){
+                                                        //Suppression des infos de connexion de l'utilisateur
+                                                        user!!.delete()
+                                                        auth.signOut()
+                                                    }
+                                                }
+                                                .addOnFailureListener {
+                                                }
+                                        }
                                         productsIdsList.add(product.id)
                                         productsCollection
                                             .document(product.id)
                                             .delete()
                                     }
-                                    //Suppression des infos de connexion de l'utilisateur
-                                    user!!.delete()
-                                    auth.signOut()
                                     //Parcours de tout les utilisateurs
                                     //Retirer des favoris l'ensemble des produits effaçés
                                     usersCollection
