@@ -68,4 +68,7 @@
     <string name="label_error">erreur</string>
     <string name="label_product">produit</string>
     <string name="welcome">Bienvenue</string>
+    <!-- Appbar menus -->
+    <string name="search">Rechercher</string>
+    <string name="logout">Se déconnecter</string>
 </resources>
