@@ -98,15 +98,19 @@ class ProfileFragment : VFragment(
                                         null
                                     )
                                 }
+                                val zipCodeString =
+                                    if (it.get("zipCode") as Long? != null) "(${it.get("zipCode") as Long?})" else ""
                                 textViewPostalAddress.text =
-                                    "${it.get("name") as String}(${it.get("zipCode") as Long?})"
+                                    it.get("name") as String + zipCodeString
                                 if (userDTO.isProfessional) {
+                                    textViewPersonalInformation.visibility = View.VISIBLE
                                     textViewCompanyName.visibility = View.VISIBLE
                                     textViewCompanyName.text = userDTO.companyName
                                     textViewSiretNumber.visibility = View.VISIBLE
                                     textViewSiretNumber.text = userDTO.siretNumber
                                     //profilStatsButton.visibility = View.VISIBLE
                                 } else {
+                                    textViewPersonalInformation.visibility = View.GONE
                                     textViewCompanyName.visibility = View.GONE
                                     textViewSiretNumber.visibility = View.GONE
                                     // profilStatsButton.visibility = View.GONE
@@ -207,7 +211,7 @@ class ProfileFragment : VFragment(
                                                 storage.reference.child("images/${product.id}/image_$i")
                                             image.delete()
                                                 .addOnSuccessListener {
-                                                    if(i == ((product.get("nbImages") as Long)-1)){
+                                                    if (i == ((product.get("nbImages") as Long) - 1)) {
                                                         //Suppression des infos de connexion de l'utilisateur
                                                         user!!.delete()
                                                         auth.signOut()
@@ -240,6 +244,10 @@ class ProfileFragment : VFragment(
                                                 }
                                             }
                                         }
+                                }.addOnSuccessListener {
+                                    //Suppression des infos de connexion de l'utilisateur
+                                    user!!.delete()
+                                    auth.signOut()
                                 }
                             navigateTo(R.id.action_navigation_profile_to_navigation_login)
                         }

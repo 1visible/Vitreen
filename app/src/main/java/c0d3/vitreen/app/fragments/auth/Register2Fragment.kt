@@ -54,7 +54,7 @@ class Register2Fragment : VFragment(
                     editTextLocation.text.toString()[0],
                     editTextLocation.text.toString()[0].toUpperCase()
                 ),
-                if (zipCode == "") null else zipCode.toInt()
+                if (zipCode == "" || editTextLocation.text.toString() != cityName) null else zipCode.toInt()
             )
 
             locationsCollection.whereEqualTo("name", currentLocation.name)
@@ -103,7 +103,7 @@ class Register2Fragment : VFragment(
                     } else {
                         locationsCollection.add(currentLocation)
                             .addOnSuccessListener {
-                                user = if(switchProfessionalAccount.isChecked){
+                                user = if (switchProfessionalAccount.isChecked) {
                                     User(
                                         editTextFullname.text.toString(),
                                         emailAddress,
@@ -114,7 +114,7 @@ class Register2Fragment : VFragment(
                                         editTextCompany.text.toString(),
                                         editTextSiret.text.toString()
                                     )
-                                }else{
+                                } else {
                                     User(
                                         editTextFullname.text.toString(),
                                         emailAddress,
@@ -128,7 +128,7 @@ class Register2Fragment : VFragment(
                                 usersCollection.document().set(user).addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         navigateTo(R.id.action_navigation_register2_to_navigation_profil)
-                                    } else{
+                                    } else {
                                         showError(R.string.errorMessage)
                                     }
                                 }

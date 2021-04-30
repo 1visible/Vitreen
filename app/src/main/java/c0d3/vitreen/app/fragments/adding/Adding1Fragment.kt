@@ -38,6 +38,7 @@ class Adding1Fragment : VFragment(
     private val categoriesList = ArrayList<CategoryDTO>()
 
     private var zipCode: String? = null
+    private var cityName:String=""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,7 +97,7 @@ class Adding1Fragment : VFragment(
             // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
             val currentLocation = Location(
                 editTextLocation.text.toString().capitalize(Locale.getDefault()),
-                zipCode?.toInt()
+                if(cityName!=editTextLocation.text.toString()) null else zipCode?.toInt()
             )
             // Récupération de la localisation renseignée
             locationsCollection.whereEqualTo("name", currentLocation.name).get()
@@ -196,6 +197,7 @@ class Adding1Fragment : VFragment(
 
                     if (address != null) {
                         zipCode = address[0].postalCode
+                        cityName = address[0].locality
                         editTextLocation.text.clear()
                         editTextLocation.setText(address[0].locality)
                     }

@@ -69,6 +69,7 @@
         tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
+        android:id="@+id/textViewPersonalInformation"
         android:text="@string/professional_informations"
         android:textSize="20sp"
         android:textStyle="bold"
