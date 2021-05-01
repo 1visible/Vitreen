@@ -11,7 +11,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="100dp"
+        android:paddingBottom="120dp"
         android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,6 +32,10 @@
             </c0d3.vitreen.app.utils.TopView>
 
             <fragment
+                android:layout_marginStart="@dimen/spacing_lg"
+                android:layout_marginLeft="@dimen/spacing_lg"
+                android:layout_marginEnd="@dimen/spacing_lg"
+                android:layout_marginRight="@dimen/spacing_lg"
                 android:id="@+id/nav_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
@@ -44,6 +48,16 @@
 
     </ScrollView>
 
+    <!-- Loading linear spinner -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toTopOf="@+id/navBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <View
         android:id="@+id/navBackground"
         android:layout_width="match_parent"
@@ -52,8 +66,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/navView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/navView">
-    </View>
+        app:layout_constraintTop_toTopOf="@+id/navView" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navView"

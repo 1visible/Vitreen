@@ -3,11 +3,12 @@ package c0d3.vitreen.app.activities
 import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.postDelayed
-import androidx.core.view.forEach
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -16,6 +17,7 @@ import c0d3.vitreen.app.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_home.*
 
 class MainActivity : AppCompatActivity() {
     private val user = Firebase.auth.currentUser
@@ -78,9 +80,8 @@ class MainActivity : AppCompatActivity() {
         topView.setAttributes(title, icon)
     }
 
-    fun highlightMenuIcon(id: Int) {
-        navView.menu.forEach { action -> action.isChecked = false }
-        navView.menu.findItem(id).isChecked = true
+    fun setSpinnerVisibility(visibility: Int) {
+        spinner.visibility = visibility
     }
 
 }

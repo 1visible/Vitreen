@@ -2,6 +2,8 @@ package c0d3.vitreen.app.utils
 
 import android.os.Bundle
 import android.view.*
+import android.view.Gravity.CENTER
+import android.view.View.GONE
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.*
@@ -13,10 +15,14 @@ import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCT_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USER_COLLECTION
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 abstract class VFragment(
@@ -29,38 +35,52 @@ abstract class VFragment(
     @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
-    val db = Firebase.firestore
-    val storage = Firebase.storage
-    val auth = Firebase.auth
-    var user: FirebaseUser? = auth.currentUser
+    private lateinit var db: FirebaseFirestore
+    lateinit var storage: FirebaseStorage
+    lateinit var auth: FirebaseAuth
+    var user: FirebaseUser? = null
 
-    val usersCollection = db.collection(USER_COLLECTION)
-    val categoriesCollection = db.collection(CATEGORY_COLLECTION)
-    val locationsCollection = db.collection(LOCATION_COLLECTION)
-    val productsCollection = db.collection(PRODUCT_COLLECTION)
+    lateinit var usersCollection: CollectionReference
+    lateinit var categoriesCollection: CollectionReference
+    lateinit var locationsCollection: CollectionReference
+    lateinit var productsCollection: CollectionReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        db = Firebase.firestore
+        storage = Firebase.storage
+        auth = Firebase.auth
+        user = auth.currentUser
+
+        usersCollection = db.collection(USER_COLLECTION)
+        categoriesCollection = db.collection(CATEGORY_COLLECTION)
+        locationsCollection = db.collection(LOCATION_COLLECTION)
+        productsCollection = db.collection(PRODUCT_COLLECTION)
+
         setHasOptionsMenu(hasOptionsMenu)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        if (requireAuth && (user == null || user!!.isAnonymous))
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+
+        if (requireAuth && user?.isAnonymous == true)
             navigateTo(loginNavigationId)
+
         return inflater.inflate(layoutId, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
-        (activity as MainActivity).setTopViewAttributes(topTitle, topIcon)
+        (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
+        setSpinnerVisibility(GONE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
     }
@@ -90,6 +110,10 @@ abstract class VFragment(
         context?.let{it->
             Toast.makeText(it, getString(errorId), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun setSpinnerVisibility(visibility: Int) {
+        (activity as? MainActivity)?.setSpinnerVisibility(visibility)
     }
 
 }

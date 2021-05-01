@@ -139,7 +139,7 @@ class Adding2Fragment : VFragment(
             val intent = Intent(Intent.ACTION_PICK)
             //On autorise l'utilisation de plusieurs images unquement dans le cas où l'api est compatible
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             }
             intent.type = "image/*"
             startActivityForResult(
@@ -152,7 +152,7 @@ class Adding2Fragment : VFragment(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && null != attr.data) {
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             //propriété qui va permettre de suivre les éléments lors de l'utilisation des prvious et next button
             counter = 0
             // Get the Image from data
