@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lg"
+    android:layout_marginLeft="@dimen/spacing_lg"
+    android:layout_marginEnd="@dimen/spacing_lg"
+    android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
     tools:context=".fragments.favorites.FavoritesFragment">
 
     <TextView
-        android:id="@+id/favoriteHaveToConnect"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/textViewNoFavorites"
+        android:text="@string/no_favorites"
         android:gravity="center"
-        android:text="@string/HTBC" />
-
-    <TextView
-        android:id="@+id/favoriteNoFavorite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/NFav"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoriteRecyclerView"
+        android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    app:cardCornerRadius="@dimen/spacing_sm"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_md"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/white_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageViewProduct"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/image_placeholder"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/placeholder_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/imageViewProduct"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewCategory"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_category"
+            app:layout_constraintBottom_toTopOf="@+id/textViewLocation"
+            app:layout_constraintStart_toStartOf="@+id/textViewLocation" />
+
+        <TextView
+            android:id="@+id/textViewLocation"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:text="@string/placeholder_location"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageViewProduct" />
+
+        <TextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:layout_marginRight="@dimen/spacing_md"
+            android:text="@string/price"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

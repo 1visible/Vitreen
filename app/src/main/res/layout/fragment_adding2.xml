@@ -1,51 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="50dp"
-    android:layout_marginTop="30sp"
-    android:layout_marginRight="50dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lg"
+    android:layout_marginLeft="@dimen/spacing_lg"
+    android:layout_marginEnd="@dimen/spacing_lg"
+    android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
-    tools:context=".fragments.adding.Adding2Fragment">
-
+    tools:context=".fragments.adding.Adding1Fragment">
 
     <EditText
         android:id="@+id/editTextBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:hint="@string/brand"
+        android:drawableRight="@drawable/icon_tag"
+        android:drawableEnd="@drawable/icon_tag"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:hint="@string/product_brand"
         android:importantForAutofill="no"
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/editTextSize"
+        android:id="@+id/editTextDimensions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:hint="@string/size"
+        android:drawableRight="@drawable/icon_size"
+        android:drawableEnd="@drawable/icon_size"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:hint="@string/product_dimensions"
         android:importantForAutofill="no"
-        android:inputType="text" />
+        android:inputType="numberDecimal" />
 
-        <Button
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Images"
-            android:clickable="true"
-            android:focusable="true" />
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        app:cardCornerRadius="@dimen/spacing_sm"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/countImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:srcCompat="@drawable/image_placeholder"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonRemoveImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                app:icon="@drawable/icon_close"
+                style="@style/Vitreen.Link"
+                tools:ignore="RelativeOverlap" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonPreviousImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                app:icon="@drawable/icon_angle_left"
+                android:layout_marginLeft="@dimen/spacing_sm"
+                android:layout_marginStart="@dimen/spacing_sm"
+                style="@style/Vitreen.Link" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonNextImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                app:icon="@drawable/icon_angle_right"
+                android:layout_marginRight="@dimen/spacing_sm"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                style="@style/Vitreen.Link"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/buttonAddImage"
+        android:layout_marginBottom="@dimen/spacing_lg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/addAdvertButton" />
+        style="@style/Vitreen.Button.Outline"
+        android:text="@string/add_image" />
+
+    <Button
+        android:id="@+id/buttonConfirmation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirmation" />
 
 </LinearLayout>

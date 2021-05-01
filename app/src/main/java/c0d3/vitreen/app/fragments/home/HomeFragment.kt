@@ -1,70 +1,45 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
-import android.text.Editable
-import android.view.*
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.adapter.AdvertAdapter
-import c0d3.vitreen.app.models.mini.AdvertMini
+import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
-import com.google.firebase.auth.ktx.auth
+import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Transaction
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment : Fragment() {
-
-    private val auth = Firebase.auth
-    private var user = auth.currentUser
-    private val db = Firebase.firestore
+class HomeFragment : VFragment(
+    R.layout.fragment_home,
+    R.drawable.bigicon_logo,
+    R.string.welcome,
+    true,
+    R.menu.menu_messages
+) {
 
     private var locationId = ""
     private var userId = ""
-    private var listAdvert: ArrayList<AdvertMini> = ArrayList()
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
+    private var listProduct: ArrayList<ProductSDTO> = ArrayList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (user == null) {
             auth.signInAnonymously()
-            homeTextViewNoConnection.visibility = View.VISIBLE
-            homeTextViewNPY.visibility = View.GONE
+            textViewNoProducts.visibility = View.GONE
         } else {
-            if (user.isAnonymous) {
-                homeTextViewNoConnection.visibility = View.VISIBLE
-                homeTextViewNPY.visibility = View.GONE
-                homeRecyclerView.visibility = View.GONE
+            if (user!!.isAnonymous) {
+                navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                homeTextViewNoConnection.visibility = View.GONE
-                homeTextViewNPY.visibility = View.GONE
-                homeRecyclerView.visibility = View.VISIBLE
-                val advertAdapter: AdvertAdapter =
-                    AdvertAdapter { advert -> adapterOnClick(advert) }
-                homeRecyclerView.adapter = advertAdapter
-                db.collection("Users")
-                    .whereEqualTo("emailAddress", user.email)
+                textViewNoProducts.visibility = View.GONE
+                recyclerViewProducts.visibility = View.VISIBLE
+                val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
+                recyclerViewProducts.adapter = productAdapter
+                usersCollection
+                    .whereEqualTo("emailAddress", user!!.email)
                     .get()
                     .addOnSuccessListener {
 
@@ -73,31 +48,57 @@ class HomeFragment : Fragment() {
                                 locationId = document.get("locationId") as String
                                 userId = document.id
                             }
-                            db.collection("Adverts")
+                            productsCollection
                                 .whereEqualTo("locationId", locationId)
                                 .whereNotEqualTo("ownerId", userId)
                                 .orderBy("ownerId")
                                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                                .limit(Constants.HomeLimit.toLong())
+                                .limit(Constants.IMAGES_LIMIT_HOME_PAGE.toLong())
                                 .get()
                                 .addOnSuccessListener {
                                     if (it.documents.size > 0) {
                                         for (document in it.documents) {
-                                            listAdvert.add(
-                                                AdvertMini(
-                                                    document.id,
-                                                    document.get("title") as String,
-                                                    document.get("description") as String,
-                                                    document.get("price") as Long
-                                                )
-                                            )
+                                            categoriesCollection
+                                                .document(document.get("categoryId") as String)
+                                                .get()
+                                                .addOnSuccessListener { category ->
+                                                    println("----------------------------")
+                                                    println(category.get("name") as String)
+                                                    println("----------------------------")
+                                                    locationsCollection
+                                                        .document(document.get("locationId") as String)
+                                                        .get()
+                                                        .addOnSuccessListener { location ->
+                                                            println("----------------------------")
+                                                            println(location.get("name") as String)
+                                                            println("----------------------------")
+                                                            listProduct.add(
+                                                                ProductSDTO(
+                                                                    document.id,
+                                                                    document.get("title") as String,
+                                                                    category.get("name") as String,
+                                                                    location.get("name") as String,
+                                                                    document.get("price") as Double
+                                                                )
+                                                            )
+                                                            if (listProduct.size == it.documents.size) {
+                                                                println("-----------------------------")
+                                                                println(listProduct.size)
+                                                                println("-----------------------------")
+                                                                productAdapter.submitList(
+                                                                    listProduct
+                                                                )
+                                                            }
+                                                        }
+                                                }
                                         }
-
-                                        advertAdapter.submitList(listAdvert)
                                     } else {
-                                        homeRecyclerView.visibility = View.GONE
-                                        homeTextViewNoConnection.visibility = View.GONE
-                                        homeTextViewNPY.visibility = View.VISIBLE
+                                        if(recyclerViewProducts != null) {
+                                            recyclerViewProducts.visibility = View.GONE
+                                        }
+                                        if(textViewNoProducts != null) {
+                                            textViewNoProducts.visibility = View.VISIBLE
+                                        }
                                         Toast.makeText(
                                             requireContext(),
                                             "docuement.size<0",
@@ -106,14 +107,9 @@ class HomeFragment : Fragment() {
                                     }
                                 }
                                 .addOnFailureListener(requireActivity()) {
-                                    homeRecyclerView.visibility = View.GONE
-                                    homeTextViewNoConnection.visibility = View.GONE
-                                    homeTextViewNPY.visibility = View.VISIBLE
-                                    Toast.makeText(
-                                        context,
-                                        "Une erreur s'est produite",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    recyclerViewProducts.visibility = View.GONE
+                                    textViewNoProducts.visibility = View.VISIBLE
+                                    showError(R.string.errorMessage)
                                 }
                         }
                     }
@@ -122,18 +118,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setTopViewAttributes(
-            getString(R.string.welcome),
-            R.drawable.bigicon_leaf
-        )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_home, menu)
-    }
-
+    // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
@@ -144,17 +129,12 @@ class HomeFragment : Fragment() {
         }
     }
 
-    /* Opens Advert  when RecyclerView item is clicked. */
-    private fun adapterOnClick(advert: AdvertMini) {
-        parentFragmentManager
-            .beginTransaction()
-            .replace(R.id.nav_host_fragment, AdvertFragment.newInstance(advert.id))
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            .commit()
-    }
-
-    companion object {
-        fun newInstance(): HomeFragment = HomeFragment()
+    /* Opens Product when RecyclerView item is clicked. */
+    private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
+        navigateTo(
+            R.id.action_navigation_home_to_navigation_product,
+            Constants.KEY_PRODUCT_ID to product.id
+        )
     }
 
 }

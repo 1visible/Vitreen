@@ -23,6 +23,18 @@
         <item name="android:textColor">@color/teal</item>
     </style>
 
+    <!-- Button: outline style -->
+    <style name="Vitreen.Button.Outline" parent="Vitreen.Button">
+        <item name="android:background">@drawable/outline_button</item>
+        <item name="android:textColor">@color/teal</item>
+    </style>
+
+    <!-- Button: error outline style -->
+    <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button">
+        <item name="android:background">@drawable/outline_button_error</item>
+        <item name="android:textColor">@color/red</item>
+    </style>
+
     <!-- Badge: alternative MD style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">@color/teal</item>
@@ -34,6 +46,21 @@
         <item name="background">@color/darker</item>
         <item name="android:background">@color/darker</item>
         <item name="elevation">0dp</item>
+    </style>
+
+    <!-- TextInputLayout: alternative MD style -->
+    <style name="Vitreen.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="hintTextColor">@color/white_20</item>
+        <item name="android:textColorHint">@color/white_20</item>
+        <item name="placeholderTextColor">@color/white_20</item>
+        <item name="endIconTint">@color/white_20</item>
+        <item name="boxBackgroundColor">@color/white_10</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeCorners</item>
+    </style>
+
+    <style name="Vitreen.ShapeCorners" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/spacing_sm</item>
     </style>
 
 </resources>

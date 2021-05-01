@@ -9,68 +9,99 @@
         android:id="@+id/navigation_home"
         android:name="c0d3.vitreen.app.fragments.home.HomeFragment"
         android:label="@string/label_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_home_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_home_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_error"
+            app:destination="@id/navigation_error" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_product"
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_messages"
         android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
         android:label="@string/label_messages"
-        tools:layout="@layout/fragment_messages" >
+        tools:layout="@layout/fragment_messages">
         <action
-            android:id="@+id/action_navigation_messages_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_messages_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_adding"
+        android:id="@+id/navigation_adding1"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
         android:label="@string/label_adding"
-        tools:layout="@layout/fragment_adding1" >
+        tools:layout="@layout/fragment_adding1">
         <action
-            android:id="@+id/action_navigation_adding_to_adding2Fragment"
+            android:id="@+id/action_navigation_adding1_to_navigation_adding2"
             app:destination="@id/navigation_adding2" />
         <action
-            android:id="@+id/action_navigation_adding_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_adding1_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_adding1_self"
+            app:destination="@id/navigation_adding1" />
     </fragment>
 
     <fragment
-         android:id="@+id/navigation_favorites"
-         android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
-         android:label="@string/label_favorites"
-         tools:layout="@layout/fragment_favorites" />
+        android:id="@+id/navigation_favorites"
+        android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
+        android:label="@string/label_favorites"
+        tools:layout="@layout/fragment_favorites">
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_error"
+            app:destination="@+id/navigation_error" />
+
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_product"
+            app:destination="@id/navigation_product"
+            />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="c0d3.vitreen.app.fragments.profile.ProfileFragment"
         android:label="@string/label_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
-            android:id="@+id/action_navigation_profile_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
+            android:id="@+id/action_navigation_profile_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_home"
+            app:destination="@id/navigation_home" />
+
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_product"
+            app:destination="@id/navigation_product"
+            />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_adding2"
         android:name="c0d3.vitreen.app.fragments.adding.Adding2Fragment"
         android:label="fragment_adding2"
-        tools:layout="@layout/fragment_adding2" />
+        tools:layout="@layout/fragment_adding2">
+        <action
+            android:id="@+id/action_navigation_adding2_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_register1"
         android:name="c0d3.vitreen.app.fragments.auth.Register1Fragment"
         android:label="@string/label_register"
-        tools:layout="@layout/fragment_register1" >
+        tools:layout="@layout/fragment_register1">
         <action
-            android:id="@+id/action_navigation_register1_to_register2Fragment"
+            android:id="@+id/action_navigation_register1_to_navigation_register2"
             app:destination="@id/navigation_register2" />
-        <action
-            android:id="@+id/action_navigation_register1_to_navigation_home"
-            app:destination="@id/navigation_home" />
         <action
             android:id="@+id/action_navigation_register1_to_navigation_login"
             app:destination="@id/navigation_login" />
@@ -80,16 +111,48 @@
         android:id="@+id/navigation_register2"
         android:name="c0d3.vitreen.app.fragments.auth.Register2Fragment"
         android:label="@string/label_register"
-        tools:layout="@layout/fragment_register2" />
+        tools:layout="@layout/fragment_register2">
+        <argument
+            android:name="email"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_navigation_register2_self"
+            app:destination="@id/navigation_register2" />
+
+        <action
+            android:id="@+id/action_navigation_register2_to_navigation_profil"
+            app:destination="@id/navigation_profile"
+            />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_login"
         android:name="c0d3.vitreen.app.fragments.auth.LoginFragment"
         android:label="@string/label_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_navigation_login_to_navigation_register1"
             app:destination="@id/navigation_register1" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_error"
+        android:name="c0d3.vitreen.app.fragments.error.ErrorFragment"
+        android:label="@string/label_error"
+        tools:layout="@layout/fragment_error" />
+
+    <fragment
+        android:id="@+id/navigation_product"
+        android:name="c0d3.vitreen.app.fragments.product.ProductFragment"
+        android:label="@string/label_product"
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_navigation_product_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
 </navigation>

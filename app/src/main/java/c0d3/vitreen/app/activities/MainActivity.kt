@@ -2,29 +2,23 @@ package c0d3.vitreen.app.activities
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.postDelayed
 import androidx.core.view.forEach
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.fragments.auth.LoginFragment
-import c0d3.vitreen.app.fragments.auth.Register1Fragment
-import c0d3.vitreen.app.fragments.home.HomeFragment
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private val user = Firebase.auth.currentUser
     private var backPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             topLevelDestinationIds = setOf(
                 R.id.navigation_home,
                 R.id.navigation_messages,
-                R.id.navigation_adding,
+                R.id.navigation_adding1,
                 R.id.navigation_favorites,
                 R.id.navigation_profile,
             )
@@ -73,28 +67,18 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed(2000) {
                 backPressedOnce = false
             }
-        } else if(navController.currentDestination?.id == R.id.navigation_register1) {
-            navController.navigate(R.id.action_navigation_register1_to_navigation_home)
-            showNavigation()
+            // Gérer les cas de login, register 1 et register 2 avec comportement de back button
+        } else if(navController.currentDestination?.id == R.id.navigation_login) {
+            navController.navigate(R.id.action_navigation_login_to_navigation_home)
         } else
             super.onBackPressed()
     }
 
-    fun showNavigation() {
-        navView.visibility = View.VISIBLE
-        navBackground.visibility = View.VISIBLE
-    }
-
-    fun hideNavigation() {
-        navView.visibility = View.GONE
-        navBackground.visibility = View.GONE
-    }
-
-    fun setTopViewAttributes(title: String, icon: Int) {
+    fun setTopViewAttributes(title: String, @DrawableRes icon: Int) {
         topView.setAttributes(title, icon)
     }
 
-    fun setBottomNavMenuIcon(id: Int) {
+    fun highlightMenuIcon(id: Int) {
         navView.menu.forEach { action -> action.isChecked = false }
         navView.menu.findItem(id).isChecked = true
     }

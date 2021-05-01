@@ -1,173 +1,275 @@
 package c0d3.vitreen.app.fragments.profile
 
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.fragment.findNavController
+import android.view.MenuItem
+import android.view.View
+import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.adapter.AdvertAdapter
-import c0d3.vitreen.app.fragments.home.AdvertFragment
-import c0d3.vitreen.app.fragments.home.HomeFragment
+import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
-import c0d3.vitreen.app.models.mini.AdvertMini
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.fragment_home.*
+import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
+import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-class ProfileFragment : Fragment() {
-    private val db = Firebase.firestore
-    private val userDb = db.collection("Users")
-    private val locationDB = db.collection("locations")
-    private val advertDB = db.collection("Adverts")
+class ProfileFragment : VFragment(
+    R.layout.fragment_profile,
+    R.drawable.bigicon_profile,
+    -1,
+    true,
+    R.menu.menu_profile,
+    true,
+    R.id.action_navigation_profile_to_navigation_login
+) {
 
-    private val auth = Firebase.auth
-    private val user = auth.currentUser
-
-    private var advertList = ArrayList<AdvertMini>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        if (user == null || user.isAnonymous)
-            findNavController().navigate(R.id.action_navigation_profile_to_navigation_register1)
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
+    private var productsList = ArrayList<ProductSDTO>()
+    private var productsIdsList = ArrayList<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (user != null) {
-
-            signOutButton.visibility = View.VISIBLE
-            signOutButton.setOnClickListener {
-                auth
-                    .signOut()
-                (activity as MainActivity).setBottomNavMenuIcon(R.id.navigation_home)
-                parentFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment, HomeFragment.newInstance())
-                    .commit()
-            }
-            userDb
-                .whereEqualTo("emailAddress", user.email)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.size() == 1) {
-                        var userDTO: UserDTO? = null
-                        for (document in documents) {
-                            userDTO = UserDTO(
-                                document.id,
-                                document.get("fullname") as String,
-                                document.get("emailAddress") as String,
-                                document.get("phoneNumber") as String,
-                                document.get("contactByPhone") as Boolean,
-                                document.get("isProfessional") as Boolean,
-                                document.get("locationId") as String,
-                                document.get("companyName") as String?,
-                                document.get("siretNumber") as String?,
-                                document.get("advertsId") as ArrayList<String>?,
-                                document.get("favoriteAdvertsId") as java.util.ArrayList<String>?
-                            )
-                        }
-                        if (userDTO != null) {
-                            println("-------------------${userDTO.locationId}")
-                            locationDB
-                                .document(userDTO.locationId)
-                                .get()
-                                .addOnSuccessListener {
-                                    profilFullName.text = userDTO.fullname
-                                    profilEmailAddress.text = userDTO.emailAddress
-                                    profilPhoneNumber.text = userDTO.phoneNumber
-                                    profilContactByPhone.text =
-                                        if (userDTO.contactByPhone) "contactez moi par téléphone" else "Contactez moi par mail"
-                                    profilLocation.text =
-                                        "${it.get("name") as String}(${it.get("zipCode") as Long?})"
-                                    profilIsProfessional.text =
-                                        if (userDTO.isProfessional) "Je suis un professionnel" else "Je ne suis pas un professionnel"
-                                    if (userDTO.isProfessional) {
-                                        profilCompanyName.visibility = View.VISIBLE
-                                        profilCompanyName.text = userDTO.companyName
-                                        profilSiret.visibility = View.VISIBLE
-                                        profilSiret.text = userDTO.siretNumber
-                                        profilStatsButton.visibility = View.VISIBLE
-                                    } else {
-                                        profilCompanyName.visibility = View.GONE
-                                        profilSiret.visibility = View.GONE
-                                        profilStatsButton.visibility = View.GONE
-                                    }
-                                    if ((userDTO.advertsId != null) && (userDTO.advertsId!!.size > 0)) {
-                                        profilRecyclerView.visibility = View.VISIBLE
-                                        val advertAdapter: AdvertAdapter =
-                                            AdvertAdapter { advert -> adapterOnClick(advert) }
-                                        profilRecyclerView.adapter = advertAdapter
-                                        userDTO.advertsId!!.forEach { advertId ->
-                                            advertDB
-                                                .document(advertId)
-                                                .get()
-                                                .addOnSuccessListener {
-                                                    advertList.add(
-                                                        AdvertMini(
-                                                            it.id,
-                                                            it.get("title") as String,
-                                                            it.get("description") as String,
-                                                            it.get("price") as Long
-                                                        )
-                                                    )
-                                                    if (advertList.size == userDTO.advertsId!!.size) {
-                                                        advertAdapter.submitList(advertList)
-                                                    }
-                                                }
-                                        }
-                                    }
-                                }
-                        }
-
-                    } else {
-                        println("--------------------------------documents size > 1")
+        usersCollection
+            .whereEqualTo("emailAddress", user!!.email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() == 1) {
+                    var userDTO: UserDTO? = null
+                    for (document in documents) {
+                        userDTO = UserDTO(
+                            document.id,
+                            document.get("fullname") as String,
+                            document.get("emailAddress") as String,
+                            document.get("phoneNumber") as String,
+                            document.get("contactByPhone") as Boolean,
+                            document.get("isProfessional") as Boolean,
+                            document.get("locationId") as String,
+                            document.get("companyName") as String?,
+                            document.get("siretNumber") as String?,
+                            document.get("productsId") as ArrayList<String>?,
+                            document.get("favoriteProductsId") as java.util.ArrayList<String>?
+                        )
                     }
+                    if (userDTO != null) {
+                        println("-------------------${userDTO.locationId}")
+                        locationsCollection
+                            .document(userDTO.locationId)
+                            .get()
+                            .addOnSuccessListener {
+                                textViewFullname.text = userDTO.fullname
+                                textViewEmailAddress.text = userDTO.emailAddress
+                                textViewPhoneNumber.text = userDTO.phoneNumber
+                                if (userDTO.contactByPhone) {
+                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                        }, null,
+                                        context?.let { it1 ->
+                                            ContextCompat.getDrawable(
+                                                it1,
+                                                R.drawable.icon_checkmark
+                                            )
+                                        }, null
+                                    )
+                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                        },
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                } else {
+                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                        }, null,
+                                        context?.let { it1 ->
+                                            ContextCompat.getDrawable(
+                                                it1,
+                                                R.drawable.icon_checkmark
+                                            )
+                                        }, null
+                                    )
+                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
+                                        context?.let { it ->
+                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                        },
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                }
+                                val zipCodeString =
+                                    if (it.get("zipCode") as Long? != null) "(${it.get("zipCode") as Long?})" else ""
+                                textViewPostalAddress.text =
+                                    it.get("name") as String + zipCodeString
+                                if (userDTO.isProfessional) {
+                                    textViewPersonalInformation.visibility = View.VISIBLE
+                                    textViewCompanyName.visibility = View.VISIBLE
+                                    textViewCompanyName.text = userDTO.companyName
+                                    textViewSiretNumber.visibility = View.VISIBLE
+                                    textViewSiretNumber.text = userDTO.siretNumber
+                                    //profilStatsButton.visibility = View.VISIBLE
+                                } else {
+                                    textViewPersonalInformation.visibility = View.GONE
+                                    textViewCompanyName.visibility = View.GONE
+                                    textViewSiretNumber.visibility = View.GONE
+                                    // profilStatsButton.visibility = View.GONE
+                                }
+                                if ((userDTO.productsId != null) && (userDTO.productsId!!.size > 0)) {
+                                    recyclerViewProducts.visibility = View.VISIBLE
+                                    textViewNoProducts.visibility = View.GONE
+                                    val productAdapter: ProductAdapter =
+                                        ProductAdapter { product -> adapterOnClick(product) }
+                                    recyclerViewProducts.adapter = productAdapter
+                                    userDTO.productsId!!.forEach { productId ->
+                                        productsCollection
+                                            .document(productId)
+                                            .get()
+                                            .addOnSuccessListener {
+                                                categoriesCollection
+                                                    .document(it.get("categoryId") as String)
+                                                    .get()
+                                                    .addOnSuccessListener { category ->
+                                                        locationsCollection
+                                                            .document(it.get("locationId") as String)
+                                                            .get()
+                                                            .addOnSuccessListener { location ->
+                                                                productsList.add(
+                                                                    ProductSDTO(
+                                                                        it.id,
+                                                                        it.get("title") as String,
+                                                                        category.get("name") as String,
+                                                                        location.get("name") as String,
+                                                                        it.get("price") as Double
+                                                                    )
+                                                                )
+                                                                println("--------------------------")
+                                                                println(it.get("price") as Double)
+                                                                println("--------------------------")
+                                                                if (productsList.size == userDTO.productsId!!.size) {
+                                                                    productAdapter.submitList(
+                                                                        productsList
+                                                                    )
+                                                                }
+                                                            }
+                                                    }
+
+                                            }
+                                    }
+                                } else {
+                                    recyclerViewProducts.visibility = View.GONE
+                                    textViewNoProducts.visibility = View.VISIBLE
+                                }
+                            }
+                    }
+
+                } else {
+                    println("--------------------------------documents size > 1")
                 }
-                .addOnFailureListener {
-                    println("-------------------------problème")
-                }
-        } else {
-            signOutButton.visibility = View.INVISIBLE
+            }
+            .addOnFailureListener {
+                println("-------------------------problème")
+            }
+
+        buttonDeleteAccount.setOnClickListener {
+            deleteAccount()
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setTopViewAttributes("", R.drawable.bigicon_user)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_profile, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            // Put things here
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     /* Opens Advert  when RecyclerView item is clicked. */
-    private fun adapterOnClick(advert: AdvertMini) {
+    private fun adapterOnClick(product: ProductSDTO) {
+        navigateTo(
+            R.id.action_navigation_profile_to_navigation_product,
+            Constants.KEY_PRODUCT_ID to product.id
+        )
     }
 
+    //Supprimer un compte
+    private fun deleteAccount() {
+        //Vérification que l'utilisateur est connecté et non anonyme
+        if ((user != null) && (!user!!.isAnonymous)) {
+            //Recherche des infos de l'utilisateur courant
+            usersCollection
+                .whereEqualTo("emailAddress", user!!.email)
+                .get()
+                .addOnSuccessListener { dbusers ->
+                    //Vérification que l'utilisateur est bien unique
+                    if (dbusers.size() == 1) {
+                        for (dbuser in dbusers) {
+                            val currentUserId = dbuser.id
+                            //Suppression des données de l'utilisateur
+                            usersCollection.document(dbuser.id).delete()
+                            //Suppression de tout les produits déposé par cet utilisateur
+                            productsCollection
+                                .whereEqualTo("ownerId", currentUserId)
+                                .get()
+                                .addOnSuccessListener { products ->
+                                    for (product in products.documents) {
+                                        for (i in 0..((product.get("nbImages") as Long) - 1)) {
+                                            val image =
+                                                storage.reference.child("images/${product.id}/image_$i")
+                                            image.delete()
+                                                .addOnSuccessListener {
+                                                    if (i == ((product.get("nbImages") as Long) - 1)) {
+                                                        //Suppression des infos de connexion de l'utilisateur
+                                                        user!!.delete()
+                                                        auth.signOut()
+                                                    }
+                                                }
+                                                .addOnFailureListener {
+                                                }
+                                        }
+                                        productsIdsList.add(product.id)
+                                        productsCollection
+                                            .document(product.id)
+                                            .delete()
+                                    }
+                                    //Parcours de tout les utilisateurs
+                                    //Retirer des favoris l'ensemble des produits effaçés
+                                    usersCollection
+                                        .get()
+                                        .addOnSuccessListener { users ->
+                                            for (user in users) {
+                                                val favorites =
+                                                    user.get("favoriteProductsId") as ArrayList<String>?
+                                                if (favorites != null) {
+                                                    for (productId in productsIdsList) {
+                                                        favorites.remove(productId)
+                                                    }
+                                                    //Mise à jour de la liste de favoris
+                                                    usersCollection
+                                                        .document(user.id)
+                                                        .update("favoriteProductsId", favorites)
+                                                }
+                                            }
+                                        }
+                                }.addOnSuccessListener {
+                                    //Suppression des infos de connexion de l'utilisateur
+                                    user!!.delete()
+                                    auth.signOut()
+                                }
+                            navigateTo(R.id.action_navigation_profile_to_navigation_login)
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    showError(R.string.errorMessage)
+                }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(): ProfileFragment = ProfileFragment()
+        }
+    }
+
+    // TODO : Ajouter les items
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                auth.signOut()
+                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 }

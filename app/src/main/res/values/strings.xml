@@ -1,4 +1,7 @@
 <resources>
+    <!-- Placeholder text -->
+    <string name="errorMessage">Error: replace this soon</string>
+    <string name="NIY">Not implemented yet</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->
@@ -35,52 +38,37 @@
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
     <string name="register">S\'inscrire</string>
-    <!-- Placeholder text -->
-    <string name="NIY">Not implemented yet</string>
-
-    <!-- TODO: Delete this soon -->
-    <string name="pro">Professionel</string>
-    <string name="connexion">Se connecter</string>
-    <string name="signup">Inscription</string>
-    <string name="welcome">Bienvenue sur Vitreen !</string>
-
-    <string name="ignore_step"><u>Ignorer cette étape</u></string>
-    <string name="bigicon">Icône de la page</string>
-    <string name="lorem">Lorem ipsum</string>
+    <!-- Adding1 fragment -->
+    <string name="product_category">Catégorie</string>
+    <string name="product_title">Titre</string>
+    <string name="product_price">Prix</string>
+    <string name="product_location">Ville</string>
+    <string name="product_description">Description</string>
+    <!-- Adding2 fragment -->
+    <string name="product_brand">Marque</string>
+    <string name="product_dimensions">Dimensions</string>
+    <string name="add_image">Ajouter une image</string>
+    <!-- Product item -->
+    <string name="price">%.2f€</string>
+    <string name="placeholder_title">Titre</string>
+    <string name="placeholder_category">Catégorie</string>
+    <string name="placeholder_location">Lieu</string>
+    <!-- Profile fragment -->
+    <string name="personal_informations">Informations personnelles</string>
+    <string name="professional_informations">Informations professionnelles</string>
+    <string name="my_products">Mes annonces</string>
+    <string name="delete_account">Supprimer mon compte</string>
+    <string name="no_products">Aucune annonce à afficher.</string>
+    <!-- Favorites fragment -->
+    <string name="no_favorites">Aucun favori à afficher.</string>
+    <!-- Product fragment -->
+    <string name="further_informations">Informations complémentaires</string>
+    <string name="postal_address">Ville</string>
+    <string name="signup">Se connecter</string>
+    <string name="label_error">erreur</string>
+    <string name="label_product">produit</string>
+    <string name="welcome">Bienvenue</string>
+    <!-- Appbar menus -->
+    <string name="search">Rechercher</string>
     <string name="logout">Se déconnecter</string>
-    <string name="errorMessage">Adresse email ou mot de passe incorrecte</string>
-
-    <string name="confirmpassword">Confirmation Mot de Passe</string>
-    <string name="emptyFields">Veuillez remplir tout les champs</string>
-    <string name="NoMatchPassword">Les mots de passes doivent être identiques</string>
-    <string name="ErrorMessage">Une erreur s\'est produite</string>
-    <string name="signupSucceed">Authentification réussie</string>
-    <string name="inscriptionOk">Inscription terminée</string>
-    <string name="SignInSucceed">Authentification réussie</string>
-    <string name="addAdvert">Ajout d\'un produit</string>
-    <string name="title">Titre</string>
-    <string name="price">Prix</string>
-    <string name="localisation">Localisation</string>
-    <string name="category">Catégorie</string>
-    <string name="addAdvertButton">Ajout</string>
-    <string name="description">Description</string>
-    <string name="locationDenied">Localisation refusée</string>
-    <string name="noLocation">Impossible de récupérer la localisation</string>
-    <string name="brand">Marque</string>
-    <string name="size">Taille</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Placeholder text</string>
-    <string name="tooMuchImages">Vous avez sélectionné trop d\'images</string>
-    <string name="emptyFieldsAndImage">Veuillez renseigner tous les champs et ajouter au moins une image</string>
-    <string name="signoutButton">Se déconnecter</string>
-    <string name="welcomeUser">Bienvenue</string>
-    <string name="NPY">No Product Yet</string>
-    <string name="HTBC">You have to be connected</string>
-    <string name="advertDefaultName">Titre d\'annonce par défaut</string>
-    <string name="euros">€</string>
-    <string name="profilStat">Afficher les statistiques</string>
-    <string name="profilModify">Modifier mon profil</string>
-    <string name="addFavorite">Ajouter aux Favoris</string>
-    <string name="removeFavorite">Retirer des Favoris</string>
-    <string name="NFav">Aucun favoris. Ajouter des favoris</string>
 </resources>

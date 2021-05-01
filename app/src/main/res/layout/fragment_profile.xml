@@ -1,80 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lg"
+    android:layout_marginLeft="@dimen/spacing_lg"
+    android:layout_marginEnd="@dimen/spacing_lg"
+    android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
     tools:context=".fragments.profile.ProfileFragment">
 
     <TextView
-        android:id="@+id/profilFullName"
-        android:layout_width="wrap_content"
+        android:text="@string/personal_informations"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/profilEmailAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/profilPhoneNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/profilContactByPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/profilLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/profilIsProfessional"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/profilCompanyName"
+        android:id="@+id/textViewFullname"
+        android:text="@string/fullname"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_user"
+        android:drawableStart="@drawable/icon_user"
+        android:layout_marginBottom="@dimen/spacing_sm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
-        android:id="@+id/profilSiret"
+        android:id="@+id/textViewEmailAddress"
+        android:text="@string/email_address"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_envelope"
+        android:drawableStart="@drawable/icon_envelope"
+        android:drawableRight="@drawable/icon_checkmark"
+        android:drawableEnd="@drawable/icon_checkmark"
+        android:layout_marginBottom="@dimen/spacing_sm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        tools:ignore="UseCompatTextViewDrawableXml" />
 
-    <Button
-        android:id="@+id/profilStatsButton"
+    <TextView
+        android:id="@+id/textViewPhoneNumber"
+        android:text="@string/phone_number"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_phone"
+        android:drawableStart="@drawable/icon_phone"
+        android:drawableRight="@drawable/icon_checkmark"
+        android:drawableEnd="@drawable/icon_checkmark"
+        android:layout_marginBottom="@dimen/spacing_sm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profilStat"
-        android:visibility="gone" />
+        tools:ignore="UseCompatTextViewDrawableXml" />
 
-    <Button
-        android:id="@+id/profilModifyButton"
+    <TextView
+        android:id="@+id/textViewPostalAddress"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_location"
+        android:drawableStart="@drawable/icon_location"
+        android:layout_marginBottom="@dimen/spacing_lg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profilModify" />
+        tools:ignore="UseCompatTextViewDrawableXml" />
 
-    <Button
-        android:id="@+id/signOutButton"
+    <TextView
+        android:id="@+id/textViewPersonalInformation"
+        android:text="@string/professional_informations"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textViewCompanyName"
+        android:text="@string/company_name"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_company"
+        android:drawableStart="@drawable/icon_company"
+        android:layout_marginBottom="@dimen/spacing_sm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/signoutButton"
-        android:visibility="gone" />
+        tools:ignore="UseCompatTextViewDrawableXml" />
+
+    <TextView
+        android:id="@+id/textViewSiretNumber"
+        android:text="@string/siret_number"
+        android:drawablePadding="@dimen/spacing_sm"
+        android:drawableLeft="@drawable/icon_number"
+        android:drawableStart="@drawable/icon_number"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompatTextViewDrawableXml" />
+
+    <TextView
+        android:text="@string/my_products"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textViewNoProducts"
+        android:text="@string/no_products"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profilRecyclerView"
+        android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <Button
+        android:id="@+id/buttonDeleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Vitreen.Button.Outline.Error"
+        android:layout_marginTop="@dimen/spacing_lg"
+        android:text="@string/delete_account" />
 
 </LinearLayout>
