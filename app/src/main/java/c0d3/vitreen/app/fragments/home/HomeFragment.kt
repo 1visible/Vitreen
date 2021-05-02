@@ -16,6 +16,7 @@ import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : VFragment(
@@ -35,12 +36,12 @@ class HomeFragment : VFragment(
 
         if (user == null) {
             auth.signInAnonymously()
-            // textViewNoProducts.visibility = View.GONE
+            // errorView.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                // textViewNoProducts.visibility = View.GONE
+                // errorView.visibility = View.GONE
                 recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 recyclerViewProducts.adapter = productAdapter
@@ -102,8 +103,8 @@ class HomeFragment : VFragment(
                                         if(recyclerViewProducts != null) {
                                             recyclerViewProducts.visibility = View.GONE
                                         }
-                                        if(textViewNoProducts != null) {
-                                            textViewNoProducts.visibility = View.VISIBLE
+                                        if(errorView != null) {
+                                            errorView.visibility = View.VISIBLE
                                         }
                                         Toast.makeText(
                                             requireContext(),
@@ -114,7 +115,7 @@ class HomeFragment : VFragment(
                                 }
                                 .addOnFailureListener(requireActivity()) {
                                     recyclerViewProducts.visibility = View.GONE
-                                    textViewNoProducts.visibility = View.VISIBLE
+                                    errorView.visibility = View.VISIBLE
                                     showError(R.string.errorMessage)
                                 }
                         }

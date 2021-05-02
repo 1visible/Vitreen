@@ -2,14 +2,13 @@ package c0d3.vitreen.app.utils
 
 import android.os.Bundle
 import android.view.*
-import android.view.Gravity.CENTER
 import android.view.View.GONE
 import android.widget.EditText
-import android.widget.Toast
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_COLLECTION
@@ -24,15 +23,17 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.android.synthetic.main.error_view.*
+
 
 abstract class VFragment(
-    @LayoutRes private val layoutId: Int,
-    @DrawableRes private val topIcon: Int,
-    @StringRes private val topTitleId: Int = -1,
-    private val hasOptionsMenu: Boolean = false,
-    @MenuRes private val topMenuId: Int = -1,
-    private val requireAuth: Boolean = false,
-    @IdRes private val loginNavigationId: Int = -1
+        @LayoutRes private val layoutId: Int,
+        @DrawableRes private val topIcon: Int,
+        @StringRes private val topTitleId: Int = -1,
+        private val hasOptionsMenu: Boolean = false,
+        @MenuRes private val topMenuId: Int = -1,
+        private val requireAuth: Boolean = false,
+        @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
     private lateinit var db: FirebaseFirestore
@@ -106,10 +107,13 @@ abstract class VFragment(
         return false
     }
 
-    fun showError(@StringRes errorId: Int) {
-        context?.let{it->
-            Toast.makeText(it, getString(errorId), Toast.LENGTH_SHORT).show()
-        }
+    fun showError(@StringRes errorId: Int = R.string.error_placeholder) {
+        (activity as? MainActivity)?.showError(errorId)
+    }
+
+    fun setErrorView(visibility: Int, @StringRes errorId: Int = R.string.error_placeholder) {
+        errorView.visibility = visibility
+        textViewError.text = getString(errorId)
     }
 
     fun setSpinnerVisibility(visibility: Int) {
