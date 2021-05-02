@@ -10,6 +10,7 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
+    <!-- Activity content -->
     <include
         android:id="@+id/activity_content"
         android:layout_width="match_parent"
@@ -25,6 +26,7 @@
         app:layout_anchorGravity="top"
         android:indeterminate="true" />
 
+    <!-- Bottom navigation background -->
     <View
         android:id="@+id/navBackground"
         android:layout_width="match_parent"
