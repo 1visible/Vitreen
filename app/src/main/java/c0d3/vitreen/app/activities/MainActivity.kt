@@ -2,22 +2,27 @@ package c0d3.vitreen.app.activities
 
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.os.postDelayed
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.error_view.*
+
 
 class MainActivity : AppCompatActivity() {
     private var backPressedOnce = false
@@ -28,13 +33,13 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinationIds = setOf(
-                R.id.navigation_home,
-                R.id.navigation_messages,
-                R.id.navigation_adding1,
-                R.id.navigation_favorites,
-                R.id.navigation_profile,
-            )
+                topLevelDestinationIds = setOf(
+                        R.id.navigation_home,
+                        R.id.navigation_messages,
+                        R.id.navigation_adding1,
+                        R.id.navigation_favorites,
+                        R.id.navigation_profile,
+                )
         )
 
         navView.setupWithNavController(navController)
@@ -83,7 +88,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showError(@StringRes errorId: Int) {
-        val snackbar = Snackbar.make(activityLayout, errorId, Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(activityLayout, errorId, Snackbar.LENGTH_LONG)
+        val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.anchorId = R.id.snackbarGuideline
+        layoutParams.gravity = Gravity.TOP
+        snackbar.view.layoutParams = layoutParams
         snackbar.show()
     }
 

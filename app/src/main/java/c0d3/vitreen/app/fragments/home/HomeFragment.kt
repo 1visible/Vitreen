@@ -34,6 +34,8 @@ class HomeFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showError()
+
         if (user == null) {
             auth.signInAnonymously()
             // errorView.visibility = View.GONE

@@ -17,6 +17,13 @@
         android:layout_height="match_parent"
         layout="@layout/activity_content" />
 
+    <View
+        android:id="@+id/snackbarGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_sm"
+        app:layout_anchor="@id/navBackground"
+        android:layout_gravity="top" />
+
     <!-- Loading linear spinner -->
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/spinner"
