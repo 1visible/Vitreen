@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="@dimen/spacing_sm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_md"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_marginBottom="@dimen/spacing_md" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/white_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -74,7 +73,7 @@
             android:text="@string/price"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/teal"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

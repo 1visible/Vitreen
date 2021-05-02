@@ -63,4 +63,13 @@
         <item name="cornerSize">@dimen/spacing_sm</item>
     </style>
 
+    <!-- CardView style -->
+    <style name="Vitreen.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Card</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeCorners</item>
+    </style>
+    <style name="ThemeOverlay.App.Card" parent="">
+        <item name="colorSurface">@color/dark</item>
+    </style>
+
 </resources>

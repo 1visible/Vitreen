@@ -29,4 +29,22 @@
         <item name="badgeStyle">@style/Vitreen.Badge</item>
         <item name="textInputStyle">@style/Vitreen.TextInputLayout</item>
     </style>
+
+    <style name="VitreenTheme2" parent="Theme.MaterialComponents">
+        <!-- Color palette theming -->
+        <item name="colorPrimary">@color/teal</item>
+        <item name="colorPrimaryVariant">@color/teal</item>
+        <item name="colorSecondary">@color/teal</item>
+        <item name="colorSecondaryVariant">@color/teal</item>
+        <item name="android:colorBackground">@color/dark</item>
+        <item name="colorSurface">@color/darker</item>
+        <item name="colorError">@color/red</item>
+        <item name="colorOnPrimary">@color/darker</item>
+        <item name="colorOnSecondary">@color/darker</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnError">@color/darker</item>
+        <!-- Override styles -->
+        <item name="materialCardViewStyle">@style/Vitreen.CardView</item>
+    </style>
 </resources>

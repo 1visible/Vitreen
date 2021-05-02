@@ -40,7 +40,7 @@
         android:layout_height="100dp"
         app:layout_anchor="@id/navView"
         app:layout_anchorGravity="center"
-        android:background="@drawable/rectangle" />
+        android:background="@color/darker" />
 
     <!-- Bottom navigation menu -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
