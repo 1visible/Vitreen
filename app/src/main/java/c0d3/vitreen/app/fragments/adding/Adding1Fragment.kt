@@ -69,14 +69,7 @@ class Adding1Fragment : VFragment(
         // Bouton de navigation vers le formulaire d'ajout (2/2)
         buttonToAdding2.setOnClickListener {
             // Vérifie que les champs du formulaire ne sont pas vides
-            if (isAnyInputEmpty(
-                    textInputCategory.editText,
-                    editTextTitle,
-                    editTextPrice,
-                    editTextLocation,
-                    editTextDescription
-                )
-            ) {
+            if (isAnyInputEmpty(textInputCategory, editTextTitle, editTextPrice, editTextLocation, editTextDescription)) {
                 showError(R.string.errorMessage)
                 return@setOnClickListener
             }
@@ -96,8 +89,8 @@ class Adding1Fragment : VFragment(
 
             // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
             val currentLocation = Location(
-                editTextLocation.text.toString().capitalize(Locale.getDefault()),
-                if(cityName!=editTextLocation.text.toString()) null else zipCode?.toInt()
+                editTextLocation.editText?.text.toString().capitalize(Locale.getDefault()),
+                if(cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toInt()
             )
             // Récupération de la localisation renseignée
             locationsCollection.whereEqualTo("name", currentLocation.name).get()
@@ -139,7 +132,7 @@ class Adding1Fragment : VFragment(
         when (requestCode) {
             LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    editTextLocation.text.clear()
+                    editTextLocation.editText?.text?.clear()
                     showError(R.string.errorMessage)
                     return
                 }
@@ -174,10 +167,10 @@ class Adding1Fragment : VFragment(
         navigateTo(
             R.id.action_navigation_adding1_to_navigation_adding2,
             CATEGORY_ID to categoryId,
-            TITLE to editTextTitle.text.toString(),
-            PRICE to editTextPrice.text.toString(),
+            TITLE to editTextTitle.editText?.text.toString(),
+            PRICE to editTextPrice.editText?.text.toString(),
             LOCATION_ID to locationId,
-            DESCRIPTION to editTextDescription.text.toString()
+            DESCRIPTION to editTextDescription.editText?.text.toString()
         )
     }
 
@@ -198,8 +191,8 @@ class Adding1Fragment : VFragment(
                     if (address != null) {
                         zipCode = address[0].postalCode
                         cityName = address[0].locality
-                        editTextLocation.text.clear()
-                        editTextLocation.setText(address[0].locality)
+                        editTextLocation.editText?.text?.clear()
+                        editTextLocation.editText?.setText(address[0].locality)
                     }
 
                 } catch (_: Exception) {

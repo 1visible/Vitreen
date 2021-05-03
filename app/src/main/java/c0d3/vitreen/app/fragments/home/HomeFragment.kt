@@ -34,7 +34,8 @@ class HomeFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showError()
+        val mySet = linkedMapOf("label1" to 4F, "label2" to 7F, "label3" to 2F)
+        myChart.show(mySet)
 
         if (user == null) {
             auth.signInAnonymously()

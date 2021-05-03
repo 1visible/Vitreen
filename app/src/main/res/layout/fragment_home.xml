@@ -7,13 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".fragments.home.HomeFragment">
 
+    <!-- No products view -->
     <include
+        android:id="@+id/include"
         layout="@layout/error_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Products list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
