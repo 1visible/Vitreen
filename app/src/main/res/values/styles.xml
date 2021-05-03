@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- EditText: glassmorphism style -->
-    <style name="Vitreen.EditText" parent="@android:style/Widget.EditText">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/glass_frame</item>
-        <item name="android:padding">15dp</item>
-    </style>
-
     <!-- Button: alternative MD style -->
     <style name="Vitreen.Button" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/rounded_button</item>
@@ -41,17 +34,8 @@
         <item name="android:background">@color/teal</item>
     </style>
 
-    <!-- TextInputLayout: alternative MD style -->
-    <style name="Vitreen.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
-        <item name="hintTextColor">@color/white_20</item>
-        <item name="android:textColorHint">@color/white_20</item>
-        <item name="placeholderTextColor">@color/white_20</item>
-        <item name="endIconTint">@color/white_20</item>
-        <item name="boxBackgroundColor">@color/white_10</item>
-        <item name="shapeAppearance">@style/Vitreen.ShapeCorners</item>
-    </style>
-
-    <style name="Vitreen.ShapeCorners" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+    <!-- ShapeAppearance style -->
+    <style name="Vitreen.ShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/spacing_sm</item>
     </style>
@@ -59,10 +43,26 @@
     <!-- CardView style -->
     <style name="Vitreen.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Card</item>
-        <item name="shapeAppearance">@style/Vitreen.ShapeCorners</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeAppearance</item>
     </style>
     <style name="ThemeOverlay.App.Card" parent="">
         <item name="colorSurface">@color/dark</item>
+    </style>
+
+    <!-- BottomNavigationView style -->
+    <style name="Vitreen.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@drawable/glass_frame</item>
+        <item name="elevation">0dp</item>
+        <item name="itemIconTint">@color/navigation_item_color</item>
+        <item name="itemTextColor">@color/navigation_item_color</item>
+    </style>
+
+    <!-- TextInputLayout style -->
+    <style name="Vitreen.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="shapeAppearance">@style/Vitreen.ShapeAppearance</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
 </resources>
