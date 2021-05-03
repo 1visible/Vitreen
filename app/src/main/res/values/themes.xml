@@ -17,6 +17,7 @@
         <item name="materialCardViewStyle">@style/Vitreen.CardView</item>
         <item name="bottomNavigationStyle">@style/Vitreen.BottomNavigationView</item>
         <item name="textInputStyle">@style/Vitreen.TextInputLayout</item>
+        <item name="buttonStyle">@style/Vitreen.Button</item>
         <!-- Font -->
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>

@@ -21,7 +21,7 @@
 
         <Button
             android:id="@+id/buttonToRegister1"
-            style="@style/Vitreen.Link"
+            style="@style/Vitreen.Button.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

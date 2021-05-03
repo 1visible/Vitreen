@@ -61,7 +61,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 app:icon="@drawable/icon_close"
-                style="@style/Vitreen.Link"
+                style="@style/Vitreen.Button.Text"
                 tools:ignore="RelativeOverlap" />
 
             <com.google.android.material.button.MaterialButton
@@ -74,7 +74,7 @@
                 app:icon="@drawable/icon_angle_left"
                 android:layout_marginLeft="@dimen/spacing_sm"
                 android:layout_marginStart="@dimen/spacing_sm"
-                style="@style/Vitreen.Link" />
+                style="@style/Vitreen.Button.Text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonNextImage"
@@ -86,7 +86,7 @@
                 app:icon="@drawable/icon_angle_right"
                 android:layout_marginRight="@dimen/spacing_sm"
                 android:layout_marginEnd="@dimen/spacing_sm"
-                style="@style/Vitreen.Link"
+                style="@style/Vitreen.Button.Text"
                 tools:ignore="RelativeOverlap" />
 
         </RelativeLayout>

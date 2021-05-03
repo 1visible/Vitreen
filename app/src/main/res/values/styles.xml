@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Button: alternative MD style -->
-    <style name="Vitreen.Button" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/rounded_button</item>
-        <item name="android:padding">15dp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <!-- Button: link style -->
-    <style name="Vitreen.Link" parent="@android:style/Widget.Button">
-        <item name="android:background">@color/fui_transparent</item>
-        <item name="android:padding">5dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/teal</item>
-    </style>
-
-    <!-- Button: outline style -->
-    <style name="Vitreen.Button.Outline" parent="Vitreen.Button">
-        <item name="android:background">@drawable/outline_button</item>
-        <item name="android:textColor">@color/teal</item>
-    </style>
-
-    <!-- Button: error outline style -->
-    <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button">
-        <item name="android:background">@drawable/outline_button_error</item>
-        <item name="android:textColor">@color/red</item>
-    </style>
-
-    <!-- Badge: alternative MD style -->
+    <!-- TODO: Badge style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">@color/teal</item>
         <item name="android:background">@color/teal</item>
@@ -63,6 +36,32 @@
         <item name="shapeAppearanceOverlay">@null</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textColorHint">@color/white_20</item>
+    </style>
+
+    <!-- Button style -->
+    <style name="Vitreen.Button" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- TextButton style -->
+    <style name="Vitreen.Button.Text" parent="@android:style/Widget.Button">
+        <item name="android:background">@color/fui_transparent</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/teal</item>
+    </style>
+
+    <!-- OutlinedButton style -->
+    <style name="Vitreen.Button.Outline" parent="Vitreen.Button">
+        <item name="android:background">@drawable/outline_button</item>
+        <item name="android:textColor">@color/teal</item>
+    </style>
+    <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button">
+        <item name="android:background">@drawable/outline_button_error</item>
+        <item name="android:textColor">@color/red</item>
     </style>
 
 </resources>

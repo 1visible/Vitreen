@@ -2,6 +2,8 @@
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
+    <!-- General text -->
+    <string name="required_input">Champ obligatoire</string>
     <!-- App title -->
     <string name="app_name">Vitreen</string>
     <!-- Fragment label -->

@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lg"
-    android:layout_marginLeft="@dimen/spacing_lg"
-    android:layout_marginEnd="@dimen/spacing_lg"
-    android:layout_marginRight="@dimen/spacing_lg"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.auth.Register2Fragment" >
+    tools:context=".fragments.auth.Register2Fragment">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextFullname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_user"
-        android:drawableRight="@drawable/icon_user"
-        android:hint="@string/fullname"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName" />
+        app:startIconDrawable="@drawable/icon_user"
+        app:helperText="@string/required_input"
+        android:hint="@string/fullname" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <EditText
         android:id="@+id/editTextPhoneNumber"
@@ -68,11 +71,9 @@
     </RadioGroup>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:textColor="@color/white"
         android:id="@+id/switchProfessionalAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checked="false"
         android:layout_marginBottom="@dimen/spacing_md"
         android:text="@string/professional_account" />
 
