@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".fragments.auth.Register2Fragment">
 
+    <!-- Fullname input -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextFullname"
         android:layout_width="match_parent"
@@ -16,38 +17,46 @@
         app:startIconDrawable="@drawable/icon_user"
         app:helperText="@string/required_input"
         android:hint="@string/fullname" >
-
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            />
-
+        />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <!-- Phone number input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_phone"
-        android:drawableRight="@drawable/icon_phone"
-        android:hint="@string/phone_number"
-        android:importantForAutofill="no"
-        android:inputType="phone" />
+        app:startIconDrawable="@drawable/icon_phone"
+        app:helperText="@string/required_input"
+        android:hint="@string/phone_number" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <!-- Location input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_location"
-        android:drawableRight="@drawable/icon_location"
-        android:hint="@string/postal_address"
-        android:importantForAutofill="no"
-        android:inputType="text" />
+        app:startIconDrawable="@drawable/icon_location"
+        app:helperText="@string/required_input"
+        android:hint="@string/postal_address" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-
+    <!-- Contact preference choice -->
     <RadioGroup
         android:checkedButton="@+id/radioButtonPhone"
         android:layout_width="match_parent"
@@ -70,6 +79,7 @@
 
     </RadioGroup>
 
+    <!-- Professional account choice -->
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switchProfessionalAccount"
         android:layout_width="match_parent"
@@ -77,27 +87,39 @@
         android:layout_marginBottom="@dimen/spacing_md"
         android:text="@string/professional_account" />
 
-    <EditText
+    <!-- Company input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextCompany"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_company"
-        android:drawableRight="@drawable/icon_company"
-        android:hint="@string/company_name"
-        android:importantForAutofill="no"
-        android:inputType="text" />
+        app:startIconDrawable="@drawable/icon_company"
+        app:helperText="@string/required_input"
+        android:hint="@string/company_name" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <!-- SIRET number input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextSiret"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lg"
-        android:drawableEnd="@drawable/icon_number"
-        android:drawableRight="@drawable/icon_number"
-        android:hint="@string/siret_number"
-        android:importantForAutofill="no"
-        android:inputType="number" />
+        app:startIconDrawable="@drawable/icon_number"
+        app:helperText="@string/required_input"
+        app:counterEnabled="true"
+        app:counterMaxLength="14"
+        android:hint="@string/siret_number" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonSubmitRegister"
