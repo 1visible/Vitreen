@@ -39,15 +39,28 @@
         <item name="android:textColorHint">@color/white_20</item>
     </style>
 
+    <!-- ExposedDropdownMenu style -->
+    <style name="Vitreen.TextInputLayout.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="shapeAppearance">@style/Vitreen.ShapeAppearance</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textColorHint">@color/white_20</item>
+    </style>
+
+    <!-- ImageButton style -->
+    <style name="Vitreen.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@color/fui_transparent</item>
+        <item name="android:padding">@dimen/spacing_sm</item>
+    </style>
+
     <!-- Button style -->
-    <style name="Vitreen.Button" parent="@android:style/Widget.Button">
-        <item name="android:background">@drawable/rounded_button</item>
-        <item name="android:padding">15dp</item>
+    <style name="Vitreen.Button" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/spacing_sm</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <!-- TextButton style -->
-    <style name="Vitreen.Button.Text" parent="@android:style/Widget.Button">
+    <style name="Vitreen.Button.Text" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@color/fui_transparent</item>
         <item name="android:padding">5dp</item>
         <item name="android:textStyle">bold</item>

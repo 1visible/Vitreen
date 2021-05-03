@@ -16,12 +16,13 @@
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_user"
         app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
         android:hint="@string/fullname" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-        />
+            android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Phone number input -->
@@ -32,12 +33,13 @@
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_phone"
         app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
         android:hint="@string/phone_number" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone"
-        />
+            android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Location input -->
@@ -48,12 +50,13 @@
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_location"
         app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
         android:hint="@string/postal_address" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Contact preference choice -->
@@ -95,12 +98,13 @@
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_company"
         app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
         android:hint="@string/company_name" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- SIRET number input -->
@@ -111,14 +115,16 @@
         android:layout_marginBottom="@dimen/spacing_lg"
         app:startIconDrawable="@drawable/icon_number"
         app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
         app:counterEnabled="true"
         app:counterMaxLength="14"
         android:hint="@string/siret_number" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            />
+            android:maxLength="14"
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

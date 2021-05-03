@@ -3,7 +3,6 @@ package c0d3.vitreen.app.utils
 import android.os.Bundle
 import android.view.*
 import android.view.View.GONE
-import android.widget.EditText
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -14,6 +13,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCT_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USER_COLLECTION
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -48,6 +48,11 @@ abstract class VFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(hasOptionsMenu)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
 
         db = Firebase.firestore
         storage = Firebase.storage
@@ -58,12 +63,6 @@ abstract class VFragment(
         categoriesCollection = db.collection(CATEGORY_COLLECTION)
         locationsCollection = db.collection(LOCATION_COLLECTION)
         productsCollection = db.collection(PRODUCT_COLLECTION)
-
-        setHasOptionsMenu(hasOptionsMenu)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
 
         if (requireAuth && user?.isAnonymous == true)
             navigateTo(loginNavigationId)
@@ -91,12 +90,23 @@ abstract class VFragment(
         findNavController().navigate(destinationId, bundle)
     }
 
-    fun isAnyInputEmpty(vararg editTexts: EditText?): Boolean {
-        editTexts.forEach { editText ->
-            if (editText?.text.isNullOrBlank())
+    fun isAnyInputEmpty(vararg inputs: TextInputLayout?): Boolean {
+        inputs.forEach { input ->
+            if (input?.editText?.text.isNullOrBlank())
                 return true
         }
         return false
+    }
+
+    fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
+        var result = false
+        inputs.forEach { input ->
+            if (input != null && input.editText?.text.isNullOrBlank()) {
+                input.error = getString(R.string.required_input)
+                result = true
+            }
+        }
+        return result
     }
 
     fun isAnyStringEmpty(vararg texts: String?): Boolean {
