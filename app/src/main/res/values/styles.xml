@@ -55,24 +55,33 @@
 
     <!-- Button style -->
     <style name="Vitreen.Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">@dimen/spacing_sm</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeAppearance</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAppearance">@style/Vitreen.TextAppearance.Button</item>
+    </style>
+    <style name="Vitreen.TextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <!-- TextButton style -->
     <style name="Vitreen.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:background">@color/fui_transparent</item>
         <item name="android:padding">5dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/teal</item>
+        <item name="android:textAppearance">@style/Vitreen.TextAppearance.Button</item>
     </style>
 
     <!-- OutlinedButton style -->
     <style name="Vitreen.Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/teal</item>
+        <item name="shapeAppearance">@style/Vitreen.ShapeAppearance</item>
+        <item name="strokeWidth">3dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/Vitreen.TextAppearance.Button</item>
     </style>
-    <style name="Vitreen.Button.Outline.Error" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/red</item>
+    <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button.Outline">
+        <item name="android:textColor">?attr/colorError</item>
+        <item name="strokeColor">?attr/colorError</item>
     </style>
 
 </resources>

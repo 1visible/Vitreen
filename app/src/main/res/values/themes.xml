@@ -18,6 +18,8 @@
         <item name="bottomNavigationStyle">@style/Vitreen.BottomNavigationView</item>
         <item name="textInputStyle">@style/Vitreen.TextInputLayout</item>
         <item name="materialButtonStyle">@style/Vitreen.Button</item>
+        <item name="borderlessButtonStyle">@style/Vitreen.Button.Text</item>
+        <item name="materialButtonOutlinedStyle">@style/Vitreen.Button.Outline</item>
         <item name="imageButtonStyle">@style/Vitreen.ImageButton</item>
         <!-- Font -->
         <item name="fontFamily">@font/roboto</item>
