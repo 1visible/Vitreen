@@ -31,11 +31,11 @@ class Register1Fragment : VFragment(
                 } else {
                     editTextPassword.text.clear()
                     editTextPasswordConfirmation.text.clear()
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
 
             } else
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
         }
 
         buttonToLogin.setOnClickListener {
@@ -51,7 +51,7 @@ class Register1Fragment : VFragment(
                     val bundle = bundleOf("email" to editTextEmail.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                     // TODO: Gérer les erreurs
                     //pour l'instant ne redirige nulle part, on va juste afficher un toast disant que l'inscription a échoué
                 }
@@ -66,7 +66,7 @@ class Register1Fragment : VFragment(
                     val bundle = bundleOf("email" to editTextEmail.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
-                   showError(R.string.errorMessage)
+                   showMessage(R.string.errorMessage)
                     // TODO: Gérer les erreurs
                 }
             }

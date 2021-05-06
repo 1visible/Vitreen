@@ -119,7 +119,7 @@ class HomeFragment : VFragment(
                                 .addOnFailureListener(requireActivity()) {
                                     recyclerViewProducts.visibility = View.GONE
                                     errorView.visibility = View.VISIBLE
-                                    showError(R.string.errorMessage)
+                                    showMessage(R.string.errorMessage)
                                 }
                         }
                     }

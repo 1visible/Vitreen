@@ -259,7 +259,7 @@ class ProfileFragment : VFragment(
                     }
                 }
                 .addOnFailureListener {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
 
         }

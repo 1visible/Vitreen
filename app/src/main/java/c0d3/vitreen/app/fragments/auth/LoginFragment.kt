@@ -28,7 +28,7 @@ class LoginFragment : VFragment(
                     removeAnonymousUser()
 
             } else
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
         }
 
         buttonToRegister1.setOnClickListener {
@@ -49,7 +49,7 @@ class LoginFragment : VFragment(
                     user = null
                     signInUser()
                 } else
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
             }
     }
 
@@ -59,7 +59,7 @@ class LoginFragment : VFragment(
                 if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_navigation_login_to_navigation_home)
                 } else {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                     editTextPassword.text.clear()
                 }
             }

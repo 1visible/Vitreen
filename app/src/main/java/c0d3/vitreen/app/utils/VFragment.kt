@@ -117,8 +117,8 @@ abstract class VFragment(
         return false
     }
 
-    fun showError(@StringRes errorId: Int = R.string.error_placeholder) {
-        (activity as? MainActivity)?.showError(errorId)
+    fun showMessage(@StringRes errorId: Int = R.string.error_placeholder) {
+        (activity as? MainActivity)?.showMessage(errorId)
     }
 
     fun setErrorView(visibility: Int, @StringRes errorId: Int = R.string.error_placeholder) {

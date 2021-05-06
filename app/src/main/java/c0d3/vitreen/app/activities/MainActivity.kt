@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val navController = findNavController(R.id.nav_host_fragment)
 
-        // Check if the current destination is actually the dtart sestination (Home screen)
+        // Check if the current destination is actually the start destination (Home screen)
         when {
             navController.graph.startDestination == navController.currentDestination?.id -> {
                 // Check if back is already pressed. If yes, then exit the app.
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         topView.setAttributes(title, icon)
     }
 
-    fun showError(@StringRes errorId: Int) {
+    fun showMessage(@StringRes errorId: Int) {
         val snackbar = Snackbar.make(activityLayout, errorId, Snackbar.LENGTH_LONG)
         val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.anchorId = R.id.snackbarGuideline

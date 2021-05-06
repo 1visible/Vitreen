@@ -70,7 +70,7 @@ class Adding1Fragment : VFragment(
         buttonToAdding2.setOnClickListener {
             // Vérifie que les champs du formulaire ne sont pas vides
             if (isAnyInputEmpty(textInputCategory, editTextTitle, editTextPrice, editTextLocation, editTextDescription)) {
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
                 return@setOnClickListener
             }
 
@@ -83,7 +83,7 @@ class Adding1Fragment : VFragment(
             }
 
             if (categoryId == null) {
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
                 return@setOnClickListener
             }
 
@@ -111,11 +111,11 @@ class Adding1Fragment : VFragment(
                             // Navigation vers le formulaire d'ajout (2/2) en y passant les données
                             navigateToAdding2(categoryId, location.id)
                         }.addOnFailureListener {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                     }
 
                 }.addOnFailureListener {
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
             }
 
         }
@@ -133,7 +133,7 @@ class Adding1Fragment : VFragment(
             LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     editTextLocation.editText?.text?.clear()
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                     return
                 }
                 navigateTo(R.id.action_navigation_adding1_self)
@@ -196,13 +196,13 @@ class Adding1Fragment : VFragment(
                     }
 
                 } catch (_: Exception) {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
             }
 
             override fun onFailed(e: String?) {
                 super.onFailed(e)
-                showError(R.string.errorMessage)
+                showMessage(R.string.errorMessage)
             }
         }
     }

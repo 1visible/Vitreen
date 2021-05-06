@@ -69,7 +69,7 @@ class Adding2Fragment : VFragment(
             .addOnSuccessListener { documents ->
 
                 if (documents.size() == 0) {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                     return@addOnSuccessListener
                 }
 
@@ -82,18 +82,18 @@ class Adding2Fragment : VFragment(
                 buttonConfirmation.setOnClickListener {
                     // Vérifie que les champs du formulaire ne sont pas vides
                     if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 
                     // Vérifie que les arguments récupérés ne sont pas vides
                     if (isAnyStringEmpty(categoryId, title, price, locationId, description)) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 
                     if (mArrayInputStream.size == 0) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 

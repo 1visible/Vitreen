@@ -129,17 +129,17 @@ class Register2Fragment : VFragment(
                                     if (task.isSuccessful) {
                                         navigateTo(R.id.action_navigation_register2_to_navigation_profil)
                                     } else {
-                                        showError(R.string.errorMessage)
+                                        showMessage(R.string.errorMessage)
                                     }
                                 }
                             }
                             .addOnFailureListener {
-                                showError(R.string.errorMessage)
+                                showMessage(R.string.errorMessage)
                             }
                     }
                 }
                 .addOnFailureListener {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
         }
     }
