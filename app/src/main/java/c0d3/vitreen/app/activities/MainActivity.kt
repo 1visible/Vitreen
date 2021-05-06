@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.os.postDelayed
-import androidx.core.view.updateLayoutParams
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,7 +17,6 @@ import c0d3.vitreen.app.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.error_view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -69,12 +64,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 backPressedOnce = true
-                Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT).show()
+                showMessage(R.string.press_back)
 
                 Handler().postDelayed(2000) {
                     backPressedOnce = false
                 }
-                // Gérer les cas de login, register 1 et register 2 avec comportement de back button
+                // TODO : Gérer les cas de login, register 1 et register 2 avec comportement de back button (si nécessaire)
             }
             navController.currentDestination?.id == R.id.navigation_login -> {
                 navController.navigate(R.id.action_navigation_login_to_navigation_home)

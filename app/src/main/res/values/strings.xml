@@ -2,10 +2,10 @@
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
-    <!-- General text -->
-    <string name="required_input">Champ obligatoire</string>
-    <!-- App title -->
+    <!-- General strings -->
     <string name="app_name">Vitreen</string>
+    <string name="required_input">Champ obligatoire</string>
+    <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
