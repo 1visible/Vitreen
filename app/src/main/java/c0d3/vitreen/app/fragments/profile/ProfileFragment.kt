@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
@@ -31,6 +32,9 @@ class ProfileFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(user == null)
+            return
 
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)

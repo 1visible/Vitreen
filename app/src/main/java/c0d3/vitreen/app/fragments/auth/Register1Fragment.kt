@@ -19,23 +19,20 @@ class Register1Fragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         buttonToRegister2.setOnClickListener {
-            if (editTextEmail.text.toString().trim() != "" &&
-                editTextPassword.text.toString().trim() != "" &&
-                editTextPasswordConfirmation.text.toString().trim() != "") {
 
-                if (editTextPassword.text.toString() == editTextPasswordConfirmation.text.toString()) {
+            if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword, editTextPasswordConfirmation))
+                return@setOnClickListener
+
+                if (editTextPassword.editText?.text.toString() == editTextPasswordConfirmation.editText?.text.toString()) {
                     if (user == null)
                         registerUser()
                     else if (user!!.isAnonymous)
                         linkAnonymousToCredential()
                 } else {
-                    editTextPassword.text.clear()
-                    editTextPasswordConfirmation.text.clear()
+                    editTextPassword.editText?.text?.clear()
+                    editTextPasswordConfirmation.editText?.text?.clear()
                     showMessage(R.string.errorMessage)
                 }
-
-            } else
-                showMessage(R.string.errorMessage)
         }
 
         buttonToLogin.setOnClickListener {
@@ -45,10 +42,10 @@ class Register1Fragment : VFragment(
     }
 
     private fun registerUser() {
-        auth.createUserWithEmailAndPassword(editTextEmail.text.toString(), editTextPassword.text.toString())
+        auth.createUserWithEmailAndPassword(editTextEmail.editText?.text.toString(), editTextPassword.editText?.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val bundle = bundleOf("email" to editTextEmail.text.toString())
+                    val bundle = bundleOf("email" to editTextEmail.editText?.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
                     showMessage(R.string.errorMessage)
@@ -59,11 +56,11 @@ class Register1Fragment : VFragment(
     }
 
     private fun linkAnonymousToCredential() {
-        val credential = EmailAuthProvider.getCredential(editTextEmail.text.toString(), editTextPassword.text.toString())
+        val credential = EmailAuthProvider.getCredential(editTextEmail.editText?.text.toString(), editTextPassword.editText?.text.toString())
         user!!.linkWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val bundle = bundleOf("email" to editTextEmail.text.toString())
+                    val bundle = bundleOf("email" to editTextEmail.editText?.text.toString())
                     findNavController().navigate(R.id.action_navigation_register1_to_navigation_register2, bundle)
                 } else {
                    showMessage(R.string.errorMessage)

@@ -19,16 +19,14 @@ class LoginFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         buttonSubmitLogin.setOnClickListener {
-            if (editTextEmail.text.toString().trim() != "" &&
-                editTextPassword.text.toString().trim() != "") {
+
+            if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword))
+                return@setOnClickListener
 
                 if (user == null)
                     signInUser()
                 else if (user!!.isAnonymous)
                     removeAnonymousUser()
-
-            } else
-                showMessage(R.string.errorMessage)
         }
 
         buttonToRegister1.setOnClickListener {
@@ -54,13 +52,13 @@ class LoginFragment : VFragment(
     }
 
     private fun signInUser() {
-        auth.signInWithEmailAndPassword(editTextEmail.text.toString(), editTextPassword.text.toString())
+        auth.signInWithEmailAndPassword(editTextEmail.editText?.text.toString(), editTextPassword.editText?.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     findNavController().navigate(R.id.action_navigation_login_to_navigation_home)
                 } else {
                     showMessage(R.string.errorMessage)
-                    editTextPassword.text.clear()
+                    editTextPassword.editText?.text?.clear()
                 }
             }
     }

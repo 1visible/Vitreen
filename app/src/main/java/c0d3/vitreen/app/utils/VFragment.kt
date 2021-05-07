@@ -36,6 +36,8 @@ abstract class VFragment(
         @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
+    var isFragmentVisible = true
+
     private lateinit var db: FirebaseFirestore
     lateinit var storage: FirebaseStorage
     lateinit var auth: FirebaseAuth
@@ -64,8 +66,14 @@ abstract class VFragment(
         locationsCollection = db.collection(LOCATION_COLLECTION)
         productsCollection = db.collection(PRODUCT_COLLECTION)
 
-        if (requireAuth && user?.isAnonymous == true)
-            navigateTo(loginNavigationId)
+        if (requireAuth) {
+            try {
+                if(user == null || user!!.isAnonymous)
+                    navigateTo(loginNavigationId)
+            } catch (e: NullPointerException) {
+                navigateTo(loginNavigationId)
+            }
+        }
 
         return inflater.inflate(layoutId, container, false)
     }
@@ -76,6 +84,16 @@ abstract class VFragment(
         val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
         (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
         setSpinnerVisibility(GONE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentVisible = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isFragmentVisible = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
