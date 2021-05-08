@@ -14,6 +14,7 @@ import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -35,6 +36,11 @@ class ProfileFragment : VFragment(
 
         if(user == null)
             return
+
+        viewModel.getProducts().observe(viewLifecycleOwner, { product ->
+            val products = product
+            textViewFullname.text
+        })
 
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)

@@ -9,7 +9,6 @@
 
     <!-- No products view -->
     <include
-        android:id="@+id/include"
         layout="@layout/error_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

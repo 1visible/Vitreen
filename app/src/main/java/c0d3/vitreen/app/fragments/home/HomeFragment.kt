@@ -20,6 +20,7 @@ import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_product.*
 
 class HomeFragment : VFragment(
     R.layout.fragment_home,
@@ -35,10 +36,6 @@ class HomeFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.getProducts().observe(viewLifecycleOwner, { product ->
-            val products = product
-        })
 
         // Show loading spinner
         setSpinnerVisibility(VISIBLE)
