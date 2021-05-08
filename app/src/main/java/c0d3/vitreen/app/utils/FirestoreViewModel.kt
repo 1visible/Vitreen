@@ -14,7 +14,6 @@ class FirestoreViewModel : ViewModel(){
     fun getProducts(): LiveData<List<Product>> {
         repository.getProducts().addSnapshotListener(EventListener { value, exception ->
             if (exception != null) {
-                // Log.w(TAG, "Listen failed.", e)
                 products.value = null
                 return@EventListener
             }

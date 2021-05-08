@@ -37,6 +37,7 @@ class ProfileFragment : VFragment(
         if(user == null)
             return
 
+        // TODO : Virer ça
         viewModel.getProducts().observe(viewLifecycleOwner, { product ->
             val products = product
             textViewFullname.text
