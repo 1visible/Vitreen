@@ -11,6 +11,7 @@ import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -34,14 +35,16 @@ class ProfileFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(user == null)
-            return
+        viewModel.getProducts().observe(viewLifecycleOwner, { products ->
+            Log.i(TAG, "Test $products")
+        })
 
-        // TODO : Virer ça
-        viewModel.getProducts().observe(viewLifecycleOwner, { product ->
-            val products = product
+        viewModel.signInAnonymously().observe(viewLifecycleOwner, { user ->
             textViewFullname.text
         })
+
+        if(user == null)
+            return
 
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)

@@ -1,9 +1,14 @@
 package c0d3.vitreen.app.utils
 
+import android.util.Log
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
@@ -12,11 +17,17 @@ import com.google.firebase.ktx.Firebase
 
 class FirestoreRepository {
     private val db = Firebase.firestore
-    private val user: FirebaseUser? = Firebase.auth.currentUser
+    private val auth: FirebaseAuth = Firebase.auth
+    private val user: FirebaseUser? = auth.currentUser
 
     // Get all products
     fun getProducts(): CollectionReference {
         return db.collection(PRODUCTS_COLLECTION)
+    }
+
+    // Get all products
+    fun signInAnonymously(): Task<AuthResult> {
+        return auth.signInAnonymously()
     }
 
     // Get all users

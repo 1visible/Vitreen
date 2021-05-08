@@ -16,11 +16,14 @@ import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.recyclerViewProducts
 import kotlinx.android.synthetic.main.fragment_product.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class HomeFragment : VFragment(
     R.layout.fragment_home,
@@ -41,24 +44,10 @@ class HomeFragment : VFragment(
         setSpinnerVisibility(VISIBLE)
         setErrorView(GONE)
 
-        if(user == null) {
-            auth.signInAnonymously()
-                .addOnSuccessListener {
-                    if(isFragmentVisible){
 
-                    }
-                }
-                .addOnFailureListener {
-                    if(isFragmentVisible){
-                        setSpinnerVisibility(GONE)
-                        setErrorView(VISIBLE)
-                        showMessage(R.string.anonymous_error)
-                    }
-                }
-        }
 
         if (user == null) {
-            auth.signInAnonymously()
+            // auth.signInAnonymously()
             // errorView.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {

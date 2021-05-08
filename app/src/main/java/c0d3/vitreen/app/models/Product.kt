@@ -14,4 +14,6 @@ data class Product(
     val ownerId: String,
     val createdAt: String,
     val modifiedAt: String,
-)
+) {
+    constructor() : this("", "", 0.0, "", "", 0, null, "", "", 0, "", "", "")
+}
