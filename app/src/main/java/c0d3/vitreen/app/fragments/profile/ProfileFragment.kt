@@ -12,7 +12,6 @@ import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
-import com.google.android.gms.tasks.Tasks
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -37,11 +36,6 @@ class ProfileFragment : VFragment(
             Log.i(TAG, "Test $products")
         })
         */
-
-        viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, {
-            textViewFullname.text
-            Log.i(TAG, "Test $it")
-        })
 
         if(user == null)
             return

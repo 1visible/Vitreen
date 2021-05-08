@@ -44,7 +44,9 @@ class HomeFragment : VFragment(
         setSpinnerVisibility(VISIBLE)
         setErrorView(GONE)
 
-
+        viewModel.signInAnonymously().observe(viewLifecycleOwner, {
+            Log.i(TAG, "Test $it")
+        })
 
         if (user == null) {
             // auth.signInAnonymously()

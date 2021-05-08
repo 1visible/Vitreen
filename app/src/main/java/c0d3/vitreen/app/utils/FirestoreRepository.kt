@@ -29,10 +29,6 @@ class FirestoreRepository {
     // Sign in user
     fun signInAnonymously(): Task<AuthResult> {
         return auth.signInAnonymously()
-            .addOnCompleteListener { task ->
-                if(!task.isSuccessful)
-                    throw VitreenException(R.string.errorMessage)
-            }
     }
 
     // Get all users

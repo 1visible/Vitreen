@@ -5,21 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
-import com.google.firebase.auth.FirebaseUser
 
 class FirestoreViewModel : ViewModel(){
     private val repository = FirestoreRepository()
     private var products: MutableLiveData<List<Product>> = MutableLiveData()
-    private var signInNotifier: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var signInNotifier: MutableLiveData<Int> = MutableLiveData()
 
     // Get realtime updates from firebase regarding products
     fun getProducts(): LiveData<List<Product>> {
         repository.getProducts().addSnapshotListener { value, exception ->
-            if (exception != null || value == null)
-                throw VitreenException(R.string.errorMessage)
+            // TODO if (exception != null || value == null)
 
             val productsList : MutableList<Product> = mutableListOf()
-            for (doc in value) {
+            for (doc in value!!) {
                 val product = doc.toObject(Product::class.java)
                 productsList.add(product)
             }
@@ -29,10 +27,11 @@ class FirestoreViewModel : ViewModel(){
         return products
     }
 
-    fun signInAnonymously(): MutableLiveData<Boolean> {
+    fun signInAnonymously(): MutableLiveData<Int> {
         repository.signInAnonymously()
-            .addOnSuccessListener {
-                signInNotifier.value = if(signInNotifier.value is Boolean) !signInNotifier.value!! else true
+            .addOnCompleteListener { task ->
+                val errorCode = if(task.isSuccessful) -1 else R.string.errorMessage
+                signInNotifier.value = errorCode
             }
 
         return signInNotifier
