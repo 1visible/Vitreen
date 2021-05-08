@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lg"
-    android:layout_marginLeft="@dimen/spacing_lg"
-    android:layout_marginEnd="@dimen/spacing_lg"
-    android:layout_marginRight="@dimen/spacing_lg"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".fragments.auth.Register1Fragment" >
+    tools:context=".fragments.auth.Register1Fragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,7 +22,7 @@
 
         <Button
             android:id="@+id/buttonToLogin"
-            style="@style/Vitreen.Link"
+            style="@style/Vitreen.Button.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -37,38 +33,56 @@
 
     </RelativeLayout>
 
-    <EditText
+    <!-- Email input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_envelope"
-        android:drawableRight="@drawable/icon_envelope"
-        android:hint="@string/email_address"
-        android:importantForAutofill="no"
-        android:inputType="textEmailAddress" />
+        app:startIconDrawable="@drawable/icon_envelope"
+        app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
+        android:hint="@string/email_address" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <!-- Password input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        android:drawableEnd="@drawable/icon_lockpad"
-        android:drawableRight="@drawable/icon_lockpad"
-        android:hint="@string/password"
-        android:importantForAutofill="no"
-        android:inputType="textPassword" />
+        app:startIconDrawable="@drawable/icon_lockpad"
+        app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
+        android:hint="@string/password" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <!-- Password confirmation input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextPasswordConfirmation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lg"
-        android:drawableEnd="@drawable/icon_lockpad"
-        android:drawableRight="@drawable/icon_lockpad"
-        android:hint="@string/confirmation"
-        android:importantForAutofill="no"
-        android:inputType="textPassword" />
+        app:startIconDrawable="@drawable/icon_lockpad"
+        app:helperText="@string/required_input"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true"
+        android:hint="@string/confirmation" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonToRegister2"

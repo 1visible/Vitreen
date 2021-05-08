@@ -1,25 +1,30 @@
 package c0d3.vitreen.app.fragments.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.android.synthetic.main.fragment_profile.*
 
+
 class ProfileFragment : VFragment(
-    R.layout.fragment_profile,
-    R.drawable.bigicon_profile,
-    -1,
-    true,
-    R.menu.menu_profile,
-    true,
-    R.id.action_navigation_profile_to_navigation_login
+        R.layout.fragment_profile,
+        R.drawable.bigicon_profile,
+        -1,
+        true,
+        R.menu.menu_profile,
+        true,
+        R.id.action_navigation_profile_to_navigation_login
 ) {
 
     private var productsList = ArrayList<ProductSDTO>()
@@ -27,6 +32,10 @@ class ProfileFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(user == null)
+            return
+
         usersCollection
             .whereEqualTo("emailAddress", user!!.email)
             .get()
@@ -35,17 +44,17 @@ class ProfileFragment : VFragment(
                     var userDTO: UserDTO? = null
                     for (document in documents) {
                         userDTO = UserDTO(
-                            document.id,
-                            document.get("fullname") as String,
-                            document.get("emailAddress") as String,
-                            document.get("phoneNumber") as String,
-                            document.get("contactByPhone") as Boolean,
-                            document.get("isProfessional") as Boolean,
-                            document.get("locationId") as String,
-                            document.get("companyName") as String?,
-                            document.get("siretNumber") as String?,
-                            document.get("productsId") as ArrayList<String>?,
-                            document.get("favoriteProductsId") as java.util.ArrayList<String>?
+                                document.id,
+                                document.get("fullname") as String,
+                                document.get("emailAddress") as String,
+                                document.get("phoneNumber") as String,
+                                document.get("contactByPhone") as Boolean,
+                                document.get("isProfessional") as Boolean,
+                                document.get("locationId") as String,
+                                document.get("companyName") as String?,
+                                document.get("siretNumber") as String?,
+                                document.get("productsId") as ArrayList<String>?,
+                                document.get("favoriteProductsId") as java.util.ArrayList<String>?
                         )
                     }
                     if (userDTO != null) {
@@ -59,43 +68,43 @@ class ProfileFragment : VFragment(
                                 textViewPhoneNumber.text = userDTO.phoneNumber
                                 if (userDTO.contactByPhone) {
                                     textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                                        context?.let { it ->
-                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
-                                        }, null,
-                                        context?.let { it1 ->
-                                            ContextCompat.getDrawable(
-                                                it1,
-                                                R.drawable.icon_checkmark
-                                            )
-                                        }, null
+                                            context?.let { it ->
+                                                ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                            }, null,
+                                            context?.let { it1 ->
+                                                ContextCompat.getDrawable(
+                                                        it1,
+                                                        R.drawable.icon_checkmark
+                                                )
+                                            }, null
                                     )
                                     textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                                        context?.let { it ->
-                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
-                                        },
-                                        null,
-                                        null,
-                                        null
+                                            context?.let { it ->
+                                                ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                            },
+                                            null,
+                                            null,
+                                            null
                                     )
                                 } else {
                                     textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                                        context?.let { it ->
-                                            ContextCompat.getDrawable(it, R.drawable.icon_envelope)
-                                        }, null,
-                                        context?.let { it1 ->
-                                            ContextCompat.getDrawable(
-                                                it1,
-                                                R.drawable.icon_checkmark
-                                            )
-                                        }, null
+                                            context?.let { it ->
+                                                ContextCompat.getDrawable(it, R.drawable.icon_envelope)
+                                            }, null,
+                                            context?.let { it1 ->
+                                                ContextCompat.getDrawable(
+                                                        it1,
+                                                        R.drawable.icon_checkmark
+                                                )
+                                            }, null
                                     )
                                     textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                                        context?.let { it ->
-                                            ContextCompat.getDrawable(it, R.drawable.icon_phone)
-                                        },
-                                        null,
-                                        null,
-                                        null
+                                            context?.let { it ->
+                                                ContextCompat.getDrawable(it, R.drawable.icon_phone)
+                                            },
+                                            null,
+                                            null,
+                                            null
                                     )
                                 }
                                 val zipCodeString =
@@ -135,20 +144,20 @@ class ProfileFragment : VFragment(
                                                             .get()
                                                             .addOnSuccessListener { location ->
                                                                 productsList.add(
-                                                                    ProductSDTO(
-                                                                        it.id,
-                                                                        it.get("title") as String,
-                                                                        category.get("name") as String,
-                                                                        location.get("name") as String,
-                                                                        it.get("price") as Double
-                                                                    )
+                                                                        ProductSDTO(
+                                                                                it.id,
+                                                                                it.get("title") as String,
+                                                                                category.get("name") as String,
+                                                                                location.get("name") as String,
+                                                                                it.get("price") as Double
+                                                                        )
                                                                 )
                                                                 println("--------------------------")
                                                                 println(it.get("price") as Double)
                                                                 println("--------------------------")
                                                                 if (productsList.size == userDTO.productsId!!.size) {
                                                                     productAdapter.submitList(
-                                                                        productsList
+                                                                            productsList
                                                                     )
                                                                 }
                                                             }
@@ -180,8 +189,8 @@ class ProfileFragment : VFragment(
     /* Opens Advert  when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) {
         navigateTo(
-            R.id.action_navigation_profile_to_navigation_product,
-            Constants.KEY_PRODUCT_ID to product.id
+                R.id.action_navigation_profile_to_navigation_product,
+                Constants.KEY_PRODUCT_ID to product.id
         )
     }
 
@@ -254,7 +263,7 @@ class ProfileFragment : VFragment(
                     }
                 }
                 .addOnFailureListener {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
 
         }

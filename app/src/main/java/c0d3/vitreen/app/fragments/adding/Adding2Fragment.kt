@@ -69,7 +69,7 @@ class Adding2Fragment : VFragment(
             .addOnSuccessListener { documents ->
 
                 if (documents.size() == 0) {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                     return@addOnSuccessListener
                 }
 
@@ -82,18 +82,18 @@ class Adding2Fragment : VFragment(
                 buttonConfirmation.setOnClickListener {
                     // Vérifie que les champs du formulaire ne sont pas vides
                     if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 
                     // Vérifie que les arguments récupérés ne sont pas vides
                     if (isAnyStringEmpty(categoryId, title, price, locationId, description)) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 
                     if (mArrayInputStream.size == 0) {
-                        showError(R.string.errorMessage)
+                        showMessage(R.string.errorMessage)
                         return@setOnClickListener
                     }
 
@@ -101,8 +101,8 @@ class Adding2Fragment : VFragment(
                         title = title,
                         description = description,
                         price = price.toDouble(),
-                        brand = editTextBrand.text.toString(),
-                        size = editTextDimensions.text.toString(),
+                        brand = editTextBrand.editText?.text.toString(),
+                        size = editTextDimensions.editText?.text.toString(),
                         locationId = locationId,
                         categoryId = categoryId,
                         nbImages = mArrayInputStream.size.toLong(),
@@ -139,7 +139,7 @@ class Adding2Fragment : VFragment(
             val intent = Intent(Intent.ACTION_PICK)
             //On autorise l'utilisation de plusieurs images unquement dans le cas où l'api est compatible
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             }
             intent.type = "image/*"
             startActivityForResult(
@@ -152,7 +152,7 @@ class Adding2Fragment : VFragment(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && null != attr.data) {
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             //propriété qui va permettre de suivre les éléments lors de l'utilisation des prvious et next button
             counter = 0
             // Get the Image from data

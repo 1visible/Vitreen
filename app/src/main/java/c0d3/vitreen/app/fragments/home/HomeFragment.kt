@@ -1,15 +1,22 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
+import android.view.Gravity.CENTER
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.core.view.updateLayoutParams
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : VFragment(
@@ -29,12 +36,12 @@ class HomeFragment : VFragment(
 
         if (user == null) {
             auth.signInAnonymously()
-            textViewNoProducts.visibility = View.GONE
+            // errorView.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                textViewNoProducts.visibility = View.GONE
+                // errorView.visibility = View.GONE
                 recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 recyclerViewProducts.adapter = productAdapter
@@ -96,8 +103,8 @@ class HomeFragment : VFragment(
                                         if(recyclerViewProducts != null) {
                                             recyclerViewProducts.visibility = View.GONE
                                         }
-                                        if(textViewNoProducts != null) {
-                                            textViewNoProducts.visibility = View.VISIBLE
+                                        if(errorView != null) {
+                                            errorView.visibility = View.VISIBLE
                                         }
                                         Toast.makeText(
                                             requireContext(),
@@ -108,8 +115,8 @@ class HomeFragment : VFragment(
                                 }
                                 .addOnFailureListener(requireActivity()) {
                                     recyclerViewProducts.visibility = View.GONE
-                                    textViewNoProducts.visibility = View.VISIBLE
-                                    showError(R.string.errorMessage)
+                                    errorView.visibility = View.VISIBLE
+                                    showMessage(R.string.errorMessage)
                                 }
                         }
                     }
@@ -131,10 +138,7 @@ class HomeFragment : VFragment(
 
     /* Opens Product when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
-        navigateTo(
-            R.id.action_navigation_home_to_navigation_product,
-            Constants.KEY_PRODUCT_ID to product.id
-        )
+        navigateTo(R.id.action_navigation_home_to_navigation_product, KEY_PRODUCT_ID to product.id)
     }
 
 }

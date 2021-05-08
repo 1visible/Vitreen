@@ -2,8 +2,10 @@
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
-    <!-- App title -->
+    <!-- General strings -->
     <string name="app_name">Vitreen</string>
+    <string name="required_input">Champ obligatoire</string>
+    <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
@@ -12,6 +14,7 @@
     <string name="label_profile">Mon profil</string>
     <string name="label_register">Inscription</string>
     <string name="label_login">Connexion</string>
+    <string name="label_product">Détail du produit</string>
     <!-- Menu title -->
     <string name="title_home">Accueil</string>
     <string name="title_messages">Messages</string>
@@ -64,11 +67,13 @@
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
     <string name="postal_address">Ville</string>
+    <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>
-    <string name="label_product">produit</string>
     <string name="welcome">Bienvenue</string>
-    <!-- Appbar menus -->
+    <!-- Appbar menu items -->
     <string name="search">Rechercher</string>
     <string name="logout">Se déconnecter</string>
+    <!-- Error view -->
+    <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
 </resources>

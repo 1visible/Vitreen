@@ -1,32 +1,29 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="VitreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+<resources>
+    <style name="Vitreen.Theme" parent="Theme.MaterialComponents">
+        <!-- Color palette theming -->
         <item name="colorPrimary">@color/teal</item>
-        <item name="colorPrimaryDark">@color/darker</item>
         <item name="colorPrimaryVariant">@color/teal</item>
-        <item name="colorSurface">@color/dark</item>
-        <item name="colorOnPrimary">@color/dark</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal</item>
         <item name="colorSecondaryVariant">@color/teal</item>
-        <item name="colorOnSecondary">@color/dark</item>
-        <!-- Action bar -->
-        <item name="actionBarStyle">@style/Vitreen.ActionBar</item>
-        <!-- Background color -->
         <item name="android:colorBackground">@color/dark</item>
+        <item name="colorSurface">@color/darker</item>
+        <item name="colorError">@color/red</item>
+        <item name="colorOnPrimary">@color/darker</item>
+        <item name="colorOnSecondary">@color/darker</item>
         <item name="colorOnBackground">@color/white</item>
-        <!-- Text related -->
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColorHint">@color/white_20</item>
-        <item name="colorControlNormal">@color/white_20</item>
-        <item name="android:fontFamily">@font/roboto</item>
-        <item name="fontFamily">@font/roboto</item>
-        <!-- Widgets style -->
-        <item name="editTextStyle">@style/Vitreen.EditText</item>
-        <item name="materialButtonStyle">@style/Vitreen.Button</item>
-        <item name="badgeStyle">@style/Vitreen.Badge</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnError">@color/darker</item>
+        <!-- Override components style -->
+        <item name="materialCardViewStyle">@style/Vitreen.CardView</item>
+        <item name="bottomNavigationStyle">@style/Vitreen.BottomNavigationView</item>
         <item name="textInputStyle">@style/Vitreen.TextInputLayout</item>
+        <item name="materialButtonStyle">@style/Vitreen.Button</item>
+        <item name="borderlessButtonStyle">@style/Vitreen.Button.Text</item>
+        <item name="materialButtonOutlinedStyle">@style/Vitreen.Button.Outline</item>
+        <item name="imageButtonStyle">@style/Vitreen.ImageButton</item>
+        <!-- Font -->
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

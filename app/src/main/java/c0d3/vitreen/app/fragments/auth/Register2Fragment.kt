@@ -50,11 +50,11 @@ class Register2Fragment : VFragment(
         buttonSubmitRegister.setOnClickListener {
             var user: User
             val currentLocation = Location(
-                editTextLocation.text.toString().replaceFirst(
-                    editTextLocation.text.toString()[0],
-                    editTextLocation.text.toString()[0].toUpperCase()
+                editTextLocation.editText?.text.toString().replaceFirst(
+                    editTextLocation.editText?.text.toString()[0],
+                    editTextLocation.editText?.text.toString()[0].toUpperCase()
                 ),
-                if (zipCode == "" || editTextLocation.text.toString() != cityName) null else zipCode.toInt()
+                if (zipCode == "" || editTextLocation.editText?.text.toString() != cityName) null else zipCode.toInt()
             )
 
             locationsCollection.whereEqualTo("name", currentLocation.name)
@@ -69,20 +69,20 @@ class Register2Fragment : VFragment(
                             }
                             user = if (switchProfessionalAccount.isChecked) {
                                 User(
-                                    editTextFullname.text.toString(),
+                                    editTextFullname.editText?.text.toString(),
                                     emailAddress,
-                                    editTextPhoneNumber.text.toString(),
+                                    editTextPhoneNumber.editText?.text.toString(),
                                     radioButtonPhone.isChecked,
                                     true,
                                     document.id,
-                                    editTextCompany.text.toString(),
-                                    editTextSiret.text.toString()
+                                    editTextCompany.editText?.text.toString(),
+                                    editTextSiret.editText?.text.toString()
                                 )
                             } else {
                                 User(
-                                    editTextFullname.text.toString(),
+                                    editTextFullname.editText?.text.toString(),
                                     emailAddress,
-                                    editTextPhoneNumber.text.toString(),
+                                    editTextPhoneNumber.editText?.text.toString(),
                                     radioButtonPhone.isChecked,
                                     false,
                                     document.id
@@ -105,20 +105,20 @@ class Register2Fragment : VFragment(
                             .addOnSuccessListener {
                                 user = if (switchProfessionalAccount.isChecked) {
                                     User(
-                                        editTextFullname.text.toString(),
+                                        editTextFullname.editText?.text.toString(),
                                         emailAddress,
-                                        editTextPhoneNumber.text.toString(),
+                                        editTextPhoneNumber.editText?.text.toString(),
                                         radioButtonPhone.isChecked,
                                         true,
                                         it.id,
-                                        editTextCompany.text.toString(),
-                                        editTextSiret.text.toString()
+                                        editTextCompany.editText?.text.toString(),
+                                        editTextSiret.editText?.text.toString()
                                     )
                                 } else {
                                     User(
-                                        editTextFullname.text.toString(),
+                                        editTextFullname.editText?.text.toString(),
                                         emailAddress,
-                                        editTextPhoneNumber.text.toString(),
+                                        editTextPhoneNumber.editText?.text.toString(),
                                         radioButtonPhone.isChecked,
                                         false,
                                         it.id
@@ -129,17 +129,17 @@ class Register2Fragment : VFragment(
                                     if (task.isSuccessful) {
                                         navigateTo(R.id.action_navigation_register2_to_navigation_profil)
                                     } else {
-                                        showError(R.string.errorMessage)
+                                        showMessage(R.string.errorMessage)
                                     }
                                 }
                             }
                             .addOnFailureListener {
-                                showError(R.string.errorMessage)
+                                showMessage(R.string.errorMessage)
                             }
                     }
                 }
                 .addOnFailureListener {
-                    showError(R.string.errorMessage)
+                    showMessage(R.string.errorMessage)
                 }
         }
     }
@@ -173,8 +173,8 @@ class Register2Fragment : VFragment(
                     if (adresse != null) {
                         cityName = adresse[0].locality
                         zipCode = adresse[0].postalCode
-                        editTextLocation.text.clear()
-                        editTextLocation.setText(adresse[0].locality)
+                        editTextLocation.editText?.text?.clear()
+                        editTextLocation.editText?.setText(adresse[0].locality)
                     }
 
                 } catch (e: IOException) {
@@ -200,7 +200,7 @@ class Register2Fragment : VFragment(
         when (requestCode) {
             LOCALISATION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    editTextLocation.text.clear()
+                    editTextLocation.editText?.text?.clear()
                     Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT)
                         .show()
                 } else {

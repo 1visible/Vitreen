@@ -23,7 +23,6 @@ class FavoritesFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerViewProducts.visibility = View.VISIBLE
-        textViewNoFavorites.visibility = View.GONE
         val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
         recyclerViewProducts.adapter = productAdapter
         //Récupération de la liste d'annonces en favori de l'utilisateur courant
@@ -76,12 +75,10 @@ class FavoritesFragment : VFragment(
                         } else {
                             //Affichage du text "Aucun favori"
                             recyclerViewProducts.visibility = View.GONE
-                            textViewNoFavorites.visibility = View.VISIBLE
                         }
                     } else {
                         //Affichage du text "Aucun favori"
                         recyclerViewProducts.visibility = View.GONE
-                        textViewNoFavorites.visibility = View.VISIBLE
                     }
                 }
             }

@@ -2,13 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lg"
-    android:layout_marginLeft="@dimen/spacing_lg"
-    android:layout_marginEnd="@dimen/spacing_lg"
-    android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
     tools:context=".fragments.profile.ProfileFragment">
 
@@ -60,10 +55,10 @@
 
     <TextView
         android:id="@+id/textViewPostalAddress"
+        android:text="@string/postal_address"
         android:drawablePadding="@dimen/spacing_sm"
         android:drawableLeft="@drawable/icon_location"
         android:drawableStart="@drawable/icon_location"
-        android:layout_marginBottom="@dimen/spacing_lg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="UseCompatTextViewDrawableXml" />
@@ -74,6 +69,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/teal"
+        android:layout_marginTop="@dimen/spacing_lg"
         android:layout_marginBottom="@dimen/spacing_md"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -95,7 +91,6 @@
         android:drawablePadding="@dimen/spacing_sm"
         android:drawableLeft="@drawable/icon_number"
         android:drawableStart="@drawable/icon_number"
-        android:layout_marginBottom="@dimen/spacing_lg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="UseCompatTextViewDrawableXml" />
@@ -106,6 +101,7 @@
         android:textStyle="bold"
         android:textColor="@color/teal"
         android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_marginTop="@dimen/spacing_lg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -2,19 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lg"
-    android:layout_marginLeft="@dimen/spacing_lg"
-    android:layout_marginEnd="@dimen/spacing_lg"
-    android:layout_marginRight="@dimen/spacing_lg"
     android:orientation="vertical"
     tools:context=".fragments.adding.Adding1Fragment">
 
+    <!-- Images slider -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
-        app:cardCornerRadius="@dimen/spacing_sm"
         android:layout_marginBottom="@dimen/spacing_md"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -23,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- Image to show -->
             <ImageView
                 android:id="@+id/imageViewProduct"
                 android:layout_width="match_parent"
@@ -31,30 +27,29 @@
                 android:scaleType="centerCrop"
                 tools:ignore="ContentDescription" />
 
-            <com.google.android.material.button.MaterialButton
+            <!-- Previous image button -->
+            <ImageButton
                 android:id="@+id/buttonPreviousImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                app:icon="@drawable/icon_angle_left"
-                android:layout_marginLeft="@dimen/spacing_sm"
-                android:layout_marginStart="@dimen/spacing_sm"
-                style="@style/Vitreen.Link" />
+                android:src="@drawable/icon_angle_left"
+                android:padding="@dimen/spacing_md"
+                tools:ignore="ContentDescription" />
 
-            <com.google.android.material.button.MaterialButton
+            <!-- Next image button -->
+            <ImageButton
                 android:id="@+id/buttonNextImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                app:icon="@drawable/icon_angle_right"
-                android:layout_marginRight="@dimen/spacing_sm"
-                android:layout_marginEnd="@dimen/spacing_sm"
-                style="@style/Vitreen.Link"
-                tools:ignore="RelativeOverlap" />
+                android:src="@drawable/icon_angle_right"
+                android:padding="@dimen/spacing_md"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 

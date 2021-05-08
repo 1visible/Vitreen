@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +10,7 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/rectangle"
+        android:background="@color/darker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,17 +18,17 @@
 
     <View
         android:id="@+id/glass_frame"
-        app:layout_constraintWidth_percent="0.2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:layout_marginLeft="@dimen/spacing_md"
         android:layout_marginTop="56dp"
         android:background="@drawable/glass_frame"
         app:layout_constraintBottom_toBottomOf="@+id/background"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/background" />
+        app:layout_constraintTop_toBottomOf="@+id/background"
+        app:layout_constraintWidth_percent="0.2" />
 
     <ImageView
         android:id="@+id/iconView"
@@ -46,15 +47,17 @@
         android:id="@+id/titleView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:layout_marginLeft="@dimen/spacing_md"
+        android:layout_marginEnd="@dimen/spacing_md"
+        android:layout_marginRight="@dimen/spacing_md"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="@string/app_name"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/background"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/glass_frame"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintTop_toTopOf="@+id/glass_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
