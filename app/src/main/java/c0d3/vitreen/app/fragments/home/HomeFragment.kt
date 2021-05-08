@@ -88,9 +88,7 @@ class HomeFragment : VFragment(
                                     location
                                 )
                             }
-                            (textInputLocation?.editText as? AutoCompleteTextView)?.setAdapter(
-                                adapter
-                            )
+                            autoCompleteLocation.setAdapter(adapter)
                         }
 
                 }

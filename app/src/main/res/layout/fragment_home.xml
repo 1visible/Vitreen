@@ -43,24 +43,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Location input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLocation"
-            style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
-            android:layout_width="match_parent"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteLocation"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:hint="@string/product_location"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_tree">
-
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                tools:ignore="LabelFor" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:completionHint="@string/researchSelectCountry"
+            android:completionThreshold="2"
+            android:hint="@string/researchSelectCountry" />
 
         <EditText
             android:id="@+id/editTextMaxPrice"
@@ -70,9 +59,9 @@
 
         <Button
             android:id="@+id/buttonResearch"
-            android:text="@string/buttonResearch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/buttonResearch" />
 
     </LinearLayout>
 

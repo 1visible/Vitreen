@@ -79,4 +79,5 @@
     <string name="research">Entrez votre Recherche...</string>
     <string name="research_max_price">Prix Max...</string>
     <string name="buttonResearch">Rechercher</string>
+    <string name="researchSelectCountry">Sélectionnez une Ville</string>
 </resources>
