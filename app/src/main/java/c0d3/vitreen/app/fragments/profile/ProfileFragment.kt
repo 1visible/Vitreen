@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.UserDTO
@@ -13,9 +12,7 @@ import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import kotlinx.android.synthetic.main.fragment_product.*
+import com.google.android.gms.tasks.Tasks
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
@@ -35,12 +32,15 @@ class ProfileFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /*
         viewModel.getProducts().observe(viewLifecycleOwner, { products ->
             Log.i(TAG, "Test $products")
         })
+        */
 
-        viewModel.signInAnonymously().observe(viewLifecycleOwner, { user ->
+        viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, {
             textViewFullname.text
+            Log.i(TAG, "Test $it")
         })
 
         if(user == null)

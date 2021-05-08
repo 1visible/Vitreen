@@ -3,23 +3,20 @@ package c0d3.vitreen.app.utils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.EventListener
-import java.lang.Exception
 
 class FirestoreViewModel : ViewModel(){
     private val repository = FirestoreRepository()
     private var products: MutableLiveData<List<Product>> = MutableLiveData()
-    private var user: MutableLiveData<FirebaseUser?> = MutableLiveData()
+    private var signInNotifier: MutableLiveData<Boolean> = MutableLiveData(false)
 
     // Get realtime updates from firebase regarding products
     fun getProducts(): LiveData<List<Product>> {
-        repository.getProducts().addSnapshotListener(EventListener { value, exception ->
-            if (exception != null || value == null) {
-                products.value = null
-                return@EventListener
-            }
+        repository.getProducts().addSnapshotListener { value, exception ->
+            if (exception != null || value == null)
+                throw VitreenException(R.string.errorMessage)
 
             val productsList : MutableList<Product> = mutableListOf()
             for (doc in value) {
@@ -27,20 +24,18 @@ class FirestoreViewModel : ViewModel(){
                 productsList.add(product)
             }
             products.value = productsList
-        })
+        }
 
         return products
     }
 
-    fun signInAnonymously(): MutableLiveData<FirebaseUser?> {
-
+    fun signInAnonymously(): MutableLiveData<Boolean> {
         repository.signInAnonymously()
-            .addOnSuccessListener { auth -> user.value = auth.user }
-            .addOnFailureListener { exception ->
-                throw Exception("tet")
+            .addOnSuccessListener {
+                signInNotifier.value = if(signInNotifier.value is Boolean) !signInNotifier.value!! else true
             }
 
-        return user
+        return signInNotifier
     }
 
     /*

@@ -1,6 +1,7 @@
 package c0d3.vitreen.app.utils
 
 import android.util.Log
+import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
@@ -25,9 +26,13 @@ class FirestoreRepository {
         return db.collection(PRODUCTS_COLLECTION)
     }
 
-    // Get all products
+    // Sign in user
     fun signInAnonymously(): Task<AuthResult> {
         return auth.signInAnonymously()
+            .addOnCompleteListener { task ->
+                if(!task.isSuccessful)
+                    throw VitreenException(R.string.errorMessage)
+            }
     }
 
     // Get all users

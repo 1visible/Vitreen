@@ -6,6 +6,9 @@ import android.view.View.GONE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
@@ -150,6 +153,15 @@ abstract class VFragment(
 
     fun setSpinnerVisibility(visibility: Int) {
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
+    }
+
+    fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
+        observe(owner, object: Observer<T> {
+            override fun onChanged(value: T) {
+                removeObserver(this)
+                observer(value)
+            }
+        })
     }
 
 }
