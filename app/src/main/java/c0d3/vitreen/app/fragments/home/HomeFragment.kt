@@ -90,7 +90,77 @@ class HomeFragment : VFragment(
                             }
                             autoCompleteLocation.setAdapter(adapter)
                         }
+                    buttonResearch.setOnClickListener {
+                        if (editTextResearchText.text.toString() == "" && editTextMaxPrice.text.toString() == "" && textInputCategory?.editText?.text.toString() == "" && autoCompleteLocation.text.toString() == "") {
+                            println("---------------------------")
+                            println("un champs vide")
+                            println("---------------------------")
+                            return@setOnClickListener
+                        }
+                        if (editTextResearchText.text.toString() != "") {
+                            productsCollection.whereEqualTo(
+                                "name",
+                                editTextResearchText.text.toString()
+                            )
+                        }
+                        if (editTextMaxPrice.text.toString() != "") {
+                            productsCollection.whereLessThanOrEqualTo(
+                                "price",
+                                editTextMaxPrice.text.toString().toLong()
+                            )
+                        }
+                        if (textInputCategory?.editText?.text.toString() != "") {
+                            var categoryId = ""
+                            categoriesDTO.forEach { categoryDTO ->
+                                if (categoryDTO.name == textInputCategory?.editText?.text.toString()) {
+                                    categoryId = categoryDTO.id
+                                }
+                            }
+                            productsCollection.whereEqualTo("categoryId", categoryId)
+                        }
 
+                        if (autoCompleteLocation.text.toString() != "") {
+                            var locationId = ""
+                            locationDTO.forEach { locationDTO ->
+                                if (locationDTO.name == autoCompleteLocation.text.toString()) {
+                                    locationId = locationDTO.id
+                                }
+                            }
+                            productsCollection.whereEqualTo("locationId", locationId)
+                        }
+
+                        productsCollection
+                            .get()
+                            .addOnSuccessListener {
+                                listProduct.clear()
+                                if(it.documents.size > 0) {
+                                    println("------------------")
+                                    println("j'ai trouvé des produits")
+                                    println("------------------")
+                                    it.documents.forEach { product ->
+                                        listProduct.add(
+                                            ProductSDTO(
+                                                product.id,
+                                                product.get("title") as String,
+                                                "une catégorie",
+                                                "une location",
+                                                product.get("price") as Double
+                                            )
+                                        )
+                                    }
+                                    linearLayoutResearch.visibility = View.GONE
+                                    recyclerViewProducts.visibility = View.VISIBLE
+                                    val adapter = ProductAdapter{product->adapterOnClick(product)}
+                                    recyclerViewProducts.adapter = adapter
+                                    adapter.submitList(listProduct)
+                                }else{
+                                    println("-----------------------------")
+                                    println("0 produit trouvé")
+                                    println("-----------------------------")
+                                }
+
+                            }
+                    }
                 }
                 // errorView.visibility = View.GONE
                 recyclerViewProducts.visibility = View.VISIBLE
