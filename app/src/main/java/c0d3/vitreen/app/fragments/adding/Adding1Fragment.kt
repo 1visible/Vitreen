@@ -90,7 +90,7 @@ class Adding1Fragment : VFragment(
             // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
             val currentLocation = Location(
                 editTextLocation.editText?.text.toString().capitalize(Locale.getDefault()),
-                if(cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toInt()
+                if(cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
             )
             // Récupération de la localisation renseignée
             locationsCollection.whereEqualTo("name", currentLocation.name).get()

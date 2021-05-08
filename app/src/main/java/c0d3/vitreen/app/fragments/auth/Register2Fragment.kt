@@ -54,7 +54,7 @@ class Register2Fragment : VFragment(
                     editTextLocation.editText?.text.toString()[0],
                     editTextLocation.editText?.text.toString()[0].toUpperCase()
                 ),
-                if (zipCode == "" || editTextLocation.editText?.text.toString() != cityName) null else zipCode.toInt()
+                if (zipCode == "" || editTextLocation.editText?.text.toString() != cityName) null else zipCode.toLong()
             )
 
             locationsCollection.whereEqualTo("name", currentLocation.name)

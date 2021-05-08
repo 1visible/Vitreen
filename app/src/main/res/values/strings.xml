@@ -76,4 +76,7 @@
     <string name="logout">Se déconnecter</string>
     <!-- Error view -->
     <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
+    <string name="research">Entrez votre Recherche...</string>
+    <string name="research_max_price">Prix Max...</string>
+    <string name="buttonResearch">Rechercher</string>
 </resources>

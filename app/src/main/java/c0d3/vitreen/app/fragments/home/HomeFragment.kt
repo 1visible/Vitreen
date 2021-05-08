@@ -1,16 +1,13 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.view.Gravity.CENTER
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.Toast
-import androidx.core.view.updateLayoutParams
+import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.dto.CategoryDTO
+import c0d3.vitreen.app.models.dto.LocationDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
@@ -31,6 +28,9 @@ class HomeFragment : VFragment(
     private var userId = ""
     private var listProduct: ArrayList<ProductSDTO> = ArrayList()
 
+    private var categoriesDTO = ArrayList<CategoryDTO>()
+    private var locationDTO = ArrayList<LocationDTO>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,6 +41,59 @@ class HomeFragment : VFragment(
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
+                include.visibility = View.GONE
+                recyclerViewProducts.visibility = View.GONE
+                linearLayoutResearch.visibility = View.VISIBLE
+                if (linearLayoutResearch.visibility == View.VISIBLE) {
+                    categoriesCollection.get()
+                        .addOnSuccessListener {
+                            it.forEach { category ->
+                                categoriesDTO.add(
+                                    CategoryDTO(
+                                        category.id,
+                                        category.get("name") as String
+                                    )
+                                )
+                            }
+                            // Ajout des catégories au menu déroulant du formulaire
+                            val adapter = context?.let { context ->
+                                ArrayAdapter(
+                                    context,
+                                    R.layout.dropdown_menu_item,
+                                    categoriesDTO.map { it.DtoToModel().name })
+                            }
+                            (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(
+                                adapter
+                            )
+                        }
+
+                    locationsCollection.get()
+                        .addOnSuccessListener {
+                            it.forEach { location ->
+                                locationDTO.add(
+                                    LocationDTO(
+                                        location.id,
+                                        location.get("name") as String,
+                                        location.get("zipCode") as Long?
+                                    )
+                                )
+                            }
+                            var location =
+                                ArrayList<String>(locationDTO.map { it.DtoToModel().name })
+                            location.add(0, "Ma localisation")
+                            val adapter = context?.let { context ->
+                                ArrayAdapter(
+                                    context,
+                                    R.layout.dropdown_menu_item,
+                                    location
+                                )
+                            }
+                            (textInputLocation?.editText as? AutoCompleteTextView)?.setAdapter(
+                                adapter
+                            )
+                        }
+
+                }
                 // errorView.visibility = View.GONE
                 recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
@@ -100,10 +153,10 @@ class HomeFragment : VFragment(
                                                 }
                                         }
                                     } else {
-                                        if(recyclerViewProducts != null) {
+                                        if (recyclerViewProducts != null) {
                                             recyclerViewProducts.visibility = View.GONE
                                         }
-                                        if(errorView != null) {
+                                        if (errorView != null) {
                                             errorView.visibility = View.VISIBLE
                                         }
                                         Toast.makeText(
