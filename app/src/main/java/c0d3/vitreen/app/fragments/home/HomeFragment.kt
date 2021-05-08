@@ -6,6 +6,8 @@ import android.view.Gravity
 import android.view.Gravity.CENTER
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.updateLayoutParams
@@ -33,6 +35,30 @@ class HomeFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getProducts().observe(viewLifecycleOwner, { product ->
+            val products = product
+        })
+
+        // Show loading spinner
+        setSpinnerVisibility(VISIBLE)
+        setErrorView(GONE)
+
+        if(user == null) {
+            auth.signInAnonymously()
+                .addOnSuccessListener {
+                    if(isFragmentVisible){
+
+                    }
+                }
+                .addOnFailureListener {
+                    if(isFragmentVisible){
+                        setSpinnerVisibility(GONE)
+                        setErrorView(VISIBLE)
+                        showMessage(R.string.anonymous_error)
+                    }
+                }
+        }
 
         if (user == null) {
             auth.signInAnonymously()

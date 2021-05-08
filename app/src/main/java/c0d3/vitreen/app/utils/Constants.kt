@@ -2,6 +2,7 @@ package c0d3.vitreen.app.utils
 
 class Constants {
     companion object {
+        const val TAG: String = "VITREEN"
         const val CATEGORY_ID: String = "categoryId"
         const val TITLE: String = "title"
         const val PRICE: String = "price"
@@ -14,10 +15,10 @@ class Constants {
         const val IMAGES_LIMIT_USER: Int = 3
         const val IMAGES_LIMIT_PROFESSIONAL: Int = 5
         const val IMAGES_LIMIT_HOME_PAGE = 25
-        const val USER_COLLECTION = "users"
-        const val PRODUCT_COLLECTION = "products"
-        const val LOCATION_COLLECTION = "locations"
-        const val CATEGORY_COLLECTION = "categories"
+        const val USERS_COLLECTION = "users"
+        const val PRODUCTS_COLLECTION = "products"
+        const val LOCATIONS_COLLECTION = "locations"
+        const val CATEGORIES_COLLECTION = "categories"
         const val DISCUSSION_COLLECTION = "discussions"
     }
 }

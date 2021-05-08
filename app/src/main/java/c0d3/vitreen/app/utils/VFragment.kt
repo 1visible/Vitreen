@@ -6,13 +6,14 @@ import android.view.View.GONE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.PRODUCT_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.USER_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -36,6 +37,7 @@ abstract class VFragment(
         @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
+    lateinit var viewModel: FirestoreViewModel
     var isFragmentVisible = true
 
     private lateinit var db: FirebaseFirestore
@@ -56,15 +58,17 @@ abstract class VFragment(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
+        viewModel = ViewModelProviders.of(this).get(FirestoreViewModel::class.java)
+
         db = Firebase.firestore
         storage = Firebase.storage
         auth = Firebase.auth
         user = auth.currentUser
 
-        usersCollection = db.collection(USER_COLLECTION)
-        categoriesCollection = db.collection(CATEGORY_COLLECTION)
-        locationsCollection = db.collection(LOCATION_COLLECTION)
-        productsCollection = db.collection(PRODUCT_COLLECTION)
+        usersCollection = db.collection(USERS_COLLECTION)
+        categoriesCollection = db.collection(CATEGORIES_COLLECTION)
+        locationsCollection = db.collection(LOCATIONS_COLLECTION)
+        productsCollection = db.collection(PRODUCTS_COLLECTION)
 
         if (requireAuth) {
             try {

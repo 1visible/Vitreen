@@ -6,6 +6,7 @@
     <string name="app_name">Vitreen</string>
     <string name="required_input">Champ obligatoire</string>
     <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
+    <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
