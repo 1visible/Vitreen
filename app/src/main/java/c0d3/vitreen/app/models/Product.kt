@@ -1,5 +1,8 @@
 package c0d3.vitreen.app.models
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 data class Product(
     val title: String = "",
     val description: String = "",
@@ -12,5 +15,5 @@ data class Product(
     val category: Category = Category(),
     val nbImages: Long = 0,
     val ownerId: String = "",
-    val modifiedAt: String = "",
+    val modifiedAt: String = Calendar.getInstance().time.toString(),
 ): Entity()

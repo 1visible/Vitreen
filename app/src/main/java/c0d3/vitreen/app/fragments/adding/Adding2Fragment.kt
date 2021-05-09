@@ -13,14 +13,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Category
+import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.models.dto.UserDTO
-import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
+import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
 import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
-import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
 import c0d3.vitreen.app.utils.Constants.Companion.PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.TITLE
 import c0d3.vitreen.app.utils.VFragment
@@ -54,81 +56,63 @@ class Adding2Fragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val categoryId: String = arguments?.getString(CATEGORY_ID).orEmpty()
+        val category: Category = (arguments?.get(KEY_CATEGORY) as Category)
         val title: String = arguments?.getString(TITLE).orEmpty()
         val price: String = arguments?.getString(PRICE).orEmpty()
-        val locationId: String = arguments?.getString(LOCATION_ID).orEmpty()
+        val location: Location = arguments?.get(KEY_LOCATION) as Location
         val description: String = arguments?.getString(DESCRIPTION).orEmpty()
-        usersCollection
-            .whereEqualTo("emailAddress", user?.email)
-            .get()
-            .addOnSuccessListener { documents ->
+        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+            if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
+            var user: User = pair.second
+            val imageCountMax =
+                if (user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
+            nbImageMax = imageCountMax
+            buttonConfirmation.setOnClickListener {
+                // Vérifie que les champs du formulaire ne sont pas vides
+                if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
+                    showMessage()
+                    return@setOnClickListener
+                }
 
-                if (documents.size() == 0) {
+                // Vérifie que les arguments récupérés ne sont pas vides
+                if (isAnyStringEmpty(title, price, description)) {
                     showMessage(R.string.errorMessage)
-                    return@addOnSuccessListener
+                    return@setOnClickListener
                 }
 
-                val document = documents.first()
-                val user = UserDTO(document)
-                val imagesCountMax =
-                    if (user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
-                nbImageMax = imagesCountMax
-
-                buttonConfirmation.setOnClickListener {
-                    // Vérifie que les champs du formulaire ne sont pas vides
-                    if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
-                        showMessage(R.string.errorMessage)
-                        return@setOnClickListener
-                    }
-
-                    // Vérifie que les arguments récupérés ne sont pas vides
-                    if (isAnyStringEmpty(categoryId, title, price, locationId, description)) {
-                        showMessage(R.string.errorMessage)
-                        return@setOnClickListener
-                    }
-
-                    if (mArrayInputStream.size == 0) {
-                        showMessage(R.string.errorMessage)
-                        return@setOnClickListener
-                    }
-
-                    val product = Product(
-                        title = title,
-                        description = description,
-                        price = price.toDouble(),
-                        brand = editTextBrand.editText?.text.toString(),
-                        size = editTextDimensions.editText?.text.toString(),
-                        locationId = locationId,
-                        categoryId = categoryId,
-                        nbImages = mArrayInputStream.size.toLong(),
-                        ownerId = user.id,
-                        createdAt = Calendar.getInstance().time.toString(),
-                        modifiedAt = ""
-                    )
-
-                    productsCollection
-                        .add(product)
-                        .addOnSuccessListener { product ->
-                            val metadata = storageMetadata { contentType = "image/jpg" }
-
-                            for (i in mArrayInputStream.indices)
-                                imagesRef.child("${product.id}/image_$i")
-                                    .putStream(mArrayInputStream[i], metadata)
-
-                            mArrayUri.clear()
-                            mArrayInputStream.clear()
-                            user.productsId =
-                                if (user.productsId == null) ArrayList() else user.productsId
-                            user.productsId?.add(product.id)
-                            usersCollection.document(user.id).update("productsId", user.productsId)
-                            navigateTo(R.id.action_navigation_adding2_to_navigation_home)
-                            // TODO : Naviguer vers fragment du produit + Ajouter les OnFailure + Vérifier ce code
-                        }
-
+                if (mArrayInputStream.size == 0) {
+                    showMessage(R.string.errorMessage)
+                    return@setOnClickListener
                 }
 
+                val product = Product(
+                    title = title,
+                    description = description,
+                    price = price.toDouble(),
+                    brand = editTextBrand.editText?.text.toString(),
+                    size = editTextDimensions.editText?.text.toString(),
+                    location = location,
+                    category = category,
+                    nbImages = mArrayInputStream.size.toLong(),
+                    ownerId = user.id
+                )
+                viewModel.addProduct(product)
+                    .addOnSuccessListener {
+                        val metadata = storageMetadata { contentType = "image/jpg" }
+
+                        for (i in mArrayInputStream.indices)
+                            imagesRef.child("${product.id}/image_$i")
+                                .putStream(mArrayInputStream[i], metadata)
+
+                        mArrayUri.clear()
+                        mArrayInputStream.clear()
+                        user.productsId = if (user.productsId == null) ArrayList<String>() else user.productsId
+                        user.productsId?.add(product.id)
+                        viewModel.updateUser(user.id,user.productsId)
+                        navigateTo(R.id.action_navigation_adding2_to_navigation_home)
+                    }
             }
+        })
 
         buttonAddImage.setOnClickListener {
             //Ouverture de la galerie afin de récupérer des images

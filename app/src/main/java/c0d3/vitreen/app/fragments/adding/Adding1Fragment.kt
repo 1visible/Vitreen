@@ -13,10 +13,10 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
 import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
-import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
 import c0d3.vitreen.app.utils.Constants.Companion.PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.TITLE
 import c0d3.vitreen.app.utils.VFragment
@@ -94,7 +94,7 @@ class Adding1Fragment : VFragment(
                 if (cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
             )
             // Récupération de la localisation renseignée
-            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
+            viewModel.getLocations(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
                 if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
                 val location = pair.second
                 if (location != null) {
@@ -162,10 +162,10 @@ class Adding1Fragment : VFragment(
     private fun navigateToAdding2(category: Category, location: Location) {
         navigateTo(
             R.id.action_navigation_adding1_to_navigation_adding2,
-            CATEGORY_ID to category,
+            KEY_CATEGORY to category,
             TITLE to editTextTitle.editText?.text.toString(),
             PRICE to editTextPrice.editText?.text.toString(),
-            LOCATION_ID to location,
+            KEY_LOCATION to location,
             DESCRIPTION to editTextDescription.editText?.text.toString()
         )
     }

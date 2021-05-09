@@ -2,6 +2,7 @@ package c0d3.vitreen.app.utils
 
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
+import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
@@ -94,9 +95,30 @@ class FirestoreRepository {
             }
     }
 
+    fun updateUser(userId: String, productsIds: ArrayList<String>) {
+        db.collection(USERS_COLLECTION)
+            .whereEqualTo("id", userId)
+            .get()
+            .addOnSuccessListener { users ->
+                if (users.size() == 1) {
+                    users.forEach {
+                        db.collection(USERS_COLLECTION)
+                            .document(it.id)
+                            .update("productsId", productsIds)
+                    }
+                }
+            }
+
+    }
+
     fun addLocation(location: Location) {
         db.collection(LOCATIONS_COLLECTION)
             .add(location)
+    }
+
+    fun addProduct(product: Product): Task<DocumentReference> {
+        return db.collection(PRODUCTS_COLLECTION)
+            .add(product)
     }
 
     /*
