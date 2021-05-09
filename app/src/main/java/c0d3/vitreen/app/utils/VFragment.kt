@@ -7,10 +7,7 @@ import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
@@ -32,13 +29,13 @@ import kotlinx.android.synthetic.main.empty_view.*
 
 
 abstract class VFragment(
-        @LayoutRes private val layoutId: Int,
-        @DrawableRes private val topIcon: Int,
-        @StringRes private val topTitleId: Int = -1,
-        private val hasOptionsMenu: Boolean = false,
-        @MenuRes private val topMenuId: Int = -1,
-        private val requireAuth: Boolean = false,
-        @IdRes private val loginNavigationId: Int = -1
+    @LayoutRes private val layoutId: Int,
+    @DrawableRes private val topIcon: Int,
+    @StringRes private val topTitleId: Int = -1,
+    private val hasOptionsMenu: Boolean = false,
+    @MenuRes private val topMenuId: Int = -1,
+    private val requireAuth: Boolean = false,
+    @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
     lateinit var viewModel: FirestoreViewModel
@@ -59,10 +56,14 @@ abstract class VFragment(
         setHasOptionsMenu(hasOptionsMenu)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(FirestoreViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
         db = Firebase.firestore
         storage = Firebase.storage
@@ -76,7 +77,7 @@ abstract class VFragment(
 
         if (requireAuth) {
             try {
-                if(user == null || user!!.isAnonymous)
+                if (user == null || user!!.isAnonymous)
                     navigateTo(loginNavigationId)
             } catch (e: NullPointerException) {
                 navigateTo(loginNavigationId)
@@ -122,6 +123,16 @@ abstract class VFragment(
                 return true
         }
         return false
+    }
+
+    fun isAllInputEmpty(vararg inputs: TextInputLayout?): Boolean {
+        var counter = 0
+        inputs.forEach { input ->
+            if (input?.editText?.text.isNullOrBlank()) {
+                counter += 1
+            }
+        }
+        return (counter == inputs.size)
     }
 
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {

@@ -7,6 +7,120 @@
     android:layout_height="match_parent"
     tools:context=".fragments.home.HomeFragment">
 
+    <LinearLayout
+        android:id="@+id/linearLayoutResearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- title input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextResearchText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/research"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Category input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputCategory"
+            style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/product_category"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_tree">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                tools:ignore="LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Location input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/autoCompleteLocation"
+            style="@style/Vitreen.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:completionHint="@string/researchSelectCountry"
+            android:hint="@string/researchSelectCountry"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_tree">
+
+            <AutoCompleteTextView
+                android:completionThreshold="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- brand input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/product_brand"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- maxPrice input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextMaxPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/research_max_price"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/buttonResearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonResearch" />
+
+    </LinearLayout>
+
     <!-- No products view -->
     <include
         layout="@layout/empty_view"
@@ -24,6 +138,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutResearch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
