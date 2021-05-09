@@ -22,15 +22,8 @@ class FirestoreRepository {
     private val auth: FirebaseAuth = Firebase.auth
     private val user: FirebaseUser? = auth.currentUser
 
-    // Get all products
-    fun getProducts(
-        limit: Boolean = true,
-        title: String? = null,
-        price: Double? = null,
-        brand: String? = null,
-        location: Location? = null,
-        category: Category? = null
-    ): Query {
+    // Get products (filters available)
+    fun getProducts(limit: Boolean, title: String?, price: Double?, brand: String?, location: Location?, category: Category?): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
         if (title != null)
@@ -58,6 +51,10 @@ class FirestoreRepository {
     // Sign in user
     fun signInAnonymously(): Task<AuthResult> {
         return auth.signInAnonymously()
+    }
+
+    fun getUser(user: FirebaseUser): Query {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
     }
 
     // Get all users

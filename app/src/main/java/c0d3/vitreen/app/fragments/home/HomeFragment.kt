@@ -10,6 +10,7 @@ import android.widget.Toast
 import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.CategoryDTO
 import c0d3.vitreen.app.models.dto.LocationDTO
 import c0d3.vitreen.app.models.dto.ProductDTO
@@ -58,18 +59,17 @@ class HomeFragment : VFragment(
                 // If the call fails, show error message, hide loading spinner and show empty view
                 if(handleError(errorCode, R.string.no_products)) return@observeOnce
 
-                // If the user is signed in anonymously, get products
-                viewModel.getProducts().observe(viewLifecycleOwner, { pair ->
-                    val errorCode2 = pair.first
-                    val products = pair.second
-                    // If the call fails, show error message, hide loading spinner and show empty view
-                    if(handleError(errorCode2, R.string.no_products)) return@observe
-
-                    Log.i(TAG, "Test $products")
-                })
+                tt
             })
         }
+        // Else if the user is signed in anonymously
+        else if(user!!.isAnonymous) {
 
+        }
+        // Else (the user is signed in)
+        else {
+
+        }
 
 
         if (user == null) {
@@ -335,6 +335,27 @@ class HomeFragment : VFragment(
     /* Opens Product when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductDTO) { // TODO : Déplacement vers fragment annonce
         navigateTo(R.id.action_navigation_home_to_navigation_product, KEY_PRODUCT_ID to product.id)
+    }
+
+    fun getProducts(location: Location? = null) {
+        viewModel.getProducts(location = location).observe(viewLifecycleOwner, { pair ->
+            val errorCode2 = pair.first
+            val products = pair.second
+            // If the call fails, show error message, hide loading spinner and show empty view
+            if(handleError(errorCode2, R.string.no_products)) return@observe
+
+            // Else if there is no products to display, hide loading spinner and show empty view
+            if(products.isEmpty()) {
+                setSpinnerVisibility(GONE)
+                setEmptyView(VISIBLE, R.string.no_products)
+                return@observe
+            }
+
+            // Else, show products in recycler view
+            recyclerViewProducts.visibility = VISIBLE
+            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            recyclerViewProducts.adapter = adapter
+        })
     }
 
 }
