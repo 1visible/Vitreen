@@ -188,7 +188,7 @@ class HomeFragment : VFragment(
                         query = query.whereLessThanOrEqualTo(
                             "price",
                             editTextMaxPrice.text.toString().toLong()
-                        ) as CollectionReference
+                        )
                     }
                     if (textInputCategory?.editText?.text.toString() != "") {
                         var categoryId = ""
@@ -197,7 +197,7 @@ class HomeFragment : VFragment(
                                 categoryId = categoryDTO.id
                             }
                         }
-                        query = query.whereEqualTo("categoryId", categoryId) as CollectionReference
+                        query = query.whereEqualTo("categoryId", categoryId)
                     }
 
                     if (autoCompleteLocation.text.toString() != "") {
@@ -207,7 +207,7 @@ class HomeFragment : VFragment(
                                 locationId = locationDTO.id
                             }
                         }
-                        query = query.whereEqualTo("locationId", locationId) as CollectionReference
+                        query = query.whereEqualTo("locationId", locationId)
                     }
 
                     query
