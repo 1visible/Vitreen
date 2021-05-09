@@ -31,12 +31,6 @@ class ProfileFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
-        viewModel.getProducts().observe(viewLifecycleOwner, { products ->
-            Log.i(TAG, "Test $products")
-        })
-        */
-
         if(user == null)
             return
 

@@ -8,33 +8,36 @@ import c0d3.vitreen.app.models.Product
 
 class FirestoreViewModel : ViewModel(){
     private val repository = FirestoreRepository()
-    private var products: MutableLiveData<List<Product>> = MutableLiveData()
-    private var signInNotifier: MutableLiveData<Int> = MutableLiveData()
+    private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
+    private var signInErrorCode: MutableLiveData<Int> = MutableLiveData()
 
     // Get realtime updates from firebase regarding products
-    fun getProducts(): LiveData<List<Product>> {
-        repository.getProducts().addSnapshotListener { value, exception ->
-            // TODO if (exception != null || value == null)
-
+    fun getProducts(): LiveData<Pair<Int, List<Product>>> {
+        repository.getProducts().addSnapshotListener { products, exception ->
+            val errorCode = if(exception == null) -1 else R.string.network_error
             val productsList : MutableList<Product> = mutableListOf()
-            for (doc in value!!) {
-                val product = doc.toObject(Product::class.java)
-                productsList.add(product)
+
+            if(products != null) {
+                for (document in products) {
+                    val product = document.toObject(Product::class.java)
+                    productsList.add(product)
+                }
             }
-            products.value = productsList
+
+            productsLiveData.value = Pair(errorCode, productsList)
         }
 
-        return products
+        return productsLiveData
     }
 
     fun signInAnonymously(): MutableLiveData<Int> {
         repository.signInAnonymously()
             .addOnCompleteListener { task ->
-                val errorCode = if(task.isSuccessful) -1 else R.string.errorMessage
-                signInNotifier.value = errorCode
+                val errorCode = if(task.isSuccessful) -1 else R.string.network_error
+                signInErrorCode.value = errorCode
             }
 
-        return signInNotifier
+        return signInErrorCode
     }
 
     /*

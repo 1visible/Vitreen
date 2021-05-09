@@ -48,6 +48,18 @@ class HomeFragment : VFragment(
             Log.i(TAG, "Test $it")
         })
 
+        viewModel.getProducts().observe(viewLifecycleOwner, { pair ->
+            val errorCode = pair.first
+            val products = pair.second
+
+            if(errorCode != -1) {
+                showMessage(errorCode)
+                return@observe
+            }
+
+            Log.i(TAG, "Test $products")
+        })
+
         if (user == null) {
             // auth.signInAnonymously()
             // errorView.visibility = View.GONE
