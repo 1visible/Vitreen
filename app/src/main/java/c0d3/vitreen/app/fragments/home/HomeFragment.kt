@@ -1,8 +1,12 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.Toast
 import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
@@ -11,11 +15,15 @@ import c0d3.vitreen.app.models.dto.LocationDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.recyclerViewProducts
+import kotlinx.android.synthetic.main.fragment_product.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class HomeFragment : VFragment(
     R.layout.fragment_home,
@@ -38,14 +46,38 @@ class HomeFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Show loading spinner and hide empty view
+        setSpinnerVisibility(VISIBLE)
+        setEmptyView(GONE)
+
+        // If the user is signed out
+        if(user == null) {
+            // Try to sign in with anonymous account
+            viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, { errorCode ->
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if(handleError(errorCode, R.string.no_products)) return@observeOnce
+
+                // If the user is signed in anonymously, get products
+                viewModel.getProducts().observe(viewLifecycleOwner, { pair ->
+                    val errorCode2 = pair.first
+                    val products = pair.second
+                    // If the call fails, show error message, hide loading spinner and show empty view
+                    if(handleError(errorCode2, R.string.no_products)) return@observe
+
+                    Log.i(TAG, "Test $products")
+                })
+            })
+        }
+
+
+
         if (user == null) {
-            auth.signInAnonymously()
+            // auth.signInAnonymously()
             // errorView.visibility = View.GONE
         } else {
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                include.visibility = View.GONE
                 recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 recyclerViewProducts.adapter = productAdapter
@@ -109,8 +141,8 @@ class HomeFragment : VFragment(
                                             if (recyclerViewProducts != null) {
                                                 recyclerViewProducts.visibility = View.GONE
                                             }
-                                            if (errorView != null) {
-                                                errorView.visibility = View.VISIBLE
+                                            if(emptyView != null) {
+                                                emptyView.visibility = View.VISIBLE
                                             }
                                             Toast.makeText(
                                                 requireContext(),
@@ -121,7 +153,7 @@ class HomeFragment : VFragment(
                                     }
                                     .addOnFailureListener(requireActivity()) {
                                         recyclerViewProducts.visibility = View.GONE
-                                        errorView.visibility = View.VISIBLE
+                                        emptyView.visibility = View.VISIBLE
                                         showMessage(R.string.errorMessage)
                                     }
                             }
@@ -279,7 +311,7 @@ class HomeFragment : VFragment(
                                 println("0 item")
                                 println("----------------------")
                                 recyclerViewProducts.visibility = View.GONE
-                                include.visibility = View.VISIBLE
+                                emptyView.visibility = View.VISIBLE
                             }
 
                         }
