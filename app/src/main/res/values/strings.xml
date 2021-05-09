@@ -23,7 +23,9 @@
     <string name="title_adding">Ajout</string>
     <string name="title_favorites">Favoris</string>
     <string name="title_profile">Profil</string>
-    <!-- Login -->
+    <!-- Home fragment -->
+    <string name="my_location">Ma localisation</string>
+    <!-- Login fragment -->
     <string name="have_no_account">Pas de compte ?</string>
     <string name="register_underline"><u>S\'inscrire</u></string>
     <string name="email_address">Adresse e-mail</string>

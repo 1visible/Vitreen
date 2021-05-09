@@ -74,9 +74,10 @@ class FirestoreRepository {
     // Get all locations
     fun getLocations(name: String? = null): Query {
         var query: Query = db.collection(LOCATIONS_COLLECTION)
-        if (name != null) {
+
+        if (name != null)
             query = query.whereEqualTo("name", name)
-        }
+
         return query
     }
 

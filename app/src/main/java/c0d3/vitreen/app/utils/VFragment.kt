@@ -114,14 +114,13 @@ abstract class VFragment(
         return false
     }
 
-    fun isAllInputEmpty(vararg inputs: TextInputLayout?): Boolean {
-        var counter = 0
+    fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (input?.editText?.text.isNullOrBlank()) {
-                counter += 1
+            if (!input?.editText?.text.isNullOrBlank()) {
+                return false
             }
         }
-        return (counter == inputs.size)
+        return true
     }
 
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
@@ -133,6 +132,10 @@ abstract class VFragment(
             }
         }
         return result
+    }
+
+    fun inputToString(input: TextInputLayout): String? {
+        return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
     }
 
     fun isAnyStringEmpty(vararg texts: String?): Boolean {

@@ -94,7 +94,7 @@ class Adding1Fragment : VFragment(
                 if (cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
             )
             // Récupération de la localisation renseignée
-            viewModel.getLocations(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
+            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
                 if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
                 val location = pair.second
                 if (location != null) {
