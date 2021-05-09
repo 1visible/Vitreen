@@ -39,7 +39,6 @@ abstract class VFragment(
 ) : Fragment() {
 
     lateinit var viewModel: FirestoreViewModel
-    var isFragmentVisible = true
 
     private lateinit var db: FirebaseFirestore
     lateinit var storage: FirebaseStorage
@@ -93,16 +92,6 @@ abstract class VFragment(
         val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
         (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
         setSpinnerVisibility(GONE)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isFragmentVisible = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isFragmentVisible = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -176,7 +176,7 @@ class HomeFragment : VFragment(
                             ArrayAdapter(
                                 context,
                                 R.layout.dropdown_menu_item,
-                                categoriesDTO.map { it.DtoToModel().name })
+                                categoriesDTO.map { it.dtoToModel().name })
                         }
                         (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(
                             adapter
@@ -198,7 +198,7 @@ class HomeFragment : VFragment(
 
                         //Ajout de la liste au menu déroulant
                         var location =
-                            ArrayList<String>(locationDTO.map { it.DtoToModel().name })
+                            ArrayList<String>(locationDTO.map { it.dtoToModel().name })
                         location.add(0, "Ma localisation")
                         val adapter = context?.let { context ->
                             ArrayAdapter(

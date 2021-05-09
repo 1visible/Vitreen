@@ -1,11 +1,9 @@
 package c0d3.vitreen.app.fragments.adding
 
-import android.R.attr
 import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
@@ -21,7 +18,6 @@ import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
 import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
-import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST_TAG
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID

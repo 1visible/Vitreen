@@ -35,7 +35,7 @@ class Adding1Fragment : VFragment(
     true,
     R.id.action_navigation_adding1_to_navigation_login
 ) {
-    private val categoriesList = ArrayList<CategoryDTO>()
+    private val categoriesList = ArrayList<Category>()
 
     private var zipCode: String? = null
     private var cityName:String=""
@@ -59,7 +59,7 @@ class Adding1Fragment : VFragment(
                 ArrayAdapter(
                     context,
                     R.layout.dropdown_menu_item,
-                    categoriesList.map { it.DtoToModel().name })
+                    categoriesList.map { it.dtoToModel().name })
             }
 
             (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(adapter)
