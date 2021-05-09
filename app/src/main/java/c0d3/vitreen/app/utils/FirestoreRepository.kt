@@ -1,6 +1,9 @@
 package c0d3.vitreen.app.utils
 
+import c0d3.vitreen.app.models.Category
+import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
@@ -20,8 +23,28 @@ class FirestoreRepository {
     private val user: FirebaseUser? = auth.currentUser
 
     // Get all products
-    fun getProducts(): CollectionReference {
-        return db.collection(PRODUCTS_COLLECTION)
+    fun getProducts(limit: Boolean = true, title: String? = null, price: Double? = null, brand: String? = null, location: Location? = null, category: Category? = null): Query {
+        var query: Query = db.collection(PRODUCTS_COLLECTION)
+
+        if(title != null)
+            query = query.whereEqualTo("title", title)
+
+        if(brand != null)
+            query = query.whereEqualTo("brand", brand)
+
+        if(location != null)
+            query = query.whereEqualTo("location", location)
+
+        if(category != null)
+            query = query.whereEqualTo("category", category)
+
+        if(limit)
+            query = query.limit(DOCUMENTS_LIMIT)
+
+        if(price != null)
+            query = query.whereLessThanOrEqualTo("price", price).orderBy("price", Query.Direction.ASCENDING)
+
+        return query.orderBy("modifiedAt", Query.Direction.DESCENDING)
     }
 
     // Sign in user
