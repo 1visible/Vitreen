@@ -23,26 +23,34 @@ class FirestoreRepository {
     private val user: FirebaseUser? = auth.currentUser
 
     // Get all products
-    fun getProducts(limit: Boolean = true, title: String? = null, price: Double? = null, brand: String? = null, location: Location? = null, category: Category? = null): Query {
+    fun getProducts(
+        limit: Boolean = true,
+        title: String? = null,
+        price: Double? = null,
+        brand: String? = null,
+        location: Location? = null,
+        category: Category? = null
+    ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
-        if(title != null)
+        if (title != null)
             query = query.whereEqualTo("title", title)
 
-        if(brand != null)
+        if (brand != null)
             query = query.whereEqualTo("brand", brand)
 
-        if(location != null)
+        if (location != null)
             query = query.whereEqualTo("location", location)
 
-        if(category != null)
+        if (category != null)
             query = query.whereEqualTo("category", category)
 
-        if(limit)
+        if (limit)
             query = query.limit(DOCUMENTS_LIMIT)
 
-        if(price != null)
-            query = query.whereLessThanOrEqualTo("price", price).orderBy("price", Query.Direction.ASCENDING)
+        if (price != null)
+            query = query.whereLessThanOrEqualTo("price", price)
+                .orderBy("price", Query.Direction.ASCENDING)
 
         return query.orderBy("modifiedAt", Query.Direction.DESCENDING)
     }
@@ -63,8 +71,12 @@ class FirestoreRepository {
     }
 
     // Get all locations
-    fun getLocations(): CollectionReference {
-        return db.collection(LOCATIONS_COLLECTION)
+    fun getLocations(name: String? = null): Query {
+        var query: Query = db.collection(LOCATIONS_COLLECTION)
+        if (name != null) {
+            query = query.whereEqualTo("name", name)
+        }
+        return query
     }
 
     /*
