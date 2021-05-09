@@ -2,15 +2,11 @@ package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.Gravity.CENTER
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.core.view.updateLayoutParams
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
@@ -19,7 +15,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.recyclerViewProducts
 import kotlinx.android.synthetic.main.fragment_product.*
@@ -40,25 +36,30 @@ class HomeFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner
+        // Show loading spinner and hide empty view
         setSpinnerVisibility(VISIBLE)
-        setErrorView(GONE)
+        setEmptyView(GONE)
 
-        viewModel.signInAnonymously().observe(viewLifecycleOwner, {
-            Log.i(TAG, "Test $it")
-        })
+        // If the user is signed out
+        if(user == null) {
+            // Try to sign in with anonymous account
+            viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, { errorCode ->
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if(handleError(errorCode, R.string.no_products)) return@observeOnce
 
-        viewModel.getProducts().observe(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
-            val products = pair.second
+                // If the user is signed in anonymously, get products
+                viewModel.getProducts().observe(viewLifecycleOwner, { pair ->
+                    val errorCode2 = pair.first
+                    val products = pair.second
+                    // If the call fails, show error message, hide loading spinner and show empty view
+                    if(handleError(errorCode2, R.string.no_products)) return@observe
 
-            if(errorCode != -1) {
-                showMessage(errorCode)
-                return@observe
-            }
+                    Log.i(TAG, "Test $products")
+                })
+            })
+        }
 
-            Log.i(TAG, "Test $products")
-        })
+
 
         if (user == null) {
             // auth.signInAnonymously()
@@ -129,8 +130,8 @@ class HomeFragment : VFragment(
                                         if(recyclerViewProducts != null) {
                                             recyclerViewProducts.visibility = View.GONE
                                         }
-                                        if(errorView != null) {
-                                            errorView.visibility = View.VISIBLE
+                                        if(emptyView != null) {
+                                            emptyView.visibility = View.VISIBLE
                                         }
                                         Toast.makeText(
                                             requireContext(),
@@ -141,7 +142,7 @@ class HomeFragment : VFragment(
                                 }
                                 .addOnFailureListener(requireActivity()) {
                                     recyclerViewProducts.visibility = View.GONE
-                                    errorView.visibility = View.VISIBLE
+                                    emptyView.visibility = View.VISIBLE
                                     showMessage(R.string.errorMessage)
                                 }
                         }

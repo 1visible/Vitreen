@@ -3,6 +3,7 @@ package c0d3.vitreen.app.utils
 import android.os.Bundle
 import android.view.*
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -27,7 +28,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.empty_view.*
 
 
 abstract class VFragment(
@@ -146,13 +147,22 @@ abstract class VFragment(
         (activity as? MainActivity)?.showMessage(errorId)
     }
 
-    fun setErrorView(visibility: Int, @StringRes errorId: Int = R.string.error_placeholder) {
-        errorView.visibility = visibility
-        textViewError.text = getString(errorId)
+    fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {
+        emptyView.visibility = visibility
+        if(visibility == VISIBLE)
+            textViewEmpty.text = getString(messageId)
     }
 
     fun setSpinnerVisibility(visibility: Int) {
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
+    }
+
+    fun handleError(errorCode: Int, messageId: Int = -1): Boolean {
+        if(errorCode == -1) return false
+        showMessage(errorCode)
+        setSpinnerVisibility(GONE)
+        if(messageId != -1) setEmptyView(VISIBLE, messageId)
+        return true
     }
 
     fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
