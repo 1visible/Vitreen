@@ -16,11 +16,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
+        <!-- title input -->
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editTextResearchText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/research" />
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/research"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <!-- Category input -->
         <com.google.android.material.textfield.TextInputLayout
@@ -43,19 +56,61 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Location input -->
-        <AutoCompleteTextView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/autoCompleteLocation"
-            android:layout_width="wrap_content"
+            style="@style/Vitreen.TextInputLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
             android:completionHint="@string/researchSelectCountry"
-            android:completionThreshold="2"
-            android:hint="@string/researchSelectCountry" />
+            android:hint="@string/researchSelectCountry"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_tree">
 
-        <EditText
+            <AutoCompleteTextView
+                android:completionThreshold="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- brand input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/product_brand"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- maxPrice input -->
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editTextMaxPrice"
             android:layout_width="match_parent"
-            android:layout_height="98dp"
-            android:hint="@string/research_max_price" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_md"
+            android:hint="@string/research_max_price"
+            app:errorEnabled="true"
+            app:helperText="@string/required_input"
+            app:helperTextEnabled="true"
+            app:startIconDrawable="@drawable/icon_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/buttonResearch"
@@ -69,6 +124,7 @@
     <include
         android:id="@+id/include"
         layout="@layout/error_view"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

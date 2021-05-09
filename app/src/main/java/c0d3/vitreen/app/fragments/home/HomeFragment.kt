@@ -175,30 +175,51 @@ class HomeFragment : VFragment(
                                 location
                             )
                         }
-                        autoCompleteLocation.setAdapter(adapter)
+                        (autoCompleteLocation?.editText as? AutoCompleteTextView)?.setAdapter(
+                            adapter
+                        )
                     }
 
                 buttonResearch.setOnClickListener {
                     //Si aucun champs n'est rempli alors on affiche la liste de produits venant de l'algo de base
-                    if (editTextResearchText.text.toString() == "" && editTextMaxPrice.text.toString() == "" && textInputCategory?.editText?.text.toString() == "" && autoCompleteLocation.text.toString() == "") {
+                    if (isAllInputEmpty(
+                            editTextResearchText,
+                            editTextMaxPrice,
+                            textInputCategory,
+                            autoCompleteLocation,
+                            editTextBrand
+                        )
+                    ) {
+                        println("----------------------")
+                        println("vide")
+                        println("----------------------")
                         productAdapter.submitList(listProduct)
                         return@setOnClickListener
                     }
                     //Création d'une requête selon les champs remplis
                     var query = productsCollection as Query
-                    if (editTextResearchText.text.toString() != "") {
+                    if (editTextResearchText.editText?.text.toString() != "") {
+                        println("----------------------")
+                        println("title")
+                        println("----------------------")
                         query = query.whereEqualTo(
                             "title",
-                            editTextResearchText.text.toString()
+                            editTextResearchText.editText?.text.toString()
                         )
                     }
-                    if (editTextMaxPrice.text.toString() != "") {
+                    if (editTextMaxPrice.editText?.text.toString() != "") {
+                        println("----------------------")
+                        println("price")
+                        println("----------------------")
                         query = query.whereLessThanOrEqualTo(
                             "price",
-                            editTextMaxPrice.text.toString().toLong()
+                            editTextMaxPrice.editText?.text.toString().toLong()
                         )
                     }
                     if (textInputCategory?.editText?.text.toString() != "") {
+                        println("----------------------")
+                        println("category")
+                        println("----------------------")
                         var categoryId = ""
                         categoriesDTO.forEach { categoryDTO ->
                             if (categoryDTO.name == textInputCategory?.editText?.text.toString()) {
@@ -208,20 +229,34 @@ class HomeFragment : VFragment(
                         query = query.whereEqualTo("categoryId", categoryId)
                     }
 
-                    if (autoCompleteLocation.text.toString() != "") {
+                    if (autoCompleteLocation.editText?.text.toString() != "") {
+                        println("----------------------")
+                        println("location")
+                        println("----------------------")
                         var locationId = ""
                         locationDTO.forEach { locationDTO ->
-                            if (locationDTO.name == autoCompleteLocation.text.toString()) {
+                            if (locationDTO.name == autoCompleteLocation.editText?.text.toString()) {
                                 locationId = locationDTO.id
                             }
                         }
                         query = query.whereEqualTo("locationId", locationId)
                     }
 
+                    if (editTextBrand.editText?.text.toString() != "") {
+                        println("----------------------")
+                        println("brand")
+                        println("----------------------")
+                        query = query.whereEqualTo("brand", editTextBrand.editText?.text.toString())
+                    }
+
                     query
                         .get()
                         .addOnSuccessListener {
                             if (it.documents.size > 0) {
+                                println("----------------------")
+                                println("query OK")
+                                println("----------------------")
+                                researchList.clear()
                                 it.documents.forEach { product ->
                                     researchList.add(
                                         ProductSDTO(
@@ -233,10 +268,16 @@ class HomeFragment : VFragment(
                                         )
                                     )
                                 }
+                                println("-----------------------")
+                                println(researchList.get(0).title)
+                                println("-----------------------")
                                 researchFlag = true
                                 //Ajout des résultats de la recherche dans le recyclerview
                                 productAdapter.submitList(researchList)
                             } else {
+                                println("----------------------")
+                                println("0 item")
+                                println("----------------------")
                                 recyclerViewProducts.visibility = View.GONE
                                 include.visibility = View.VISIBLE
                             }
