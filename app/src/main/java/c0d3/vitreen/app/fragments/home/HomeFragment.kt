@@ -28,6 +28,7 @@ class HomeFragment : VFragment(
     private var locationId = ""
     private var userId = ""
     private var listProduct: ArrayList<ProductSDTO> = ArrayList()
+    private var researchList: ArrayList<ProductSDTO> = ArrayList()
 
     private var researchFlag = false
 
@@ -48,7 +49,8 @@ class HomeFragment : VFragment(
                 recyclerViewProducts.visibility = View.VISIBLE
                 val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
                 recyclerViewProducts.adapter = productAdapter
-                if(!researchFlag) {
+                //Flag qui va éviter de faire cette requête lors d'un reload et affichera le résultat de la dernière recherche
+                if (!researchFlag) {
                     usersCollection
                         .whereEqualTo("emailAddress", user!!.email)
                         .get()
@@ -125,6 +127,8 @@ class HomeFragment : VFragment(
                             }
                         }
                 }
+
+                //Récupération des catégories
                 categoriesCollection.get()
                     .addOnSuccessListener {
                         it.forEach { category ->
@@ -147,6 +151,7 @@ class HomeFragment : VFragment(
                         )
                     }
 
+                //Récupération des localisation
                 locationsCollection.get()
                     .addOnSuccessListener {
                         it.forEach { location ->
@@ -158,6 +163,8 @@ class HomeFragment : VFragment(
                                 )
                             )
                         }
+
+                        //Ajout de la liste au menu déroulant
                         var location =
                             ArrayList<String>(locationDTO.map { it.DtoToModel().name })
                         location.add(0, "Ma localisation")
@@ -170,19 +177,20 @@ class HomeFragment : VFragment(
                         }
                         autoCompleteLocation.setAdapter(adapter)
                     }
+
                 buttonResearch.setOnClickListener {
+                    //Si aucun champs n'est rempli alors on affiche la liste de produits venant de l'algo de base
                     if (editTextResearchText.text.toString() == "" && editTextMaxPrice.text.toString() == "" && textInputCategory?.editText?.text.toString() == "" && autoCompleteLocation.text.toString() == "") {
-                        println("---------------------------")
-                        println("un champs vide")
-                        println("---------------------------")
+                        productAdapter.submitList(listProduct)
                         return@setOnClickListener
                     }
+                    //Création d'une requête selon les champs remplis
                     var query = productsCollection as Query
                     if (editTextResearchText.text.toString() != "") {
-                       query = query.whereEqualTo(
-                           "title",
-                           editTextResearchText.text.toString()
-                       )
+                        query = query.whereEqualTo(
+                            "title",
+                            editTextResearchText.text.toString()
+                        )
                     }
                     if (editTextMaxPrice.text.toString() != "") {
                         query = query.whereLessThanOrEqualTo(
@@ -213,13 +221,9 @@ class HomeFragment : VFragment(
                     query
                         .get()
                         .addOnSuccessListener {
-                            listProduct.clear()
-                            if(it.documents.size > 0) {
-                                println("------------------")
-                                println("j'ai trouvé des produits")
-                                println("------------------")
+                            if (it.documents.size > 0) {
                                 it.documents.forEach { product ->
-                                    listProduct.add(
+                                    researchList.add(
                                         ProductSDTO(
                                             product.id,
                                             product.get("title") as String,
@@ -230,13 +234,11 @@ class HomeFragment : VFragment(
                                     )
                                 }
                                 researchFlag = true
-                                val adapter = ProductAdapter{product->adapterOnClick(product)}
-                                recyclerViewProducts.adapter = adapter
-                                adapter.submitList(listProduct)
-                            }else{
-                                println("-----------------------------")
-                                println("0 produit trouvé")
-                                println("-----------------------------")
+                                //Ajout des résultats de la recherche dans le recyclerview
+                                productAdapter.submitList(researchList)
+                            } else {
+                                recyclerViewProducts.visibility = View.GONE
+                                include.visibility = View.VISIBLE
                             }
 
                         }
