@@ -58,19 +58,39 @@ class HomeFragment : VFragment(
             viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, { errorCode ->
                 // If the call fails, show error message, hide loading spinner and show empty view
                 if(handleError(errorCode, R.string.no_products)) return@observeOnce
-
-                tt
+                // Else show the products
+                showProducts()
             })
         }
         // Else if the user is signed in anonymously
         else if(user!!.isAnonymous) {
-
+            showProducts()
         }
         // Else (the user is signed in)
         else {
+            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode2 = pair.first
+                val user = pair.second
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if(handleError(errorCode2, R.string.no_products)) return@observeOnce
 
+                // Else, show the products according to user location
+                showProducts(user.location)
+            })
         }
 
+        viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
+            val errorCode = pair.first
+            val categories = pair.second
+            // If the call fails, show error message, hide loading spinner and show empty view
+            if(errorCode == -1) return@observeOnce
+
+            // Else, set categories as editTextCategories choices if possible
+            if(context != null) {
+                val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu_item, categories.map { it.name })
+                (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            }
+        })
 
         if (user == null) {
             // auth.signInAnonymously()
@@ -79,88 +99,6 @@ class HomeFragment : VFragment(
             if (user!!.isAnonymous) {
                 navigateTo(R.id.action_navigation_home_to_navigation_error)
             } else {
-                recyclerViewProducts.visibility = View.VISIBLE
-                val productAdapter = ProductAdapter { product -> adapterOnClick(product) }
-                recyclerViewProducts.adapter = productAdapter
-                //Flag qui va éviter de faire cette requête lors d'un reload et affichera le résultat de la dernière recherche
-                if (!researchFlag) {
-                    usersCollection
-                        .whereEqualTo("emailAddress", user!!.email)
-                        .get()
-                        .addOnSuccessListener {
-
-                            if (it.documents.size == 1) {
-                                for (document in it.documents) {
-                                    locationId = document.get("locationId") as String
-                                    userId = document.id
-                                }
-                                productsCollection
-                                    .whereEqualTo("locationId", locationId)
-                                    .whereNotEqualTo("ownerId", userId)
-                                    .orderBy("ownerId")
-                                    .orderBy("createdAt", Query.Direction.DESCENDING)
-                                    .limit(Constants.IMAGES_LIMIT_HOME_PAGE.toLong())
-                                    .get()
-                                    .addOnSuccessListener {
-                                        if (it.documents.size > 0) {
-                                            for (document in it.documents) {
-                                                categoriesCollection
-                                                    .document(document.get("categoryId") as String)
-                                                    .get()
-                                                    .addOnSuccessListener { category ->
-                                                        println("----------------------------")
-                                                        println(category.get("name") as String)
-                                                        println("----------------------------")
-                                                        locationsCollection
-                                                            .document(document.get("locationId") as String)
-                                                            .get()
-                                                            .addOnSuccessListener { location ->
-                                                                println("----------------------------")
-                                                                println(location.get("name") as String)
-                                                                println("----------------------------")
-                                                                listProduct.add(
-                                                                    ProductSDTO(
-                                                                        document.id,
-                                                                        document.get("title") as String,
-                                                                        category.get("name") as String,
-                                                                        location.get("name") as String,
-                                                                        document.get("price") as Double
-                                                                    )
-                                                                )
-                                                                if (listProduct.size == it.documents.size) {
-                                                                    println("-----------------------------")
-                                                                    println(listProduct.size)
-                                                                    println("-----------------------------")
-                                                                    productAdapter.submitList(
-                                                                        listProduct
-                                                                    )
-                                                                }
-                                                            }
-                                                    }
-                                            }
-                                        } else {
-                                            if (recyclerViewProducts != null) {
-                                                recyclerViewProducts.visibility = View.GONE
-                                            }
-                                            if(emptyView != null) {
-                                                emptyView.visibility = View.VISIBLE
-                                            }
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "docuement.size<0",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                    .addOnFailureListener(requireActivity()) {
-                                        recyclerViewProducts.visibility = View.GONE
-                                        emptyView.visibility = View.VISIBLE
-                                        showMessage(R.string.errorMessage)
-                                    }
-                            }
-                        }
-                }
-
                 //Récupération des catégories
                 categoriesCollection.get()
                     .addOnSuccessListener {
@@ -319,6 +257,7 @@ class HomeFragment : VFragment(
                 }
             }
         }
+        // FIN
     }
 
     // TODO : Ajouter les items
@@ -337,7 +276,7 @@ class HomeFragment : VFragment(
         navigateTo(R.id.action_navigation_home_to_navigation_product, KEY_PRODUCT_ID to product.id)
     }
 
-    fun getProducts(location: Location? = null) {
+    private fun showProducts(location: Location? = null) {
         viewModel.getProducts(location = location).observe(viewLifecycleOwner, { pair ->
             val errorCode2 = pair.first
             val products = pair.second
@@ -355,6 +294,7 @@ class HomeFragment : VFragment(
             recyclerViewProducts.visibility = VISIBLE
             val adapter = ProductAdapter { product -> adapterOnClick(product) }
             recyclerViewProducts.adapter = adapter
+
         })
     }
 

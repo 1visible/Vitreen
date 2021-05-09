@@ -65,11 +65,6 @@ class FirestoreRepository {
         return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
     }
 
-    // Get all users
-    fun getUsers(): CollectionReference {
-        return db.collection(USERS_COLLECTION)
-    }
-
     // Get all categories
     fun getCategories(): CollectionReference {
         return db.collection(CATEGORIES_COLLECTION)

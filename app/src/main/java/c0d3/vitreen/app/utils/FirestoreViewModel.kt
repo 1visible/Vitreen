@@ -9,78 +9,22 @@ import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.Query
 
 class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
     private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
-    private var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
-    private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
     private var signInErrorCode: MutableLiveData<Int> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
+    private var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
+    private var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
 
     // Get realtime updates from firebase regarding products
-    fun getProducts(
-        limit: Boolean = true,
-        title: String? = null,
-        price: Double? = null,
-        brand: String? = null,
-        location: Location? = null,
-        category: Category? = null
-    ): LiveData<Pair<Int, List<Product>>> {
-        repository.getProducts(limit, title, price, brand, location, category)
-            .addSnapshotListener { products, exception ->
-                val errorCode = if (exception == null) -1 else R.string.network_error
-                val productsList: MutableList<Product> = mutableListOf()
-
-                if (products != null) {
-                    for (document in products) {
-                        val product = document.toObject(Product::class.java)
-                        productsList.add(product)
-                    }
-                }
-
-                productsLiveData.value = Pair(errorCode, productsList)
-            }
-
-        return productsLiveData
+    fun getProducts(limit: Boolean = true, title: String? = null, price: Double? = null, brand: String? = null, location: Location? = null, category: Category? = null): LiveData<Pair<Int, List<Product>>> {
+        return getList(repository.getProducts(limit, title, price, brand, location, category), productsLiveData)
     }
 
-    fun getCategories(): LiveData<Pair<Int, List<Category>>> {
-        repository.getCategories().addSnapshotListener { categories, exception ->
-            val errorCode = if (exception == null) -1 else R.string.network_error
-            val categoriesList: MutableList<Category> = mutableListOf()
-            if (categories != null) {
-                for (category in categories) {
-                    val currentCategory = category.toObject(Category::class.java)
-                    categoriesList.add(currentCategory)
-                }
-            }
-            categoriesLiveData.value = Pair(errorCode, categoriesList)
-        }
-        return categoriesLiveData
-    }
-
-    fun getLocation(country: String? = null): LiveData<Pair<Int, Location>> {
-        repository.getLocations(country).addSnapshotListener { locations, exception ->
-            val errorCode = if (exception == null) -1 else R.string.network_error
-            if (locations != null && locations.size() == 1) {
-                for (location in locations) {
-                    locationLiveData.value =
-                        Pair(errorCode, location.toObject(Location::class.java))
-                }
-            }
-        }
-        return locationLiveData
-    }
-
-    fun updateLocation(city: String, zipCode: Long) {
-        repository.updateLocation(city, zipCode)
-    }
-
-    fun addLocation(location:Location){
-        repository.addLocation(location)
-    }
-
+    // Get realtime updates from firebase regarding sign in (anonymously)
     fun signInAnonymously(): MutableLiveData<Int> {
         repository.signInAnonymously()
             .addOnCompleteListener { task ->
@@ -94,18 +38,47 @@ class FirestoreViewModel : ViewModel() {
     // Get realtime updates from firebase regarding user
     fun getUser(user: FirebaseUser): LiveData<Pair<Int, User>> {
         repository.getUser(user).addSnapshotListener { users, exception ->
-            var errorCode = if (exception == null) -1 else R.string.network_error
+            var errorCode = if(exception == null) -1 else R.string.network_error
+            val userData: User
 
-            if (users == null || users.isEmpty)
+            if(users == null || users.isEmpty) {
                 errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
-
-            val userData = if (users == null || users.isEmpty) User() else users.first()
-                .toObject(User::class.java)
+                userData = User()
+            } else
+                userData = users.first().toObject(User::class.java)
 
             userLiveData.value = Pair(errorCode, userData)
         }
 
         return userLiveData
+    }
+
+    // Get realtime updates from firebase regarding categories
+    fun getCategories(): LiveData<Pair<Int, List<Category>>> {
+        return getList(repository.getCategories(), categoriesLiveData)
+    }
+
+    // Get realtime updates from firebase regarding categories
+    fun getLocations(): LiveData<Pair<Int, List<Location>>> {
+        return getList(repository.getLocations(), locationsLiveData)
+    }
+
+    private inline fun <reified T> getList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
+        query.addSnapshotListener { documents, exception ->
+            val errorCode = if(exception == null) -1 else R.string.network_error
+            val valuesList: MutableList<T> = mutableListOf()
+
+            if(documents != null) {
+                for (document in documents) {
+                    val value = document.toObject(T::class.java)
+                    valuesList.add(value)
+                }
+            }
+
+            liveData.value = Pair(errorCode, valuesList)
+        }
+
+        return liveData
     }
 
     /*
