@@ -12,6 +12,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.CategoryDTO
 import c0d3.vitreen.app.models.dto.LocationDTO
+import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
@@ -332,7 +333,7 @@ class HomeFragment : VFragment(
     }
 
     /* Opens Product when RecyclerView item is clicked. */
-    private fun adapterOnClick(product: ProductSDTO) { // TODO : Déplacement vers fragment annonce
+    private fun adapterOnClick(product: ProductDTO) { // TODO : Déplacement vers fragment annonce
         navigateTo(R.id.action_navigation_home_to_navigation_product, KEY_PRODUCT_ID to product.id)
     }
 

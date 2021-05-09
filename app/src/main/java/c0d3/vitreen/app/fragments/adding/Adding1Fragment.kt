@@ -122,6 +122,7 @@ class Adding1Fragment : VFragment(
 
     }
 
+    // TODO : Virer peut-être
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -143,6 +144,7 @@ class Adding1Fragment : VFragment(
     }
 
     private fun initializeLocation(context: Context) {
+        // TODO : Virer peut-être (et garder FetchLocation)
         // Demande de permission pour la récupération de la localisation
         if (ActivityCompat.checkSelfPermission(
                 context,
