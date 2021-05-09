@@ -94,38 +94,24 @@ class Adding1Fragment : VFragment(
                 if (cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
             )
             // Récupération de la localisation renseignée
-            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner,{pair->
+            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
                 if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
                 val location = pair.second
-                if(location.zipCode == null){
-
+                if (location != null) {
+                    if (location.zipCode == null) {
+                        currentLocation.zipCode?.let { it1 ->
+                            viewModel.updateLocation(
+                                location.name,
+                                it1
+                            )
+                        }
+                    }
+                    navigateToAdding2(category!!, currentLocation)
+                } else {
+                    viewModel.addLocation(currentLocation)
+                    navigateToAdding2(category!!, currentLocation)
                 }
             })
-            locationsCollection.whereEqualTo("name", currentLocation.name).get()
-                .addOnSuccessListener { documents ->
-
-                    // Ajout du code postal à la localisation (s'il n'existe pas)
-                    if (documents.size() > 0) {
-                        val location = documents.first()
-                        if (location.get("zipCode") == null)
-                            locationsCollection.document(location.id)
-                                .update("zipCode", currentLocation.zipCode)
-                        // Navigation vers le formulaire d'ajout (2/2) en y passant les données
-                        navigateToAdding2(category, location.id)
-
-                        // Ajout de la nouvelle localisation dans la BDD (si elle n'existe pas)
-                    } else locationsCollection.add(currentLocation)
-                        .addOnSuccessListener { location ->
-                            // Navigation vers le formulaire d'ajout (2/2) en y passant les données
-                            navigateToAdding2(categoryId, location.id)
-                        }.addOnFailureListener {
-                            showMessage(R.string.errorMessage)
-                        }
-
-                }.addOnFailureListener {
-                    showMessage(R.string.errorMessage)
-                }
-
         }
 
     }
@@ -173,13 +159,13 @@ class Adding1Fragment : VFragment(
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
     }
 
-    private fun navigateToAdding2(categoryId: String?, locationId: String) {
+    private fun navigateToAdding2(category: Category, location: Location) {
         navigateTo(
             R.id.action_navigation_adding1_to_navigation_adding2,
-            CATEGORY_ID to categoryId,
+            CATEGORY_ID to category,
             TITLE to editTextTitle.editText?.text.toString(),
             PRICE to editTextPrice.editText?.text.toString(),
-            LOCATION_ID to locationId,
+            LOCATION_ID to location,
             DESCRIPTION to editTextDescription.editText?.text.toString()
         )
     }
