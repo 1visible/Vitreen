@@ -7,10 +7,7 @@ import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
@@ -66,7 +63,7 @@ abstract class VFragment(
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(FirestoreViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
         db = Firebase.firestore
         storage = Firebase.storage
