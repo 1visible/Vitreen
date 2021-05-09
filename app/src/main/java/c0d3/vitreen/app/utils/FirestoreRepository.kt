@@ -1,11 +1,8 @@
 package c0d3.vitreen.app.utils
 
-import android.util.Log
-import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
