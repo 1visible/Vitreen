@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Demande de permission pour la récupération de la localisation
-    fun requestLocationPermission() {
+    private fun requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
