@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -23,7 +24,14 @@ class FirestoreRepository {
     private val user: FirebaseUser? = auth.currentUser
 
     // Get products (filters available)
-    fun getProducts(limit: Boolean, title: String?, price: Double?, brand: String?, location: Location?, category: Category?): Query {
+    fun getProducts(
+        limit: Boolean,
+        title: String?,
+        price: Double?,
+        brand: String?,
+        location: Location?,
+        category: Category?
+    ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
         if (title != null)
@@ -74,6 +82,26 @@ class FirestoreRepository {
             query = query.whereEqualTo("name", name)
         }
         return query
+    }
+
+    fun updateLocation(city: String, zipCode: Long) {
+        db.collection(LOCATIONS_COLLECTION)
+            .whereEqualTo("name", city)
+            .get()
+            .addOnSuccessListener { locations ->
+                if (locations.size() == 1) {
+                    locations.forEach { location ->
+                        db.collection(LOCATIONS_COLLECTION)
+                            .document(location.id)
+                            .update("zipCode", zipCode)
+                    }
+                }
+            }
+    }
+
+    fun addLocation(location: Location) {
+        db.collection(LOCATIONS_COLLECTION)
+            .add(location)
     }
 
     /*

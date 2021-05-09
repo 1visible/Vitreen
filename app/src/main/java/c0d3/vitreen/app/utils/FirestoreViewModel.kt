@@ -19,20 +19,28 @@ class FirestoreViewModel : ViewModel() {
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
 
     // Get realtime updates from firebase regarding products
-    fun getProducts(limit: Boolean = true, title: String? = null, price: Double? = null, brand: String? = null, location: Location? = null, category: Category? = null): LiveData<Pair<Int, List<Product>>> {
-        repository.getProducts(limit, title, price, brand, location, category).addSnapshotListener { products, exception ->
-            val errorCode = if(exception == null) -1 else R.string.network_error
-            val productsList: MutableList<Product> = mutableListOf()
+    fun getProducts(
+        limit: Boolean = true,
+        title: String? = null,
+        price: Double? = null,
+        brand: String? = null,
+        location: Location? = null,
+        category: Category? = null
+    ): LiveData<Pair<Int, List<Product>>> {
+        repository.getProducts(limit, title, price, brand, location, category)
+            .addSnapshotListener { products, exception ->
+                val errorCode = if (exception == null) -1 else R.string.network_error
+                val productsList: MutableList<Product> = mutableListOf()
 
-            if (products != null) {
-                for (document in products) {
-                    val product = document.toObject(Product::class.java)
-                    productsList.add(product)
+                if (products != null) {
+                    for (document in products) {
+                        val product = document.toObject(Product::class.java)
+                        productsList.add(product)
+                    }
                 }
-            }
 
-            productsLiveData.value = Pair(errorCode, productsList)
-        }
+                productsLiveData.value = Pair(errorCode, productsList)
+            }
 
         return productsLiveData
     }
@@ -65,8 +73,12 @@ class FirestoreViewModel : ViewModel() {
         return locationLiveData
     }
 
-    fun updateLocation(zipCode:Long?=null){
+    fun updateLocation(city: String, zipCode: Long) {
+        repository.updateLocation(city, zipCode)
+    }
 
+    fun addLocation(location:Location){
+        repository.addLocation(location)
     }
 
     fun signInAnonymously(): MutableLiveData<Int> {
@@ -82,12 +94,13 @@ class FirestoreViewModel : ViewModel() {
     // Get realtime updates from firebase regarding user
     fun getUser(user: FirebaseUser): LiveData<Pair<Int, User>> {
         repository.getUser(user).addSnapshotListener { users, exception ->
-            var errorCode = if(exception == null) -1 else R.string.network_error
+            var errorCode = if (exception == null) -1 else R.string.network_error
 
-            if(users == null || users.isEmpty)
+            if (users == null || users.isEmpty)
                 errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
 
-            val userData = if(users == null || users.isEmpty) User() else users.first().toObject(User::class.java)
+            val userData = if (users == null || users.isEmpty) User() else users.first()
+                .toObject(User::class.java)
 
             userLiveData.value = Pair(errorCode, userData)
         }
