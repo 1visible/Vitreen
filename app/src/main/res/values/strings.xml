@@ -67,6 +67,8 @@
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
     <string name="location_template">%1$s (%2$d)</string>
+    <string name="not_connected">Vous n\'êtes pas connecté(e)…</string>
+    <string name="account_deleted">Votre compte a été supprimé avec succès !</string>
     <!-- Favorites fragment -->
     <string name="no_favorites">Aucun favori à afficher.</string>
     <!-- Product fragment -->

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
+import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
@@ -31,7 +32,7 @@ class FirestoreViewModel : ViewModel() {
         return getList(repository.getProducts(limit, title, price, brand, location, category, ids), productsLiveData)
     }
 
-    fun signInAnonymously(): MutableLiveData<Int> {
+    fun signInAnonymously(): LiveData<Int> {
         repository.signInAnonymously()
             .addOnCompleteListener { task ->
                 val errorCode = if (task.isSuccessful) -1 else R.string.network_error
@@ -91,11 +92,30 @@ class FirestoreViewModel : ViewModel() {
         repository.addLocation(location)
     }
 
-    fun deleteProducts(ids: ArrayList<String>) {
+    fun deleteProducts(ids: ArrayList<String>): LiveData<Int> {
+        deleteImages(ids)
         repository.deleteProducts(ids).addOnCompleteListener { task ->
             val errorCode = if (task.isSuccessful) -1 else R.string.network_error
             errorCodeLiveData.value = errorCode
         }
+
+        return errorCodeLiveData
+    }
+
+    private fun deleteImages(ids: ArrayList<String>) {
+        ids.forEach { id ->
+            for(number in 0..IMAGES_LIMIT_PROFESSIONAL)
+                repository.deleteImage(id, number)
+        }
+    }
+
+    fun deleteUser(user: FirebaseUser): LiveData<Int> {
+        repository.deleteUser(user).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
+
+        return errorCodeLiveData
     }
 
     private inline fun <reified T: Entity> getList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {

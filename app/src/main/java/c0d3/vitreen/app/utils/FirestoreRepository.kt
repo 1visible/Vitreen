@@ -5,6 +5,7 @@ import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
+import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
@@ -19,11 +20,13 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.WriteBatch
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 class FirestoreRepository {
     private val db = Firebase.firestore
     private val auth: FirebaseAuth = Firebase.auth
-    private val user: FirebaseUser? = auth.currentUser
+    private val storage = Firebase.storage
 
     // Get products (filters available)
     fun getProducts(
@@ -136,6 +139,14 @@ class FirestoreRepository {
         }
 
         return products.commit()
+    }
+
+    fun deleteImage(id: String, number: Int): Task<Void> {
+        return storage.reference.child("images/${id}/image_$number").delete()
+    }
+
+    fun deleteUser(user: FirebaseUser): Task<Void> {
+        return user.delete()
     }
 
     /*

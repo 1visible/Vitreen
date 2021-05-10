@@ -1,22 +1,15 @@
 package c0d3.vitreen.app.fragments.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
-import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.models.dto.UserDTO
-import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
-import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
-import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -115,84 +108,26 @@ class ProfileFragment : VFragment(
     }
 
     private fun deleteAccount(user: User) {
-
         // If user is not signed in, skip this part
-        if(!isUserSignedIn())
+        if(!isUserSignedIn()) {
+            showMessage(R.string.not_connected)
             return
-
-        
-
-        //Vérification que l'utilisateur est connecté et non anonyme
-        if ((user != null) && (!user!!.isAnonymous)) {
-            //Recherche des infos de l'utilisateur courant
-            usersCollection
-                .whereEqualTo("emailAddress", user!!.email)
-                .get()
-                .addOnSuccessListener { dbusers ->
-                    //Vérification que l'utilisateur est bien unique
-                    if (dbusers.size() == 1) {
-                        for (dbuser in dbusers) {
-                            val currentUserId = dbuser.id
-                            //Suppression des données de l'utilisateur
-                            usersCollection.document(dbuser.id).delete()
-                            //Suppression de tout les produits déposé par cet utilisateur
-                            productsCollection
-                                .whereEqualTo("ownerId", currentUserId)
-                                .get()
-                                .addOnSuccessListener { products ->
-                                    for (product in products.documents) {
-                                        for (i in 0..((product.get("nbImages") as Long) - 1)) {
-                                            val image =
-                                                storage.reference.child("images/${product.id}/image_$i")
-                                            image.delete()
-                                                .addOnSuccessListener {
-                                                    if (i == ((product.get("nbImages") as Long) - 1)) {
-                                                        //Suppression des infos de connexion de l'utilisateur
-                                                        user!!.delete()
-                                                        auth.signOut()
-                                                    }
-                                                }
-                                                .addOnFailureListener {
-                                                }
-                                        }
-                                        productsIdsList.add(product.id)
-                                        productsCollection
-                                            .document(product.id)
-                                            .delete()
-                                    }
-                                    //Parcours de tout les utilisateurs
-                                    //Retirer des favoris l'ensemble des produits effaçés
-                                    usersCollection
-                                        .get()
-                                        .addOnSuccessListener { users ->
-                                            for (user in users) {
-                                                val favorites =
-                                                    user.get("favoriteProductsId") as ArrayList<String>?
-                                                if (favorites != null) {
-                                                    for (productId in productsIdsList) {
-                                                        favorites.remove(productId)
-                                                    }
-                                                    //Mise à jour de la liste de favoris
-                                                    usersCollection
-                                                        .document(user.id)
-                                                        .update("favoriteProductsId", favorites)
-                                                }
-                                            }
-                                        }
-                                }.addOnSuccessListener {
-                                    //Suppression des infos de connexion de l'utilisateur
-                                    user!!.delete()
-                                    auth.signOut()
-                                }
-                            navigateTo(R.id.action_navigation_profile_to_navigation_login)
-                        }
-                    }
-                }
-                .addOnFailureListener {
-                    showMessage(R.string.errorMessage)
-                }
-
         }
+
+        viewModel.deleteProducts(user.productsId).observeOnce(viewLifecycleOwner, { errorCode ->
+            // If the call fails, show error message and hide loading spinner
+            if(handleError(errorCode)) return@observeOnce
+
+            // Else, delete the user
+            viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@ { errorCode2 ->
+                // If the call fails, show error message and hide loading spinner
+                if(handleError(errorCode2)) return@observeOnce2
+                // Else, sign out from the app and return to home
+                auth.signOut()
+                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                showMessage(R.string.account_deleted)
+            })
+        })
     }
 
     private fun showProducts(ids: ArrayList<String>) {

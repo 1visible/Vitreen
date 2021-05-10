@@ -150,8 +150,8 @@ abstract class VFragment(
         return false
     }
 
-    fun showMessage(@StringRes errorId: Int = R.string.error_placeholder) {
-        (activity as? MainActivity)?.showMessage(errorId)
+    fun showMessage(@StringRes messageId: Int = R.string.error_placeholder) {
+        (activity as? MainActivity)?.showMessage(messageId)
     }
 
     fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {
