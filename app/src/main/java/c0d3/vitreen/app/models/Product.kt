@@ -14,11 +14,13 @@ data class Product(
     val reported: ArrayList<String> = ArrayList(),
     val location: Location = Location(),
     val category: Category = Category(),
-    val nbImages: Long = 0,
+    val nnbImages: Long = 0,
     val ownerId: String = "",
     val modifiedAt: String = Calendar.getInstance().time.toString(),
 ) : Entity() {
+
     fun toDTO(): ProductDTO {
         return ProductDTO(id, title, price, location, category)
     }
+
 }

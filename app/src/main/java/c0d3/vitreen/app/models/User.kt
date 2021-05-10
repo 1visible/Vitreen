@@ -12,6 +12,6 @@ data class User(
     val location: Location = Location(),
     val companyName: String? = null,
     val siretNumber: String? = null,
-    var productsId: ArrayList<String> = ArrayList(),
-    val favoriteProductsId: ArrayList<String> = ArrayList(),
+    var productsIds: ArrayList<String> = ArrayList(),
+    val favoritesIds: ArrayList<String> = ArrayList(),
 ): Entity()

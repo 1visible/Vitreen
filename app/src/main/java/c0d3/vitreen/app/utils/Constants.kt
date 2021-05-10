@@ -15,6 +15,7 @@ class Constants {
         const val IMAGES_LIMIT_USER: Int = 3
         const val IMAGES_LIMIT_PROFESSIONAL: Int = 5
         const val DOCUMENTS_LIMIT = 25L
+        const val IMAGE_SIZE = 5242880L // = 1024 * 1024 * 5
         const val USERS_COLLECTION = "users"
         const val PRODUCTS_COLLECTION = "products"
         const val LOCATIONS_COLLECTION = "locations"
