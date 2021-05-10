@@ -98,4 +98,5 @@
     <string name="ownerTitle">Trouver un nom(Mes produits)</string>
     <string name="otherTitle">Trouver un autre titre (Autre produit)</string>
     <string name="placeholder_message">Message</string>
+    <string name="about">À propos de</string>
 </resources>

@@ -47,7 +47,8 @@ class MessageAdapter(
             viewModel.getImages(currentMessage!!.productId, 1)
                 .observe(lifecycle, { pair ->
                     itemView.imageViewMessage.setImageBitmap(pair.second.first())
-                    itemView.textViewTitleMessage.text = currentMessage!!.productName
+                    itemView.textViewTitleMessage.text =
+                        fragment.getString(R.string.about).plus(currentMessage!!.productName)
                     itemView.textViewLastMessage.text = currentMessage!!.lastMessage.content
                 })
         }
