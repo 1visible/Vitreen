@@ -12,8 +12,8 @@ import com.google.firebase.firestore.Query
 
 class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
+    private var errorCodeLiveData: MutableLiveData<Int> = MutableLiveData()
     private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
-    private var signInErrorCode: MutableLiveData<Int> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
     var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
@@ -35,10 +35,10 @@ class FirestoreViewModel : ViewModel() {
         repository.signInAnonymously()
             .addOnCompleteListener { task ->
                 val errorCode = if (task.isSuccessful) -1 else R.string.network_error
-                signInErrorCode.value = errorCode
+                errorCodeLiveData.value = errorCode
             }
 
-        return signInErrorCode
+        return errorCodeLiveData
     }
 
     fun getUser(user: FirebaseUser): LiveData<Pair<Int, User>> {
@@ -92,7 +92,10 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun deleteProducts(ids: ArrayList<String>) {
-        repository.deleteProducts(ids) // TODO
+        repository.deleteProducts(ids).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
     }
 
     private inline fun <reified T: Entity> getList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {

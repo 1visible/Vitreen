@@ -129,6 +129,7 @@ class FirestoreRepository {
 
     fun deleteProducts(ids: ArrayList<String>): Task<Void> {
         val products = db.batch()
+
         ids.forEach { id ->
             val reference = db.collection(PRODUCTS_COLLECTION).document(id)
             products.delete(reference)
