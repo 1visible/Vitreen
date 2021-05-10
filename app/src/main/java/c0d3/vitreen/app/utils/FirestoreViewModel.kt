@@ -1,5 +1,7 @@
 package c0d3.vitreen.app.utils
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,14 +25,13 @@ class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
     private var errorCodeLiveData: MutableLiveData<Int> = MutableLiveData()
     private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
+    private var productLiveData: MutableLiveData<Pair<Int, Product>> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
     var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
     var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
+    var imagesLiveData: MutableLiveData<Pair<Int, List<Bitmap>>> = MutableLiveData()
 
-
-    private val storage = Firebase.storage
-    private var imagesRef: StorageReference = storage.reference.child("images")
 
     fun getProducts(
         limit: Boolean = true,
@@ -41,7 +42,27 @@ class FirestoreViewModel : ViewModel() {
         category: Category? = null,
         ids: ArrayList<String>? = null
     ): LiveData<Pair<Int, List<Product>>> {
-        return getList(repository.getProducts(limit, title, price, brand, location, category, ids), productsLiveData)
+        return getList(
+            repository.getProducts(limit, title, price, brand, location, category, ids),
+            productsLiveData
+        )
+    }
+
+    fun getProduct(id: String): LiveData<Pair<Int, Product>> {
+        repository.getProduct(id)
+            .addSnapshotListener { product, exception ->
+                var errorCode = if (exception == null) -1 else R.string.network_error
+                val productData: Product
+
+                if (product == null) {
+                    errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
+                    productData = Product()
+                } else
+                    productData = toObject(product as QueryDocumentSnapshot, Product::class.java)
+
+                productLiveData.value = Pair(errorCode, productData)
+            }
+        return productLiveData
     }
 
     fun signInAnonymously(): LiveData<Int> {
@@ -105,31 +126,68 @@ class FirestoreViewModel : ViewModel() {
         return locationLiveData
     }
 
-    fun updateLocation(locationId:String, zipCode: Long) {
-        repository.updateLocation(locationId,zipCode)
+    fun getImages(productId: String, nbImages: Long): MutableLiveData<Pair<Int, List<Bitmap>>> {
+        var imageList: ArrayList<Bitmap> = ArrayList()
+        for (i in 0..nbImages - 1) {
+            repository.getImages(productId, i)
+                .addOnCompleteListener { task ->
+                    var errorCode = if (task.isSuccessful == null) -1 else R.string.network_error
+                    if (task.result == null) {
+                        errorCode =
+                            R.string.errorMessage // TODO : Remplacer par un meilleur message
+                    } else {
+                        imageList.add(
+                            BitmapFactory.decodeByteArray(
+                                task.result,
+                                0,
+                                task.result!!.size
+                            )
+                        )
+                    }
+                    if (imageList.size.toLong() == nbImages) {
+                        imagesLiveData.value = Pair(errorCode, imageList)
+                    }
+                }
+        }
+        return imagesLiveData
     }
 
-    fun updateUser(userId:String,productsId:ArrayList<String>){
-        repository.updateUser(userId,productsId)
+    fun updateLocation(locationId: String, zipCode: Long) {
+        repository.updateLocation(locationId, zipCode)
+    }
+
+    fun updateUser(
+        userId: String,
+        productsId: ArrayList<String>? = null,
+        favoriteProducts: ArrayList<String>? = null
+    ) {
+        if (productsId != null) repository.updateUser(userId, productsId)
+        if (favoriteProducts != null) repository.updateUser(
+            userId,
+            favoritesProduct = favoriteProducts
+        )
     }
 
     fun addLocation(location: Location) {
         repository.addLocation(location)
     }
 
-    fun addProduct(product: Product, inputStream:ArrayList<InputStream>,user:User):LiveData<Int>{
+    fun addImages(productId: String, inputStream: ArrayList<InputStream>) {
+        repository.addImages(productId, inputStream)
+    }
+
+    fun addProduct(
+        product: Product,
+        inputStream: ArrayList<InputStream>,
+        user: User
+    ): LiveData<Int> {
         repository.addProduct(product)
-            .addOnCompleteListener { task->
-                val errorCode = if(task.isSuccessful) -1 else R.string.network_error
+            .addOnCompleteListener { task ->
+                val errorCode = if (task.isSuccessful) -1 else R.string.network_error
                 errorCodeLiveData.value = errorCode
-                val metadata = storageMetadata { contentType = "image/jpg" }
-
-                for (i in inputStream.indices)
-                    imagesRef.child("${product.id}/image_$i")
-                        .putStream(inputStream[i], metadata)
-
+                addImages(product.id, inputStream)
                 user.productsId.add(product.id)
-                updateUser(user.id,user.productsId)
+                updateUser(user.id, user.productsId)
             }
         return errorCodeLiveData
     }
@@ -146,7 +204,7 @@ class FirestoreViewModel : ViewModel() {
 
     private fun deleteImages(ids: ArrayList<String>) {
         ids.forEach { id ->
-            for(number in 0..IMAGES_LIMIT_PROFESSIONAL)
+            for (number in 0..IMAGES_LIMIT_PROFESSIONAL)
                 repository.deleteImage(id, number)
         }
     }
@@ -160,7 +218,10 @@ class FirestoreViewModel : ViewModel() {
         return errorCodeLiveData
     }
 
-    private inline fun <reified T: Entity> getList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
+    private inline fun <reified T : Entity> getList(
+        query: Query,
+        liveData: MutableLiveData<Pair<Int, List<T>>>
+    ): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, exception ->
             val errorCode = if (exception == null) -1 else R.string.network_error
             val valuesList: MutableList<T> = mutableListOf()
@@ -178,7 +239,7 @@ class FirestoreViewModel : ViewModel() {
         return liveData
     }
 
-    private fun <T: Entity> toObject(document: QueryDocumentSnapshot, @NonNull type: Class<T>): T {
+    private fun <T : Entity> toObject(document: QueryDocumentSnapshot, @NonNull type: Class<T>): T {
         val obj = document.toObject(type)
         obj.id = document.id
 

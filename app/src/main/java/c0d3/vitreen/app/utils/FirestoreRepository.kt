@@ -19,11 +19,14 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
+import java.io.InputStream
 
 class FirestoreRepository {
     private val db = Firebase.firestore
     private val auth: FirebaseAuth = Firebase.auth
     private val storage = Firebase.storage
+    private var imagesRef: StorageReference = storage.reference.child("images")
 
     // Get products (filters available)
     fun getProducts(
@@ -62,6 +65,10 @@ class FirestoreRepository {
         return query.orderBy("modifiedAt", Query.Direction.DESCENDING)
     }
 
+    fun getProduct(productId:String): DocumentReference {
+        return db.collection(PRODUCTS_COLLECTION).document(productId)
+    }
+
     // Sign in user
     fun signInAnonymously(): Task<AuthResult> {
         return auth.signInAnonymously()
@@ -90,16 +97,30 @@ class FirestoreRepository {
         return query
     }
 
+    fun getImages(productId:String,i:Long): Task<ByteArray> {
+        val productImageRef =
+            imagesRef.child("${productId}/image_$i")
+        val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
+        return productImageRef.getBytes(FIVE_MEGABYTE)
+    }
+
     fun updateLocation(locationId:String, zipCode: Long) {
         db.collection(LOCATIONS_COLLECTION)
             .document(locationId)
             .update("zipCode", zipCode)
     }
 
-    fun updateUser(userId: String, productsIds: ArrayList<String>) {
-        db.collection(USERS_COLLECTION)
-            .document(userId)
-            .update("productsId", productsIds)
+    fun updateUser(userId: String, productsIds: ArrayList<String>?=null, favoritesProduct:ArrayList<String>?=null) {
+        if(productsIds != null) {
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .update("productsId", productsIds)
+        }
+        if(favoritesProduct!= null){
+            db.collection(USERS_COLLECTION)
+                .document(userId)
+                .update("favoriteProductsId", productsIds)
+        }
     }
 
     fun addLocation(location: Location) {
@@ -110,6 +131,13 @@ class FirestoreRepository {
     fun addProduct(product: Product): Task<DocumentReference> {
         return db.collection(PRODUCTS_COLLECTION)
             .add(product)
+    }
+
+    fun addImages(productId:String,inputStream:ArrayList<InputStream>){
+        val metadata = storageMetadata { contentType = "image/jpg" }
+        for (i in inputStream.indices)
+            imagesRef.child("${productId}/image_$i")
+                .putStream(inputStream[i], metadata)
     }
 
     fun deleteProducts(ids: ArrayList<String>): Task<Void> {
