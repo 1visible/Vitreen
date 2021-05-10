@@ -11,6 +11,7 @@ import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.VFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
@@ -54,7 +55,18 @@ class ProfileFragment : VFragment(
 
         // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
-            userDTO?.let { user -> deleteAccount(user) }
+            context?.let { it->
+                MaterialAlertDialogBuilder(it)
+                    .setTitle(getString(R.string.delete_account))
+                    .setMessage(getString(R.string.delete_account_question))
+                    .setNegativeButton(getString(R.string.cancel)){dialog,wich->
+
+                    }
+                    .setPositiveButton(getString(R.string.delete)){dialog,which->
+                        userDTO?.let { user -> deleteAccount(user) }
+                    }
+                    .show()
+            }
         }
 
     }

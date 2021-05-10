@@ -89,4 +89,10 @@
     <string name="research_max_price">Prix Max...</string>
     <string name="buttonResearch">Rechercher</string>
     <string name="researchSelectCountry">Sélectionnez une Ville</string>
+    <string name="sendMessage">Envoyer un message</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_account_question">Voulez-vous supprimer votre compte?</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
 </resources>
