@@ -62,8 +62,7 @@
 
         <action
             android:id="@+id/action_navigation_favorites_to_navigation_product"
-            app:destination="@id/navigation_product"
-            />
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
@@ -80,8 +79,7 @@
 
         <action
             android:id="@+id/action_navigation_profile_to_navigation_product"
-            app:destination="@id/navigation_product"
-            />
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
@@ -125,8 +123,7 @@
 
         <action
             android:id="@+id/action_navigation_register2_to_navigation_profil"
-            app:destination="@id/navigation_profile"
-            />
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment
@@ -150,6 +147,10 @@
         <action
             android:id="@+id/action_navigation_product_to_navigation_login"
             app:destination="@id/navigation_login" />
+
+        <action
+            android:id="@+id/action_navigation_product_to_navigation_message"
+            app:destination="@id/navigation_messages" />
     </fragment>
 
 </navigation>

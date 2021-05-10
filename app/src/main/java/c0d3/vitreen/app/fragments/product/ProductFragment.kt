@@ -82,6 +82,12 @@ class ProductFragment : VFragment(
                             }
                         })
                 })
+            buttonSendMessage.setOnClickListener {
+                navigateTo(
+                    R.id.action_navigation_product_to_navigation_message,
+                    KEY_PRODUCT_ID to it
+                )
+            }
         }
     }
 
