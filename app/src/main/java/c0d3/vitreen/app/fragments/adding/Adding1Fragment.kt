@@ -100,10 +100,7 @@ class Adding1Fragment : VFragment(
                 if (location != null) {
                     if (location.zipCode == null) {
                         currentLocation.zipCode?.let { it1 ->
-                            viewModel.updateLocation(
-                                location.name,
-                                it1
-                            )
+                            viewModel.updateLocation(location.id, it1)
                         }
                     }
                     navigateToAdding2(category!!, currentLocation)

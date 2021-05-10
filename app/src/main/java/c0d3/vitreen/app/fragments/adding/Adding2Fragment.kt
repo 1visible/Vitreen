@@ -51,7 +51,7 @@ class Adding2Fragment : VFragment(
     private var nbImageMax = 0
     private var counter = 0
 
-    private var imagesRef: StorageReference = storage.reference.child("images")
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,21 +96,13 @@ class Adding2Fragment : VFragment(
                     nbImages = mArrayInputStream.size.toLong(),
                     ownerId = user.id
                 )
-                viewModel.addProduct(product)
-                    .addOnSuccessListener {
-                        val metadata = storageMetadata { contentType = "image/jpg" }
-
-                        for (i in mArrayInputStream.indices)
-                            imagesRef.child("${product.id}/image_$i")
-                                .putStream(mArrayInputStream[i], metadata)
-
+                viewModel.addProduct(product,mArrayInputStream,user)
+                    .observe(viewLifecycleOwner,{errorCode->
+                        if (handleError(errorCode, R.string.errorMessage)) return@observe
                         mArrayUri.clear()
                         mArrayInputStream.clear()
-                        user.productsId = if (user.productsId == null) ArrayList<String>() else user.productsId
-                        user.productsId?.add(product.id)
-                        viewModel.updateUser(user.id,user.productsId)
                         navigateTo(R.id.action_navigation_adding2_to_navigation_home)
-                    }
+                    })
             }
         })
 

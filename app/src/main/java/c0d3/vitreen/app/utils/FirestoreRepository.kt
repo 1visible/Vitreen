@@ -14,10 +14,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.WriteBatch
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -70,8 +67,15 @@ class FirestoreRepository {
         return auth.signInAnonymously()
     }
 
-    fun getUser(user: FirebaseUser): Query {
-        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
+    fun getUser(user: FirebaseUser? = null, userId: String? = null): Query {
+        var query: Query = db.collection(USERS_COLLECTION)
+        if (user != null) {
+            query = query.whereEqualTo("emailAddress", user.email)
+        }
+        if (userId != null) {
+            query = query.whereEqualTo("id", userId)
+        }
+        return query.limit(1)
     }
 
     // Get all categories
@@ -89,35 +93,16 @@ class FirestoreRepository {
         return query
     }
 
-    fun updateLocation(city: String, zipCode: Long) {
+    fun updateLocation(locationId:String, zipCode: Long) {
         db.collection(LOCATIONS_COLLECTION)
-            .whereEqualTo("name", city)
-            .get()
-            .addOnSuccessListener { locations ->
-                if (locations.size() == 1) {
-                    locations.forEach { location ->
-                        db.collection(LOCATIONS_COLLECTION)
-                            .document(location.id)
-                            .update("zipCode", zipCode)
-                    }
-                }
-            }
+            .document(locationId)
+            .update("zipCode", zipCode)
     }
 
     fun updateUser(userId: String, productsIds: ArrayList<String>) {
         db.collection(USERS_COLLECTION)
-            .whereEqualTo("id", userId)
-            .get()
-            .addOnSuccessListener { users ->
-                if (users.size() == 1) {
-                    users.forEach {
-                        db.collection(USERS_COLLECTION)
-                            .document(it.id)
-                            .update("productsId", productsIds)
-                    }
-                }
-            }
-
+            .document(userId)
+            .update("productsId", productsIds)
     }
 
     fun addLocation(location: Location) {

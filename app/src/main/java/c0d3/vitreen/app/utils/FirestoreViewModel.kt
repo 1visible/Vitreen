@@ -10,6 +10,13 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
+import java.io.InputStream
 
 class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
@@ -19,6 +26,10 @@ class FirestoreViewModel : ViewModel() {
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
     var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
     var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
+
+
+    private val storage = Firebase.storage
+    private var imagesRef: StorageReference = storage.reference.child("images")
 
     fun getProducts(
         limit: Boolean = true,
@@ -84,12 +95,33 @@ class FirestoreViewModel : ViewModel() {
         return locationLiveData
     }
 
-    fun updateLocation(city: String, zipCode: Long) {
-        repository.updateLocation(city, zipCode)
+    fun updateLocation(locationId:String, zipCode: Long) {
+        repository.updateLocation(locationId,zipCode)
+    }
+
+    fun updateUser(userId:String,productsId:ArrayList<String>){
+        repository.updateUser(userId,productsId)
     }
 
     fun addLocation(location: Location) {
         repository.addLocation(location)
+    }
+
+    fun addProduct(product: Product, inputStream:ArrayList<InputStream>,user:User):LiveData<Int>{
+        repository.addProduct(product)
+            .addOnCompleteListener { task->
+                val errorCode = if(task.isSuccessful) -1 else R.string.network_error
+                errorCodeLiveData.value = errorCode
+                val metadata = storageMetadata { contentType = "image/jpg" }
+
+                for (i in inputStream.indices)
+                    imagesRef.child("${product.id}/image_$i")
+                        .putStream(inputStream[i], metadata)
+
+                user.productsId.add(product.id)
+                updateUser(user.id,user.productsId)
+            }
+        return errorCodeLiveData
     }
 
     fun deleteProducts(ids: ArrayList<String>): LiveData<Int> {
