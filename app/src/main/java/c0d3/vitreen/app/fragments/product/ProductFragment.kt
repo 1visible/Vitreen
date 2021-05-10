@@ -37,9 +37,6 @@ class ProductFragment : VFragment(
 ) {
     private var productId: String? = null
     private var counter = 0
-    private var imageList = ArrayList<Bitmap>()
-
-    private val storageRef = storage.reference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,95 +51,43 @@ class ProductFragment : VFragment(
         productId = arguments?.getString(KEY_PRODUCT_ID).orEmpty()
         //Récupération du produit courant
         productId?.let {
-            productsCollection
-                .document(it)
-                .get()
-                .addOnSuccessListener { product ->
-                    val productDTO = ProductDTO(
-                        product.id,
-                        product.get("title") as String,
-                        product.get("description") as String,
-                        product.get("price") as Double,
-                        product.get("brand") as String,
-                        product.get("size") as String?,
-                        product.get("numberOfConsultations") as Long,
-                        product.get("reported") as ArrayList<String>?,
-                        product.get("locationId") as String,
-                        product.get("categoryId") as String,
-                        product.get("nbImages") as Long,
-                        product.get("ownerId") as String,
-                        product.get("createdAt") as String,
-                        product.get("modifiedAt") as String
-                    )
-                    categoriesCollection
-                        .document(productDTO.categoryId)
-                        .get()
-                        .addOnSuccessListener { category ->
-                            locationsCollection
-                                .document(productDTO.locationId)
-                                .get()
-                                .addOnSuccessListener { location ->
-                                    val zipCode =
-                                        if (location.get("zipCode") as Long? == null) "" else "(${
-                                            location.get("zipCode") as Long?
-                                        })"
-                                    //Affichage des infos
-                                    textViewTitle.setText(productDTO.title)
-                                    textViewBrand.setText(productDTO.brand)
-                                    textViewDescription.setText(productDTO.description)
-                                    textViewPrice.setText(
-                                        getString(
-                                            R.string.price,
-                                            productDTO.price
-                                        )
-                                    )
-                                    textViewDimensions.setText(productDTO.size ?: "")
-                                    textViewCategory.setText(category.get("name") as String)
-                                    textViewLocation.setText("${location.get("name") as String}${zipCode}")
-                                    textViewBrand.setText(productDTO.brand)
-                                    textViewDimensions.setText(productDTO.size)
-                                }
-                        }
-                    //Téléchargement des images
-                    for (i in 0..productDTO.nbImages - 1) {
-                        val productImageRef =
-                            storageRef.child("images/${productDTO.id}/image_$i")
-                        val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
-                        //Téléchargement d'une image
-                        productImageRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener {
-                            imageList.add(BitmapFactory.decodeByteArray(it, 0, it.size))
-                            //Une fois que toutes les images téléchargées faire le traitement suivant
-                            //Logique de la card
-                            if (imageList.size.toLong() == productDTO.nbImages) {
-                                imageViewProduct.setImageBitmap(imageList.get(counter))
-                                buttonPreviousImage.setOnClickListener {
-                                    counter =
-                                        if (counter-- <= 0) (imageList.size - 1) else counter--
-                                    imageViewProduct.setImageBitmap(imageList.get(counter))
-                                }
+            viewModel.getProduct(it)
+                .observe(viewLifecycleOwner, { pair ->
+                    if (handleError(pair.first, R.string.errorMessage)) return@observe
+                    //Affichage des infos
+                    textViewTitle.setText(pair.second.title)
+                    textViewBrand.setText(pair.second.brand)
+                    textViewDescription.setText(pair.second.description)
+                    textViewPrice.setText(getString(R.string.price, pair.second.price))
+                    textViewDimensions.setText(pair.second.size ?: "")
+                    textViewCategory.setText(pair.second.category.name)
+                    textViewLocation.setText("${pair.second.location.name}${if (pair.second.location.zipCode == null) "" else pair.second.location.zipCode}")
+                    textViewBrand.setText(pair.second.brand)
+                    textViewDimensions.setText(pair.second.size)
 
-                                buttonNextImage.setOnClickListener {
-                                    counter =
-                                        if (counter++ >= (imageList.size - 1)) 0 else counter++
-                                    imageViewProduct.setImageBitmap(imageList.get(counter))
-                                }
+                    viewModel.getImages(pair.second.id, pair.second.nbImages)
+                        .observe(viewLifecycleOwner, { imagesPair ->
+                            if (handleError(imagesPair.first, R.string.errorMessage)) return@observe
+                            imageViewProduct.setImageBitmap(imagesPair.second.get(counter))
+                            buttonPreviousImage.setOnClickListener {
+                                counter =
+                                    if (counter-- <= 0) (imagesPair.second.size - 1) else counter--
+                                imageViewProduct.setImageBitmap(imagesPair.second.get(counter))
                             }
-                        }.addOnFailureListener {
-                            // Handle any errors
-                        }
-                    }
 
-
-                    /*advertFavButton.setOnClickListener {
-
-                    }*/
-                }
+                            buttonNextImage.setOnClickListener {
+                                counter =
+                                    if (counter++ >= (imagesPair.second.size - 1)) 0 else counter++
+                                imageViewProduct.setImageBitmap(imagesPair.second.get(counter))
+                            }
+                        })
+                })
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.action_favorite->{
+        return when (item.itemId) {
+            R.id.action_favorite -> {
                 addRemoveToFavorites()
                 true
             }
@@ -151,39 +96,17 @@ class ProductFragment : VFragment(
     }
 
     fun addRemoveToFavorites() {
-        usersCollection
-            .whereEqualTo("emailAddress", user!!.email)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.size() == 1) {
-                    for (document in documents) {
-                        println("-------------${productId}")
-                        var listFavorite =
-                            document.get("favoriteProductsId") as ArrayList<String>?
-                        if (listFavorite != null) {
-                            if ((!listFavorite.contains(productId))
-                            ) {
-                                listFavorite.add(productId!!)
-                                println("-----------------------")
-                                println("ajout")
-                                println("-----------------------")
-                            } else {
-                                listFavorite.remove(productId!!)
-                                println("-----------------------")
-                                println("retrait")
-                                println("-----------------------")
-                            }
-                            usersCollection
-                                .document(document.id)
-                                .update("favoriteProductsId", listFavorite)
-                            println("-----------------------")
-                            println("maj")
-                            println("-----------------------")
-                        }
-                    }
-
+        viewModel.getUser(user!!)
+            .observe(viewLifecycleOwner, { pair ->
+                if (handleError(pair.first, R.string.errorMessage)) return@observe
+                var listFavorite = pair.second.favoriteProductsId
+                if (!listFavorite.contains(productId)) {
+                    listFavorite.add(productId!!)
+                } else {
+                    listFavorite.remove(productId!!)
                 }
-            }
+                viewModel.updateUser(pair.second.id, favoriteProducts = listFavorite)
+            })
     }
 
 }

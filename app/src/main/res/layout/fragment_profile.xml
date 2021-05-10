@@ -7,7 +7,16 @@
     android:orientation="vertical"
     tools:context=".fragments.profile.ProfileFragment">
 
+    <!-- Empty view -->
+    <include
+        layout="@layout/empty_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
+        android:id="@+id/textViewPersonalInformations"
         android:text="@string/personal_informations"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -64,7 +73,7 @@
         tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
-        android:id="@+id/textViewPersonalInformation"
+        android:id="@+id/textViewProfessionalInformations"
         android:text="@string/professional_informations"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -96,6 +105,7 @@
         tools:ignore="UseCompatTextViewDrawableXml" />
 
     <TextView
+        android:id="@+id/textViewMyProducts"
         android:text="@string/my_products"
         android:textSize="20sp"
         android:textStyle="bold"

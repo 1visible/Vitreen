@@ -39,7 +39,6 @@ abstract class VFragment(
 ) : Fragment() {
 
     lateinit var viewModel: FirestoreViewModel
-    var isFragmentVisible = true
 
     private lateinit var db: FirebaseFirestore
     lateinit var storage: FirebaseStorage
@@ -75,14 +74,8 @@ abstract class VFragment(
         locationsCollection = db.collection(LOCATIONS_COLLECTION)
         productsCollection = db.collection(PRODUCTS_COLLECTION)
 
-        if (requireAuth) {
-            try {
-                if (user == null || user!!.isAnonymous)
-                    navigateTo(loginNavigationId)
-            } catch (e: NullPointerException) {
-                navigateTo(loginNavigationId)
-            }
-        }
+        if (requireAuth && !isUserSignedIn())
+            navigateTo(loginNavigationId)
 
         return inflater.inflate(layoutId, container, false)
     }
@@ -95,21 +88,21 @@ abstract class VFragment(
         setSpinnerVisibility(GONE)
     }
 
-    override fun onResume() {
-        super.onResume()
-        isFragmentVisible = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        isFragmentVisible = false
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
+    }
+
+    fun isUserSignedIn(): Boolean {
+        try {
+            if (user == null || user!!.isAnonymous)
+                return false
+        } catch (_: NullPointerException) {
+            return false
+        }
+        return true
     }
 
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
@@ -125,14 +118,13 @@ abstract class VFragment(
         return false
     }
 
-    fun isAllInputEmpty(vararg inputs: TextInputLayout?): Boolean {
-        var counter = 0
+    fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (input?.editText?.text.isNullOrBlank()) {
-                counter += 1
+            if (!input?.editText?.text.isNullOrBlank()) {
+                return false
             }
         }
-        return (counter == inputs.size)
+        return true
     }
 
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
@@ -146,6 +138,10 @@ abstract class VFragment(
         return result
     }
 
+    fun inputToString(input: TextInputLayout): String? {
+        return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
+    }
+
     fun isAnyStringEmpty(vararg texts: String?): Boolean {
         texts.forEach { text ->
             if (text.isNullOrBlank())
@@ -154,8 +150,8 @@ abstract class VFragment(
         return false
     }
 
-    fun showMessage(@StringRes errorId: Int = R.string.error_placeholder) {
-        (activity as? MainActivity)?.showMessage(errorId)
+    fun showMessage(@StringRes messageId: Int = R.string.error_placeholder) {
+        (activity as? MainActivity)?.showMessage(messageId)
     }
 
     fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {

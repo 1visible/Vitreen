@@ -13,11 +13,10 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.models.dto.CategoryDTO
-import c0d3.vitreen.app.utils.Constants.Companion.CATEGORY_ID
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
 import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
-import c0d3.vitreen.app.utils.Constants.Companion.LOCATION_ID
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
 import c0d3.vitreen.app.utils.Constants.Companion.PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.TITLE
 import c0d3.vitreen.app.utils.VFragment
@@ -35,54 +34,56 @@ class Adding1Fragment : VFragment(
     true,
     R.id.action_navigation_adding1_to_navigation_login
 ) {
-    private val categoriesList = ArrayList<CategoryDTO>()
+    private var categoriesList = ArrayList<Category>()
 
     private var zipCode: String? = null
-    private var cityName:String=""
+    private var cityName: String = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         context?.let { initializeLocation(it) }
 
-        // Récupération des catégories depuis la BDD
-        categoriesCollection.get().addOnSuccessListener { documents ->
-
-            // Ajout des catégories dans une liste exploitable
-            documents.forEach { document ->
-                val categoryDTO = CategoryDTO(document.id, document.get("name").toString())
-                categoriesList.add(categoryDTO)
-            }
-
+        viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
+            if (handleError(pair.first)) return@observeOnce
+            categoriesList = pair.second as ArrayList<Category>
             // Ajout des catégories au menu déroulant du formulaire
             val adapter = context?.let { context ->
                 ArrayAdapter(
                     context,
                     R.layout.dropdown_menu_item,
-                    categoriesList.map { it.DtoToModel().name })
+                    pair.second.map { category -> category.name }
+                )
             }
 
             (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-
         }
+        )
 
         // Bouton de navigation vers le formulaire d'ajout (2/2)
         buttonToAdding2.setOnClickListener {
             // Vérifie que les champs du formulaire ne sont pas vides
-            if (isAnyInputEmpty(textInputCategory, editTextTitle, editTextPrice, editTextLocation, editTextDescription)) {
+            if (isAnyInputEmpty(
+                    textInputCategory,
+                    editTextTitle,
+                    editTextPrice,
+                    editTextLocation,
+                    editTextDescription
+                )
+            ) {
                 showMessage(R.string.errorMessage)
                 return@setOnClickListener
             }
 
             // Récupération de l'ID correspondant à la catégorie choisie
-            var categoryId: String? = null
+            var category: Category? = null
 
-            categoriesList.forEach { category ->
-                if (category.name == textInputCategory.editText?.text.toString())
-                    categoryId = category.id
+            categoriesList.forEach { currentCategory ->
+                if (currentCategory.name == textInputCategory.editText?.text.toString())
+                    category = currentCategory
             }
 
-            if (categoryId == null) {
+            if (category == null) {
                 showMessage(R.string.errorMessage)
                 return@setOnClickListener
             }
@@ -90,54 +91,24 @@ class Adding1Fragment : VFragment(
             // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
             val currentLocation = Location(
                 editTextLocation.editText?.text.toString().capitalize(Locale.getDefault()),
-                if(cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
+                if (cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
             )
             // Récupération de la localisation renseignée
-            locationsCollection.whereEqualTo("name", currentLocation.name).get()
-                .addOnSuccessListener { documents ->
-
-                    // Ajout du code postal à la localisation (s'il n'existe pas)
-                    if (documents.size() > 0) {
-                        val location = documents.first()
-                        if (location.get("zipCode") == null)
-                            locationsCollection.document(location.id)
-                                .update("zipCode", currentLocation.zipCode)
-                        // Navigation vers le formulaire d'ajout (2/2) en y passant les données
-                        navigateToAdding2(categoryId, location.id)
-
-                        // Ajout de la nouvelle localisation dans la BDD (si elle n'existe pas)
-                    } else locationsCollection.add(currentLocation)
-                        .addOnSuccessListener { location ->
-                            // Navigation vers le formulaire d'ajout (2/2) en y passant les données
-                            navigateToAdding2(categoryId, location.id)
-                        }.addOnFailureListener {
-                        showMessage(R.string.errorMessage)
+            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
+                if (handleError(pair.first)) return@observeOnce
+                val location = pair.second
+                if (location != null) {
+                    if (location.zipCode == null) {
+                        currentLocation.zipCode?.let { it1 ->
+                            viewModel.updateLocation(location.id, it1)
+                        }
                     }
-
-                }.addOnFailureListener {
-                showMessage(R.string.errorMessage)
-            }
-
-        }
-
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            LOCALISATION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    editTextLocation.editText?.text?.clear()
-                    showMessage(R.string.errorMessage)
-                    return
+                    navigateToAdding2(category!!, currentLocation)
+                } else {
+                    viewModel.addLocation(currentLocation)
+                    navigateToAdding2(category!!, currentLocation)
                 }
-                navigateTo(R.id.action_navigation_adding1_self)
-            }
+            })
         }
 
     }
@@ -147,29 +118,24 @@ class Adding1Fragment : VFragment(
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
             && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
         )
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCALISATION_REQUEST
-            )
-
         // Listener de récupération de localisation
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
     }
 
-    private fun navigateToAdding2(categoryId: String?, locationId: String) {
+    private fun navigateToAdding2(category: Category, location: Location) {
         navigateTo(
             R.id.action_navigation_adding1_to_navigation_adding2,
-            CATEGORY_ID to categoryId,
+            KEY_CATEGORY to category,
             TITLE to editTextTitle.editText?.text.toString(),
             PRICE to editTextPrice.editText?.text.toString(),
-            LOCATION_ID to locationId,
+            KEY_LOCATION to location,
             DESCRIPTION to editTextDescription.editText?.text.toString()
         )
     }
