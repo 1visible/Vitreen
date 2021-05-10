@@ -43,7 +43,7 @@ class FirestoreViewModel : ViewModel() {
         ids: ArrayList<String>? = null
     ): LiveData<Pair<Int, List<Product>>> {
         return getList(
-            repository.getProducts(limit, title, price, brand, location, category, ids),
+            repository.getProducts(limit, title, price, brand, location, category,ids),
             productsLiveData
         )
     }

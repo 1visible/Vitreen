@@ -65,7 +65,7 @@ class FirestoreRepository {
         return query.orderBy("modifiedAt", Query.Direction.DESCENDING)
     }
 
-    fun getProduct(productId:String): DocumentReference {
+    fun getProduct(productId: String): DocumentReference {
         return db.collection(PRODUCTS_COLLECTION).document(productId)
     }
 
@@ -97,26 +97,30 @@ class FirestoreRepository {
         return query
     }
 
-    fun getImages(productId:String,i:Long): Task<ByteArray> {
+    fun getImages(productId: String, i: Long): Task<ByteArray> {
         val productImageRef =
             imagesRef.child("${productId}/image_$i")
         val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
         return productImageRef.getBytes(FIVE_MEGABYTE)
     }
 
-    fun updateLocation(locationId:String, zipCode: Long) {
+    fun updateLocation(locationId: String, zipCode: Long) {
         db.collection(LOCATIONS_COLLECTION)
             .document(locationId)
             .update("zipCode", zipCode)
     }
 
-    fun updateUser(userId: String, productsIds: ArrayList<String>?=null, favoritesProduct:ArrayList<String>?=null) {
-        if(productsIds != null) {
+    fun updateUser(
+        userId: String,
+        productsIds: ArrayList<String>? = null,
+        favoritesProduct: ArrayList<String>? = null
+    ) {
+        if (productsIds != null) {
             db.collection(USERS_COLLECTION)
                 .document(userId)
                 .update("productsId", productsIds)
         }
-        if(favoritesProduct!= null){
+        if (favoritesProduct != null) {
             db.collection(USERS_COLLECTION)
                 .document(userId)
                 .update("favoriteProductsId", productsIds)
@@ -133,7 +137,7 @@ class FirestoreRepository {
             .add(product)
     }
 
-    fun addImages(productId:String,inputStream:ArrayList<InputStream>){
+    fun addImages(productId: String, inputStream: ArrayList<InputStream>) {
         val metadata = storageMetadata { contentType = "image/jpg" }
         for (i in inputStream.indices)
             imagesRef.child("${productId}/image_$i")

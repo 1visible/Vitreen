@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.dto.ProductDTO
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.product_item.view.*
@@ -26,7 +27,9 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
         init {
             itemView.setOnClickListener {
                 currentProduct.let {
-                    onClick(it)
+                    if (it != null) {
+                        onClick(it)
+                    }
                 }
             }
         }
@@ -45,8 +48,8 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
                             )
                     )
                     itemView.textViewTitle.text = currentProduct!!.title
-                    itemView.textViewCategory.text = currentProduct!!.category
-                    itemView.textViewLocation.text = currentProduct!!.location
+                    itemView.textViewCategory.text = currentProduct!!.category.name
+                    itemView.textViewLocation.text = currentProduct!!.location.name
                     itemView.textViewPrice.text = itemView.context.getString(R.string.price,currentProduct!!.price)
                 }
             }.addOnFailureListener {
