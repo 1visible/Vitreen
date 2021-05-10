@@ -18,7 +18,6 @@ class MessagesFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     // TODO : Ajouter les items

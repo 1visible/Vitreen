@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imageViewMessage"
+            android:id="@+id/imageViewProduct"
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:scaleType="centerCrop"
@@ -36,7 +36,7 @@
             android:text="@string/placeholder_title"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/imageViewMessage"
+            app:layout_constraintStart_toEndOf="@+id/imageViewProduct"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_marginBottom="@dimen/spacing_md"
             android:text="@string/placeholder_location"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageViewMessage" />
+            app:layout_constraintStart_toEndOf="@+id/imageViewProduct" />
 
         <TextView
             android:id="@+id/textViewPrice"

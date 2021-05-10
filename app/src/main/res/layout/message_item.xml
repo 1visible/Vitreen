@@ -22,7 +22,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/textViewTitle"
+            android:id="@+id/textViewTitleMessage"
             android:layout_width="0dp"
             app:layout_constraintWidth_percent="0.4"
             android:ellipsize="end"
@@ -38,14 +38,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewCategory"
+            android:id="@+id/textViewLastMessage"
             android:layout_width="0dp"
             app:layout_constraintWidth_percent="0.4"
             android:ellipsize="end"
             android:maxLines="1"
             android:layout_height="wrap_content"
             android:text="@string/placeholder_message"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTitleMessage"
             app:layout_constraintLeft_toRightOf="@id/imageViewMessage"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp" />
