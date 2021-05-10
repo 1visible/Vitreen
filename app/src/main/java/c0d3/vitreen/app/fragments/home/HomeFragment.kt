@@ -20,11 +20,11 @@ import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class HomeFragment : VFragment(
-    R.layout.fragment_home,
-    R.drawable.bigicon_logo,
-    R.string.welcome,
-    true,
-    R.menu.menu_messages
+    layoutId = R.layout.fragment_home,
+    topIcon = R.drawable.bigicon_logo,
+    topTitleId = R.string.welcome,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_home
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

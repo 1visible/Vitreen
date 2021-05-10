@@ -1,39 +1,24 @@
 package c0d3.vitreen.app.fragments.product
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
-import c0d3.vitreen.app.utils.ProductImageViewModel
 import c0d3.vitreen.app.utils.VFragment
-import kotlinx.android.synthetic.main.product_item.view.*
 import kotlinx.android.synthetic.main.fragment_product.*
+import kotlinx.android.synthetic.main.product_item.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProductFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProductFragment : VFragment(
-    R.layout.fragment_product,
-    R.drawable.bigicon_adding,
-    -1,
-    true,
-    R.menu.menu_product,
-    true,
-    R.id.action_navigation_product_to_navigation_login
+    layoutId = R.layout.fragment_product,
+    topIcon = R.drawable.bigicon_adding,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_product,
+    requireAuth = true,
+    loginNavigationId = R.id.action_navigation_product_to_navigation_login
 ) {
     private var productId: String? = null
     private var counter = 0

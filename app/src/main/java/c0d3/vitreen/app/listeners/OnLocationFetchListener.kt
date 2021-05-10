@@ -6,6 +6,4 @@ interface OnLocationFetchListener {
 
     fun onComplete(location: Location?) { }
 
-    fun onFailed(e: String?) { }
-
 }

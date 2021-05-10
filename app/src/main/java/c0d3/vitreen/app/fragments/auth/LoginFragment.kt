@@ -2,19 +2,14 @@ package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.Constants.Companion.FAKE_EMAIL
-import c0d3.vitreen.app.utils.Constants.Companion.FAKE_PASSWORD
 import c0d3.vitreen.app.utils.VFragment
-import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.fragment_login.*
 import java.util.*
 
 class LoginFragment : VFragment(
-    R.layout.fragment_login,
-    R.drawable.bigicon_authentification,
-    -1
+    layoutId = R.layout.fragment_login,
+    topIcon = R.drawable.bigicon_authentification
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

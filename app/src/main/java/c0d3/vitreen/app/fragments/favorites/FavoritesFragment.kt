@@ -13,12 +13,10 @@ import kotlinx.android.synthetic.main.fragment_favorites.recyclerViewProducts
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class FavoritesFragment : VFragment(
-    R.layout.fragment_favorites,
-    R.drawable.bigicon_favorites,
-    -1,
-    true,
-    R.menu.menu_favorites,
-    false
+    layoutId = R.layout.fragment_favorites,
+    topIcon = R.drawable.bigicon_favorites,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_favorites
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,13 +28,13 @@ class FavoritesFragment : VFragment(
         viewModel.getUser(user!!)
             .observe(viewLifecycleOwner, { pair ->
                 if (handleError(pair.first, R.string.errorMessage)) return@observe
-                if (pair.second.favoriteProductsId.size == 0) {
+                if (pair.second.favoritesIds.size == 0) {
                     recyclerViewProducts.visibility = View.GONE
                     return@observe
                 }
                 viewModel.getProducts(
                     limit = false,
-                    ids = pair.second.favoriteProductsId
+                    ids = pair.second.favoritesIds
                 ).observe(viewLifecycleOwner, { pair ->
                     if (handleError(pair.first, R.string.no_favorites)) {
                         return@observe

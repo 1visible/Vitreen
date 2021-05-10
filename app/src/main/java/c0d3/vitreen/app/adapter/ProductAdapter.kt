@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.dto.ProductDTO
+import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.product_item.view.*
@@ -37,8 +38,7 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
         fun bind(product: ProductDTO) {
             currentProduct = product
             val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0")
-            val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
-            productImageRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener {
+            productImageRef.getBytes(IMAGE_SIZE).addOnSuccessListener {
                 if (currentProduct != null) {
                     itemView.imageViewProduct.setImageBitmap(
                             BitmapFactory.decodeByteArray(
@@ -49,7 +49,7 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
                     )
                     itemView.textViewTitle.text = currentProduct!!.title
                     itemView.textViewCategory.text = currentProduct!!.category.name
-                    itemView.textViewLocation.text = currentProduct!!.location.name
+                    itemView.textViewLocation.text = currentProduct!!.location.city
                     itemView.textViewPrice.text = itemView.context.getString(R.string.price,currentProduct!!.price)
                 }
             }.addOnFailureListener {

@@ -17,7 +17,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +24,6 @@ import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_adding1.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
         requestLocationPermission()
-
     }
 
     // Handle toolbar back button
@@ -90,22 +87,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            LOCALISATION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)
-                    showMessage(R.string.errorMessage) // TODO : Remplacer le message
-            }
-        }
-    }
-
     fun setTopViewAttributes(title: String, @DrawableRes icon: Int) {
         topView.setAttributes(title, icon)
     }
 
-    fun showMessage(@StringRes errorId: Int) {
-        val snackbar = Snackbar.make(activityLayout, errorId, Snackbar.LENGTH_LONG)
+    fun showMessage(@StringRes messageId: Int) {
+        val snackbar = Snackbar.make(activityLayout, messageId, Snackbar.LENGTH_LONG)
         val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.anchorId = R.id.snackbarGuideline
         layoutParams.gravity = Gravity.TOP
@@ -117,19 +104,10 @@ class MainActivity : AppCompatActivity() {
         spinner.visibility = visibility
     }
 
-    // Demande de permission pour la récupération de la localisation
     private fun requestLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
-        )
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
     }
-
 }

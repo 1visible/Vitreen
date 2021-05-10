@@ -22,9 +22,8 @@ import java.io.IOException
 import java.util.*
 
 class Register2Fragment : VFragment(
-    R.layout.fragment_register2,
-    R.drawable.bigicon_authentification,
-    -1
+    layoutId = R.layout.fragment_register2,
+    topIcon = R.drawable.bigicon_authentification
 ) {
     private lateinit var emailAddress: String
     private var cityName = ""
@@ -66,6 +65,7 @@ class Register2Fragment : VFragment(
             if(switchProfessionalAccount.isChecked && (company == null || siret == null))
                 return@setOnClickListener
 
+            // TODO : Prendre le getLocation de Adding1
             viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
                 val errorCode = pair.first
                 var location = pair.second

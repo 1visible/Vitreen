@@ -17,13 +17,12 @@ import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
 
 
 class ProfileFragment : VFragment(
-    R.layout.fragment_profile,
-    R.drawable.bigicon_profile,
-    -1,
-    true,
-    R.menu.menu_profile,
-    true,
-    R.id.action_navigation_profile_to_navigation_login
+    layoutId = R.layout.fragment_profile,
+    topIcon = R.drawable.bigicon_profile,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_profile,
+    requireAuth = true,
+    loginNavigationId = R.id.action_navigation_profile_to_navigation_login
 ) {
 
     private var userDTO: User? = null
@@ -47,7 +46,7 @@ class ProfileFragment : VFragment(
             if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
 
             // Else, fill the profile with user informations and store them
-            showProducts(user.productsId)
+            showProducts(user.productsIds)
             fillProfile(user)
             userDTO = user
         })
@@ -56,7 +55,6 @@ class ProfileFragment : VFragment(
         buttonDeleteAccount.setOnClickListener {
             userDTO?.let { user -> deleteAccount(user) }
         }
-
     }
 
     // TODO : Ajouter les items

@@ -36,14 +36,16 @@ import kotlin.collections.ArrayList
 
 
 class Adding2Fragment : VFragment(
-    R.layout.fragment_adding2,
-    R.drawable.bigicon_adding,
-    -1,
-    true,
-    R.menu.menu_adding,
-    true,
-    R.id.action_navigation_adding2_to_navigation_home
+    layoutId = R.layout.fragment_adding2,
+    topIcon = R.drawable.bigicon_adding,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_adding,
+    requireAuth = true,
+    loginNavigationId = R.id.action_navigation_adding2_to_navigation_home
 ) {
+
+    // TODO : A VERIFIER !!!!!!!
+
     private var imageEncoded: String? = null
     private var imagesEncodedList: ArrayList<String>? = null
     private var mArrayUri = ArrayList<Uri>()
@@ -51,16 +53,15 @@ class Adding2Fragment : VFragment(
     private var nbImageMax = 0
     private var counter = 0
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val category: Category = (arguments?.get(KEY_CATEGORY) as Category)
+        val category: Category = arguments?.get(KEY_CATEGORY) as Category
         val title: String = arguments?.getString(TITLE).orEmpty()
         val price: String = arguments?.getString(PRICE).orEmpty()
         val location: Location = arguments?.get(KEY_LOCATION) as Location
         val description: String = arguments?.getString(DESCRIPTION).orEmpty()
+
         viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
             if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
             var user: User = pair.second
