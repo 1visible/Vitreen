@@ -13,11 +13,11 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
-import c0d3.vitreen.app.utils.Constants.Companion.PRICE
-import c0d3.vitreen.app.utils.Constants.Companion.TITLE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_register1.*
@@ -67,7 +67,7 @@ class Adding1Fragment : VFragment(
             var categoryDTO: Category? = null
 
             // Double check category and location after conversion
-            if(categoryName == null || locationName == null) {
+            if (categoryName == null || locationName == null) {
                 showMessage()
                 return@setOnClickListener
             }
@@ -114,8 +114,7 @@ class Adding1Fragment : VFragment(
 
     private fun initializeLocation(context: Context) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
     }
 
@@ -128,10 +127,10 @@ class Adding1Fragment : VFragment(
         navigateTo(
             R.id.action_navigation_adding1_to_navigation_adding2,
             KEY_CATEGORY to category,
-            TITLE to inputToString(editTextTitle),
-            PRICE to inputToString(editTextPrice),
+            KEY_TITLE to inputToString(editTextTitle),
+            KEY_PRICE to inputToString(editTextPrice),
             KEY_LOCATION to location,
-            DESCRIPTION to inputToString(editTextDescription)
+            KEY_DESCRIPTION to inputToString(editTextDescription)
         )
     }
 
@@ -139,6 +138,7 @@ class Adding1Fragment : VFragment(
         return object : OnLocationFetchListener {
             override fun onComplete(location: android.location.Location?) {
                 super.onComplete(location)
+
                 try {
                     // Get location with GPS
                     val address = location?.let {

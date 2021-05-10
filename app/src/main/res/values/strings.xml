@@ -48,6 +48,7 @@
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
     <string name="register">S\'inscrire</string>
+    <string name="register_success">Votre compte a été créé avec succès !</string>
     <!-- Adding1 fragment -->
     <string name="product_category">Catégorie</string>
     <string name="product_title">Titre</string>

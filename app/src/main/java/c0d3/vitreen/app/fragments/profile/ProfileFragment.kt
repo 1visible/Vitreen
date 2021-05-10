@@ -25,6 +25,8 @@ class ProfileFragment : VFragment(
     loginNavigationId = R.id.action_navigation_profile_to_navigation_login
 ) {
 
+    // TODO : A VERIFIER !!!!!!!
+
     private var userDTO: User? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

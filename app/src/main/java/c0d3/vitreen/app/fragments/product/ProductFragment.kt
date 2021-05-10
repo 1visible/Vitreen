@@ -20,6 +20,9 @@ class ProductFragment : VFragment(
     requireAuth = true,
     loginNavigationId = R.id.action_navigation_product_to_navigation_login
 ) {
+
+    // TODO : A VERIFIER !!!!!!!
+
     private var productId: String? = null
     private var counter = 0
 

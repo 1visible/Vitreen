@@ -5,6 +5,7 @@ import android.view.View
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_login.*
+import java.lang.NullPointerException
 import java.util.*
 
 class LoginFragment : VFragment(
@@ -17,6 +18,7 @@ class LoginFragment : VFragment(
 
         // On submit button click, try to login the user
         buttonSubmitLogin.setOnClickListener {
+            // Check if required inputs are filled
             if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword))
                 return@setOnClickListener
 
@@ -27,12 +29,16 @@ class LoginFragment : VFragment(
             else if (!isUserSignedIn()) {
                 // TODO : val credential = EmailAuthProvider.getCredential(UUID.randomUUID().toString() + FAKE_EMAIL, FAKE_PASSWORD)
                 // Delete anonymous account
-                viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { errorCode ->
-                    // If the call fails, show error message and hide loading spinner
-                    if(handleError(errorCode)) return@observeOnce
-                    // Else, sign in
-                    signIn()
-                })
+                try {
+                    viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { errorCode ->
+                        // If the call fails, show error message and hide loading spinner
+                        if(handleError(errorCode)) return@observeOnce
+                        // Else, sign in
+                        signIn()
+                    })
+                } catch(_: NullPointerException) {
+                    showMessage()
+                }
             }
             // Else (the user is signed in), navigate back to home
             else
@@ -49,8 +55,11 @@ class LoginFragment : VFragment(
         val email = inputToString(editTextEmail)
         val password = inputToString(editTextPassword)
 
-        if(email == null || password == null)
+        // Check email and password after conversion
+        if (email == null || password == null) {
+            showMessage()
             return
+        }
 
         viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { errorCode ->
             // If the call fails, show error message and hide loading spinner

@@ -120,7 +120,7 @@ abstract class VFragment(
 
     fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (!input?.editText?.text.isNullOrBlank()) {
+            if (input != null && input.editText?.text.isNullOrBlank()) {
                 return false
             }
         }
@@ -130,10 +130,12 @@ abstract class VFragment(
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
         var result = false
         inputs.forEach { input ->
-            if (input != null && input.editText?.text.isNullOrBlank()) {
-                input.error = getString(R.string.required_input)
-                result = true
-            }
+            if(input != null)
+                if (input.editText?.text.isNullOrBlank()) {
+                    input.error = getString(R.string.required_input)
+                    result = true
+                } else
+                    input.error = null
         }
         return result
     }

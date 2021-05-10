@@ -27,6 +27,8 @@ class HomeFragment : VFragment(
     topMenuId = R.menu.menu_home
 ) {
 
+    // TODO : A VERIFIER !!!!!!!
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

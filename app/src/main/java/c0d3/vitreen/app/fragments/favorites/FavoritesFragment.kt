@@ -19,6 +19,8 @@ class FavoritesFragment : VFragment(
     topMenuId = R.menu.menu_favorites
 ) {
 
+    // TODO : A VERIFIER !!!!!!!
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerViewProducts.visibility = View.VISIBLE

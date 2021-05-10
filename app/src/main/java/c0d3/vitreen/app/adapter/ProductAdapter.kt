@@ -37,6 +37,7 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
 
         fun bind(product: ProductDTO) {
             currentProduct = product
+            // TODO : Changer par la méthode
             val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0")
             productImageRef.getBytes(IMAGE_SIZE).addOnSuccessListener {
                 if (currentProduct != null) {

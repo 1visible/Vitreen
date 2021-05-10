@@ -18,16 +18,14 @@ import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
-import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
-import c0d3.vitreen.app.utils.Constants.Companion.PRICE
-import c0d3.vitreen.app.utils.Constants.Companion.TITLE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_adding2.*
 import java.io.InputStream
@@ -57,10 +55,10 @@ class Adding2Fragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         val category: Category = arguments?.get(KEY_CATEGORY) as Category
-        val title: String = arguments?.getString(TITLE).orEmpty()
-        val price: String = arguments?.getString(PRICE).orEmpty()
+        val title: String = arguments?.getString(KEY_TITLE).orEmpty()
+        val price: String = arguments?.getString(KEY_PRICE).orEmpty()
         val location: Location = arguments?.get(KEY_LOCATION) as Location
-        val description: String = arguments?.getString(DESCRIPTION).orEmpty()
+        val description: String = arguments?.getString(KEY_DESCRIPTION).orEmpty()
 
         viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
             if (handleError(pair.first, R.string.errorMessage)) return@observeOnce

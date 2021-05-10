@@ -1,11 +1,9 @@
 package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.Constants.Companion.TAG
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_EMAIL
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register1.*
 
@@ -28,8 +26,10 @@ class Register1Fragment : VFragment(
             val passwordConfirmation = inputToString(editTextPasswordConfirmation)
 
             // Double check email and password after conversion
-            if(email == null || password == null)
+            if (email == null || password == null) {
+                showMessage()
                 return@setOnClickListener
+            }
 
             // Check if passwords are equals
             if(password != passwordConfirmation) {
@@ -44,7 +44,7 @@ class Register1Fragment : VFragment(
                     // If the call fails, show error message and hide loading spinner
                     if(handleError(errorCode)) return@observeOnce
                     // Else, navigate to Register2 fragment
-                    navigateTo(R.id.action_navigation_register1_to_navigation_register2, "email" to email)
+                    navigateTo(R.id.action_navigation_register1_to_navigation_register2, KEY_EMAIL to email)
                 })
             } else if(!isUserSignedIn()) {
                 try {
@@ -52,21 +52,19 @@ class Register1Fragment : VFragment(
                         // If the call fails, show error message and hide loading spinner
                         if(handleError(errorCode)) return@observeOnce
                         // Else, navigate to Register2 fragment
-                        navigateTo(R.id.action_navigation_register1_to_navigation_register2, "email" to email)
+                        navigateTo(R.id.action_navigation_register1_to_navigation_register2, KEY_EMAIL to email)
                     })
                 } catch (_: NullPointerException) {
                     showMessage()
                 }
-            } else {
+            } else
                 navigateTo(R.id.action_navigation_register1_to_navigation_home)
-            }
         }
 
         // On login button click, navigate to Login fragment
         buttonToLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_register1_to_navigation_login)
+            navigateTo(R.id.action_navigation_register1_to_navigation_login)
         }
-
     }
 
 }
