@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     app:cardCornerRadius="@dimen/spacing_sm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_md" >
-
+    android:layout_marginBottom="@dimen/spacing_md"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -46,37 +44,12 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:layout_height="wrap_content"
-            android:text="@string/placeholder_category"
-            app:layout_constraintBottom_toTopOf="@+id/textViewLocation"
-            app:layout_constraintStart_toStartOf="@+id/textViewLocation" />
-
-        <TextView
-            android:id="@+id/textViewLocation"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.4"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_height="wrap_content"
+            android:text="@string/placeholder_message"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+            app:layout_constraintLeft_toRightOf="@id/imageViewMessage"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:text="@string/placeholder_location"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageViewMessage" />
+            android:layout_marginLeft="20dp" />
 
-        <TextView
-            android:id="@+id/textViewPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_md"
-            android:layout_marginRight="@dimen/spacing_md"
-            android:text="@string/price"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -95,4 +95,7 @@
     <string name="delete_account_question">Voulez-vous supprimer votre compte?</string>
     <string name="cancel">Annuler</string>
     <string name="delete">Supprimer</string>
+    <string name="ownerTitle">Trouver un nom(Mes produits)</string>
+    <string name="otherTitle">Trouver un autre titre (Autre produit)</string>
+    <string name="placeholder_message">Message</string>
 </resources>

@@ -3,13 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.messages.MessagesFragment"
     android:orientation="vertical">
 
     <TextView
-        android:gravity="center"
+        android:id="@+id/textViewOwnerTitle"
+        android:text="@string/ownerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Liste des messages de mes produits-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/NIY" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
+
+    <TextView
+        android:id="@+id/textViewOther"
+        android:text="@string/otherTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Liste des messages de mes produits-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
 
 </LinearLayout>
