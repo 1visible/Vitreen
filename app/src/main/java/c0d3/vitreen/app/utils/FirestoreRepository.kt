@@ -16,6 +16,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.WriteBatch
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -31,7 +32,8 @@ class FirestoreRepository {
         price: Double?,
         brand: String?,
         location: Location?,
-        category: Category?
+        category: Category?,
+        ids: ArrayList<String>?
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
@@ -46,6 +48,9 @@ class FirestoreRepository {
 
         if (category != null)
             query = query.whereEqualTo("category", category)
+
+        if (!ids.isNullOrEmpty())
+            query = query.whereIn("id", ids)
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)
@@ -120,6 +125,16 @@ class FirestoreRepository {
     fun addProduct(product: Product): Task<DocumentReference> {
         return db.collection(PRODUCTS_COLLECTION)
             .add(product)
+    }
+
+    fun deleteProducts(ids: ArrayList<String>): Task<Void> {
+        val products = db.batch()
+        ids.forEach { id ->
+            val reference = db.collection(PRODUCTS_COLLECTION).document(id)
+            products.delete(reference)
+        }
+
+        return products.commit()
     }
 
     /*

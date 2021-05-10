@@ -25,6 +25,7 @@
     <string name="title_profile">Profil</string>
     <!-- Home fragment -->
     <string name="my_location">Ma localisation</string>
+    <string name="no_products">Aucune annonce à afficher.</string>
     <!-- Login fragment -->
     <string name="have_no_account">Pas de compte ?</string>
     <string name="register_underline"><u>S\'inscrire</u></string>
@@ -65,7 +66,7 @@
     <string name="professional_informations">Informations professionnelles</string>
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
-    <string name="no_products">Aucune annonce à afficher.</string>
+    <string name="location_template">%1$s (%2$d)</string>
     <!-- Favorites fragment -->
     <string name="no_favorites">Aucun favori à afficher.</string>
     <!-- Product fragment -->

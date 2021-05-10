@@ -74,14 +74,8 @@ abstract class VFragment(
         locationsCollection = db.collection(LOCATIONS_COLLECTION)
         productsCollection = db.collection(PRODUCTS_COLLECTION)
 
-        if (requireAuth) {
-            try {
-                if (user == null || user!!.isAnonymous)
-                    navigateTo(loginNavigationId)
-            } catch (e: NullPointerException) {
-                navigateTo(loginNavigationId)
-            }
-        }
+        if (requireAuth && !isUserSignedIn())
+            navigateTo(loginNavigationId)
 
         return inflater.inflate(layoutId, container, false)
     }
@@ -99,6 +93,16 @@ abstract class VFragment(
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
+    }
+
+    fun isUserSignedIn(): Boolean {
+        try {
+            if (user == null || user!!.isAnonymous)
+                return false
+        } catch (_: java.lang.NullPointerException) {
+            return false
+        }
+        return true
     }
 
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {

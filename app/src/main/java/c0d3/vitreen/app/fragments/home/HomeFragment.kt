@@ -45,16 +45,17 @@ class HomeFragment : VFragment(
             })
         }
         // Else if the user is signed in anonymously
-        else if(user!!.isAnonymous) {
+        else if(!isUserSignedIn()) {
             showProducts()
         }
         // Else (the user is signed in)
         else {
+            // Get current user informations
             viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                val errorCode2 = pair.first
+                val errorCode = pair.first
                 val user = pair.second
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(errorCode2, R.string.no_products)) return@observeOnce
+                if(handleError(errorCode, R.string.no_products)) return@observeOnce
 
                 // Else, show the products according to user location
                 showProducts(user.location)
@@ -125,10 +126,10 @@ class HomeFragment : VFragment(
 
     private fun showProducts(location: Location? = null) {
         viewModel.getProducts(location = location).observe(viewLifecycleOwner, { pair ->
-            val errorCode2 = pair.first
+            val errorCode = pair.first
             val products = pair.second
             // If the call fails, show error message, hide loading spinner and show empty view
-            if(handleError(errorCode2, R.string.no_products)) return@observe
+            if(handleError(errorCode, R.string.no_products)) return@observe
 
             // Else if there is no products to display, hide loading spinner and show empty view
             if(products.isEmpty()) {
@@ -138,10 +139,9 @@ class HomeFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            recyclerViewProducts.visibility = VISIBLE
             val adapter = ProductAdapter { product -> adapterOnClick(product) }
             recyclerViewProducts.adapter = adapter
-
+            recyclerViewProducts.visibility = VISIBLE
         })
     }
 

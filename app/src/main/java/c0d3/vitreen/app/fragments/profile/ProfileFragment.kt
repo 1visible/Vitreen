@@ -4,15 +4,23 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.Location
+import c0d3.vitreen.app.models.Product
+import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.models.dto.UserDTO
 import c0d3.vitreen.app.models.dto.sdto.ProductSDTO
 import c0d3.vitreen.app.utils.Constants
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
 
 
 class ProfileFragment : VFragment(
@@ -25,175 +33,95 @@ class ProfileFragment : VFragment(
         R.id.action_navigation_profile_to_navigation_login
 ) {
 
-    private var productsList = ArrayList<ProductSDTO>()
-    private var productsIdsList = ArrayList<String>()
+    private var userDTO: User? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(user == null)
+        // Show loading spinner and hide empty view
+        setSpinnerVisibility(VISIBLE)
+        setEmptyView(GONE)
+
+        // If user is not signed in, skip this part
+        if(!isUserSignedIn())
             return
 
-        usersCollection
-            .whereEqualTo("emailAddress", user!!.email)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.size() == 1) {
-                    var userDTO: UserDTO? = null
-                    for (document in documents) {
-                        userDTO = UserDTO(
-                                document.id,
-                                document.get("fullname") as String,
-                                document.get("emailAddress") as String,
-                                document.get("phoneNumber") as String,
-                                document.get("contactByPhone") as Boolean,
-                                document.get("isProfessional") as Boolean,
-                                document.get("locationId") as String,
-                                document.get("companyName") as String?,
-                                document.get("siretNumber") as String?,
-                                document.get("productsId") as ArrayList<String>?,
-                                document.get("favoriteProductsId") as java.util.ArrayList<String>?
-                        )
-                    }
-                    if (userDTO != null) {
-                        println("-------------------${userDTO.locationId}")
-                        locationsCollection
-                            .document(userDTO.locationId)
-                            .get()
-                            .addOnSuccessListener {
-                                textViewFullname.text = userDTO.fullname
-                                textViewEmailAddress.text = userDTO.emailAddress
-                                textViewPhoneNumber.text = userDTO.phoneNumber
-                                if (userDTO.contactByPhone) {
-                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                                            context?.let { it ->
-                                                ContextCompat.getDrawable(it, R.drawable.icon_phone)
-                                            }, null,
-                                            context?.let { it1 ->
-                                                ContextCompat.getDrawable(
-                                                        it1,
-                                                        R.drawable.icon_checkmark
-                                                )
-                                            }, null
-                                    )
-                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                                            context?.let { it ->
-                                                ContextCompat.getDrawable(it, R.drawable.icon_envelope)
-                                            },
-                                            null,
-                                            null,
-                                            null
-                                    )
-                                } else {
-                                    textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                                            context?.let { it ->
-                                                ContextCompat.getDrawable(it, R.drawable.icon_envelope)
-                                            }, null,
-                                            context?.let { it1 ->
-                                                ContextCompat.getDrawable(
-                                                        it1,
-                                                        R.drawable.icon_checkmark
-                                                )
-                                            }, null
-                                    )
-                                    textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                                            context?.let { it ->
-                                                ContextCompat.getDrawable(it, R.drawable.icon_phone)
-                                            },
-                                            null,
-                                            null,
-                                            null
-                                    )
-                                }
-                                val zipCodeString =
-                                    if (it.get("zipCode") as Long? != null) "(${it.get("zipCode") as Long?})" else ""
-                                textViewPostalAddress.text =
-                                    it.get("name") as String + zipCodeString
-                                if (userDTO.isProfessional) {
-                                    textViewPersonalInformation.visibility = View.VISIBLE
-                                    textViewCompanyName.visibility = View.VISIBLE
-                                    textViewCompanyName.text = userDTO.companyName
-                                    textViewSiretNumber.visibility = View.VISIBLE
-                                    textViewSiretNumber.text = userDTO.siretNumber
-                                    //profilStatsButton.visibility = View.VISIBLE
-                                } else {
-                                    textViewPersonalInformation.visibility = View.GONE
-                                    textViewCompanyName.visibility = View.GONE
-                                    textViewSiretNumber.visibility = View.GONE
-                                    // profilStatsButton.visibility = View.GONE
-                                }
-                                if ((userDTO.productsId != null) && (userDTO.productsId!!.size > 0)) {
-                                    recyclerViewProducts.visibility = View.VISIBLE
-                                    textViewNoProducts.visibility = View.GONE
-                                    val productAdapter: ProductAdapter =
-                                        ProductAdapter { product -> adapterOnClick(product) }
-                                    recyclerViewProducts.adapter = productAdapter
-                                    userDTO.productsId!!.forEach { productId ->
-                                        productsCollection
-                                            .document(productId)
-                                            .get()
-                                            .addOnSuccessListener {
-                                                categoriesCollection
-                                                    .document(it.get("categoryId") as String)
-                                                    .get()
-                                                    .addOnSuccessListener { category ->
-                                                        locationsCollection
-                                                            .document(it.get("locationId") as String)
-                                                            .get()
-                                                            .addOnSuccessListener { location ->
-                                                                productsList.add(
-                                                                        ProductSDTO(
-                                                                                it.id,
-                                                                                it.get("title") as String,
-                                                                                category.get("name") as String,
-                                                                                location.get("name") as String,
-                                                                                it.get("price") as Double
-                                                                        )
-                                                                )
-                                                                println("--------------------------")
-                                                                println(it.get("price") as Double)
-                                                                println("--------------------------")
-                                                                if (productsList.size == userDTO.productsId!!.size) {
-                                                                    productAdapter.submitList(
-                                                                            productsList
-                                                                    )
-                                                                }
-                                                            }
-                                                    }
+        // Get current user informations
+        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+            val errorCode = pair.first
+            val user = pair.second
+            // If the call fails, show error message, hide loading spinner and show empty view
+            if(handleError(errorCode, R.string.error_placeholder)) return@observeOnce
 
-                                            }
-                                    }
-                                } else {
-                                    recyclerViewProducts.visibility = View.GONE
-                                    textViewNoProducts.visibility = View.VISIBLE
-                                }
-                            }
-                    }
+            // Else, fill the profile with user informations and store them
+            showProducts(user.productsId)
+            fillProfile(user)
+            userDTO = user
+        })
 
-                } else {
-                    println("--------------------------------documents size > 1")
-                }
-            }
-            .addOnFailureListener {
-                println("-------------------------problème")
-            }
-
+        // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
-            deleteAccount()
+            userDTO?.let { user -> deleteAccount(user) }
         }
 
     }
 
-    /* Opens Advert  when RecyclerView item is clicked. */
-    private fun adapterOnClick(product: ProductSDTO) {
-        navigateTo(
-                R.id.action_navigation_profile_to_navigation_product,
-                Constants.KEY_PRODUCT_ID to product.id
-        )
+    // TODO : Ajouter les items
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                auth.signOut()
+                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
-    //Supprimer un compte
-    private fun deleteAccount() {
+    /* Opens product detail when RecyclerView item is clicked. */
+    private fun adapterOnClick(product: Product) {
+        navigateTo(R.id.action_navigation_profile_to_navigation_product, KEY_PRODUCT_ID to product.id)
+    }
+
+    private fun fillProfile(user: User) {
+        // Fill personal informations
+        textViewFullname.text = user.fullname
+        textViewEmailAddress.text = user.emailAddress
+        textViewPhoneNumber.text = user.phoneNumber
+        textViewPostalAddress.text = getString(R.string.location_template, user.location.name, user.location.zipCode)
+
+        // Remove checkmark on least prefered contact method
+        if(user.contactByPhone)
+            textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_envelope, 0, 0, 0)
+        else
+            textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_phone, 0, 0, 0)
+
+        // Show personal informations section
+        textViewPersonalInformations.visibility = VISIBLE
+        textViewFullname.visibility = VISIBLE
+        textViewEmailAddress.visibility = VISIBLE
+        textViewPhoneNumber.visibility = VISIBLE
+        textViewPostalAddress.visibility = VISIBLE
+
+        if(!user.isProfessional)
+            return
+
+        // Fill professional informations (and show section)
+        textViewCompanyName.text = user.companyName
+        textViewSiretNumber.text = user.siretNumber
+        textViewProfessionalInformations.visibility = VISIBLE
+        textViewCompanyName.visibility = VISIBLE
+        textViewSiretNumber.visibility = VISIBLE
+    }
+
+    private fun deleteAccount(user: User) {
+
+        // If user is not signed in, skip this part
+        if(!isUserSignedIn())
+            return
+
+        
+
         //Vérification que l'utilisateur est connecté et non anonyme
         if ((user != null) && (!user!!.isAnonymous)) {
             //Recherche des infos de l'utilisateur courant
@@ -267,16 +195,32 @@ class ProfileFragment : VFragment(
         }
     }
 
-    // TODO : Ajouter les items
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                auth.signOut()
-                navigateTo(R.id.action_navigation_profile_to_navigation_home)
-                true
+    private fun showProducts(ids: ArrayList<String>) {
+        viewModel.getProducts(ids = ids).observe(viewLifecycleOwner, { pair ->
+            val errorCode = pair.first
+            val products = pair.second
+
+            // Show "My products" title
+            textViewMyProducts.visibility = VISIBLE
+
+            // If the call fails, show error message, hide loading spinner and show empty text
+            if (handleError(errorCode)) {
+                textViewNoProducts.visibility = VISIBLE
+                return@observe
             }
-            else -> super.onOptionsItemSelected(item)
-        }
+
+            // Else if there is no products to display, hide loading spinner and show empty text
+            if (products.isEmpty()) {
+                setSpinnerVisibility(GONE)
+                textViewNoProducts.visibility = VISIBLE
+                return@observe
+            }
+
+            // Else, show products in recycler view
+            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            recyclerViewProducts.adapter = adapter
+            recyclerViewProducts.visibility = VISIBLE
+        })
     }
 
 }
