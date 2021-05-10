@@ -2,6 +2,7 @@ package c0d3.vitreen.app.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
@@ -107,6 +109,7 @@ class FirestoreViewModel : ViewModel() {
         repository.linkUser(user, email, password).addOnCompleteListener { task ->
             val errorCode = if (task.isSuccessful) -1 else R.string.network_error
             errorCodeLiveData.value = errorCode
+            Log.i(TAG, "Exception: " + task.exception)
         }
 
         return errorCodeLiveData
@@ -144,8 +147,9 @@ class FirestoreViewModel : ViewModel() {
             val locationData: Location
 
             if (locations == null || locations.isEmpty) {
-                errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
                 locationData = Location()
+                if(exception == null)
+                    errorCode = R.string.error_404
             } else
                 locationData = toObject(locations.first(), Location::class.java)
 

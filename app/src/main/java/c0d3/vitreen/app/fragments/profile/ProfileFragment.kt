@@ -7,7 +7,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
-import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
@@ -169,7 +168,7 @@ class ProfileFragment : VFragment(
 
             // Else, show products in recycler view
             val adapter = ProductAdapter { product -> adapterOnClick(product) }
-            adapter.submitList(products.map { product -> product.productToDTO() })
+            adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE
         })

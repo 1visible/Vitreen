@@ -99,7 +99,7 @@ abstract class VFragment(
         try {
             if (user == null || user!!.isAnonymous)
                 return false
-        } catch (_: java.lang.NullPointerException) {
+        } catch (_: NullPointerException) {
             return false
         }
         return true

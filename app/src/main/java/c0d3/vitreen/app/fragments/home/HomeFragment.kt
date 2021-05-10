@@ -140,6 +140,7 @@ class HomeFragment : VFragment(
 
             // Else, show products in recycler view
             val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE
         })

@@ -18,7 +18,7 @@ data class Product(
     val ownerId: String = "",
     val modifiedAt: String = Calendar.getInstance().time.toString(),
 ) : Entity() {
-    fun productToDTO(): ProductDTO {
+    fun toDTO(): ProductDTO {
         return ProductDTO(id, title, price, location, category)
     }
 }

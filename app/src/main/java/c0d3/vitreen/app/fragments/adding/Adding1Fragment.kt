@@ -45,14 +45,14 @@ class Adding1Fragment : VFragment(
         context?.let { initializeLocation(it) }
 
         viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
-            if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
+            if (handleError(pair.first)) return@observeOnce
             categoriesList = pair.second as ArrayList<Category>
             // Ajout des catégories au menu déroulant du formulaire
             val adapter = context?.let { context ->
                 ArrayAdapter(
                     context,
                     R.layout.dropdown_menu_item,
-                    pair.second
+                    pair.second.map { category -> category.name }
                 )
             }
 
@@ -95,7 +95,7 @@ class Adding1Fragment : VFragment(
             )
             // Récupération de la localisation renseignée
             viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
-                if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
+                if (handleError(pair.first)) return@observeOnce
                 val location = pair.second
                 if (location != null) {
                     if (location.zipCode == null) {
@@ -113,45 +113,18 @@ class Adding1Fragment : VFragment(
 
     }
 
-    // TODO : Virer peut-être
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            LOCALISATION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    editTextLocation.editText?.text?.clear()
-                    showMessage(R.string.errorMessage)
-                    return
-                }
-                navigateTo(R.id.action_navigation_adding1_self)
-            }
-        }
-
-    }
-
     private fun initializeLocation(context: Context) {
-        // TODO : Virer peut-être (et garder FetchLocation)
         // Demande de permission pour la récupération de la localisation
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
             && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
         )
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCALISATION_REQUEST
-            )
-
         // Listener de récupération de localisation
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
     }

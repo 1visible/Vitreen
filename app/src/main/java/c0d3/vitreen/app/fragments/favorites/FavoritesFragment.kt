@@ -18,8 +18,7 @@ class FavoritesFragment : VFragment(
     -1,
     true,
     R.menu.menu_favorites,
-    true,
-    R.id.action_navigation_favorites_to_navigation_error
+    false
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +38,7 @@ class FavoritesFragment : VFragment(
                     limit = false,
                     ids = pair.second.favoriteProductsId
                 ).observe(viewLifecycleOwner, { pair ->
-                    if (handleError(pair.first)) {
+                    if (handleError(pair.first, R.string.no_favorites)) {
                         return@observe
                     }
                     // Else if there is no products to display, hide loading spinner and show empty text
@@ -51,7 +50,7 @@ class FavoritesFragment : VFragment(
 
                     // Else, show products in recycler view
                     val adapter = ProductAdapter { product -> adapterOnClick(product) }
-                    adapter.submitList(pair.second.map { item -> item.productToDTO() })
+                    adapter.submitList(pair.second.map { item -> item.toDTO() })
                     recyclerViewProducts.adapter = adapter
                     recyclerViewProducts.visibility = View.VISIBLE
                 })
