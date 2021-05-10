@@ -124,6 +124,12 @@ abstract class VFragment(
                 return false
             }
         }
+
+        val input = inputs.last()
+
+        if(input != null)
+            input.error = if(input.editText?.text.isNullOrBlank()) "" else null
+
         return true
     }
 
