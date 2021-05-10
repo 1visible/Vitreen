@@ -150,6 +150,9 @@
         <action
             android:id="@+id/action_navigation_product_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_product_to_navigation_home"
+            app:destination="@id/navigation_home" />
     </fragment>
 
 </navigation>

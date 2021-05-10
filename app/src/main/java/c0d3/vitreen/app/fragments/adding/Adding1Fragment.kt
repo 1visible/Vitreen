@@ -39,6 +39,14 @@ class Adding1Fragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Show loading spinner and hide empty view
+        setSpinnerVisibility(View.VISIBLE)
+        setEmptyView(View.GONE)
+
+        // If user is not signed in, skip this part
+        if (!isUserSignedIn())
+            return
+
         // Try to initialize location from GPS
         context?.let { context -> initializeLocation(context) }
 
