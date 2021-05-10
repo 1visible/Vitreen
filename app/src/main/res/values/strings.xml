@@ -37,6 +37,7 @@
     <string name="login_underline"><u>Se connecter</u></string>
     <string name="confirmation">Confirmation</string>
     <string name="next">Suivant</string>
+    <string name="passwords_not_equals">Les mots de passe doivent être identiques…</string>
     <!-- Register2 fragment -->
     <string name="fullname">Nom complet</string>
     <string name="phone_number">N° de téléphone</string>

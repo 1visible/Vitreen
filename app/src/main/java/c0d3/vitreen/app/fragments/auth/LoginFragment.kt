@@ -44,7 +44,7 @@ class LoginFragment : VFragment(
                 navigateTo(R.id.action_navigation_login_to_navigation_home)
         }
 
-        // On register button click, navigate to Register fragment
+        // On register button click, navigate to Register1 fragment
         buttonToRegister1.setOnClickListener {
             navigateTo(R.id.action_navigation_login_to_navigation_register1)
         }

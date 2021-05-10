@@ -18,22 +18,36 @@ class Register1Fragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // On register (part 2) button click, navigate to Register fragment
+        // On register (part 2) button click, navigate to Register2 fragment
         buttonToRegister2.setOnClickListener {
-
+            // Check if required inputs are filled
             if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword, editTextPasswordConfirmation))
                 return@setOnClickListener
 
-                if (editTextPassword.editText?.text.toString() == editTextPasswordConfirmation.editText?.text.toString()) {
-                    if (user == null)
-                        registerUser()
-                    else if (user!!.isAnonymous)
-                        linkAnonymousToCredential()
-                } else {
-                    editTextPassword.editText?.text?.clear()
-                    editTextPasswordConfirmation.editText?.text?.clear()
-                    showMessage(R.string.errorMessage)
-                }
+            val password = inputToString(editTextPassword)
+            val passwordConfirmation = inputToString(editTextPasswordConfirmation)
+
+            if(password == null || passwordConfirmation == null)
+                return@setOnClickListener
+
+            // Check if passwords are equals
+            if(password != passwordConfirmation) {
+                editTextPassword.editText?.text?.clear()
+                editTextPasswordConfirmation.editText?.text?.clear()
+                showMessage(R.string.passwords_not_equals)
+                return@setOnClickListener
+            }
+
+            if (editTextPassword.editText?.text.toString() == editTextPasswordConfirmation.editText?.text.toString()) {
+                if (user == null)
+                    registerUser()
+                else if (user!!.isAnonymous)
+                    linkAnonymousToCredential()
+            } else {
+                editTextPassword.editText?.text?.clear()
+                editTextPasswordConfirmation.editText?.text?.clear()
+                showMessage(R.string.errorMessage)
+            }
         }
 
         buttonToLogin.setOnClickListener {

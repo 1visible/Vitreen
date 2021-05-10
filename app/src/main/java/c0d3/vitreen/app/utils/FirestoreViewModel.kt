@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.utils
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -69,8 +70,9 @@ class FirestoreViewModel : ViewModel() {
             if (users == null || users.isEmpty) {
                 errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
                 userData = User()
-            } else
-                userData = users.first().toObject(User::class.java)
+            } else {
+                userData = toObject(users.first(), User::class.java)
+            }
 
             userLiveData.value = Pair(errorCode, userData)
         }
@@ -95,7 +97,7 @@ class FirestoreViewModel : ViewModel() {
                 errorCode = R.string.errorMessage // TODO : Remplacer par un meilleur message
                 locationData = Location()
             } else
-                locationData = locations.first().toObject(Location::class.java)
+                locationData = toObject(locations.first(), Location::class.java)
 
             locationLiveData.value = Pair(errorCode, locationData)
         }
@@ -165,8 +167,7 @@ class FirestoreViewModel : ViewModel() {
 
             if (documents != null) {
                 for (document in documents) {
-                    val value = document.toObject(T::class.java)
-                    value.id = document.id
+                    val value = toObject(document, T::class.java)
                     valuesList.add(value)
                 }
             }
@@ -177,19 +178,10 @@ class FirestoreViewModel : ViewModel() {
         return liveData
     }
 
-    /*
-    // save address to firebase
-    fun saveAddressToFirebase(addressItem: AddressItem){
-        repository.saveAddressItem(addressItem).addOnFailureListener {
-            Log.e(TAG,"Failed to save Address!")
-        }
-    }
+    private fun <T: Entity> toObject(document: QueryDocumentSnapshot, @NonNull type: Class<T>): T {
+        val obj = document.toObject(type)
+        obj.id = document.id
 
-    // delete an address from firebase
-    fun deleteAddress(addressItem: AddressItem){
-        repository.deleteAddress(addressItem).addOnFailureListener {
-            Log.e(TAG,"Failed to delete Address")
-        }
+        return obj
     }
-    */
 }
