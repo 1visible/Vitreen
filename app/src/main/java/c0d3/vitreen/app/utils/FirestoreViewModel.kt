@@ -10,6 +10,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
@@ -19,6 +20,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.android.synthetic.main.fragment_register1.*
 import java.io.InputStream
 
 class FirestoreViewModel : ViewModel() {
@@ -99,6 +101,33 @@ class FirestoreViewModel : ViewModel() {
         }
 
         return userLiveData
+    }
+
+    fun linkUser(user: FirebaseUser, email: String, password: String): LiveData<Int> {
+        repository.linkUser(user, email, password).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
+
+        return errorCodeLiveData
+    }
+
+    fun registerUser(email: String, password: String): LiveData<Int> {
+        repository.registerUser(email, password).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
+
+        return errorCodeLiveData
+    }
+
+    fun addUser(user: User): LiveData<Int> {
+        repository.addUser(user).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
+
+        return errorCodeLiveData
     }
 
     fun getCategories(): LiveData<Pair<Int, List<Category>>> {

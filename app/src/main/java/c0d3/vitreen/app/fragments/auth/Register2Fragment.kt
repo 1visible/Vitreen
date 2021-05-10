@@ -6,12 +6,11 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Location
@@ -38,109 +37,68 @@ class Register2Fragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         context?.let { initializeLocation(it) }
-        switchProfessionalAccount.isChecked = false
-        editTextCompany.visibility = View.GONE
-        editTextSiret.visibility = View.GONE
+
         switchProfessionalAccount.setOnCheckedChangeListener { _, isChecked ->
-            editTextCompany.visibility = if (isChecked) View.VISIBLE else View.GONE
-            editTextSiret.visibility = if (isChecked) View.VISIBLE else View.GONE
+            val visibility = if(isChecked) VISIBLE else GONE
+            editTextCompany.visibility = visibility
+            editTextSiret.visibility = visibility
         }
 
         buttonSubmitRegister.setOnClickListener {
-            var user: User
-            val currentLocation = Location(
-                editTextLocation.editText?.text.toString().replaceFirst(
-                    editTextLocation.editText?.text.toString()[0],
-                    editTextLocation.editText?.text.toString()[0].toUpperCase()
-                ),
-                if (zipCode == "" || editTextLocation.editText?.text.toString() != cityName) null else zipCode.toLong()
-            )
+            // Check if required inputs are filled
+            if(isAnyRequiredInputEmpty(editTextFullname, editTextPhoneNumber, editTextLocation))
+                return@setOnClickListener
+            if(switchProfessionalAccount.isChecked && isAnyRequiredInputEmpty(editTextCompany, editTextSiret))
+                return@setOnClickListener
 
-            locationsCollection.whereEqualTo("name", currentLocation.name)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.size() == 1) {
-                        for (document in documents) {
-                            if (document.get("zipCode") == null) {
-                                locationsCollection
-                                    .document(document.id)
-                                    .update("zipCode", currentLocation.zipCode)
-                            }
-                            user = if (switchProfessionalAccount.isChecked) {
-                                User(
-                                    editTextFullname.editText?.text.toString(),
-                                    emailAddress,
-                                    editTextPhoneNumber.editText?.text.toString(),
-                                    radioButtonPhone.isChecked,
-                                    true,
-                                    document.id,
-                                    editTextCompany.editText?.text.toString(),
-                                    editTextSiret.editText?.text.toString()
-                                )
-                            } else {
-                                User(
-                                    editTextFullname.editText?.text.toString(),
-                                    emailAddress,
-                                    editTextPhoneNumber.editText?.text.toString(),
-                                    radioButtonPhone.isChecked,
-                                    false,
-                                    document.id
-                                )
-                            }
-                            usersCollection.document().set(user).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    navigateTo(R.id.action_navigation_register2_to_navigation_profil)
-                                } else
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.errorMessage),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                            }
+            val fullname = inputToString(editTextFullname)
+            val phoneNumber = inputToString(editTextPhoneNumber)
+            val locationName = inputToString(editTextLocation)?.toLowerCase(Locale.ROOT)?.capitalize(Locale.ROOT)
+            val zipCodeL = zipCode.toLongOrNull()
+            val company = inputToString(editTextCompany)
+            val siret = inputToString(editTextSiret)
 
-                        }
-                    } else {
-                        locationsCollection.add(currentLocation)
-                            .addOnSuccessListener {
-                                user = if (switchProfessionalAccount.isChecked) {
-                                    User(
-                                        editTextFullname.editText?.text.toString(),
-                                        emailAddress,
-                                        editTextPhoneNumber.editText?.text.toString(),
-                                        radioButtonPhone.isChecked,
-                                        true,
-                                        it.id,
-                                        editTextCompany.editText?.text.toString(),
-                                        editTextSiret.editText?.text.toString()
-                                    )
-                                } else {
-                                    User(
-                                        editTextFullname.editText?.text.toString(),
-                                        emailAddress,
-                                        editTextPhoneNumber.editText?.text.toString(),
-                                        radioButtonPhone.isChecked,
-                                        false,
-                                        it.id
-                                    )
-                                }
+            // Double check informations after conversion
+            if(fullname == null || phoneNumber == null || locationName == null)
+                return@setOnClickListener
+            if(switchProfessionalAccount.isChecked && (company == null || siret == null))
+                return@setOnClickListener
 
-                                usersCollection.document().set(user).addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        navigateTo(R.id.action_navigation_register2_to_navigation_profil)
-                                    } else {
-                                        showMessage(R.string.errorMessage)
-                                    }
-                                }
-                            }
-                            .addOnFailureListener {
-                                showMessage(R.string.errorMessage)
-                            }
-                    }
+            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode = pair.first
+                var location = pair.second
+                // If the call fails, show error message and hide loading spinner
+                if(errorCode != R.string.error_404 && handleError(errorCode)) return@observeOnce
+
+                // Else if location could not be found, create new location
+                if(errorCode == R.string.error_404)
+                    location = Location(locationName, zipCodeL)
+                else if(location.zipCode == null && zipCodeL != null) {
+                    location.zipCode = zipCodeL
+                    viewModel.updateLocation(location.id, zipCodeL)
                 }
-                .addOnFailureListener {
-                    showMessage(R.string.errorMessage)
-                }
+
+                val user = User(
+                    fullname = fullname,
+                    emailAddress = emailAddress,
+                    phoneNumber = phoneNumber,
+                    location = location,
+                    contactByPhone = radioButtonPhone.isChecked,
+                    isProfessional = switchProfessionalAccount.isChecked,
+                    companyName = company,
+                    siretNumber = siret
+                )
+
+                viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { errorCode2 ->
+                    // If the call fails, show error message and hide loading spinner
+                    if(handleError(errorCode2)) return@observeOnce2
+                    // Else, navigate to Register2 fragment
+                    navigateTo(R.id.action_navigation_register2_to_navigation_profil)
+                    // TODO : Ajouter message confirmation
+                })
+            })
         }
     }
 
@@ -202,11 +160,9 @@ class Register2Fragment : VFragment(
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     editTextLocation.editText?.text?.clear()
                     Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    val bundle = bundleOf("email" to emailAddress)
-                    findNavController().navigate(R.id.action_navigation_register2_self, bundle)
-                }
+                        .show() // TODO : Replace this soon
+                } else
+                    navigateTo(R.id.action_navigation_register2_self, "email" to emailAddress)
             }
         }
     }

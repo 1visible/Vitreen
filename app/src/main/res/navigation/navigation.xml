@@ -105,6 +105,9 @@
         <action
             android:id="@+id/action_navigation_register1_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_register1_to_navigation_home"
+            app:destination="@id/navigation_home" />
     </fragment>
 
     <fragment
@@ -138,12 +141,6 @@
             android:id="@+id/action_navigation_login_to_navigation_home"
             app:destination="@id/navigation_home" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_error"
-        android:name="c0d3.vitreen.app.fragments.error.ErrorFragment"
-        android:label="@string/label_error"
-        tools:layout="@layout/fragment_error" />
 
     <fragment
         android:id="@+id/navigation_product"

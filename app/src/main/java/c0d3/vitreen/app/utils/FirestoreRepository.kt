@@ -3,6 +3,7 @@ package c0d3.vitreen.app.utils
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
+import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
@@ -11,6 +12,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -80,6 +82,19 @@ class FirestoreRepository {
 
     fun getUser(user: FirebaseUser): Query {
         return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
+    }
+
+    fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
+        val credential = EmailAuthProvider.getCredential(email, password)
+        return user.linkWithCredential(credential)
+    }
+
+    fun registerUser(email: String, password: String): Task<AuthResult> {
+        return auth.createUserWithEmailAndPassword(email, password)
+    }
+
+    fun addUser(user: User): Task<DocumentReference> {
+        return db.collection(USERS_COLLECTION).add(user)
     }
 
     // Get all categories
