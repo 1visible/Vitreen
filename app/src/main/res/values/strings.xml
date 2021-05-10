@@ -99,4 +99,6 @@
     <string name="otherTitle">Trouver un autre titre (Autre produit)</string>
     <string name="placeholder_message">Message</string>
     <string name="about">À propos de</string>
+    <string name="createDiscussion">Vous avez créé la discussion</string>
+    <string name="label_discussion">Mes discussions</string>
 </resources>

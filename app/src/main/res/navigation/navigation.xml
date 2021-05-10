@@ -33,6 +33,13 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_discussion"
+        android:name="c0d3.vitreen.app.fragments.messages.DiscussionFragment"
+        android:label="@string/label_discussion"
+        tools:layout="@layout/fragment_discussion"
+        />
+
+    <fragment
         android:id="@+id/navigation_adding1"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
         android:label="@string/label_adding"
@@ -149,8 +156,8 @@
             app:destination="@id/navigation_login" />
 
         <action
-            android:id="@+id/action_navigation_product_to_navigation_message"
-            app:destination="@id/navigation_messages" />
+            android:id="@+id/action_navigation_product_to_navigation_discussion"
+            app:destination="@id/navigation_discussion" />
     </fragment>
 
 </navigation>

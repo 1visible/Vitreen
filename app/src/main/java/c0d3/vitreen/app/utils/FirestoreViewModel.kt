@@ -14,10 +14,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -28,13 +25,14 @@ import java.io.InputStream
 class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
     private var errorCodeLiveData: MutableLiveData<Int> = MutableLiveData()
+    private var DiscussionLiveData: MutableLiveData<Pair<Int, String>> = MutableLiveData()
     private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
     private var productLiveData: MutableLiveData<Pair<Int, Product>> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
-    var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
-    var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
-    var imagesLiveData: MutableLiveData<Pair<Int, List<Bitmap>>> = MutableLiveData()
+    private var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
+    private var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
+    private var imagesLiveData: MutableLiveData<Pair<Int, List<Bitmap>>> = MutableLiveData()
 
 
     fun getProducts(
@@ -47,7 +45,7 @@ class FirestoreViewModel : ViewModel() {
         ids: ArrayList<String>? = null
     ): LiveData<Pair<Int, List<Product>>> {
         return getList(
-            repository.getProducts(limit, title, price, brand, location, category,ids),
+            repository.getProducts(limit, title, price, brand, location, category, ids),
             productsLiveData
         )
     }
@@ -148,7 +146,7 @@ class FirestoreViewModel : ViewModel() {
 
             if (locations == null || locations.isEmpty) {
                 locationData = Location()
-                if(exception == null)
+                if (exception == null)
                     errorCode = R.string.error_404
             } else
                 locationData = toObject(locations.first(), Location::class.java)
@@ -223,6 +221,18 @@ class FirestoreViewModel : ViewModel() {
                 updateUser(user.id, user.productsId)
             }
         return errorCodeLiveData
+    }
+
+    fun addDiscussion(discussion: Discussion): LiveData<Pair<Int, String>> {
+        repository.addDiscussion(discussion).addOnCompleteListener { task ->
+            val discussionData = task.result
+            val errorCode =
+                if (task.isSuccessful && discussionData != null) -1 else R.string.network_error
+            if (discussionData != null) {
+                DiscussionLiveData.value = Pair(errorCode, discussionData.id)
+            }
+        }
+        return DiscussionLiveData
     }
 
     fun deleteProducts(ids: ArrayList<String>): LiveData<Int> {

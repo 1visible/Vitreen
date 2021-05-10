@@ -9,6 +9,7 @@ class Constants {
         const val KEY_LOCATION: String = "locationId"
         const val DESCRIPTION: String = "description"
         const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"
+        const val KEY_DISCUSSION_ID="KEY_DISCUSSION_ID"
         const val GALLERY_REQUEST: Int = 12254
         const val LOCALISATION_REQUEST: Int = 15266
         const val GALLERY_REQUEST_TAG: String = "Select picture"

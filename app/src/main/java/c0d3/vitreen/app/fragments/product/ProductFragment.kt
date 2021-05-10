@@ -12,7 +12,10 @@ import android.widget.ImageView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Discussion
+import c0d3.vitreen.app.models.Message
 import c0d3.vitreen.app.models.dto.ProductDTO
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.ProductImageViewModel
 import c0d3.vitreen.app.utils.VFragment
@@ -81,13 +84,33 @@ class ProductFragment : VFragment(
                                 imageViewProduct.setImageBitmap(imagesPair.second.get(counter))
                             }
                         })
+                    buttonSendMessage.setOnClickListener { view ->
+                        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pairUser ->
+                            if (handleError(pairUser.first)) return@observeOnce
+                            var firstMessage = ArrayList<Message>()
+                            firstMessage.add(
+                                Message(
+                                    pairUser.second.id,
+                                    getString(R.string.createDiscussion)
+                                )
+                            )
+                            val discussion = Discussion(
+                                pairUser.second.id,
+                                pair.second.id,
+                                pair.second.title,
+                                firstMessage
+                            )
+                            viewModel.addDiscussion(discussion)
+                                .observeOnce(viewLifecycleOwner, { pair ->
+                                    if (handleError(pair.first)) return@observeOnce
+                                    navigateTo(
+                                        R.id.action_navigation_product_to_navigation_discussion,
+                                        KEY_DISCUSSION_ID to pair.second
+                                    )
+                                })
+                        })
+                    }
                 })
-            buttonSendMessage.setOnClickListener {
-                navigateTo(
-                    R.id.action_navigation_product_to_navigation_message,
-                    KEY_PRODUCT_ID to it
-                )
-            }
         }
     }
 

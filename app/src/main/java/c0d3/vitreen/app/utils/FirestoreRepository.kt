@@ -1,10 +1,8 @@
 package c0d3.vitreen.app.utils
 
-import c0d3.vitreen.app.models.Category
-import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSION_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
@@ -157,6 +155,12 @@ class FirestoreRepository {
         for (i in inputStream.indices)
             imagesRef.child("${productId}/image_$i")
                 .putStream(inputStream[i], metadata)
+    }
+
+    fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
+        return db.collection(DISCUSSION_COLLECTION).add(discussion).addOnCompleteListener {
+            it.result!!.id
+        }
     }
 
     fun deleteProducts(ids: ArrayList<String>): Task<Void> {
