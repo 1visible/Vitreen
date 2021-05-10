@@ -142,7 +142,7 @@ class ProductFragment : VFragment(
             showMessage(R.string.network_error)
             return
         }
-        // TODO : Terminer de gérer ça (productId null, le updateUser throws nullpointer à vérifier partout)
+        // TODO : Terminer de gérer ça (productId null, commentaires)
         try {
             viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
                 val errorCode = pair.first
