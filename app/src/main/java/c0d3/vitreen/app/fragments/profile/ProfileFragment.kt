@@ -14,6 +14,7 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
+import java.lang.NullPointerException
 
 
 class ProfileFragment : VFragment(
@@ -24,8 +25,6 @@ class ProfileFragment : VFragment(
     requireAuth = true,
     loginNavigationId = R.id.action_navigation_profile_to_navigation_login
 ) {
-
-    // TODO : A VERIFIER !!!!!!!
 
     private var userDTO: User? = null
 
@@ -41,17 +40,21 @@ class ProfileFragment : VFragment(
             return
 
         // Get current user informations
-        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
-            val user = pair.second
-            // If the call fails, show error message, hide loading spinner and show empty view
-            if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
+        try {
+            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode = pair.first
+                val user = pair.second
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
 
-            // Else, fill the profile with user informations and store them
-            showProducts(user.productsIds)
-            fillProfile(user)
-            userDTO = user
-        })
+                // Else, fill the profile with user informations and store them
+                showProducts(user.productsIds)
+                fillProfile(user)
+                userDTO = user
+            })
+        } catch(_: NullPointerException) {
+            showMessage()
+        }
 
         // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
@@ -71,12 +74,8 @@ class ProfileFragment : VFragment(
         }
     }
 
-    /* Opens product detail when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(
-            R.id.action_navigation_profile_to_navigation_product,
-            KEY_PRODUCT_ID to product.id
-        )
+        navigateTo(R.id.action_navigation_profile_to_navigation_product, KEY_PRODUCT_ID to product.id)
     }
 
     private fun fillProfile(user: User) {
@@ -84,8 +83,8 @@ class ProfileFragment : VFragment(
         textViewFullname.text = user.fullname
         textViewEmailAddress.text = user.emailAddress
         textViewPhoneNumber.text = user.phoneNumber
-        textViewPostalAddress.text =
-            getString(R.string.location_template, user.location.name, user.location.zipCode)
+        val zipCode = if(user.location.zipCode == null) "?" else user.location.zipCode.toString()
+        textViewPostalAddress.text = getString(R.string.location_template, user.location.city, zipCode)
 
         // Remove checkmark on least prefered contact method
         if (user.contactByPhone)
@@ -128,20 +127,24 @@ class ProfileFragment : VFragment(
             return
         }
 
-        viewModel.deleteProducts(user.productsId).observeOnce(viewLifecycleOwner, { errorCode ->
+        viewModel.deleteProducts(user.productsIds).observeOnce(viewLifecycleOwner, { errorCode ->
             // If the call fails, show error message and hide loading spinner
             if (handleError(errorCode)) return@observeOnce
 
             // Else, delete the user
-            viewModel.deleteUser(auth.currentUser!!)
-                .observeOnce(viewLifecycleOwner, observeOnce2@{ errorCode2 ->
+            try {
+                viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@{ errorCode2 ->
                     // If the call fails, show error message and hide loading spinner
                     if (handleError(errorCode2)) return@observeOnce2
+
                     // Else, sign out from the app and return to home
                     auth.signOut()
                     navigateTo(R.id.action_navigation_profile_to_navigation_home)
                     showMessage(R.string.account_deleted)
                 })
+            } catch(_: NullPointerException) {
+                showMessage()
+            }
         })
     }
 
