@@ -67,15 +67,12 @@ class FirestoreRepository {
         return auth.signInAnonymously()
     }
 
-    fun getUser(user: FirebaseUser? = null, userId: String? = null): Query {
-        var query: Query = db.collection(USERS_COLLECTION)
-        if (user != null) {
-            query = query.whereEqualTo("emailAddress", user.email)
-        }
-        if (userId != null) {
-            query = query.whereEqualTo("id", userId)
-        }
-        return query.limit(1)
+    fun signIn(email: String, password: String): Task<AuthResult> {
+        return auth.signInWithEmailAndPassword(email, password)
+    }
+
+    fun getUser(user: FirebaseUser): Query {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
     }
 
     // Get all categories

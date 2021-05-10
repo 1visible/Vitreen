@@ -96,7 +96,7 @@ class HomeFragment : VFragment(
         // On search button click, query products according to search filters
         buttonResearch.setOnClickListener {
             if(areAllInputsEmpty(editTextResearchText, editTextMaxPrice, textInputCategory, autoCompleteLocation, editTextBrand))
-                return@setOnClickListener
+                return@setOnClickListener // TODO : Ajouter un message snackbar
 
             val title = inputToString(editTextResearchText)
             val price = inputToString(editTextMaxPrice)?.toDoubleOrNull()

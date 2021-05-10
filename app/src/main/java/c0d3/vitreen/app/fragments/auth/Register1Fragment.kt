@@ -18,6 +18,7 @@ class Register1Fragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // On register (part 2) button click, navigate to Register fragment
         buttonToRegister2.setOnClickListener {
 
             if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword, editTextPasswordConfirmation))

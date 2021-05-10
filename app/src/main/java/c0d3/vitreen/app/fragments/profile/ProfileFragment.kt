@@ -131,7 +131,7 @@ class ProfileFragment : VFragment(
     }
 
     private fun showProducts(ids: ArrayList<String>) {
-        viewModel.getProducts(ids = ids).observe(viewLifecycleOwner, { pair ->
+        viewModel.getProducts(limit = false, ids = ids).observe(viewLifecycleOwner, { pair ->
             val errorCode = pair.first
             val products = pair.second
 

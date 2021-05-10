@@ -20,5 +20,7 @@ class Constants {
         const val LOCATIONS_COLLECTION = "locations"
         const val CATEGORIES_COLLECTION = "categories"
         const val DISCUSSION_COLLECTION = "discussions"
+        const val FAKE_EMAIL = "@temp.vitreen.com"
+        const val FAKE_PASSWORD = ":q8T!@&b//n}E%)"
     }
 }

@@ -44,11 +44,19 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun signInAnonymously(): LiveData<Int> {
-        repository.signInAnonymously()
-            .addOnCompleteListener { task ->
-                val errorCode = if (task.isSuccessful) -1 else R.string.network_error
-                errorCodeLiveData.value = errorCode
-            }
+        repository.signInAnonymously().addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
+
+        return errorCodeLiveData
+    }
+
+    fun signIn(email: String, password: String): LiveData<Int> {
+        repository.signIn(email, password).addOnCompleteListener { task ->
+            val errorCode = if (task.isSuccessful) -1 else R.string.network_error
+            errorCodeLiveData.value = errorCode
+        }
 
         return errorCodeLiveData
     }
