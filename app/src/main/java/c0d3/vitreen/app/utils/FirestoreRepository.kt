@@ -9,6 +9,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -38,7 +39,7 @@ class FirestoreRepository {
         category: Category?,
         ids: ArrayList<String>?
     ): Query {
-        var query: Query = db.collection(PRODUCTS_COLLECTION)
+        var query: Query = db.collection(PRODUCTS_COLLECTION).whereLessThan("reported", REPORT_THRESHOLD)
 
         if (title != null)
             query = query.whereEqualTo("title", title)
