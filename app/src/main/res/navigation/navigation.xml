@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/navigation_adding1"
         android:name="c0d3.vitreen.app.fragments.adding.Adding1Fragment"
-        android:label="@string/label_adding"
+        android:label="@string/label_adding1"
         tools:layout="@layout/fragment_adding1">
         <action
             android:id="@+id/from_adding1_to_login"
@@ -69,7 +69,7 @@
     <fragment
         android:id="@+id/navigation_adding2"
         android:name="c0d3.vitreen.app.fragments.adding.Adding2Fragment"
-        android:label="fragment_adding2"
+        android:label="@string/label_adding2"
         tools:layout="@layout/fragment_adding2">
         <action
             android:id="@+id/from_adding2_to_home"

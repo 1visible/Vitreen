@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
@@ -12,7 +12,8 @@
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
-    <string name="label_adding">Ajouter une annonce</string>
+    <string name="label_adding1" tools:ignore="TypographyFractions">Ajouter une annonce (1/2)</string>
+    <string name="label_adding2">Ajouter une annonce (2/2)</string>
     <string name="label_favorites">Mes favoris</string>
     <string name="label_profile">Mon profil</string>
     <string name="label_register">Inscription</string>

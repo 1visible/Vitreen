@@ -63,6 +63,7 @@ class FavoritesFragment : VFragment(
 
     private fun showFavorites() {
         // Observe products without making any request
+        viewModel.productsLiveData.value = -1 to mutableListOf()
         viewModel.productsLiveData.observe(viewLifecycleOwner, { pair ->
             val errorCode = pair.first
             val products = pair.second

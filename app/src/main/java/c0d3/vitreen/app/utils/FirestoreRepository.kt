@@ -98,7 +98,7 @@ class FirestoreRepository {
         return db.collection(USERS_COLLECTION).add(user)
     }
 
-    fun getCategories(): CollectionReference {
+    fun getCategories(): Query {
         return db.collection(CATEGORIES_COLLECTION)
     }
 

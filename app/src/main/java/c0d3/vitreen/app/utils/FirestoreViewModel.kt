@@ -219,8 +219,10 @@ class FirestoreViewModel : ViewModel() {
             val document = task.result
             val value: T
 
-            if(document != null)
-                value = toObject(document as QueryDocumentSnapshot, T::class.java)
+            val obj = document?.let { doc -> toObject(doc, T::class.java) }
+
+            if(obj != null)
+                value = obj
             else {
                 value = T::class.java.newInstance()
                 if(task.isSuccessful)
@@ -231,6 +233,13 @@ class FirestoreViewModel : ViewModel() {
         }
 
         return liveData
+    }
+
+    private fun <T : Entity> toObject(document: DocumentSnapshot, @NonNull type: Class<T>): T? {
+        val obj = document.toObject(type)
+        obj?.id = document.id
+
+        return obj
     }
 
     private fun <T : Entity> toObject(document: QueryDocumentSnapshot, @NonNull type: Class<T>): T {

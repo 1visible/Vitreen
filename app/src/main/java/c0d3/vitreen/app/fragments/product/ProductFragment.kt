@@ -43,7 +43,6 @@ class ProductFragment : VFragment(
 
         // Show loading spinner and hide empty view
         setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
 
         // Try to show product if possible, otherwise go back to home
         try {
