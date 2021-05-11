@@ -31,6 +31,7 @@ class DiscussionFragment : VFragment(
         discussionId = arguments?.getString(Constants.KEY_DISCUSSION_ID).orEmpty()
         if (!discussionId!!.isEmpty()) {
             viewModel.getDiscussion(discussionId!!).observe(viewLifecycleOwner, { pair ->
+                if(handleError(pair.first)) return@observe
 
             })
         }
