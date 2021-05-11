@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".fragments.profile.ProfileFragment">
 
+    <include
+        layout="@layout/empty_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewPersonalInformations"
         android:text="@string/personal_informations"
