@@ -41,7 +41,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
-        android:id="@+id/buttonPreviousImage"
+        android:id="@+id/buttonSendMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/menu_icon_messages"

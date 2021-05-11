@@ -156,6 +156,10 @@ class FirestoreRepository {
         }
     }
 
+    fun updateDiscussion(id:String,messages:ArrayList<Message>){
+        db.collection(DISCUSSION_COLLECTION).document(id).update("messages",messages)
+    }
+
     fun addLocation(location: Location) {
         db.collection(LOCATIONS_COLLECTION)
             .add(location)

@@ -87,33 +87,27 @@ class ProductFragment : VFragment(
                     buttonSendMessage.setOnClickListener { view ->
                         viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pairUser ->
                             if (handleError(pairUser.first)) return@observeOnce
-                            viewModel.getUser(id = pair.second.ownerId)
-                                .observeOnce(viewLifecycleOwner, productOwner@{ productOwnerPair ->
-                                    if (handleError(productOwnerPair.first)) return@productOwner
-                                    var firstMessage = ArrayList<Message>()
-                                    firstMessage.add(
-                                        Message(
-                                            pairUser.second.id,
-                                            pairUser.second.fullname,
-                                            productOwnerPair.second.fullname,
-                                            getString(R.string.createDiscussion)
-                                        )
+                            var firstMessage = ArrayList<Message>()
+                            firstMessage.add(
+                                Message(
+                                    pairUser.second.id,
+                                    getString(R.string.createDiscussion)
+                                )
+                            )
+                            val discussion = Discussion(
+                                pairUser.second.id,
+                                pair.second.id,
+                                pair.second.title,
+                                pair.second.ownerId,
+                                firstMessage
+                            )
+                            viewModel.addDiscussion(discussion)
+                                .observeOnce(viewLifecycleOwner, addDiscussion@{ pair ->
+                                    if (handleError(pair.first)) return@addDiscussion
+                                    navigateTo(
+                                        R.id.action_navigation_product_to_navigation_discussion,
+                                        KEY_DISCUSSION_ID to pair.second
                                     )
-                                    val discussion = Discussion(
-                                        pairUser.second.id,
-                                        pair.second.id,
-                                        pair.second.title,
-                                        pair.second.ownerId,
-                                        firstMessage
-                                    )
-                                    viewModel.addDiscussion(discussion)
-                                        .observeOnce(viewLifecycleOwner, addDiscussion@{ pair ->
-                                            if (handleError(pair.first)) return@addDiscussion
-                                            navigateTo(
-                                                R.id.action_navigation_product_to_navigation_discussion,
-                                                KEY_DISCUSSION_ID to pair.second
-                                            )
-                                        })
                                 })
                         })
                     }

@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.adapter.DiscussionAdapter
+import c0d3.vitreen.app.models.Message
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.fragment_discussion.*
 
 
 /**
@@ -31,8 +34,26 @@ class DiscussionFragment : VFragment(
         discussionId = arguments?.getString(Constants.KEY_DISCUSSION_ID).orEmpty()
         if (!discussionId!!.isEmpty()) {
             viewModel.getDiscussion(discussionId!!).observe(viewLifecycleOwner, { pair ->
-                if(handleError(pair.first)) return@observe
+                if (handleError(pair.first)) return@observe
+                var messages = pair.second.messages
+                viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { userPair ->
+                    if (handleError(userPair.first)) return@observeOnce
+                    val adapter = DiscussionAdapter(viewLifecycleOwner, this, userPair.second.id)
+                    adapter.submitList(pair.second.messages)
+                    recyclerViewDiscussion.adapter = adapter
 
+                    buttonSendMessage.setOnClickListener {
+                        if (isAnyInputEmpty(editTextMessage)) {
+                            messages.add(
+                                Message(
+                                    userPair.second.id,
+                                    editTextMessage.editText?.text.toString()
+                                )
+                            )
+                            viewModel.updateDiscussion(discussionId!!, messages)
+                        }
+                    }
+                })
             })
         }
     }

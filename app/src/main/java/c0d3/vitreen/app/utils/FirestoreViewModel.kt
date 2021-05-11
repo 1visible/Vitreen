@@ -34,7 +34,8 @@ class FirestoreViewModel : ViewModel() {
     var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
     private var imagesLiveData: MutableLiveData<Pair<Int, List<Bitmap>>> = MutableLiveData()
     private var discussionLiveData: MutableLiveData<Pair<Int, Discussion>> = MutableLiveData()
-    private var discussionsLiveData:MutableLiveData<Pair<Int,List<Discussion>>> = MutableLiveData()
+    private var discussionsLiveData: MutableLiveData<Pair<Int, List<Discussion>>> =
+        MutableLiveData()
 
 
     fun getProducts(
@@ -87,8 +88,8 @@ class FirestoreViewModel : ViewModel() {
         return errorCodeLiveData
     }
 
-    fun getUser(user: FirebaseUser?=null,id:String?=null): LiveData<Pair<Int, User>> {
-        repository.getUser(user,id).addSnapshotListener { users, exception ->
+    fun getUser(user: FirebaseUser? = null, id: String? = null): LiveData<Pair<Int, User>> {
+        repository.getUser(user, id).addSnapshotListener { users, exception ->
             var errorCode = if (exception == null) -1 else R.string.network_error
             val userData: User
 
@@ -185,8 +186,11 @@ class FirestoreViewModel : ViewModel() {
         return imagesLiveData
     }
 
-    fun getDiscussions(userId: String?=null,productOwner: String?=null): LiveData<Pair<Int, List<Discussion>>> {
-        return getList(repository.getDiscussions(userId, productOwner),discussionsLiveData)
+    fun getDiscussions(
+        userId: String? = null,
+        productOwner: String? = null
+    ): LiveData<Pair<Int, List<Discussion>>> {
+        return getList(repository.getDiscussions(userId, productOwner), discussionsLiveData)
     }
 
     fun getDiscussion(discussionId: String): LiveData<Pair<Int, Discussion>> {
@@ -221,6 +225,10 @@ class FirestoreViewModel : ViewModel() {
             userId,
             favoritesProduct = favoriteProducts
         )
+    }
+
+    fun updateDiscussion(id: String, messages: ArrayList<Message>) {
+        repository.updateDiscussion(id, messages)
     }
 
     fun addLocation(location: Location) {

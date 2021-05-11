@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -44,7 +46,9 @@ class DiscussionAdapter(
                 itemView.textViewOwnerName.visibility = View.GONE
                 itemView.textViewOwnerContent.visibility = View.GONE
                 itemView.textViewOwnerDate.visibility = View.GONE
-                itemView.textViewMe.text = currentMessage!!.userName
+                viewModel.getUser(id = senderId).observeOnce(lifecycle, { userPair ->
+                    itemView.textViewMe.text = userPair.second.fullname
+                })
                 itemView.textViewMyContent.text = currentMessage!!.content
                 itemView.textViewMyDate.text = currentMessage!!.date
             } else {
@@ -55,9 +59,22 @@ class DiscussionAdapter(
                 itemView.textViewOwnerContent.visibility = View.VISIBLE
                 itemView.textViewOwnerDate.visibility = View.VISIBLE
                 itemView.textViewOwnerName.visibility = View.VISIBLE
+                viewModel.getUser(id = currentMessage!!.senderId)
+                    .observeOnce(lifecycle, { userPair ->
+                        itemView.textViewOwnerName.text = userPair.second.fullname
+                    })
                 itemView.textViewOwnerContent.text = currentMessage!!.content
                 itemView.textViewOwnerDate.text = currentMessage!!.date
             }
+        }
+
+        private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
+            observe(owner, object : Observer<T> {
+                override fun onChanged(value: T) {
+                    removeObserver(this)
+                    observer(value)
+                }
+            })
         }
     }
 
