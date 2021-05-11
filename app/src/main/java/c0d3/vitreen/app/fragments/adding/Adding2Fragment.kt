@@ -109,7 +109,7 @@ class Adding2Fragment : VFragment(
                             location = location!!,
                             category = category!!,
                             nbImages = inputStreamList.size.toLong(),
-                            ownerId = user.id
+                            ownerId = user.id!!
                         )
 
                         viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { errorCode2 ->

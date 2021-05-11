@@ -10,7 +10,7 @@ data class Product(
     val price: Double = 0.0,
     val brand: String? = null,
     val size: String? = null,
-    val numberOfConsultations: Long = 0,
+    val consultations: ArrayList<Consultation> = ArrayList(),
     val reported: ArrayList<String> = ArrayList(),
     val location: Location = Location(),
     val category: Category = Category(),

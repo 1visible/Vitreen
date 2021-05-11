@@ -137,9 +137,9 @@ class FirestoreViewModel : ViewModel() {
 
             if(productData != null) {
                 product.id = productData.id
-                addImages(product.id, inputStream)
-                user.productsIds.add(product.id)
-                updateUser(user.id, user.productsIds)
+                addImages(productData.id, inputStream)
+                user.productsIds.add(productData.id)
+                user.id?.let { id -> updateUser(id, user.productsIds) }
             }
 
             errorCodeLiveData.value = errorCode

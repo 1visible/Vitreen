@@ -98,7 +98,7 @@ class Register2Fragment : VFragment(
                 // Else if location has no zip code, update it
                 else if(location.zipCode == null && zipCodeL != null) {
                     location.zipCode = zipCodeL
-                    viewModel.updateLocation(location.id, zipCodeL)
+                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
                 }
 
                 try {

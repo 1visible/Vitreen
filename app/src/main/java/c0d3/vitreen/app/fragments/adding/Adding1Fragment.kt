@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import androidx.core.app.ActivityCompat
@@ -15,8 +14,8 @@ import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
@@ -59,6 +58,7 @@ class Adding1Fragment : VFragment(
             if (handleError(errorCode)) return@observeOnce
 
             // Else, put categories as edit text choices
+            categoriesDTO.addAll(categories)
             val categoryNames = categories.map { category -> category.name }
             val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, categoryNames) }
 
@@ -111,7 +111,7 @@ class Adding1Fragment : VFragment(
                 // Else if location has no zip code, update it
                 else if(location.zipCode == null && zipCodeL != null) {
                     location.zipCode = zipCodeL
-                    viewModel.updateLocation(location.id, zipCodeL)
+                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
                 }
 
                 // Navigate to adding (part 2) with product informations

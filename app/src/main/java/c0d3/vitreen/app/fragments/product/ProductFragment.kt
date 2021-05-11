@@ -57,7 +57,7 @@ class ProductFragment : VFragment(
                 }
 
                 // Else, get product images
-                viewModel.getImages(product.id, product.nbImages).observe(viewLifecycleOwner, observe2@ { pair2 ->
+                viewModel.getImages(productId!!, product.nbImages).observe(viewLifecycleOwner, observe2@ { pair2 ->
                     val errorCode2 = pair2.first
                     val images = pair2.second
                     // If the call fails, show error message, hide loading spinner and go back to home
@@ -171,14 +171,21 @@ class ProductFragment : VFragment(
                     if (setFavorite && !favoritesIds.contains(productId)) {
                         favoritesIds.add(productId!!)
                     } else if (!setFavorite && favoritesIds.contains(productId)) {
-                        favoritesIds.remove(productId!!)
+                        favoritesIds.remove(productId)
                     } else
                         return@observe
 
                     // Update user with new favorites
-                    viewModel.updateUser(user.id, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { errorCode2 ->
+                    viewModel.updateUser(user.id!!, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { errorCode2 ->
                         // If the call fails, show error message and hide loading spinner
-                        if (handleError(errorCode2)) return@observeOnce
+                        if (handleError(errorCode2)) {
+                            if(setFavorite)
+                                favoritesIds.remove(productId)
+                            else
+                                favoritesIds.add(productId!!)
+
+                            return@observeOnce
+                        }
 
                         // Else, toggle favorite icon visibility
                         setIconVisibility(R.id.action_add_favorite, !setFavorite)
