@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
@@ -13,7 +12,6 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.product_item.view.*
-import java.lang.NullPointerException
 import java.util.*
 
 class ProductFragment : VFragment(

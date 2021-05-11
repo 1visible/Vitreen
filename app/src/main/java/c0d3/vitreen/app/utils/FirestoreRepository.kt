@@ -22,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
+import java.lang.Exception
 
 class FirestoreRepository {
     private val db = Firebase.firestore
@@ -110,9 +111,13 @@ class FirestoreRepository {
         return getLocations().whereEqualTo("city", city).get()
     }
 
-    fun getImage(productId: String, number: Int): Task<ByteArray> {
-        val reference = storage.reference.child("images/${productId}/image_$number")
-        return reference.getBytes(IMAGE_SIZE)
+    fun getImage(productId: String, number: Int): Task<ByteArray>? {
+        return try {
+            val reference = storage.reference.child("images/${productId}/image_$number")
+            reference.getBytes(IMAGE_SIZE)
+        } catch(_: Exception) {
+            null
+        }
     }
 
     fun updateLocation(id: String, zipCode: Long): Task<Void> {

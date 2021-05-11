@@ -82,26 +82,32 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun getImages(productId: String, nbImagesL: Long): MutableLiveData<Pair<Int, List<Bitmap>>> {
-        val images = ArrayList<Bitmap>()
+        val images = mutableListOf<Bitmap>()
         val nbImages = nbImagesL.toInt()
         var taskCounter = 0
         var errorCode = -1
 
         for (number in 0 until nbImages) {
-            repository.getImage(productId, number).addOnCompleteListener { task ->
-                val bytes = task.result
-                taskCounter++
+            try {
+                repository.getImage(productId, number)!!.addOnCompleteListener { task ->
+                    val bytes = task.result
+                    taskCounter++
 
-                if(!task.isSuccessful || bytes == null)
-                    errorCode = R.string.network_error
+                    if(!task.isSuccessful || bytes == null)
+                        errorCode = R.string.network_error
 
-                if(bytes != null) {
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    images.add(bitmap)
+                    if(bytes != null) {
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        images.add(bitmap)
+                    }
+
+                    if (taskCounter == nbImages)
+                        imagesLiveData.value = errorCode to images
                 }
-
-                if (taskCounter == nbImages)
-                    imagesLiveData.value = errorCode to images
+            } catch(_: Exception) {
+                errorCode = R.string.error_404
+                imagesLiveData.value = errorCode to images
+                break
             }
         }
 
