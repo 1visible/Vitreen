@@ -11,21 +11,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.dto.ProductDTO
-import c0d3.vitreen.app.utils.VFragment
+import c0d3.vitreen.app.utils.FirestoreViewModel
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val fragment: VFragment, private val onClick: (ProductDTO) -> Unit)
+class ProductAdapter(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, private val onClick: (ProductDTO) -> Unit)
     : ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(private val fragment: VFragment, itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
+    class ProductViewHolder(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
         private var productDTO: ProductDTO? = null
 
         init {
             itemView.setOnClickListener {
-                productDTO.let { product ->
-                    if (product != null)
-                        onClick(product)
-                }
+                productDTO?.let { product -> onClick(product) }
             }
         }
 
@@ -33,7 +30,7 @@ class ProductAdapter(private val fragment: VFragment, private val onClick: (Prod
             productDTO = product
 
             // Fill product with informations
-            fragment.viewModel.getImages(product.id, 1).observeOnce(fragment.viewLifecycleOwner, { pair ->
+            viewModel.getImages(product.id, 1).observeOnce(owner, { pair ->
                 val errorCode = pair.first
                 val images = pair.second
 
@@ -54,7 +51,7 @@ class ProductAdapter(private val fragment: VFragment, private val onClick: (Prod
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false)
-        return ProductViewHolder(fragment, view, onClick)
+        return ProductViewHolder(viewModel, owner, view, onClick)
     }
 
     // Get current product and use it to bind view.

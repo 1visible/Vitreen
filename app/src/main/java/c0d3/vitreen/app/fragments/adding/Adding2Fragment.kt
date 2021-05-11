@@ -4,28 +4,21 @@ import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.utils.Constants
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
@@ -37,7 +30,6 @@ import kotlinx.android.synthetic.main.fragment_adding2.buttonPreviousImage
 import kotlinx.android.synthetic.main.fragment_adding2.imageViewProduct
 import kotlinx.android.synthetic.main.fragment_product.*
 import java.io.InputStream
-import java.lang.NullPointerException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,10 +40,8 @@ class Adding2Fragment : VFragment(
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_adding,
     requireAuth = true,
-    loginNavigationId = R.id.action_navigation_adding2_to_navigation_home
+    loginNavigationId = R.id.from_adding2_to_home
 ) {
-
-    // TODO : A VERIFIER !!!!!!!
 
     private var title: String? = null
     private var description: String? = null
@@ -89,7 +79,7 @@ class Adding2Fragment : VFragment(
             || location == null
             || location !is Location) {
             showMessage()
-            navigateTo(R.id.action_navigation_adding2_to_navigation_adding1)
+            navigateTo(R.id.from_adding2_to_adding1)
             return
         }
 
@@ -127,18 +117,18 @@ class Adding2Fragment : VFragment(
                             if(handleError(errorCode2)) return@observeOnce2
 
                             // Else, navigate to home fragment and show confirmation message
-                            navigateTo(R.id.action_navigation_adding2_to_navigation_home)
+                            navigateTo(R.id.from_adding2_to_home)
                             showMessage(R.string.add_product_success)
                         })
                     } catch (_: NullPointerException) {
                         showMessage()
-                        navigateTo(R.id.action_navigation_adding2_to_navigation_adding1)
+                        navigateTo(R.id.from_adding2_to_adding1)
                     }
                 }
             })
         } catch (_: NullPointerException) {
             showMessage()
-            navigateTo(R.id.action_navigation_adding2_to_navigation_adding1)
+            navigateTo(R.id.from_adding2_to_adding1)
             return
         }
 

@@ -42,12 +42,12 @@ class LoginFragment : VFragment(
             }
             // Else (the user is signed in), navigate back to home
             else
-                navigateTo(R.id.action_navigation_login_to_navigation_home)
+                navigateTo(R.id.from_login_to_home)
         }
 
         // On register button click, navigate to Register1 fragment
         buttonToRegister1.setOnClickListener {
-            navigateTo(R.id.action_navigation_login_to_navigation_register1)
+            navigateTo(R.id.from_login_to_register1)
         }
     }
 
@@ -65,7 +65,7 @@ class LoginFragment : VFragment(
             // If the call fails, show error message and hide loading spinner
             if(handleError(errorCode)) return@observeOnce
             // Else, redirect to home
-            navigateTo(R.id.action_navigation_login_to_navigation_home)
+            navigateTo(R.id.from_login_to_home)
         })
     }
 

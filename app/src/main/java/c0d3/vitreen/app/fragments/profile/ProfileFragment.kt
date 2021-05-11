@@ -23,7 +23,7 @@ class ProfileFragment : VFragment(
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_profile,
     requireAuth = true,
-    loginNavigationId = R.id.action_navigation_profile_to_navigation_login
+    loginNavigationId = R.id.from_profile_to_login
 ) {
 
     private var userDTO: User? = null
@@ -67,7 +67,7 @@ class ProfileFragment : VFragment(
         return when (item.itemId) {
             R.id.action_logout -> {
                 auth.signOut()
-                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                navigateTo(R.id.from_profile_to_home)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -75,7 +75,7 @@ class ProfileFragment : VFragment(
     }
 
     private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(R.id.action_navigation_profile_to_navigation_product, KEY_PRODUCT_ID to product.id)
+        navigateTo(R.id.from_profile_to_product, KEY_PRODUCT_ID to product.id)
     }
 
     private fun fillProfile(user: User) {
@@ -139,7 +139,7 @@ class ProfileFragment : VFragment(
 
                     // Else, sign out from the app and return to home
                     auth.signOut()
-                    navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                    navigateTo(R.id.from_profile_to_home)
                     showMessage(R.string.account_deleted)
                 })
             } catch(_: NullPointerException) {
@@ -170,7 +170,7 @@ class ProfileFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
             adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE

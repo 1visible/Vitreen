@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 // TODO : Gérer les cas de login, register 1 et register 2 avec comportement de back button (si nécessaire)
             }
             navController.currentDestination?.id == R.id.navigation_login -> {
-                navController.navigate(R.id.action_navigation_login_to_navigation_home)
+                navController.navigate(R.id.from_login_to_home)
             }
             else -> super.onBackPressed()
         }

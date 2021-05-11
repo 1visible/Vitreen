@@ -10,7 +10,7 @@ class MessagesFragment : VFragment(
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_messages,
     requireAuth = true,
-    loginNavigationId = R.id.action_navigation_messages_to_navigation_login
+    loginNavigationId = R.id.from_messages_to_login
 ) {
 
     // TODO : Ajouter les items

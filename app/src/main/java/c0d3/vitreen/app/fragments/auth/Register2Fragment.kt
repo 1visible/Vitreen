@@ -42,7 +42,7 @@ class Register2Fragment : VFragment(
         // Check if argument could be retrieved
         if(emailAddress == null) {
             showMessage()
-            navigateTo(R.id.action_navigation_register2_to_navigation_register1)
+            navigateTo(R.id.from_register2_to_register1)
             return
         }
 
@@ -120,12 +120,12 @@ class Register2Fragment : VFragment(
                         if(handleError(errorCode2)) return@observeOnce2
 
                         // Else, navigate to profile fragment
-                        navigateTo(R.id.action_navigation_register2_to_navigation_profil)
+                        navigateTo(R.id.from_register2_to_profile)
                         showMessage(R.string.register_success)
                     })
                 } catch (_: NullPointerException) {
                     showMessage()
-                    navigateTo(R.id.action_navigation_register2_to_navigation_register1)
+                    navigateTo(R.id.from_register2_to_register1)
                 }
             })
         }

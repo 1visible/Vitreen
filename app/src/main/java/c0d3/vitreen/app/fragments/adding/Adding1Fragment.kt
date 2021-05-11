@@ -32,7 +32,7 @@ class Adding1Fragment : VFragment(
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_adding,
     requireAuth = true,
-    loginNavigationId = R.id.action_navigation_adding1_to_navigation_login
+    loginNavigationId = R.id.from_adding1_to_login
 ) {
 
     private var locationGPS = Location()
@@ -135,7 +135,7 @@ class Adding1Fragment : VFragment(
         }
 
         navigateTo(
-            R.id.action_navigation_adding1_to_navigation_adding2,
+            R.id.from_adding1_to_adding2,
             KEY_CATEGORY to category,
             KEY_TITLE to inputToString(editTextTitle),
             KEY_PRICE to inputToString(editTextPrice),

@@ -10,15 +10,9 @@
         android:name="c0d3.vitreen.app.fragments.home.HomeFragment"
         android:label="@string/label_home"
         tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_login"
-            app:destination="@id/navigation_login" />
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_error"
-            app:destination="@id/navigation_error" />
 
         <action
-            android:id="@+id/action_navigation_home_to_navigation_product"
+            android:id="@+id/from_home_to_product"
             app:destination="@id/navigation_product" />
     </fragment>
 
@@ -28,7 +22,7 @@
         android:label="@string/label_messages"
         tools:layout="@layout/fragment_messages">
         <action
-            android:id="@+id/action_navigation_messages_to_navigation_login"
+            android:id="@+id/from_messages_to_login"
             app:destination="@id/navigation_login" />
     </fragment>
 
@@ -38,14 +32,11 @@
         android:label="@string/label_adding"
         tools:layout="@layout/fragment_adding1">
         <action
-            android:id="@+id/action_navigation_adding1_to_navigation_adding2"
-            app:destination="@id/navigation_adding2" />
-        <action
-            android:id="@+id/action_navigation_adding1_to_navigation_login"
+            android:id="@+id/from_adding1_to_login"
             app:destination="@id/navigation_login" />
         <action
-            android:id="@+id/action_navigation_adding1_self"
-            app:destination="@id/navigation_adding1" />
+            android:id="@+id/from_adding1_to_adding2"
+            app:destination="@id/navigation_adding2" />
     </fragment>
 
     <fragment
@@ -53,17 +44,10 @@
         android:name="c0d3.vitreen.app.fragments.favorites.FavoritesFragment"
         android:label="@string/label_favorites"
         tools:layout="@layout/fragment_favorites">
-        <action
-            android:id="@+id/action_navigation_favorites_to_navigation_login"
-            app:destination="@id/navigation_login" />
-        <action
-            android:id="@+id/action_navigation_favorites_to_navigation_error"
-            app:destination="@+id/navigation_error" />
 
         <action
-            android:id="@+id/action_navigation_favorites_to_navigation_product"
-            app:destination="@id/navigation_product"
-            />
+            android:id="@+id/from_favorites_to_product"
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
@@ -72,16 +56,14 @@
         android:label="@string/label_profile"
         tools:layout="@layout/fragment_profile">
         <action
-            android:id="@+id/action_navigation_profile_to_navigation_login"
+            android:id="@+id/from_profile_to_login"
             app:destination="@id/navigation_login" />
         <action
-            android:id="@+id/action_navigation_profile_to_navigation_home"
+            android:id="@+id/from_profile_to_home"
             app:destination="@id/navigation_home" />
-
         <action
-            android:id="@+id/action_navigation_profile_to_navigation_product"
-            app:destination="@id/navigation_product"
-            />
+            android:id="@+id/from_profile_to_product"
+            app:destination="@id/navigation_product" />
     </fragment>
 
     <fragment
@@ -90,8 +72,11 @@
         android:label="fragment_adding2"
         tools:layout="@layout/fragment_adding2">
         <action
-            android:id="@+id/action_navigation_adding2_to_navigation_home"
+            android:id="@+id/from_adding2_to_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/from_adding2_to_adding1"
+            app:destination="@id/navigation_adding1" />
     </fragment>
 
     <fragment
@@ -100,14 +85,14 @@
         android:label="@string/label_register"
         tools:layout="@layout/fragment_register1">
         <action
-            android:id="@+id/action_navigation_register1_to_navigation_register2"
+            android:id="@+id/from_register1_to_register2"
             app:destination="@id/navigation_register2" />
         <action
-            android:id="@+id/action_navigation_register1_to_navigation_login"
-            app:destination="@id/navigation_login" />
-        <action
-            android:id="@+id/action_navigation_register1_to_navigation_home"
+            android:id="@+id/from_register1_to_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/from_register1_to_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
@@ -120,13 +105,12 @@
             app:argType="string"
             app:nullable="true" />
         <action
-            android:id="@+id/action_navigation_register2_self"
-            app:destination="@id/navigation_register2" />
-
+            android:id="@+id/from_register2_to_register1"
+            app:destination="@id/navigation_register1" />
         <action
-            android:id="@+id/action_navigation_register2_to_navigation_profil"
-            app:destination="@id/navigation_profile"
-            />
+            android:id="@+id/from_register2_to_profile"
+            app:destination="@id/navigation_profile" />
+
     </fragment>
 
     <fragment
@@ -135,11 +119,11 @@
         android:label="@string/label_login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_navigation_login_to_navigation_register1"
-            app:destination="@id/navigation_register1" />
-        <action
-            android:id="@+id/action_navigation_login_to_navigation_home"
+            android:id="@+id/from_login_to_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/from_login_to_register1"
+            app:destination="@id/navigation_register1" />
     </fragment>
 
     <fragment
@@ -148,10 +132,10 @@
         android:label="@string/label_product"
         tools:layout="@layout/fragment_product">
         <action
-            android:id="@+id/action_navigation_product_to_navigation_login"
+            android:id="@+id/from_product_to_login"
             app:destination="@id/navigation_login" />
         <action
-            android:id="@+id/action_navigation_product_to_navigation_home"
+            android:id="@+id/from_product_to_home"
             app:destination="@id/navigation_home" />
     </fragment>
 

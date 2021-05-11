@@ -58,7 +58,7 @@ class FavoritesFragment : VFragment(
     }
 
     private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(R.id.action_navigation_favorites_to_navigation_product, KEY_PRODUCT_ID to product.id)
+        navigateTo(R.id.from_favorites_to_product, KEY_PRODUCT_ID to product.id)
     }
 
     private fun showFavorites() {
@@ -77,7 +77,7 @@ class FavoritesFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
             adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE

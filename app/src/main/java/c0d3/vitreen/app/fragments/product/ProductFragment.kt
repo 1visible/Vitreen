@@ -22,7 +22,7 @@ class ProductFragment : VFragment(
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_product,
     requireAuth = true,
-    loginNavigationId = R.id.action_navigation_product_to_navigation_login
+    loginNavigationId = R.id.from_product_to_login
 ) {
 
     private var productId: String? = null
@@ -52,7 +52,7 @@ class ProductFragment : VFragment(
                 val product = pair.second
                 // If the call fails, show error message, hide loading spinner and go back to home
                 if (handleError(errorCode)) {
-                    navigateTo(R.id.action_navigation_product_to_navigation_home)
+                    navigateTo(R.id.from_product_to_home)
                     return@observe
                 }
 
@@ -62,7 +62,7 @@ class ProductFragment : VFragment(
                     val images = pair2.second
                     // If the call fails, show error message, hide loading spinner and go back to home
                     if (handleError(errorCode2)) {
-                        navigateTo(R.id.action_navigation_product_to_navigation_home)
+                        navigateTo(R.id.from_product_to_home)
                         return@observe2
                     }
 
@@ -101,7 +101,7 @@ class ProductFragment : VFragment(
             })
         } catch (_: NullPointerException) {
             showMessage(R.string.error_404)
-            navigateTo(R.id.action_navigation_product_to_navigation_home)
+            navigateTo(R.id.from_product_to_home)
             return
         }
     }
