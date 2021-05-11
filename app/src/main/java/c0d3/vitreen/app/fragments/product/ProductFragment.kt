@@ -98,6 +98,7 @@ class ProductFragment : VFragment(
                                 pairUser.second.id,
                                 pair.second.id,
                                 pair.second.title,
+                                pair.second.ownerId,
                                 firstMessage
                             )
                             viewModel.addDiscussion(discussion)

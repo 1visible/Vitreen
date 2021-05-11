@@ -117,12 +117,12 @@ class FirestoreRepository {
         return productImageRef.getBytes(FIVE_MEGABYTE)
     }
 
-    fun getDiscussions(userId: String?=null,productId:String?=null): Query {
+    fun getDiscussions(userId: String?=null,productOwner:String?=null): Query {
         var query:Query = db.collection(DISCUSSION_COLLECTION)
         if (userId!=null)
             query=query.whereEqualTo("userId",userId)
-        if(productId!=null)
-            query=query.whereEqualTo("productId",productId)
+        if(productOwner!=null)
+            query=query.whereEqualTo("productOwner",productOwner)
         return query
     }
 

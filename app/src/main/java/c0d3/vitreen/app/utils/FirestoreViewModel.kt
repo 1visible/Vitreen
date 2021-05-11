@@ -185,8 +185,8 @@ class FirestoreViewModel : ViewModel() {
         return imagesLiveData
     }
 
-    fun getDiscussions(userId: String?=null,productId: String?=null): LiveData<Pair<Int, List<Discussion>>> {
-        return getList(repository.getDiscussions(userId, productId),discussionsLiveData)
+    fun getDiscussions(userId: String?=null,productOwner: String?=null): LiveData<Pair<Int, List<Discussion>>> {
+        return getList(repository.getDiscussions(userId, productOwner),discussionsLiveData)
     }
 
     fun getDiscussion(discussionId: String): LiveData<Pair<Int, Discussion>> {

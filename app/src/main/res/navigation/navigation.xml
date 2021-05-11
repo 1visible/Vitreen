@@ -30,18 +30,21 @@
         <action
             android:id="@+id/action_navigation_messages_to_navigation_login"
             app:destination="@id/navigation_login" />
+
+        <action
+            android:id="@+id/action_navigation_messages_to_navigation_discussion"
+            app:destination="@id/navigation_discussion" />
+
     </fragment>
 
     <fragment
         android:id="@+id/navigation_discussion"
         android:name="c0d3.vitreen.app.fragments.messages.DiscussionFragment"
         android:label="@string/label_discussion"
-        tools:layout="@layout/fragment_discussion"
-        >
+        tools:layout="@layout/fragment_discussion">
         <action
             android:id="@+id/action_navigation_discussion_to_navigation_login"
-            app:destination="@id/navigation_login"
-            />
+            app:destination="@id/navigation_login" />
 
     </fragment>
 

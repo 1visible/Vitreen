@@ -6,6 +6,7 @@ data class Discussion(
     val userId: String = "",
     val productId: String = "",
     val productName: String = "",
+    val productOwner:String="",
     val messages: ArrayList<Message> = ArrayList(),
 ) : Entity() {
     fun toDTO(): MessageDTO {
