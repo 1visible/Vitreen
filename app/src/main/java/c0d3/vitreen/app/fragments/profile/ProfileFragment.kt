@@ -33,7 +33,6 @@ class ProfileFragment : VFragment(
 
         // Show loading spinner and hide empty view
         setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
 
         // If user is not signed in, skip this part
         if (!isUserSignedIn())
@@ -45,7 +44,7 @@ class ProfileFragment : VFragment(
                 val errorCode = pair.first
                 val user = pair.second
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
+                if (handleError(errorCode)) return@observeOnce
 
                 // Else, fill the profile with user informations and store them
                 showProducts(user.productsIds)

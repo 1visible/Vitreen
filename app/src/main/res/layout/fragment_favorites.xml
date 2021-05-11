@@ -7,9 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".fragments.favorites.FavoritesFragment">
 
-    <!-- No products view -->
+    <!-- Empty view -->
     <include
-        android:id="@+id/include"
         layout="@layout/empty_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

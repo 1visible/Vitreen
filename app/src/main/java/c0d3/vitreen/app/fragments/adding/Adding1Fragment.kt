@@ -43,7 +43,6 @@ class Adding1Fragment : VFragment(
 
         // Show loading spinner and hide empty view
         setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
 
         // If user is not signed in, skip this part
         if (!isUserSignedIn())
