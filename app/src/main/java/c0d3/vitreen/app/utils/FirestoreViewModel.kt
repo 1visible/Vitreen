@@ -87,8 +87,8 @@ class FirestoreViewModel : ViewModel() {
         return errorCodeLiveData
     }
 
-    fun getUser(user: FirebaseUser): LiveData<Pair<Int, User>> {
-        repository.getUser(user).addSnapshotListener { users, exception ->
+    fun getUser(user: FirebaseUser?=null,id:String?=null): LiveData<Pair<Int, User>> {
+        repository.getUser(user,id).addSnapshotListener { users, exception ->
             var errorCode = if (exception == null) -1 else R.string.network_error
             val userData: User
 

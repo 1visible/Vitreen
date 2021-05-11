@@ -69,8 +69,8 @@ class ProductFragment : VFragment(
                     textViewDimensions.setText(pair.second.size)
 
                     viewModel.getImages(pair.second.id, pair.second.nbImages)
-                        .observe(viewLifecycleOwner, { imagesPair ->
-                            if (handleError(imagesPair.first, R.string.errorMessage)) return@observe
+                        .observe(viewLifecycleOwner, Images@{ imagesPair ->
+                            if (handleError(imagesPair.first, R.string.errorMessage)) return@Images
                             imageViewProduct.setImageBitmap(imagesPair.second.get(counter))
                             buttonPreviousImage.setOnClickListener {
                                 counter =
@@ -87,27 +87,33 @@ class ProductFragment : VFragment(
                     buttonSendMessage.setOnClickListener { view ->
                         viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pairUser ->
                             if (handleError(pairUser.first)) return@observeOnce
-                            var firstMessage = ArrayList<Message>()
-                            firstMessage.add(
-                                Message(
-                                    pairUser.second.id,
-                                    getString(R.string.createDiscussion)
-                                )
-                            )
-                            val discussion = Discussion(
-                                pairUser.second.id,
-                                pair.second.id,
-                                pair.second.title,
-                                pair.second.ownerId,
-                                firstMessage
-                            )
-                            viewModel.addDiscussion(discussion)
-                                .observeOnce(viewLifecycleOwner, { pair ->
-                                    if (handleError(pair.first)) return@observeOnce
-                                    navigateTo(
-                                        R.id.action_navigation_product_to_navigation_discussion,
-                                        KEY_DISCUSSION_ID to pair.second
+                            viewModel.getUser(id = pair.second.ownerId)
+                                .observeOnce(viewLifecycleOwner, productOwner@{ productOwnerPair ->
+                                    if (handleError(productOwnerPair.first)) return@productOwner
+                                    var firstMessage = ArrayList<Message>()
+                                    firstMessage.add(
+                                        Message(
+                                            pairUser.second.id,
+                                            pairUser.second.fullname,
+                                            productOwnerPair.second.fullname,
+                                            getString(R.string.createDiscussion)
+                                        )
                                     )
+                                    val discussion = Discussion(
+                                        pairUser.second.id,
+                                        pair.second.id,
+                                        pair.second.title,
+                                        pair.second.ownerId,
+                                        firstMessage
+                                    )
+                                    viewModel.addDiscussion(discussion)
+                                        .observeOnce(viewLifecycleOwner, addDiscussion@{ pair ->
+                                            if (handleError(pair.first)) return@addDiscussion
+                                            navigateTo(
+                                                R.id.action_navigation_product_to_navigation_discussion,
+                                                KEY_DISCUSSION_ID to pair.second
+                                            )
+                                        })
                                 })
                         })
                     }

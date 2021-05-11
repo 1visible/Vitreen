@@ -78,8 +78,11 @@ class FirestoreRepository {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun getUser(user: FirebaseUser): Query {
-        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
+    fun getUser(user: FirebaseUser? = null, id: String? = null): Query {
+        var query: Query = db.collection(USERS_COLLECTION)
+        if (user != null) query = query.whereEqualTo("emailAddress", user.email).limit(1)
+        if (id != null) query = query.whereEqualTo("id", id).limit(1)
+        return query
     }
 
     fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
@@ -117,16 +120,16 @@ class FirestoreRepository {
         return productImageRef.getBytes(FIVE_MEGABYTE)
     }
 
-    fun getDiscussions(userId: String?=null,productOwner:String?=null): Query {
-        var query:Query = db.collection(DISCUSSION_COLLECTION)
-        if (userId!=null)
-            query=query.whereEqualTo("userId",userId)
-        if(productOwner!=null)
-            query=query.whereEqualTo("productOwner",productOwner)
+    fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
+        var query: Query = db.collection(DISCUSSION_COLLECTION)
+        if (userId != null)
+            query = query.whereEqualTo("userId", userId)
+        if (productOwner != null)
+            query = query.whereEqualTo("productOwner", productOwner)
         return query
     }
 
-    fun getDiscussion(discussionId:String): DocumentReference {
+    fun getDiscussion(discussionId: String): DocumentReference {
         return db.collection(DISCUSSION_COLLECTION).document(discussionId)
     }
 
