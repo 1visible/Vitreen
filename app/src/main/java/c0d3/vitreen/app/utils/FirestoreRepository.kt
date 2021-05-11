@@ -117,6 +117,19 @@ class FirestoreRepository {
         return productImageRef.getBytes(FIVE_MEGABYTE)
     }
 
+    fun getDiscussions(userId: String?=null,productId:String?=null): Query {
+        var query:Query = db.collection(DISCUSSION_COLLECTION)
+        if (userId!=null)
+            query=query.whereEqualTo("userId",userId)
+        if(productId!=null)
+            query=query.whereEqualTo("productId",productId)
+        return query
+    }
+
+    fun getDiscussion(discussionId:String): DocumentReference {
+        return db.collection(DISCUSSION_COLLECTION).document(discussionId)
+    }
+
     fun updateLocation(locationId: String, zipCode: Long) {
         db.collection(LOCATIONS_COLLECTION)
             .document(locationId)

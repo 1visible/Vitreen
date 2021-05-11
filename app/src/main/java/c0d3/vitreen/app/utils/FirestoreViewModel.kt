@@ -30,9 +30,11 @@ class FirestoreViewModel : ViewModel() {
     private var productLiveData: MutableLiveData<Pair<Int, Product>> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
-    private var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
-    private var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
+    var categoriesLiveData: MutableLiveData<Pair<Int, List<Category>>> = MutableLiveData()
+    var locationsLiveData: MutableLiveData<Pair<Int, List<Location>>> = MutableLiveData()
     private var imagesLiveData: MutableLiveData<Pair<Int, List<Bitmap>>> = MutableLiveData()
+    private var discussionLiveData: MutableLiveData<Pair<Int, Discussion>> = MutableLiveData()
+    private var discussionsLiveData:MutableLiveData<Pair<Int,List<Discussion>>> = MutableLiveData()
 
 
     fun getProducts(
@@ -181,6 +183,28 @@ class FirestoreViewModel : ViewModel() {
                 }
         }
         return imagesLiveData
+    }
+
+    fun getDiscussions(userId: String?=null,productId: String?=null): LiveData<Pair<Int, List<Discussion>>> {
+        return getList(repository.getDiscussions(userId, productId),discussionsLiveData)
+    }
+
+    fun getDiscussion(discussionId: String): LiveData<Pair<Int, Discussion>> {
+        repository.getDiscussion(discussionId).addSnapshotListener { discussion, exception ->
+            var errorCode = if (exception == null) -1 else R.string.network_error
+            val discussionData: Discussion
+
+            if (discussion == null || !discussion.exists()) {
+                discussionData = Discussion()
+                if (exception == null)
+                    errorCode = R.string.error_404
+            } else
+                discussionData =
+                    toObject(discussion as QueryDocumentSnapshot, Discussion::class.java)
+
+            discussionLiveData.value = Pair(errorCode, discussionData)
+        }
+        return discussionLiveData
     }
 
     fun updateLocation(locationId: String, zipCode: Long) {

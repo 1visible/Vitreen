@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
 
 
@@ -20,6 +21,19 @@ class DiscussionFragment : VFragment(
     -1,
     false,
     requireAuth = true,
+    loginNavigationId = R.id.action_navigation_discussion_to_navigation_login
 ) {
+
+    private var discussionId: String? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        discussionId = arguments?.getString(Constants.KEY_DISCUSSION_ID).orEmpty()
+        if (!discussionId!!.isEmpty()) {
+            viewModel.getDiscussion(discussionId!!).observe(viewLifecycleOwner, { pair ->
+
+            })
+        }
+    }
 
 }
