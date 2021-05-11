@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
@@ -24,8 +25,6 @@ class ProductFragment : VFragment(
     loginNavigationId = R.id.action_navigation_product_to_navigation_login
 ) {
 
-    // TODO : A VERIFIER !!!!!!!
-
     private var productId: String? = null
     private var imageIndex = 0
 
@@ -39,8 +38,8 @@ class ProductFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         // Show loading spinner and hide empty view
-        setSpinnerVisibility(View.VISIBLE)
-        setEmptyView(View.GONE)
+        setSpinnerVisibility(VISIBLE)
+        setEmptyView(GONE)
 
         // If user is not signed in, skip this part
         if (!isUserSignedIn())
@@ -103,15 +102,14 @@ class ProductFragment : VFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_favorite -> {
-                toggleFavorite()
-                true
-            }
+            R.id.action_add_favorite -> setFavorite(true)
+            R.id.action_remove_favorite -> setFavorite(false)
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun fillProductDetails(product: Product) {
+        // Fill product informations
         textViewTitle.text = product.title
         textViewDescription.text = product.description
         textViewPrice.text = getString(R.string.price, product.price)
@@ -119,6 +117,7 @@ class ProductFragment : VFragment(
         val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
         textViewLocation.text = getString(R.string.location_template, product.location.city, zipCode)
 
+        // Show product informations
         imageViewProduct.visibility = VISIBLE
         textViewTitle.visibility = VISIBLE
         textViewDescription.visibility = VISIBLE
@@ -126,6 +125,7 @@ class ProductFragment : VFragment(
         textViewCategory.visibility = VISIBLE
         textViewLocation.visibility = VISIBLE
 
+        // Show optional fields (if they exist)
         if(product.brand != null) {
             textViewBrand.text = product.brand
             textViewBrand.visibility = VISIBLE
@@ -137,12 +137,14 @@ class ProductFragment : VFragment(
         }
     }
 
-    private fun toggleFavorite() {
+    private fun setFavorite(setFavorite: Boolean): Boolean {
+        // Check if the user is signed in
         if(!isUserSignedIn()) {
             showMessage(R.string.network_error)
-            return
+            return true
         }
-        // TODO : Terminer de gérer ça (productId null, commentaires)
+
+        // Try to add product to favorites
         try {
             viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
                 val errorCode = pair.first
@@ -150,22 +152,41 @@ class ProductFragment : VFragment(
                 // If the call fails, show error message and hide loading spinner
                 if (handleError(errorCode)) return@observe
 
+                // Check if product id could be retrieved
+                if(productId == null) {
+                    showMessage()
+                    return@observe
+                }
+
                 val favoritesIds = user.favoritesIds
 
-                if (!favoritesIds.contains(productId))
-                    favoritesIds.add(productId!!)
-                else
-                    favoritesIds.remove(productId!!)
+                // Update favorites with product id
+                try {
+                    if (setFavorite && !favoritesIds.contains(productId)) {
+                        favoritesIds.add(productId!!)
+                    } else if (!setFavorite && favoritesIds.contains(productId)) {
+                        favoritesIds.remove(productId!!)
+                    } else
+                        return@observe
 
-                viewModel.updateUser(user.id, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { errorCode2 ->
-                    // If the call fails, show error message and hide loading spinner
-                    if (handleError(errorCode2)) return@observeOnce
-                    // TODO : Changer l'icone de favoris
-                })
+                    // Update user with new favorites
+                    viewModel.updateUser(user.id, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { errorCode2 ->
+                        // If the call fails, show error message and hide loading spinner
+                        if (handleError(errorCode2)) return@observeOnce
+
+                        // Else, toggle favorite icon visibility
+                        setIconVisibility(R.id.action_add_favorite, !setFavorite)
+                        setIconVisibility(R.id.action_remove_favorite, setFavorite)
+                    })
+                } catch(_: NullPointerException) {
+                    showMessage()
+                }
             })
         } catch(_: NullPointerException) {
             showMessage()
         }
+
+        return true
     }
 
 }

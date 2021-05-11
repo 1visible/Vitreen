@@ -38,6 +38,7 @@ abstract class VFragment(
     @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
+    private lateinit var menu: Menu
     lateinit var viewModel: FirestoreViewModel
 
     private lateinit var db: FirebaseFirestore
@@ -93,6 +94,8 @@ abstract class VFragment(
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
+
+        this.menu = menu
     }
 
     fun isUserSignedIn(): Boolean {
@@ -172,12 +175,16 @@ abstract class VFragment(
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
     }
 
-    fun handleError(errorCode: Int, messageId: Int = -1): Boolean {
+    fun handleError(@StringRes errorCode: Int, @StringRes messageId: Int = -1): Boolean {
         if(errorCode == -1) return false
         showMessage(errorCode)
         setSpinnerVisibility(GONE)
         if(messageId != -1) setEmptyView(VISIBLE, messageId)
         return true
+    }
+
+    fun setIconVisibility(@IdRes id: Int, visible: Boolean) {
+        menu.findItem(id)?.isVisible = visible
     }
 
     fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
