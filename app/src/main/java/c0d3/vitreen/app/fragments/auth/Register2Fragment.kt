@@ -19,6 +19,7 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_register2.*
 import kotlinx.android.synthetic.main.fragment_register2.editTextLocation
+import java.lang.NullPointerException
 import java.util.*
 
 class Register2Fragment : VFragment(
@@ -26,17 +27,24 @@ class Register2Fragment : VFragment(
     topIcon = R.drawable.bigicon_authentification
 ) {
 
-    private lateinit var emailAddress: String
+    private var emailAddress: String? = null
     private var locationGPS = Location()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        emailAddress = arguments?.getString(KEY_EMAIL).orEmpty()
+        emailAddress = arguments?.getString(KEY_EMAIL)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Check if argument could be retrieved
+        if(emailAddress == null) {
+            showMessage()
+            navigateTo(R.id.action_navigation_register2_to_navigation_register1)
+            return
+        }
 
         // Try to initialize location from GPS
         context?.let { context -> initializeLocation(context) }
@@ -93,27 +101,32 @@ class Register2Fragment : VFragment(
                     viewModel.updateLocation(location.id, zipCodeL)
                 }
 
-                // Create user profile with filled informations
-                val user = User(
-                    fullname = fullname,
-                    emailAddress = emailAddress,
-                    phoneNumber = phoneNumber,
-                    location = location,
-                    contactByPhone = radioButtonPhone.isChecked,
-                    isProfessional = switchProfessionalAccount.isChecked,
-                    companyName = company,
-                    siretNumber = siret
-                )
+                try {
+                    // Create user profile with filled informations
+                    val user = User(
+                        fullname = fullname,
+                        emailAddress = emailAddress!!,
+                        phoneNumber = phoneNumber,
+                        location = location,
+                        contactByPhone = radioButtonPhone.isChecked,
+                        isProfessional = switchProfessionalAccount.isChecked,
+                        companyName = company,
+                        siretNumber = siret
+                    )
 
-                // Register user profile to database
-                viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { errorCode2 ->
-                    // If the call fails, show error message and hide loading spinner
-                    if(handleError(errorCode2)) return@observeOnce2
+                    // Register user profile to database
+                    viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { errorCode2 ->
+                        // If the call fails, show error message and hide loading spinner
+                        if(handleError(errorCode2)) return@observeOnce2
 
-                    // Else, navigate to profile fragment
-                    navigateTo(R.id.action_navigation_register2_to_navigation_profil)
-                    showMessage(R.string.register_success)
-                })
+                        // Else, navigate to profile fragment
+                        navigateTo(R.id.action_navigation_register2_to_navigation_profil)
+                        showMessage(R.string.register_success)
+                    })
+                } catch (_: NullPointerException) {
+                    showMessage()
+                    navigateTo(R.id.action_navigation_register2_to_navigation_register1)
+                }
             })
         }
     }

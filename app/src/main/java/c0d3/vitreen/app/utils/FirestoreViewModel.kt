@@ -20,7 +20,7 @@ import java.io.InputStream
 class FirestoreViewModel : ViewModel() {
     private val repository = FirestoreRepository()
     private var errorCodeLiveData: MutableLiveData<Int> = MutableLiveData()
-    private var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
+    var productsLiveData: MutableLiveData<Pair<Int, List<Product>>> = MutableLiveData()
     private var productLiveData: MutableLiveData<Pair<Int, Product>> = MutableLiveData()
     private var userLiveData: MutableLiveData<Pair<Int, User>> = MutableLiveData()
     private var locationLiveData: MutableLiveData<Pair<Int, Location>> = MutableLiveData()
@@ -82,23 +82,25 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun getImages(productId: String, nbImagesL: Long): MutableLiveData<Pair<Int, List<Bitmap>>> {
-        val images: ArrayList<Bitmap> = ArrayList()
+        val images = ArrayList<Bitmap>()
         val nbImages = nbImagesL.toInt()
+        var taskCounter = 0
         var errorCode = -1
 
         for (number in 0 until nbImages) {
             repository.getImage(productId, number).addOnCompleteListener { task ->
-                val documents = task.result
+                val bytes = task.result
+                taskCounter++
 
-                if(!task.isSuccessful || documents == null)
+                if(!task.isSuccessful || bytes == null)
                     errorCode = R.string.network_error
 
-                if(documents != null) {
-                    val bitmap = BitmapFactory.decodeByteArray(documents, 0, documents.size)
+                if(bytes != null) {
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     images.add(bitmap)
                 }
 
-                if (images.size == nbImages)
+                if (taskCounter == nbImages)
                     imagesLiveData.value = errorCode to images
             }
         }

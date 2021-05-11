@@ -59,6 +59,8 @@
     <string name="product_brand">Marque</string>
     <string name="product_dimensions">Dimensions</string>
     <string name="add_image">Ajouter une image</string>
+    <string name="max_images_error">Vous avez dépassé la limite d\'images !</string>
+    <string name="add_product_success">Le produit a été ajouté avec succès !</string>
     <!-- Product item -->
     <string name="price">%.2f€</string>
     <string name="placeholder_title">Titre</string>

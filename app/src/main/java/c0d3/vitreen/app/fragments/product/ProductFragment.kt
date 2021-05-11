@@ -37,13 +37,13 @@ class ProductFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
-
         // If user is not signed in, skip this part
         if (!isUserSignedIn())
             return
+
+        // Show loading spinner and hide empty view
+        setSpinnerVisibility(VISIBLE)
+        setEmptyView(GONE)
 
         // Try to show product if possible, otherwise go back to home
         try {
@@ -82,12 +82,18 @@ class ProductFragment : VFragment(
 
                     // On previous button click, go to previous image
                     buttonPreviousImage.setOnClickListener {
+                        if(images.isEmpty())
+                            return@setOnClickListener
+
                         imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
                         imageViewProduct.setImageBitmap(images[imageIndex])
                     }
 
                     // On next button click, go to next image
                     buttonNextImage.setOnClickListener {
+                        if(images.isEmpty())
+                            return@setOnClickListener
+
                         imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
                         imageViewProduct.setImageBitmap(images[imageIndex])
                     }

@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
@@ -34,14 +36,14 @@ class Adding1Fragment : VFragment(
 ) {
 
     private var locationGPS = Location()
-    private var categoriesDTO: ArrayList<Category> = ArrayList()
+    private var categoriesDTO = ArrayList<Category>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Show loading spinner and hide empty view
-        setSpinnerVisibility(View.VISIBLE)
-        setEmptyView(View.GONE)
+        setSpinnerVisibility(VISIBLE)
+        setEmptyView(GONE)
 
         // If user is not signed in, skip this part
         if (!isUserSignedIn())
