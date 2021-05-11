@@ -4,5 +4,7 @@ import com.google.firebase.firestore.Exclude
 
 abstract class Entity (
     @Exclude
+    @set:Exclude
+    @get:Exclude
     var id: String? = null
 )
