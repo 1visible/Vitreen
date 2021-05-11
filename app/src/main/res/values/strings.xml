@@ -102,4 +102,5 @@
     <string name="createDiscussion">Vous avez créé la discussion</string>
     <string name="label_discussion">Mes discussions</string>
     <string name="message">Message</string>
+    <string name="placeholer_me">Moi</string>
 </resources>
