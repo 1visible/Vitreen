@@ -20,7 +20,10 @@ data class Product(
 ) : Entity() {
 
     fun toDTO(): ProductDTO {
-        return ProductDTO(id, title, price, location, category)
+        val productDTO = ProductDTO(title, price, location, category)
+        productDTO.id = this.id
+
+        return productDTO
     }
 
 }

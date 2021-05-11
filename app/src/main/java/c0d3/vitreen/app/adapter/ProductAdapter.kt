@@ -29,20 +29,23 @@ class ProductAdapter(private val viewModel: FirestoreViewModel, private val owne
         fun bind(product: ProductDTO) {
             productDTO = product
 
+            // Try to get product images
+            product.id?.let { id ->
+                viewModel.getImages(id, 1).observeOnce(owner, { pair ->
+                    val errorCode = pair.first
+                    val images = pair.second
+
+                    if(errorCode == -1 && images.isNotEmpty())
+                        itemView.imageViewProduct.setImageBitmap(images.first())
+                })
+            }
+
             // Fill product with informations
-            viewModel.getImages(product.id, 1).observeOnce(owner, { pair ->
-                val errorCode = pair.first
-                val images = pair.second
-
-                if(errorCode == -1 && images.isNotEmpty())
-                    itemView.imageViewProduct.setImageBitmap(images.first())
-
-                itemView.textViewTitle.text = product.title
-                itemView.textViewCategory.text = product.category.name
-                val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
-                itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, product.location.city, zipCode)
-                itemView.textViewPrice.text = itemView.context.getString(R.string.price, product.price)
-            })
+            itemView.textViewTitle.text = product.title
+            itemView.textViewCategory.text = product.category.name
+            val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
+            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, product.location.city, zipCode)
+            itemView.textViewPrice.text = itemView.context.getString(R.string.price, product.price)
         }
 
     }
