@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
+import android.view.View.VISIBLE
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
@@ -14,11 +15,10 @@ import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
-import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
-import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
-import c0d3.vitreen.app.utils.Constants.Companion.PRICE
-import c0d3.vitreen.app.utils.Constants.Companion.TITLE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_register1.*
@@ -26,117 +26,120 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Adding1Fragment : VFragment(
-    R.layout.fragment_adding1,
-    R.drawable.bigicon_adding,
-    -1,
-    true,
-    R.menu.menu_adding,
-    true,
-    R.id.action_navigation_adding1_to_navigation_login
+    layoutId = R.layout.fragment_adding1,
+    topIcon = R.drawable.bigicon_adding,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_adding,
+    requireAuth = true,
+    loginNavigationId = R.id.from_adding1_to_login
 ) {
-    private var categoriesList = ArrayList<Category>()
 
-    private var zipCode: String? = null
-    private var cityName: String = ""
+    private var locationGPS = Location()
+    private var categoriesDTO = ArrayList<Category>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { initializeLocation(it) }
+        // Show loading spinner and hide empty view
+        setSpinnerVisibility(VISIBLE)
 
+        // If user is not signed in, skip this part
+        if (!isUserSignedIn())
+            return
+
+        // Try to initialize location from GPS
+        context?.let { context -> initializeLocation(context) }
+
+        // Get categories to put them as edit text choices
         viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
-            if (handleError(pair.first)) return@observeOnce
-            categoriesList = pair.second as ArrayList<Category>
-            // Ajout des catégories au menu déroulant du formulaire
-            val adapter = context?.let { context ->
-                ArrayAdapter(
-                    context,
-                    R.layout.dropdown_menu_item,
-                    pair.second.map { category -> category.name }
-                )
-            }
+            val errorCode = pair.first
+            val categories = pair.second
+            // If the call fails, show error message and hide loading spinner
+            if (handleError(errorCode)) return@observeOnce
 
-            (textInputCategory?.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-        }
-        )
+            // Else, put categories as edit text choices
+            categoriesDTO.addAll(categories)
+            val categoryNames = categories.map { category -> category.name }
+            val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, categoryNames) }
 
-        // Bouton de navigation vers le formulaire d'ajout (2/2)
+            (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        })
+
+        // On adding (part 2) button click, navigate to Adding2 fragment
         buttonToAdding2.setOnClickListener {
-            // Vérifie que les champs du formulaire ne sont pas vides
-            if (isAnyInputEmpty(
-                    textInputCategory,
-                    editTextTitle,
-                    editTextPrice,
-                    editTextLocation,
-                    editTextDescription
-                )
-            ) {
-                showMessage(R.string.errorMessage)
+            // Check if required inputs are filled
+            if (isAnyRequiredInputEmpty(textInputCategory, editTextTitle, editTextPrice, editTextLocation, editTextDescription))
+                return@setOnClickListener
+
+            val categoryName = inputToString(textInputCategory)
+            val locationName = inputToString(editTextLocation)?.toLowerCase(Locale.ROOT)?.capitalize(Locale.ROOT)
+            var categoryDTO: Category? = null
+
+            // Double check category and location after conversion
+            if (categoryName == null || locationName == null) {
+                showMessage()
                 return@setOnClickListener
             }
 
-            // Récupération de l'ID correspondant à la catégorie choisie
-            var category: Category? = null
-
-            categoriesList.forEach { currentCategory ->
-                if (currentCategory.name == textInputCategory.editText?.text.toString())
-                    category = currentCategory
-            }
-
-            if (category == null) {
-                showMessage(R.string.errorMessage)
-                return@setOnClickListener
-            }
-
-            // Navigation vers le formulaire d'ajout (2/2) après récupération de la localisation de l'annonce
-            val currentLocation = Location(
-                editTextLocation.editText?.text.toString().capitalize(Locale.getDefault()),
-                if (cityName != editTextLocation.editText?.text.toString()) null else zipCode?.toLong()
-            )
-            // Récupération de la localisation renseignée
-            viewModel.getLocation(currentLocation.name).observeOnce(viewLifecycleOwner, { pair ->
-                if (handleError(pair.first)) return@observeOnce
-                val location = pair.second
-                if (location != null) {
-                    if (location.zipCode == null) {
-                        currentLocation.zipCode?.let { it1 ->
-                            viewModel.updateLocation(location.id, it1)
-                        }
-                    }
-                    navigateToAdding2(category!!, currentLocation)
-                } else {
-                    viewModel.addLocation(currentLocation)
-                    navigateToAdding2(category!!, currentLocation)
+            // Get category according to input category
+            categoriesDTO.forEach { category ->
+                if (category.name == categoryName) {
+                    categoryDTO = category
+                    return@forEach
                 }
+            }
+
+            // Check if category could be retrieved
+            if (categoryDTO == null) {
+                showMessage()
+                return@setOnClickListener
+            }
+
+            // Get location from city name
+            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode = pair.first
+                var location = pair.second
+                val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
+                // If the call fails, show error message and hide loading spinner
+                if(errorCode != R.string.error_404 && handleError(errorCode)) return@observeOnce
+
+                // Else if location could not be found, create new location
+                if(errorCode == R.string.error_404) {
+                    location = Location(locationName, zipCodeL)
+                    viewModel.addLocation(location)
+                }
+                // Else if location has no zip code, update it
+                else if(location.zipCode == null && zipCodeL != null) {
+                    location.zipCode = zipCodeL
+                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
+                }
+
+                // Navigate to adding (part 2) with product informations
+                navigateToAdding2(categoryDTO, location)
             })
         }
 
     }
 
     private fun initializeLocation(context: Context) {
-        // Demande de permission pour la récupération de la localisation
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
-        )
-        // Listener de récupération de localisation
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         FetchLocation().setOnLocationFetchListner(getLocationListener(), context)
     }
 
-    private fun navigateToAdding2(category: Category, location: Location) {
+    private fun navigateToAdding2(category: Category?, location: Location) {
+        if(category == null) {
+            showMessage()
+            return
+        }
+
         navigateTo(
-            R.id.action_navigation_adding1_to_navigation_adding2,
+            R.id.from_adding1_to_adding2,
             KEY_CATEGORY to category,
-            TITLE to editTextTitle.editText?.text.toString(),
-            PRICE to editTextPrice.editText?.text.toString(),
+            KEY_TITLE to inputToString(editTextTitle),
+            KEY_PRICE to inputToString(editTextPrice),
             KEY_LOCATION to location,
-            DESCRIPTION to editTextDescription.editText?.text.toString()
+            KEY_DESCRIPTION to inputToString(editTextDescription)
         )
     }
 
@@ -144,8 +147,9 @@ class Adding1Fragment : VFragment(
         return object : OnLocationFetchListener {
             override fun onComplete(location: android.location.Location?) {
                 super.onComplete(location)
-                try {
 
+                try {
+                    // Get location with GPS
                     val address = location?.let {
                         Geocoder(requireContext(), Locale.getDefault()).getFromLocation(
                             location.latitude,
@@ -154,21 +158,20 @@ class Adding1Fragment : VFragment(
                         )
                     }
 
-                    if (address != null) {
-                        zipCode = address[0].postalCode
-                        cityName = address[0].locality
-                        editTextLocation.editText?.text?.clear()
-                        editTextLocation.editText?.setText(address[0].locality)
-                    }
+                    // Check if location could be retrieved
+                    if(address.isNullOrEmpty())
+                        return
 
-                } catch (_: Exception) {
-                    showMessage(R.string.errorMessage)
-                }
-            }
+                    val city = address.first().locality
+                    val zipCode = address.first().postalCode
 
-            override fun onFailed(e: String?) {
-                super.onFailed(e)
-                showMessage(R.string.errorMessage)
+                    // Update locationGPS variable with retrieved values
+                    locationGPS.city = city
+                    locationGPS.zipCode = zipCode.toLongOrNull()
+
+                    // Change edit text location with new location
+                    editTextLocation?.editText?.setText(city)
+                } catch (_: Exception) { }
             }
         }
     }

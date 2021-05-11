@@ -10,15 +10,21 @@ data class Product(
     val price: Double = 0.0,
     val brand: String? = null,
     val size: String? = null,
-    val numberOfConsultations: Long = 0,
-    val reported: ArrayList<String> = ArrayList(),
+    val consultations: ArrayList<Consultation> = ArrayList(),
+    val reporters: ArrayList<String> = ArrayList(),
+    val reported: Long = 0,
     val location: Location = Location(),
     val category: Category = Category(),
     val nbImages: Long = 0,
     val ownerId: String = "",
     val modifiedAt: String = Calendar.getInstance().time.toString(),
 ) : Entity() {
+
     fun toDTO(): ProductDTO {
-        return ProductDTO(id, title, price, location, category)
+        val productDTO = ProductDTO(title, price, location, category)
+        productDTO.id = this.id
+
+        return productDTO
     }
+
 }

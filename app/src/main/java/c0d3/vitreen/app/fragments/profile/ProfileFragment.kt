@@ -14,16 +14,16 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
+import java.lang.NullPointerException
 
 
 class ProfileFragment : VFragment(
-    R.layout.fragment_profile,
-    R.drawable.bigicon_profile,
-    -1,
-    true,
-    R.menu.menu_profile,
-    true,
-    R.id.action_navigation_profile_to_navigation_login
+    layoutId = R.layout.fragment_profile,
+    topIcon = R.drawable.bigicon_profile,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_profile,
+    requireAuth = true,
+    loginNavigationId = R.id.from_profile_to_login
 ) {
 
     private var userDTO: User? = null
@@ -40,23 +40,26 @@ class ProfileFragment : VFragment(
             return
 
         // Get current user informations
-        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
-            val user = pair.second
-            // If the call fails, show error message, hide loading spinner and show empty view
-            if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
+        try {
+            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode = pair.first
+                val user = pair.second
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
 
-            // Else, fill the profile with user informations and store them
-            showProducts(user.productsId)
-            fillProfile(user)
-            userDTO = user
-        })
+                // Else, fill the profile with user informations and store them
+                showProducts(user.productsIds)
+                fillProfile(user)
+                userDTO = user
+            })
+        } catch(_: NullPointerException) {
+            showMessage()
+        }
 
         // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
             userDTO?.let { user -> deleteAccount(user) }
         }
-
     }
 
     // TODO : Ajouter les items
@@ -64,19 +67,15 @@ class ProfileFragment : VFragment(
         return when (item.itemId) {
             R.id.action_logout -> {
                 auth.signOut()
-                navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                navigateTo(R.id.from_profile_to_home)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    /* Opens product detail when RecyclerView item is clicked. */
     private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(
-            R.id.action_navigation_profile_to_navigation_product,
-            KEY_PRODUCT_ID to product.id
-        )
+        navigateTo(R.id.from_profile_to_product, KEY_PRODUCT_ID to product.id)
     }
 
     private fun fillProfile(user: User) {
@@ -84,8 +83,8 @@ class ProfileFragment : VFragment(
         textViewFullname.text = user.fullname
         textViewEmailAddress.text = user.emailAddress
         textViewPhoneNumber.text = user.phoneNumber
-        textViewPostalAddress.text =
-            getString(R.string.location_template, user.location.name, user.location.zipCode)
+        val zipCode = if(user.location.zipCode == null) "?" else user.location.zipCode.toString()
+        textViewPostalAddress.text = getString(R.string.location_template, user.location.city, zipCode)
 
         // Remove checkmark on least prefered contact method
         if (user.contactByPhone)
@@ -128,20 +127,24 @@ class ProfileFragment : VFragment(
             return
         }
 
-        viewModel.deleteProducts(user.productsId).observeOnce(viewLifecycleOwner, { errorCode ->
+        viewModel.deleteProducts(user.productsIds).observeOnce(viewLifecycleOwner, { errorCode ->
             // If the call fails, show error message and hide loading spinner
             if (handleError(errorCode)) return@observeOnce
 
             // Else, delete the user
-            viewModel.deleteUser(auth.currentUser!!)
-                .observeOnce(viewLifecycleOwner, observeOnce2@{ errorCode2 ->
+            try {
+                viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@{ errorCode2 ->
                     // If the call fails, show error message and hide loading spinner
                     if (handleError(errorCode2)) return@observeOnce2
+
                     // Else, sign out from the app and return to home
                     auth.signOut()
-                    navigateTo(R.id.action_navigation_profile_to_navigation_home)
+                    navigateTo(R.id.from_profile_to_home)
                     showMessage(R.string.account_deleted)
                 })
+            } catch(_: NullPointerException) {
+                showMessage()
+            }
         })
     }
 
@@ -167,7 +170,7 @@ class ProfileFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
             adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE

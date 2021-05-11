@@ -7,24 +7,18 @@ import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
-import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.empty_view.*
 
 
@@ -38,17 +32,10 @@ abstract class VFragment(
     @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
+    private lateinit var menu: Menu
     lateinit var viewModel: FirestoreViewModel
-
-    private lateinit var db: FirebaseFirestore
-    lateinit var storage: FirebaseStorage
     lateinit var auth: FirebaseAuth
     var user: FirebaseUser? = null
-
-    lateinit var usersCollection: CollectionReference
-    lateinit var categoriesCollection: CollectionReference
-    lateinit var locationsCollection: CollectionReference
-    lateinit var productsCollection: CollectionReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,16 +50,8 @@ abstract class VFragment(
         super.onCreateView(inflater, container, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
-
-        db = Firebase.firestore
-        storage = Firebase.storage
         auth = Firebase.auth
         user = auth.currentUser
-
-        usersCollection = db.collection(USERS_COLLECTION)
-        categoriesCollection = db.collection(CATEGORIES_COLLECTION)
-        locationsCollection = db.collection(LOCATIONS_COLLECTION)
-        productsCollection = db.collection(PRODUCTS_COLLECTION)
 
         if (requireAuth && !isUserSignedIn())
             navigateTo(loginNavigationId)
@@ -93,6 +72,8 @@ abstract class VFragment(
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
+
+        this.menu = menu
     }
 
     fun isUserSignedIn(): Boolean {
@@ -110,7 +91,7 @@ abstract class VFragment(
         findNavController().navigate(destinationId, bundle)
     }
 
-    fun isAnyInputEmpty(vararg inputs: TextInputLayout?): Boolean {
+    private fun isAnyInputEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
             if (input?.editText?.text.isNullOrBlank())
                 return true
@@ -120,34 +101,34 @@ abstract class VFragment(
 
     fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (!input?.editText?.text.isNullOrBlank()) {
+            if (input != null && input.editText?.text.isNullOrBlank()) {
                 return false
             }
         }
+
+        val input = inputs.last()
+
+        if(input != null)
+            input.error = if(input.editText?.text.isNullOrBlank()) "" else null
+
         return true
     }
 
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
         var result = false
         inputs.forEach { input ->
-            if (input != null && input.editText?.text.isNullOrBlank()) {
-                input.error = getString(R.string.required_input)
-                result = true
-            }
+            if(input != null)
+                if (input.editText?.text.isNullOrBlank()) {
+                    input.error = getString(R.string.required_input)
+                    result = true
+                } else
+                    input.error = null
         }
         return result
     }
 
     fun inputToString(input: TextInputLayout): String? {
         return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
-    }
-
-    fun isAnyStringEmpty(vararg texts: String?): Boolean {
-        texts.forEach { text ->
-            if (text.isNullOrBlank())
-                return true
-        }
-        return false
     }
 
     fun showMessage(@StringRes messageId: Int = R.string.error_placeholder) {
@@ -164,12 +145,16 @@ abstract class VFragment(
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
     }
 
-    fun handleError(errorCode: Int, messageId: Int = -1): Boolean {
+    fun handleError(@StringRes errorCode: Int, @StringRes messageId: Int = -1): Boolean {
         if(errorCode == -1) return false
         showMessage(errorCode)
         setSpinnerVisibility(GONE)
         if(messageId != -1) setEmptyView(VISIBLE, messageId)
         return true
+    }
+
+    fun setIconVisibility(@IdRes id: Int, visible: Boolean) {
+        menu.findItem(id)?.isVisible = visible
     }
 
     fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {

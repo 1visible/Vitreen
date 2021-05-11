@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
@@ -8,11 +8,12 @@
     <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="network_error">Oups ! Vérifiez votre connexion internet puis réessayez.</string>
     <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
-    <string name="error_404">Oups ! Impossible de trouver les données.</string>
+    <string name="error_404">Nous n\'avons pas pu trouver ce que vous cherchez…</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
-    <string name="label_adding">Ajouter une annonce</string>
+    <string name="label_adding1" tools:ignore="TypographyFractions">Ajouter une annonce (1/2)</string>
+    <string name="label_adding2">Ajouter une annonce (2/2)</string>
     <string name="label_favorites">Mes favoris</string>
     <string name="label_profile">Mon profil</string>
     <string name="label_register">Inscription</string>
@@ -48,6 +49,7 @@
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
     <string name="register">S\'inscrire</string>
+    <string name="register_success">Votre compte a été créé avec succès !</string>
     <!-- Adding1 fragment -->
     <string name="product_category">Catégorie</string>
     <string name="product_title">Titre</string>
@@ -58,6 +60,8 @@
     <string name="product_brand">Marque</string>
     <string name="product_dimensions">Dimensions</string>
     <string name="add_image">Ajouter une image</string>
+    <string name="max_images_error">Vous avez dépassé la limite d\'images !</string>
+    <string name="add_product_success">Le produit a été ajouté avec succès !</string>
     <!-- Product item -->
     <string name="price">%.2f€</string>
     <string name="placeholder_title">Titre</string>
@@ -68,7 +72,7 @@
     <string name="professional_informations">Informations professionnelles</string>
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
-    <string name="location_template">%1$s (%2$d)</string>
+    <string name="location_template">%1$s (%2$s)</string>
     <string name="not_connected">Vous n\'êtes pas connecté(e)…</string>
     <string name="account_deleted">Votre compte a été supprimé avec succès !</string>
     <!-- Favorites fragment -->

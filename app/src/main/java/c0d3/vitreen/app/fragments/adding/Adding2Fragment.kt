@@ -2,271 +2,243 @@ package c0d3.vitreen.app.fragments.adding
 
 import android.app.Activity.RESULT_OK
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
-import c0d3.vitreen.app.utils.Constants.Companion.DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.GALLERY_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_USER
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_CATEGORY
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DESCRIPTION
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_LOCATION
-import c0d3.vitreen.app.utils.Constants.Companion.PRICE
-import c0d3.vitreen.app.utils.Constants.Companion.TITLE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_adding2.*
+import kotlinx.android.synthetic.main.fragment_adding2.buttonNextImage
+import kotlinx.android.synthetic.main.fragment_adding2.buttonPreviousImage
+import kotlinx.android.synthetic.main.fragment_adding2.imageViewProduct
+import kotlinx.android.synthetic.main.fragment_product.*
 import java.io.InputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class Adding2Fragment : VFragment(
-    R.layout.fragment_adding2,
-    R.drawable.bigicon_adding,
-    -1,
-    true,
-    R.menu.menu_adding,
-    true,
-    R.id.action_navigation_adding2_to_navigation_home
+    layoutId = R.layout.fragment_adding2,
+    topIcon = R.drawable.bigicon_adding,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_adding,
+    requireAuth = true,
+    loginNavigationId = R.id.from_adding2_to_home
 ) {
-    private var imageEncoded: String? = null
-    private var imagesEncodedList: ArrayList<String>? = null
-    private var mArrayUri = ArrayList<Uri>()
-    private var mArrayInputStream = ArrayList<InputStream>()
-    private var nbImageMax = 0
-    private var counter = 0
 
+    private var title: String? = null
+    private var description: String? = null
+    private var price: Double? = null
+    private var category: Category? = null
+    private var location: Location? = null
+    private var imageIndex = 0
+    private var nbImagesMax = IMAGES_LIMIT_USER
+    private var uriList = ArrayList<Uri>()
+    private var inputStreamList = ArrayList<InputStream>()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        title = arguments?.getString(KEY_TITLE)
+        description = arguments?.getString(KEY_DESCRIPTION)
+        price = arguments?.getString(KEY_PRICE)?.toDoubleOrNull()
+        category = arguments?.get(KEY_CATEGORY) as? Category?
+        location = arguments?.get(KEY_LOCATION) as? Location?
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val category: Category = (arguments?.get(KEY_CATEGORY) as Category)
-        val title: String = arguments?.getString(TITLE).orEmpty()
-        val price: String = arguments?.getString(PRICE).orEmpty()
-        val location: Location = arguments?.get(KEY_LOCATION) as Location
-        val description: String = arguments?.getString(DESCRIPTION).orEmpty()
-        viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-            if (handleError(pair.first, R.string.errorMessage)) return@observeOnce
-            var user: User = pair.second
-            val imageCountMax =
-                if (user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
-            nbImageMax = imageCountMax
-            buttonConfirmation.setOnClickListener {
-                // Vérifie que les champs du formulaire ne sont pas vides
-                if (isAnyInputEmpty(editTextBrand, editTextDimensions)) {
-                    showMessage()
-                    return@setOnClickListener
+        // If user is not signed in, skip this part
+        if(!isUserSignedIn())
+            return
+
+        // Check if arguments could be retrieved
+        if(title == null
+            || description == null
+            || price == null
+            || category == null
+            || category !is Category
+            || location == null
+            || location !is Location) {
+            showMessage()
+            navigateTo(R.id.from_adding2_to_adding1)
+            return
+        }
+
+        // Get current user informations
+        try {
+            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
+                val errorCode = pair.first
+                val user = pair.second
+                // If the call fails, show error message, hide loading spinner and show empty view
+                if(handleError(errorCode, R.string.no_products)) return@observeOnce
+
+                // Else, set images max for this user
+                nbImagesMax = if(user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
+
+                buttonConfirmation.setOnClickListener {
+                    val brand = inputToString(editTextBrand)
+                    val size = inputToString(editTextDimensions)
+
+                    // Create product to add with informations
+                    try {
+                        val product = Product(
+                            title = title!!,
+                            description = description!!,
+                            price = price!!,
+                            brand = brand,
+                            size = size,
+                            location = location!!,
+                            category = category!!,
+                            nbImages = inputStreamList.size.toLong(),
+                            ownerId = user.id!!
+                        )
+
+                        viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { errorCode2 ->
+                            // If the call fails, show error message and hide loading spinner
+                            if(handleError(errorCode2)) return@observeOnce2
+
+                            // Else, navigate to home fragment and show confirmation message
+                            navigateTo(R.id.from_adding2_to_home)
+                            showMessage(R.string.add_product_success)
+                        })
+                    } catch (_: NullPointerException) {
+                        showMessage()
+                        navigateTo(R.id.from_adding2_to_adding1)
+                    }
                 }
+            })
+        } catch (_: NullPointerException) {
+            showMessage()
+            navigateTo(R.id.from_adding2_to_adding1)
+            return
+        }
 
-                // Vérifie que les arguments récupérés ne sont pas vides
-                if (isAnyStringEmpty(title, price, description)) {
-                    showMessage(R.string.errorMessage)
-                    return@setOnClickListener
-                }
-
-                if (mArrayInputStream.size == 0) {
-                    showMessage(R.string.errorMessage)
-                    return@setOnClickListener
-                }
-
-                val product = Product(
-                    title = title,
-                    description = description,
-                    price = price.toDouble(),
-                    brand = editTextBrand.editText?.text.toString(),
-                    size = editTextDimensions.editText?.text.toString(),
-                    location = location,
-                    category = category,
-                    nbImages = mArrayInputStream.size.toLong(),
-                    ownerId = user.id
-                )
-                viewModel.addProduct(product,mArrayInputStream,user)
-                    .observe(viewLifecycleOwner,{errorCode->
-                        if (handleError(errorCode, R.string.errorMessage)) return@observe
-                        mArrayUri.clear()
-                        mArrayInputStream.clear()
-                        navigateTo(R.id.action_navigation_adding2_to_navigation_home)
-                    })
-            }
-        })
-
+        // On add image button click, open the gallery (or file system) and allow images picking
         buttonAddImage.setOnClickListener {
-            //Ouverture de la galerie afin de récupérer des images
             val intent = Intent(Intent.ACTION_PICK)
-            //On autorise l'utilisation de plusieurs images unquement dans le cas où l'api est compatible
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            }
+
             intent.type = "image/*"
-            startActivityForResult(
-                intent,
-                GALLERY_REQUEST
-            )
+            startActivityForResult(intent, GALLERY_REQUEST)
+        }
+
+        // On previous button click, go to previous image
+        buttonPreviousImage.setOnClickListener {
+            if(uriList.isEmpty())
+                return@setOnClickListener
+
+            imageIndex = if (imageIndex <= 0) (uriList.size - 1) else imageIndex--
+            imageViewProduct.setImageURI(uriList[imageIndex])
+        }
+
+        // On next button click, go to next image
+        buttonNextImage.setOnClickListener {
+            if(uriList.isEmpty())
+                return@setOnClickListener
+
+            imageIndex = if (imageIndex >= uriList.size - 1) 0 else imageIndex++
+            imageViewProduct.setImageURI(uriList[imageIndex])
+        }
+
+        // On remove button click, remove image
+        buttonRemoveImage.setOnClickListener {
+            if(uriList.isEmpty())
+                return@setOnClickListener
+
+            uriList.removeAt(imageIndex)
+            inputStreamList.removeAt(imageIndex)
+            imageIndex = 0
+
+            // Hide slider controls if there are no images left
+            if(uriList.isEmpty()) {
+                buttonRemoveImage.visibility = GONE
+                buttonNextImage.visibility = GONE
+                buttonPreviousImage.visibility = GONE
+                imageViewProduct.setImageResource(R.drawable.image_placeholder)
+            } else
+                imageViewProduct.setImageURI(uriList[0])
         }
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            //propriété qui va permettre de suivre les éléments lors de l'utilisation des prvious et next button
-            counter = 0
-            // Get the Image from data
-            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-            imagesEncodedList = ArrayList<String>()
-            //Vérifie que l'utilsateur a bien récupéré des données
-            if (data != null) {
-                //Cas où l'utilisateur récupère qu'une seule image
-                if (data.getData() != null) {
-                    buttonRemoveImage.visibility = View.VISIBLE
-                    val mImageUri: Uri = data.getData()!!
 
-                    // Get the cursor
-                    val cursor: Cursor = requireContext().contentResolver.query(
-                        mImageUri,
-                        filePathColumn, null, null, null
-                    )!!
-                    // Move to first row
-                    cursor.moveToFirst()
-                    val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
-                    imageEncoded = cursor.getString(columnIndex)
-                    //Reset du tableau
-                    mArrayUri.clear()
-                    mArrayUri.add(mImageUri)
-                    cursor.close()
-                    //Convertion des images en InputStream afin de pouvoir envoyer les images vers le serveur
-                    mArrayUri.forEach {
-                        mArrayInputStream.clear()
-                        requireContext().contentResolver.openInputStream(it)?.let { it1 ->
-                            mArrayInputStream.add(
-                                it1
-                            )
-                        }
-                    }
-                    //Logique de la Card
-                    imageViewProduct.setImageURI(mImageUri)
-                    buttonPreviousImage.visibility = View.GONE
-                    buttonNextImage.visibility = View.GONE
-                    buttonRemoveImage.setOnClickListener {
-                        mArrayUri.clear()
-                        mArrayInputStream.clear()
-                        buttonRemoveImage.visibility = View.GONE
-                        context?.let { it ->
-                            imageViewProduct.setImageDrawable(
-                                ContextCompat.getDrawable(
-                                    it,
-                                    R.drawable.image_placeholder
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    //L'utilisateur a sélectionné plusieurs images
-                    if (data.getClipData() != null) {
-                        //On rend visible les éléments de la cards qui sont nécessaires
-                        buttonRemoveImage.visibility = View.VISIBLE
-                        buttonNextImage.visibility = View.VISIBLE
-                        buttonPreviousImage.visibility = View.VISIBLE
-                        val mClipData: ClipData = data.getClipData()!!
-                        //Reset de la tab
-                        mArrayUri.clear()
-                        //Parcours des images selectionnées
-                        for (i in 0 until mClipData.itemCount) {
-                            val item = mClipData.getItemAt(i)
-                            val uri = item.uri
-                            mArrayUri.add(uri)
-                            // Get the cursor
-                            val cursor: Cursor =
-                                requireContext().contentResolver.query(
-                                    uri,
-                                    filePathColumn,
-                                    null,
-                                    null,
-                                    null
-                                )!!
-                            // Move to first row
-                            cursor.moveToFirst()
-                            val columnIndex: Int = cursor.getColumnIndex(filePathColumn[0])
-                            imageEncoded = cursor.getString(columnIndex)
-                            imagesEncodedList!!.add(imageEncoded.toString())
-                            cursor.close()
-                        }
-                        Log.v("LOG_TAG", "Selected Images " + mArrayUri.size)
-                        //Vérification des droits de sélections d'images de l'utilisateur
-                        if (mArrayUri.size <= nbImageMax) {
-                            //Reset du tab InputeStream
-                            mArrayInputStream.clear()
-                            //Conversion
-                            mArrayUri.forEach {
-                                requireContext().contentResolver?.openInputStream(
-                                    it
-                                )?.let { it1 ->
-                                    mArrayInputStream.add(
-                                        it1
-                                    )
-                                }
+        // Check if gallery images picking has finished and picked images
+        try {
+            if (requestCode != GALLERY_REQUEST
+                || resultCode != RESULT_OK
+                || data == null
+                || (data.data == null && data.clipData == null)
+                || (data.clipData != null && data.clipData!!.itemCount < 1))
+                return
+        } catch (_: NullPointerException) {
+            showMessage()
+            return
+        }
 
-                            }
-                            //Logique Card
-                            imageViewProduct.setImageURI(mArrayUri.get(counter))
-                            buttonPreviousImage.setOnClickListener {
-                                counter = if (counter-- <= 0) (mArrayUri.size - 1) else counter--
-                                imageViewProduct.setImageURI(mArrayUri.get(counter))
-                            }
-                            buttonNextImage.setOnClickListener {
-                                counter = if (counter++ >= (mArrayUri.size - 1)) 0 else counter++
-                                imageViewProduct.setImageURI(mArrayUri.get(counter))
-                            }
-                            buttonRemoveImage.setOnClickListener {
-                                mArrayUri.remove(mArrayUri.get(counter))
-                                mArrayInputStream.remove(mArrayInputStream.get(counter))
-                                counter = if (counter < 0) 0 else counter - 1
-                                if (mArrayUri.size > 0) {
-                                    imageViewProduct.setImageURI(mArrayUri.get(counter))
-                                } else {
-                                    //Une fois qu'on a supprimé toutes les images
-                                    //Disparition des boutons + Affichage du placeholder
-                                    buttonRemoveImage.visibility = View.GONE
-                                    buttonNextImage.visibility = View.GONE
-                                    buttonPreviousImage.visibility = View.GONE
-                                    context?.let { it ->
-                                        imageViewProduct.setImageDrawable(
-                                            ContextCompat.getDrawable(
-                                                it,
-                                                R.drawable.image_placeholder
-                                            )
-                                        )
-                                    }
-                                }
-                            }
-                        } else {
-                            context?.let {
-                                Toast.makeText(
-                                    it,
-                                    "Le nombre d'image est trop élevé",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }
+        imageIndex = 0
+        val tempUriList = ArrayList<Uri>()
+        val tempInputStreamList = ArrayList<InputStream>()
+
+        // Put images URI in a list
+        if(data.clipData != null) {
+            val clipData: ClipData = data.clipData!!
+            for(i in 0 until clipData.itemCount)
+                tempUriList.add(clipData.getItemAt(i).uri)
+        } else if(data.data != null)
+            tempUriList.add(data.data!!)
+
+        // Check if the new images size does not exceed the max
+        if(uriList.size + tempUriList.size > nbImagesMax) {
+            showMessage(R.string.max_images_error)
+            return
+        }
+
+        // Get streams for images URI
+        tempUriList.forEach { uri ->
+            context?.contentResolver?.openInputStream(uri)?.let { inputSteam ->
+                tempInputStreamList.add(inputSteam)
             }
+        }
+
+        // Check if all streams could be retrieved
+        if(tempUriList.size != tempInputStreamList.size) {
+            showMessage()
+            return
+        }
+
+        // Add new images to list
+        uriList.addAll(tempUriList)
+        inputStreamList.addAll(tempInputStreamList)
+
+        // Show controls and display first image if there are images to show
+        if(uriList.isNotEmpty()) {
+            buttonRemoveImage.visibility = VISIBLE
+            buttonNextImage.visibility = VISIBLE
+            buttonPreviousImage.visibility = VISIBLE
+            imageViewProduct.setImageURI(uriList[0])
         }
     }
 }
