@@ -103,4 +103,6 @@
     <string name="label_discussion">Mes discussions</string>
     <string name="message">Message</string>
     <string name="placeholer_me">Moi</string>
+    <string name="placeholder_date">Mardi 12 novembre 2021 à 14h21</string>
+    <string name="placeholder_name">Jean Philippe</string>
 </resources>

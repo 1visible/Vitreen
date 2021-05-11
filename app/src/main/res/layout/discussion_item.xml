@@ -18,7 +18,7 @@
             android:layout_marginStart="@dimen/spacing_md"
             android:layout_marginLeft="@dimen/spacing_md"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:text="Jean Philippe"
+            android:text="@string/placeholder_name"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,6 +49,26 @@
             android:layout_marginTop="@dimen/spacing_sm"
             app:layout_constraintRight_toRightOf="@id/textViewMe"
             app:layout_constraintTop_toBottomOf="@id/textViewMe" />
+
+        <TextView
+            android:id="@+id/textViewOwnerDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="@string/placeholder_date"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="@id/textViewOwnerContent"
+            app:layout_constraintTop_toBottomOf="@id/textViewOwnerContent" />
+
+        <TextView
+            android:id="@+id/textViewMyDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:text="@string/placeholder_date"
+            android:textSize="12sp"
+            app:layout_constraintRight_toRightOf="@id/textViewMyContent"
+            app:layout_constraintTop_toBottomOf="@id/textViewMyContent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
