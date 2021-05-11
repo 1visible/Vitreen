@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.product.StatisticsFragment">
+
+    <!-- Empty view -->
+    <include
+        layout="@layout/empty_view"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Consultations chart -->
+    <com.db.williamchart.view.LineChartView
+        android:id="@+id/myChart"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:chart_labelsColor="@color/fui_transparent"
+        app:chart_labelsSize="0dp"
+        app:chart_pointsDrawable="@drawable/circle"
+        app:chart_lineColor="?attr/colorOnBackground"
+        app:chart_lineThickness="3dp"
+        app:chart_smoothLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

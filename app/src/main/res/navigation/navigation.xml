@@ -80,6 +80,16 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_statistics"
+        android:name="c0d3.vitreen.app.fragments.product.StatisticsFragment"
+        android:label="@string/label_product"
+        tools:layout="@layout/fragment_statistics">
+        <action
+            android:id="@+id/from_statistics_to_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_register1"
         android:name="c0d3.vitreen.app.fragments.auth.Register1Fragment"
         android:label="@string/label_register"

@@ -2,6 +2,7 @@ package c0d3.vitreen.app.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity

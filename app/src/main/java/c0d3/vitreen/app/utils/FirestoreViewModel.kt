@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
+import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
@@ -178,7 +179,9 @@ class FirestoreViewModel : ViewModel() {
             if (documents != null)
                 for (document in documents) {
                     val value = toObject(document, T::class.java)
-                    values.add(value)
+
+                    if(value !is Product || value.reported < REPORT_THRESHOLD)
+                        values.add(value)
                 }
 
             liveData.value = errorCode to values
@@ -204,14 +207,13 @@ class FirestoreViewModel : ViewModel() {
             val documents = task.result
             val value: T
 
-            if(documents != null && !documents.isEmpty)
+            if(documents != null && !documents.isEmpty) {
                 value = toObject(documents.first(), T::class.java)
-            else {
+            } else {
                 value = T::class.java.newInstance()
                 if(task.isSuccessful)
                     errorCode = R.string.error_404
             }
-
 
             liveData.value = errorCode to value
         }

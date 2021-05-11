@@ -39,7 +39,7 @@ class FirestoreRepository {
         category: Category?,
         ids: ArrayList<String>?
     ): Query {
-        var query: Query = db.collection(PRODUCTS_COLLECTION).whereLessThan("reported", REPORT_THRESHOLD)
+        var query: Query = db.collection(PRODUCTS_COLLECTION)
 
         if (title != null)
             query = query.whereEqualTo("title", title)
