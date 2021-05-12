@@ -2,7 +2,7 @@ package c0d3.vitreen.app.utils
 
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSION_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
@@ -29,12 +29,12 @@ class FirestoreRepository {
 
     fun getProducts(
         limit: Boolean,
-        title: String?,
-        price: Double?,
-        brand: String?,
-        location: Location?,
-        category: Category?,
-        ownerId: String?
+        title: String? = null,
+        price: Double? = null,
+        brand: String? = null,
+        location: Location? = null,
+        category: Category? = null,
+        ownerId: String? = null
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
@@ -68,8 +68,8 @@ class FirestoreRepository {
         return query
     }
 
-    fun getProduct(id: String): Task<DocumentSnapshot> {
-        return db.collection(PRODUCTS_COLLECTION).document(id).get()
+    fun getProduct(id: String): DocumentReference {
+        return db.collection(PRODUCTS_COLLECTION).document(id)
     }
 
     fun signInAnonymously(): Task<AuthResult> {
@@ -80,8 +80,8 @@ class FirestoreRepository {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun getUser(user: FirebaseUser): Task<QuerySnapshot> {
-        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1).get()
+    fun getUser(user: FirebaseUser): Query {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
     }
 
     fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
@@ -105,10 +105,6 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION)
     }
 
-    fun getLocation(city: String): Task<QuerySnapshot> {
-        return getLocations().whereEqualTo("city", city).get()
-    }
-
     fun getImage(path: String): Task<ByteArray> {
         return storage.reference.child("images/${path}").getBytes(IMAGE_SIZE)
     }
@@ -117,12 +113,16 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
-    fun updateProduct(id: String, consultation: Consultation): Task<Void> {
+    fun addConsultation(id: String, consultation: Consultation): Task<Void> {
         return db.collection(PRODUCTS_COLLECTION).document(id).update("consultations", FieldValue.arrayUnion(consultation))
     }
 
-    fun updateUser(id: String, favoriteId: String): Task<Void> {
+    fun addToFavorites(id: String, favoriteId: String): Task<Void> {
         return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
+    }
+
+    fun removeFromFavorites(id: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayRemove(favoriteId))
     }
 
     fun addLocation(location: Location): Task<DocumentReference> {
@@ -138,7 +138,7 @@ class FirestoreRepository {
         return storage.reference.child("images/${path}").putStream(inputStream, metadata)
     }
 
-    fun deleteProducts(ids: ArrayList<String>): Task<Void> {
+    fun deleteProducts(vararg ids: String): Task<Void> {
         val products = db.batch()
 
         ids.forEach { id ->
@@ -160,7 +160,7 @@ class FirestoreRepository {
     // TODO      vvv Vérifier refactor vvv
 
     fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
-        var query: Query = db.collection(DISCUSSION_COLLECTION)
+        var query: Query = db.collection(DISCUSSIONS_COLLECTION)
         if (userId != null)
             query = query.whereEqualTo("userId", userId)
         if (productOwner != null)
@@ -169,15 +169,15 @@ class FirestoreRepository {
     }
 
     fun getDiscussion(discussionId: String): DocumentReference {
-        return db.collection(DISCUSSION_COLLECTION).document(discussionId)
+        return db.collection(DISCUSSIONS_COLLECTION).document(discussionId)
     }
 
-    fun updateDiscussion(id:String,messages:ArrayList<Message>){
-        db.collection(DISCUSSION_COLLECTION).document(id).update("messages",messages)
+    fun updateDiscussion (id:String,messages:ArrayList<Message>) {
+        db.collection(DISCUSSIONS_COLLECTION).document(id).update("messages",messages)
     }
 
     fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
-        return db.collection(DISCUSSION_COLLECTION).add(discussion).addOnCompleteListener {
+        return db.collection(DISCUSSIONS_COLLECTION).add(discussion).addOnCompleteListener {
             it.result!!.id
         }
     }

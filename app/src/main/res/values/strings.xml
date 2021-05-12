@@ -10,6 +10,9 @@
     <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
     <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>
     <string name="ImageNotFoundException">Certaines images n\'ont pas pu être chargées…</string>
+    <string name="ProductNotFoundException">Le produit n\'a pas pu être récupéré…</string>
+    <string name="NotFoundException">Nous n\'avons pas pu trouver ce que vous cherchiez…</string>
+    <string name="ProductNotDeletedException">Impossible de supprimer le(s) produit(s), veuillez réessayer.</string>
     <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
     <string name="error_404">Nous n\'avons pas pu trouver ce que vous cherchez…</string>
     <!-- Fragment label -->

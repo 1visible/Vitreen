@@ -2,7 +2,6 @@ package c0d3.vitreen.app.fragments.product
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
@@ -15,7 +14,6 @@ import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
-import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*

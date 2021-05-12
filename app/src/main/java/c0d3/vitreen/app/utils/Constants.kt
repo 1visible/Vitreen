@@ -2,7 +2,7 @@ package c0d3.vitreen.app.utils
 
 class Constants {
     companion object {
-        const val TAG: String = "VITREEN_DEBUG"
+        const val VTAG: String = "VITREEN_DEBUG"
 
         const val KEY_CATEGORY = "category"
         const val KEY_TITLE = "title"
@@ -27,6 +27,6 @@ class Constants {
         const val PRODUCTS_COLLECTION = "products"
         const val LOCATIONS_COLLECTION = "locations"
         const val CATEGORIES_COLLECTION = "categories"
-        const val DISCUSSION_COLLECTION = "discussions"
+        const val DISCUSSIONS_COLLECTION = "discussions"
     }
 }
