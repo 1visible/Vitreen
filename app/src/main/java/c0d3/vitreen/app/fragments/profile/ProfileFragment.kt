@@ -42,10 +42,10 @@ class ProfileFragment : VFragment(
         // Get current user informations
         try {
             viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 val user = pair.second
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if (handleError(errorCode, R.string.error_placeholder)) return@observeOnce
+                if (handleError(exception, R.string.error_placeholder)) return@observeOnce
 
                 // Else, fill the profile with user informations and store them
                 showProducts(user.productsIds)
@@ -80,7 +80,7 @@ class ProfileFragment : VFragment(
 
     private fun fillProfile(user: User) {
         // Fill personal informations
-        textViewFullname.text = user.fullname
+        textViewUsername.text = user.username
         textViewEmailAddress.text = user.emailAddress
         textViewPhoneNumber.text = user.phoneNumber
         val zipCode = if(user.location.zipCode == null) "?" else user.location.zipCode.toString()
@@ -104,7 +104,7 @@ class ProfileFragment : VFragment(
 
         // Show personal informations section
         textViewPersonalInformations.visibility = VISIBLE
-        textViewFullname.visibility = VISIBLE
+        textViewUsername.visibility = VISIBLE
         textViewEmailAddress.visibility = VISIBLE
         textViewPhoneNumber.visibility = VISIBLE
         textViewPostalAddress.visibility = VISIBLE
@@ -127,15 +127,15 @@ class ProfileFragment : VFragment(
             return
         }
 
-        viewModel.deleteProducts(user.productsIds).observeOnce(viewLifecycleOwner, { errorCode ->
+        viewModel.deleteProducts(user.productsIds).observeOnce(viewLifecycleOwner, { exception ->
             // If the call fails, show error message and hide loading spinner
-            if (handleError(errorCode)) return@observeOnce
+            if (handleError(exception)) return@observeOnce
 
             // Else, delete the user
             try {
-                viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@{ errorCode2 ->
+                viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@{ exception2 ->
                     // If the call fails, show error message and hide loading spinner
-                    if (handleError(errorCode2)) return@observeOnce2
+                    if (handleError(exception2)) return@observeOnce2
 
                     // Else, sign out from the app and return to home
                     auth.signOut()
@@ -150,14 +150,14 @@ class ProfileFragment : VFragment(
 
     private fun showProducts(ids: ArrayList<String>) {
         viewModel.getProducts(limit = false, ids = ids).observe(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val products = pair.second
 
             // Show "My products" title
             textViewMyProducts.visibility = VISIBLE
 
             // If the call fails, show error message, hide loading spinner and show empty text
-            if (handleError(errorCode)) {
+            if (handleError(exception)) {
                 textViewNoProducts.visibility = VISIBLE
                 return@observe
             }

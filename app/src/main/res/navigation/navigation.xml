@@ -147,6 +147,9 @@
         <action
             android:id="@+id/from_product_to_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/from_product_to_statistics"
+            app:destination="@id/navigation_statistics" />
     </fragment>
 
 </navigation>

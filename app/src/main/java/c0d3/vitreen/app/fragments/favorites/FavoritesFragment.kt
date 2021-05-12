@@ -35,10 +35,10 @@ class FavoritesFragment : VFragment(
         // Get current user informations
         try {
             viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 val user = pair.second
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(errorCode, R.string.no_products)) return@observe
+                if(handleError(exception, R.string.no_products)) return@observe
 
                 // Else, update products for listener
                 viewModel.getProducts(limit = false, ids = user.favoritesIds)
@@ -65,10 +65,10 @@ class FavoritesFragment : VFragment(
         // Observe products without making any request
         viewModel.productsLiveData.value = -1 to mutableListOf()
         viewModel.productsLiveData.observe(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val products = pair.second
             // If the call fails, show error message, hide loading spinner and show empty view
-            if(handleError(errorCode, R.string.no_favorites)) return@observe
+            if(handleError(exception, R.string.no_favorites)) return@observe
 
             // Else if there is no products to display, hide loading spinner and show empty view
             if(products.isNullOrEmpty()) {

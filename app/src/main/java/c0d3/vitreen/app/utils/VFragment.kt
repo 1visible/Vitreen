@@ -135,6 +135,15 @@ abstract class VFragment(
         (activity as? MainActivity)?.showMessage(messageId)
     }
 
+    fun goBack(): Boolean {
+        activity?.let { activity ->
+            activity.onBackPressed()
+            return true
+        }
+
+        return false
+    }
+
     fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {
         emptyView.visibility = visibility
         if(visibility == VISIBLE)
@@ -145,9 +154,9 @@ abstract class VFragment(
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
     }
 
-    fun handleError(@StringRes errorCode: Int, @StringRes messageId: Int = -1): Boolean {
-        if(errorCode == -1) return false
-        showMessage(errorCode)
+    fun handleError(@StringRes exception: Int, @StringRes messageId: Int = -1): Boolean {
+        if(exception == -1) return false
+        showMessage(exception)
         setSpinnerVisibility(GONE)
         if(messageId != -1) setEmptyView(VISIBLE, messageId)
         return true
@@ -155,15 +164,6 @@ abstract class VFragment(
 
     fun setIconVisibility(@IdRes id: Int, visible: Boolean) {
         menu.findItem(id)?.isVisible = visible
-    }
-
-    fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
-        observe(owner, object: Observer<T> {
-            override fun onChanged(value: T) {
-                removeObserver(this)
-                observer(value)
-            }
-        })
     }
 
 }

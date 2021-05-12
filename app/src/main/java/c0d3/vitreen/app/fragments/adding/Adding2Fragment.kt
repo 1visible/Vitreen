@@ -86,10 +86,10 @@ class Adding2Fragment : VFragment(
         // Get current user informations
         try {
             viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 val user = pair.second
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(errorCode, R.string.no_products)) return@observeOnce
+                if(handleError(exception, R.string.no_products)) return@observeOnce
 
                 // Else, set images max for this user
                 nbImagesMax = if(user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
@@ -112,9 +112,9 @@ class Adding2Fragment : VFragment(
                             ownerId = user.id!!
                         )
 
-                        viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { errorCode2 ->
+                        viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { exception2 ->
                             // If the call fails, show error message and hide loading spinner
-                            if(handleError(errorCode2)) return@observeOnce2
+                            if(handleError(exception2)) return@observeOnce2
 
                             // Else, navigate to home fragment and show confirmation message
                             navigateTo(R.id.from_adding2_to_home)

@@ -2,12 +2,16 @@ package c0d3.vitreen.app.fragments.product
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Consultation
 import c0d3.vitreen.app.models.Product
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.utils.Constants.Companion.TAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -23,6 +27,7 @@ class ProductFragment : VFragment(
     loginNavigationId = R.id.from_product_to_login
 ) {
 
+    private var product: Product? = null
     private var productId: String? = null
     private var imageIndex = 0
 
@@ -45,26 +50,40 @@ class ProductFragment : VFragment(
         // Try to show product if possible, otherwise go back to home
         try {
             viewModel.getProduct(productId!!).observe(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 val product = pair.second
                 // If the call fails, show error message, hide loading spinner and go back to home
-                if (handleError(errorCode)) {
+                if (handleError(exception)) {
                     navigateTo(R.id.from_product_to_home)
                     return@observe
                 }
 
                 // Else, get product images
                 viewModel.getImages(productId!!, product.nbImages).observe(viewLifecycleOwner, observe2@ { pair2 ->
-                    val errorCode2 = pair2.first
+                    val exception2 = pair2.first
                     val images = pair2.second
                     // If the call fails, show error message, hide loading spinner and go back to home
-                    if (handleError(errorCode2)) {
+                    if (handleError(exception2)) {
                         navigateTo(R.id.from_product_to_home)
                         return@observe2
                     }
 
                     // Else, fill and display product informations
                     fillProductDetails(product)
+                    this.product = product
+
+                    // Try to add new consultation to product
+                    viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair3 ->
+                        val exception3 = pair3.first
+                        val user = pair3.second
+
+                        // If the call doesn't fail, update product with consultation
+                        if (exception3 == -1) {
+                            val consultation = Consultation(city = user.location.city)
+                            product.consultations.add(consultation)
+                            product.id?.let { id -> viewModel.updateProduct(id, consultation) }
+                        }
+                    })
 
                     // Check if there are loaded images
                     if(images.isNullOrEmpty())
@@ -107,6 +126,11 @@ class ProductFragment : VFragment(
         return when (item.itemId) {
             R.id.action_add_favorite -> setFavorite(true)
             R.id.action_remove_favorite -> setFavorite(false)
+            R.id.action_statistics -> {
+                if(product != null)
+                    navigateTo(R.id.from_product_to_statistics, KEY_PRODUCT to product)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -150,10 +174,10 @@ class ProductFragment : VFragment(
         // Try to add product to favorites
         try {
             viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 val user = pair.second
                 // If the call fails, show error message and hide loading spinner
-                if (handleError(errorCode)) return@observe
+                if (handleError(exception)) return@observe
 
                 // Check if product id could be retrieved
                 if(productId == null) {
@@ -173,9 +197,9 @@ class ProductFragment : VFragment(
                         return@observe
 
                     // Update user with new favorites
-                    viewModel.updateUser(user.id!!, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { errorCode2 ->
+                    viewModel.updateUser(user.id!!, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { exception2 ->
                         // If the call fails, show error message and hide loading spinner
-                        if (handleError(errorCode2)) {
+                        if (handleError(exception2)) {
                             if(setFavorite)
                                 favoritesIds.remove(productId)
                             else

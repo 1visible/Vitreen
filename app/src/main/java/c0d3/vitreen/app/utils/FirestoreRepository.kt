@@ -1,15 +1,11 @@
 package c0d3.vitreen.app.utils
 
-import c0d3.vitreen.app.models.Category
-import c0d3.vitreen.app.models.Location
-import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -20,10 +16,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
-import java.lang.Exception
 
 class FirestoreRepository {
     private val db = Firebase.firestore
@@ -37,7 +33,7 @@ class FirestoreRepository {
         brand: String?,
         location: Location?,
         category: Category?,
-        ids: ArrayList<String>?
+        ownerId: String?
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
@@ -53,8 +49,8 @@ class FirestoreRepository {
         if (category != null)
             query = query.whereEqualTo("category", category)
 
-        if (!ids.isNullOrEmpty())
-            query = query.whereIn("id", ids)
+        if (ownerId != null)
+            query = query.whereEqualTo("ownerId", ownerId)
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)
@@ -112,29 +108,20 @@ class FirestoreRepository {
         return getLocations().whereEqualTo("city", city).get()
     }
 
-    fun getImage(productId: String, number: Int): Task<ByteArray>? {
-        return try {
-            val reference = storage.reference.child("images/${productId}/image_$number")
-            reference.getBytes(IMAGE_SIZE)
-        } catch(_: Exception) {
-            null
-        }
+    fun getImage(path: String): Task<ByteArray> {
+        return storage.reference.child("images/${path}").getBytes(IMAGE_SIZE)
     }
 
     fun updateLocation(id: String, zipCode: Long): Task<Void> {
         return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
-    fun updateUser(id: String, productsIds: ArrayList<String>?, favoritesIds: ArrayList<String>?): Task<Void>? {
-        val reference = db.collection(USERS_COLLECTION).document(id)
+    fun updateProduct(id: String, consultation: Consultation): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).update("consultations", FieldValue.arrayUnion(consultation))
+    }
 
-        return if (productsIds != null && favoritesIds != null)
-            reference.update("productsIds", productsIds, "favoritesIds", favoritesIds)
-        else if (productsIds != null)
-            reference.update("productsIds", productsIds)
-        else if (favoritesIds != null)
-            reference.update("favoritesIds", favoritesIds)
-        else null
+    fun updateUser(id: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
     }
 
     fun addLocation(location: Location): Task<DocumentReference> {
@@ -145,13 +132,9 @@ class FirestoreRepository {
         return db.collection(PRODUCTS_COLLECTION).add(product)
     }
 
-    fun addImages(productId: String, inputStream: ArrayList<InputStream>) {
+    fun addImage(path: String, inputStream: InputStream): UploadTask {
         val metadata = storageMetadata { contentType = "image/jpg" }
-
-        inputStream.indices.forEach { number ->
-            val reference = storage.reference.child("images/${productId}/image_$number")
-            reference.putStream(inputStream[number], metadata)
-        }
+        return storage.reference.child("images/${path}").putStream(inputStream, metadata)
     }
 
     fun deleteProducts(ids: ArrayList<String>): Task<Void> {
@@ -165,8 +148,8 @@ class FirestoreRepository {
         return products.commit()
     }
 
-    fun deleteImage(productId: String, number: Int): Task<Void> {
-        return storage.reference.child("images/${productId}/image_$number").delete()
+    fun deleteImage(path: String): Task<Void> {
+        return storage.reference.child("images/${path}").delete()
     }
 
     fun deleteUser(user: FirebaseUser): Task<Void> {

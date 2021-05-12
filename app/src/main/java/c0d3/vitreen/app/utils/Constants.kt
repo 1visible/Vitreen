@@ -11,6 +11,7 @@ class Constants {
         const val KEY_DESCRIPTION = "description"
         const val KEY_EMAIL = "email"
         const val KEY_PRODUCT_ID = "productId"
+        const val KEY_PRODUCT = "product"
 
         const val GALLERY_REQUEST = 12254
         const val LOCALISATION_REQUEST = 15266

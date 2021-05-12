@@ -30,9 +30,9 @@ class LoginFragment : VFragment(
                 // TODO : val credential = EmailAuthProvider.getCredential(UUID.randomUUID().toString() + FAKE_EMAIL, FAKE_PASSWORD)
                 // Delete anonymous account
                 try {
-                    viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { errorCode ->
+                    viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { exception ->
                         // If the call fails, show error message and hide loading spinner
-                        if(handleError(errorCode)) return@observeOnce
+                        if(handleError(exception)) return@observeOnce
                         // Else, sign in
                         signIn()
                     })
@@ -61,9 +61,9 @@ class LoginFragment : VFragment(
             return
         }
 
-        viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { errorCode ->
+        viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { exception ->
             // If the call fails, show error message and hide loading spinner
-            if(handleError(errorCode)) return@observeOnce
+            if(handleError(exception)) return@observeOnce
             // Else, redirect to home
             navigateTo(R.id.from_login_to_home)
         })
