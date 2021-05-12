@@ -10,6 +10,7 @@ import android.view.View.VISIBLE
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
@@ -96,27 +97,22 @@ class Adding1Fragment : VFragment(
             }
 
             // Get location from city name
-            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                var location = pair.second
-                val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
-                // If the call fails, show error message and hide loading spinner
-                if(exception != R.string.error_404 && handleError(exception)) return@observeOnce
+            var location = viewModel.getLocation(locationName)
+            val zipCode = if(locationName == locationGPS.city) locationGPS.zipCode else null
 
-                // Else if location could not be found, create new location
-                if(exception == R.string.error_404) {
-                    location = Location(locationName, zipCodeL)
-                    viewModel.addLocation(location)
-                }
-                // Else if location has no zip code, update it
-                else if(location.zipCode == null && zipCodeL != null) {
-                    location.zipCode = zipCodeL
-                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
-                }
+            // Else if location could not be found, create new location
+            if(location == null) {
+                location = Location(locationName, zipCode)
+                viewModel.addLocation(location)
+            }
+            // Else if location has no zip code, update it
+            else if(location.zipCode == null && zipCode != null) {
+                location.zipCode = zipCode
+                location.id?.let { id -> viewModel.updateLocation(id, zipCode) }
+            }
 
-                // Navigate to adding (part 2) with product informations
-                navigateToAdding2(categoryDTO, location)
-            })
+            // Navigate to adding (part 2) with product informations
+            navigateToAdding2(categoryDTO, location)
         }
 
     }

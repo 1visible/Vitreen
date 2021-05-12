@@ -27,7 +27,7 @@ data class Product(
 ) : Entity(), Serializable {
 
     fun toDTO(): ProductDTO {
-        val productDTO = ProductDTO(title, price, imagesPaths.firstOrNull(), location, category)
+        val productDTO = ProductDTO(title, price, images.firstOrNull(), location, category)
         productDTO.id = this.id
 
         return productDTO

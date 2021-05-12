@@ -7,6 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
@@ -112,7 +113,15 @@ class HomeFragment : VFragment(
             val category: Category? = viewModel.categoriesLiveData.value?.second?.findLast { it.name == inputToString(textInputCategory) }
 
             // Search products according to filters
-            viewModel.getProducts(false, title, price, brand, location, category)
+            viewModel.getProducts(
+                limit = false,
+                title = title,
+                price = price,
+                brand = brand,
+                location = location,
+                category = category,
+                owner = viewLifecycleOwner
+            )
         }
     }
 
@@ -132,7 +141,7 @@ class HomeFragment : VFragment(
     }
 
     private fun showProducts(location: Location? = null) {
-        viewModel.getProducts(location = location).observe(viewLifecycleOwner, { pair ->
+        viewModel.getProducts(limit = true, location = location, owner = viewLifecycleOwner).observe(viewLifecycleOwner, { pair ->
             val exception = pair.first
             val products = pair.second
             // If the call fails, show error message, hide loading spinner and show empty view
@@ -146,7 +155,7 @@ class HomeFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
+            val adapter = ProductAdapter { product -> adapterOnClick(product) }
             adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE

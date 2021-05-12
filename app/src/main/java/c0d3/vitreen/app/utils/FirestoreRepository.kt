@@ -34,7 +34,8 @@ class FirestoreRepository {
         brand: String? = null,
         location: Location? = null,
         category: Category? = null,
-        ownerId: String? = null
+        ownerId: String? = null,
+        ids: ArrayList<String>? = null
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
@@ -52,6 +53,9 @@ class FirestoreRepository {
 
         if (ownerId != null)
             query = query.whereEqualTo("ownerId", ownerId)
+
+        if(!ids.isNullOrEmpty())
+            query = query.whereIn("id", ids)
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)

@@ -41,7 +41,7 @@ class FavoritesFragment : VFragment(
                 if(handleError(exception, R.string.no_products)) return@observe
 
                 // Else, update products for listener
-                viewModel.getProducts(limit = false, ids = user.favoritesIds)
+                viewModel.getProducts(limit = false, ids = user.favoritesIds, owner = viewLifecycleOwner)
             })
         } catch (_: NullPointerException) {
             // Update favorites with empty favorites if the user can't be found
@@ -78,7 +78,7 @@ class FavoritesFragment : VFragment(
             }
 
             // Else, show products in recycler view
-            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
+            val adapter = ProductAdapter { product -> adapterOnClick(product) }
             adapter.submitList(products.map { product -> product.toDTO() })
             recyclerViewProducts.adapter = adapter
             recyclerViewProducts.visibility = VISIBLE

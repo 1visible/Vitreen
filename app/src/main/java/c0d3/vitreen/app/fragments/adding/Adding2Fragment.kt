@@ -11,6 +11,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
@@ -108,11 +109,11 @@ class Adding2Fragment : VFragment(
                             size = size,
                             location = location!!,
                             category = category!!,
-                            nbImages = inputStreamList.size.toLong(),
                             ownerId = user.id!!
                         )
 
-                        viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { exception2 ->
+                        viewModel.addProduct(product, inputStreamList, viewLifecycleOwner).observeOnce(viewLifecycleOwner,  observeOnce2@ { pair ->
+                            val exception2 = pair.first
                             // If the call fails, show error message and hide loading spinner
                             if(handleError(exception2)) return@observeOnce2
 

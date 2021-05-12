@@ -38,9 +38,10 @@ class FirestoreViewModel : ViewModel() {
         brand: String? = null,
         location: Location? = null,
         category: Category? = null,
-        ownerId: String? = null
+        ownerId: String? = null,
+        ids: ArrayList<String>? = null
     ): LiveData<Pair<Int, List<Product>>> {
-        val query = repository.getProducts(limit, title, price, brand, location, category, ownerId)
+        val query = repository.getProducts(limit, title, price, brand, location, category, ownerId, ids)
 
         query.addSnapshotListener { documents, error ->
             val exception = if (error == null) -1 else R.string.NetworkException

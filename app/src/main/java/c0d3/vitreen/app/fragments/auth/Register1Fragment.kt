@@ -3,6 +3,7 @@ package c0d3.vitreen.app.fragments.auth
 import android.os.Bundle
 import android.view.View
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_EMAIL
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register1.*
