@@ -2,6 +2,7 @@ package c0d3.vitreen.app.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
@@ -12,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.os.postDelayed
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +28,6 @@ import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_adding1.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
         requestLocationPermission()
-
     }
 
     // Handle toolbar back button
@@ -84,19 +85,9 @@ class MainActivity : AppCompatActivity() {
                 // TODO : Gérer les cas de login, register 1 et register 2 avec comportement de back button (si nécessaire)
             }
             navController.currentDestination?.id == R.id.navigation_login -> {
-                navController.navigate(R.id.action_navigation_login_to_navigation_home)
+                navController.navigate(R.id.from_login_to_home)
             }
             else -> super.onBackPressed()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            LOCALISATION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)
-                    showMessage(R.string.errorMessage) // TODO : Remplacer le message
-            }
         }
     }
 
@@ -104,8 +95,8 @@ class MainActivity : AppCompatActivity() {
         topView.setAttributes(title, icon)
     }
 
-    fun showMessage(@StringRes errorId: Int) {
-        val snackbar = Snackbar.make(activityLayout, errorId, Snackbar.LENGTH_LONG)
+    fun showMessage(@StringRes messageId: Int) {
+        val snackbar = Snackbar.make(activityLayout, messageId, Snackbar.LENGTH_LONG)
         val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
         layoutParams.anchorId = R.id.snackbarGuideline
         layoutParams.gravity = Gravity.TOP
@@ -117,19 +108,19 @@ class MainActivity : AppCompatActivity() {
         spinner.visibility = visibility
     }
 
-    // Demande de permission pour la récupération de la localisation
     private fun requestLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
-        )
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
     }
+}
 
+fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
+    observe(owner, object: Observer<T> {
+        override fun onChanged(value: T) {
+            removeObserver(this)
+            observer(value)
+        }
+    })
 }

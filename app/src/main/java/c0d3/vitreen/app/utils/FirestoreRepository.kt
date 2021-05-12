@@ -2,9 +2,8 @@ package c0d3.vitreen.app.utils
 
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
-import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSION_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
-import c0d3.vitreen.app.utils.Constants.Companion.IMAGES_LIMIT_PROFESSIONAL
+import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
@@ -17,7 +16,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
@@ -26,9 +25,7 @@ class FirestoreRepository {
     private val db = Firebase.firestore
     private val auth: FirebaseAuth = Firebase.auth
     private val storage = Firebase.storage
-    private var imagesRef: StorageReference = storage.reference.child("images")
 
-    // Get products (filters available)
     fun getProducts(
         limit: Boolean,
         title: String?,
@@ -36,7 +33,7 @@ class FirestoreRepository {
         brand: String?,
         location: Location?,
         category: Category?,
-        ids: ArrayList<String>?
+        ownerId: String?
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
 
@@ -52,8 +49,8 @@ class FirestoreRepository {
         if (category != null)
             query = query.whereEqualTo("category", category)
 
-        if (!ids.isNullOrEmpty())
-            query = query.whereIn("id", ids)
+        if (ownerId != null)
+            query = query.whereEqualTo("ownerId", ownerId)
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)
@@ -62,14 +59,18 @@ class FirestoreRepository {
             query = query.whereLessThanOrEqualTo("price", price)
                 .orderBy("price", Query.Direction.ASCENDING)
 
-        return query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+        query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+
+        if(title != null)
+            query = query.orderBy("title", Query.Direction.DESCENDING)
+
+        return query
     }
 
-    fun getProduct(productId: String): DocumentReference {
-        return db.collection(PRODUCTS_COLLECTION).document(productId)
+    fun getProduct(id: String): Task<DocumentSnapshot> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).get()
     }
 
-    // Sign in user
     fun signInAnonymously(): Task<AuthResult> {
         return auth.signInAnonymously()
     }
@@ -78,11 +79,8 @@ class FirestoreRepository {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun getUser(user: FirebaseUser? = null, id: String? = null): Query {
-        var query: Query = db.collection(USERS_COLLECTION)
-        if (user != null) query = query.whereEqualTo("emailAddress", user.email).limit(1)
-        if (id != null) query = query.whereEqualTo("id", id).limit(1)
-        return query
+    fun getUser(user: FirebaseUser): Task<QuerySnapshot> {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1).get()
     }
 
     fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
@@ -98,89 +96,45 @@ class FirestoreRepository {
         return db.collection(USERS_COLLECTION).add(user)
     }
 
-    // Get all categories
-    fun getCategories(): CollectionReference {
+    fun getCategories(): Query {
         return db.collection(CATEGORIES_COLLECTION)
     }
 
-    // Get all locations
-    fun getLocations(name: String? = null): Query {
-        var query: Query = db.collection(LOCATIONS_COLLECTION)
-
-        if (name != null)
-            query = query.whereEqualTo("name", name)
-
-        return query
+    fun getLocations(): Query {
+        return db.collection(LOCATIONS_COLLECTION)
     }
 
-    fun getImages(productId: String, i: Long): Task<ByteArray> {
-        val productImageRef =
-            imagesRef.child("${productId}/image_$i")
-        val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
-        return productImageRef.getBytes(FIVE_MEGABYTE)
+    fun getLocation(city: String): Task<QuerySnapshot> {
+        return getLocations().whereEqualTo("city", city).get()
     }
 
-    fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
-        var query: Query = db.collection(DISCUSSION_COLLECTION)
-        if (userId != null)
-            query = query.whereEqualTo("userId", userId)
-        if (productOwner != null)
-            query = query.whereEqualTo("productOwner", productOwner)
-        return query
+    fun getImage(path: String): Task<ByteArray> {
+        return storage.reference.child("images/${path}").getBytes(IMAGE_SIZE)
     }
 
-    fun getDiscussion(discussionId: String): DocumentReference {
-        return db.collection(DISCUSSION_COLLECTION).document(discussionId)
+    fun updateLocation(id: String, zipCode: Long): Task<Void> {
+        return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
-    fun updateLocation(locationId: String, zipCode: Long) {
-        db.collection(LOCATIONS_COLLECTION)
-            .document(locationId)
-            .update("zipCode", zipCode)
+    fun updateProduct(id: String, consultation: Consultation): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).update("consultations", FieldValue.arrayUnion(consultation))
     }
 
-    fun updateUser(
-        userId: String,
-        productsIds: ArrayList<String>? = null,
-        favoritesProduct: ArrayList<String>? = null
-    ) {
-        if (productsIds != null) {
-            db.collection(USERS_COLLECTION)
-                .document(userId)
-                .update("productsId", productsIds)
-        }
-        if (favoritesProduct != null) {
-            db.collection(USERS_COLLECTION)
-                .document(userId)
-                .update("favoriteProductsId", productsIds)
-        }
+    fun updateUser(id: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
     }
 
-    fun updateDiscussion(id:String,messages:ArrayList<Message>){
-        db.collection(DISCUSSION_COLLECTION).document(id).update("messages",messages)
-    }
-
-    fun addLocation(location: Location) {
-        db.collection(LOCATIONS_COLLECTION)
-            .add(location)
+    fun addLocation(location: Location): Task<DocumentReference> {
+        return db.collection(LOCATIONS_COLLECTION).add(location)
     }
 
     fun addProduct(product: Product): Task<DocumentReference> {
-        return db.collection(PRODUCTS_COLLECTION)
-            .add(product)
+        return db.collection(PRODUCTS_COLLECTION).add(product)
     }
 
-    fun addImages(productId: String, inputStream: ArrayList<InputStream>) {
+    fun addImage(path: String, inputStream: InputStream): UploadTask {
         val metadata = storageMetadata { contentType = "image/jpg" }
-        for (i in inputStream.indices)
-            imagesRef.child("${productId}/image_$i")
-                .putStream(inputStream[i], metadata)
-    }
-
-    fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
-        return db.collection(DISCUSSION_COLLECTION).add(discussion).addOnCompleteListener {
-            it.result!!.id
-        }
+        return storage.reference.child("images/${path}").putStream(inputStream, metadata)
     }
 
     fun deleteProducts(ids: ArrayList<String>): Task<Void> {
@@ -194,28 +148,11 @@ class FirestoreRepository {
         return products.commit()
     }
 
-    fun deleteImage(id: String, number: Int): Task<Void> {
-        return storage.reference.child("images/${id}/image_$number").delete()
+    fun deleteImage(path: String): Task<Void> {
+        return storage.reference.child("images/${path}").delete()
     }
 
     fun deleteUser(user: FirebaseUser): Task<Void> {
         return user.delete()
     }
-
-    /*
-    // save address to firebase
-    fun saveAddressItem(addressItem: AddressItem): Task<Void> {
-        //var
-        var documentReference = db.collection("users").document(user!!.email.toString())
-            .collection("saved_addresses").document(addressItem.addressId)
-        return documentReference.set(addressItem)
-    }
-
-    fun deleteAddress(addressItem: AddressItem): Task<Void> {
-        var documentReference =  db.collection("users/${user!!.email.toString()}/saved_addresses")
-            .document(addressItem.addressId)
-
-        return documentReference.delete()
-    }
-    */
 }

@@ -3,7 +3,7 @@ package c0d3.vitreen.app.models
 import java.util.ArrayList
 
 data class User(
-    val fullname: String = "",
+    val username: String = "",
     val emailAddress: String = "",
     val phoneNumber: String = "",
     val contactByPhone: Boolean = true,
@@ -12,6 +12,5 @@ data class User(
     val location: Location = Location(),
     val companyName: String? = null,
     val siretNumber: String? = null,
-    var productsId: ArrayList<String> = ArrayList(),
-    val favoriteProductsId: ArrayList<String> = ArrayList(),
+    val favoritesIds: ArrayList<String> = ArrayList(),
 ): Entity()

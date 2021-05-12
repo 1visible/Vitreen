@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Placeholder text -->
     <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
@@ -7,12 +7,16 @@
     <string name="required_input">Champ obligatoire</string>
     <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="network_error">Oups ! Vérifiez votre connexion internet puis réessayez.</string>
+    <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
+    <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>
+    <string name="ImageNotFoundException">Certaines images n\'ont pas pu être chargées…</string>
     <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
-    <string name="error_404">Oups ! Impossible de trouver les données.</string>
+    <string name="error_404">Nous n\'avons pas pu trouver ce que vous cherchez…</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
-    <string name="label_adding">Ajouter une annonce</string>
+    <string name="label_adding1" tools:ignore="TypographyFractions">Ajouter une annonce (1/2)</string>
+    <string name="label_adding2">Ajouter une annonce (2/2)</string>
     <string name="label_favorites">Mes favoris</string>
     <string name="label_profile">Mon profil</string>
     <string name="label_register">Inscription</string>
@@ -40,7 +44,7 @@
     <string name="next">Suivant</string>
     <string name="passwords_not_equals">Les mots de passe doivent être identiques…</string>
     <!-- Register2 fragment -->
-    <string name="fullname">Nom complet</string>
+    <string name="username">Nom d\'utilisateur</string>
     <string name="phone_number">N° de téléphone</string>
     <string name="contact_by_phone">Je veux être contacté par téléphone</string>
     <string name="contact_by_email">Je veux être contacté par e-mail</string>
@@ -48,6 +52,7 @@
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
     <string name="register">S\'inscrire</string>
+    <string name="register_success">Votre compte a été créé avec succès !</string>
     <!-- Adding1 fragment -->
     <string name="product_category">Catégorie</string>
     <string name="product_title">Titre</string>
@@ -58,6 +63,8 @@
     <string name="product_brand">Marque</string>
     <string name="product_dimensions">Dimensions</string>
     <string name="add_image">Ajouter une image</string>
+    <string name="max_images_error">Vous avez dépassé la limite d\'images !</string>
+    <string name="add_product_success">Le produit a été ajouté avec succès !</string>
     <!-- Product item -->
     <string name="price">%.2f€</string>
     <string name="placeholder_title">Titre</string>
@@ -68,7 +75,7 @@
     <string name="professional_informations">Informations professionnelles</string>
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
-    <string name="location_template">%1$s (%2$d)</string>
+    <string name="location_template">%1$s (%2$s)</string>
     <string name="not_connected">Vous n\'êtes pas connecté(e)…</string>
     <string name="account_deleted">Votre compte a été supprimé avec succès !</string>
     <!-- Favorites fragment -->
@@ -76,6 +83,27 @@
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
     <string name="postal_address">Ville</string>
+    <!-- Statistics fragment -->
+    <string name="day_monday">LUN</string>
+    <string name="day_tuesday">MAR</string>
+    <string name="day_wednesday">MER</string>
+    <string name="day_thursday">JEU</string>
+    <string name="day_friday">VEN</string>
+    <string name="day_saturday">SAM</string>
+    <string name="day_sunday">DIM</string>
+    <string name="month_january">JAN</string>
+    <string name="month_february">FÉV</string>
+    <string name="month_march">MAR</string>
+    <string name="month_april">AVR</string>
+    <string name="month_may">MAI</string>
+    <string name="month_june">JUN</string>
+    <string name="month_july">JUI</string>
+    <string name="month_august">AOÛ</string>
+    <string name="month_september">SEP</string>
+    <string name="month_october">OCT</string>
+    <string name="month_november">NOV</string>
+    <string name="month_december">DÉC</string>
+
     <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>

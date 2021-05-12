@@ -8,9 +8,9 @@
     android:orientation="vertical"
     tools:context=".fragments.auth.Register2Fragment">
 
-    <!-- Fullname input -->
+    <!-- Username input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextFullname"
+        android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
@@ -18,7 +18,7 @@
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
-        android:hint="@string/fullname" >
+        android:hint="@string/username" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

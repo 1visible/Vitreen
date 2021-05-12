@@ -1,75 +1,70 @@
 package c0d3.vitreen.app.adapter
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.dto.ProductDTO
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import c0d3.vitreen.app.utils.FirestoreViewModel
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val onClick: (ProductDTO) -> Unit) :
-        ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, private val onClick: (ProductDTO) -> Unit)
+    : ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-
-    class ProductViewHolder(itemView: View, val onClick: (ProductDTO) -> Unit) :
-            RecyclerView.ViewHolder(itemView) {
-        private var currentProduct: ProductDTO? = null
-
-        private val storage = Firebase.storage
-        private val storageRef = storage.reference
+    class ProductViewHolder(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
+        private var productDTO: ProductDTO? = null
 
         init {
             itemView.setOnClickListener {
-                currentProduct.let {
-                    if (it != null) {
-                        onClick(it)
-                    }
-                }
+                productDTO?.let { product -> onClick(product) }
             }
         }
 
         fun bind(product: ProductDTO) {
-            currentProduct = product
-            val productImageRef = storageRef.child("images/${currentProduct!!.id}/image_0")
-            val FIVE_MEGABYTE: Long = 1024 * 1024 * 5
-            productImageRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener {
-                if (currentProduct != null) {
-                    itemView.imageViewProduct.setImageBitmap(
-                            BitmapFactory.decodeByteArray(
-                                    it,
-                                    0,
-                                    it.size
-                            )
-                    )
-                    itemView.textViewTitle.text = currentProduct!!.title
-                    itemView.textViewCategory.text = currentProduct!!.category.name
-                    itemView.textViewLocation.text = currentProduct!!.location.name
-                    itemView.textViewPrice.text = itemView.context.getString(R.string.price,currentProduct!!.price)
+            productDTO = product
+
+            // Try to get product images
+            if(product.nbImages > 0)
+                product.id?.let { id ->
+                    viewModel.getImages(id, 1).observeOnce(owner, { pair ->
+                        val exception = pair.first
+                        val images = pair.second
+
+                        if(exception == -1 && images.isNotEmpty())
+                            itemView.imageViewProduct.setImageBitmap(images.first())
+                    })
                 }
-            }.addOnFailureListener {
-                // Handle any errors
-            }
+
+            // Fill product with informations
+            itemView.textViewTitle.text = product.title
+            itemView.textViewCategory.text = product.category.name
+            val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
+            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, product.location.city, zipCode)
+            itemView.textViewPrice.text = itemView.context.getString(R.string.price, product.price)
         }
+
     }
-    /* Creates and inflates view and return FlowerViewHolder. */
+
+    // Create and inflate view and return ProductViewHolder.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false)
-        return ProductViewHolder(view, onClick)
+        return ProductViewHolder(viewModel, owner, view, onClick)
     }
 
-    /* Gets current flower and uses it to bind view. */
+    // Get current product and use it to bind view.
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = getItem(position)
         holder.bind(product)
-
     }
+
 }
 
 object ProductDiffCallback : DiffUtil.ItemCallback<ProductDTO>() {
@@ -81,3 +76,4 @@ object ProductDiffCallback : DiffUtil.ItemCallback<ProductDTO>() {
         return oldItem.id == newItem.id
     }
 }
+

@@ -11,13 +11,12 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_messages.*
 
 class MessagesFragment : VFragment(
-    R.layout.fragment_messages,
-    R.drawable.bigicon_messages,
-    -1,
-    true,
-    R.menu.menu_messages,
-    true,
-    R.id.action_navigation_messages_to_navigation_login
+    layoutId = R.layout.fragment_messages,
+    topIcon = R.drawable.bigicon_messages,
+    hasOptionsMenu = true,
+    topMenuId = R.menu.menu_messages,
+    requireAuth = true,
+    loginNavigationId = R.id.from_messages_to_login
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -21,18 +21,14 @@ class FetchLocation : LocationListener {
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            onLocationFetchListener?.onFailed("PERMISSION DENIED")
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return
-        }
 
         val criteria = Criteria()
         val provider = locationManager!!.getBestProvider(criteria, false)
 
         if (provider != null)
             locationManager!!.requestLocationUpdates(provider, 1, 0.0f, this, Looper.getMainLooper())
-        else
-            onLocationFetchListener?.onFailed("NO PROVIDERS")
     }
 
     override fun onLocationChanged(location: Location) {

@@ -2,19 +2,15 @@ package c0d3.vitreen.app.fragments.auth
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.utils.Constants.Companion.FAKE_EMAIL
-import c0d3.vitreen.app.utils.Constants.Companion.FAKE_PASSWORD
 import c0d3.vitreen.app.utils.VFragment
-import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.fragment_login.*
+import java.lang.NullPointerException
 import java.util.*
 
 class LoginFragment : VFragment(
-    R.layout.fragment_login,
-    R.drawable.bigicon_authentification,
-    -1
+    layoutId = R.layout.fragment_login,
+    topIcon = R.drawable.bigicon_authentification
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -22,6 +18,7 @@ class LoginFragment : VFragment(
 
         // On submit button click, try to login the user
         buttonSubmitLogin.setOnClickListener {
+            // Check if required inputs are filled
             if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword))
                 return@setOnClickListener
 
@@ -32,21 +29,25 @@ class LoginFragment : VFragment(
             else if (!isUserSignedIn()) {
                 // TODO : val credential = EmailAuthProvider.getCredential(UUID.randomUUID().toString() + FAKE_EMAIL, FAKE_PASSWORD)
                 // Delete anonymous account
-                viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { errorCode ->
-                    // If the call fails, show error message and hide loading spinner
-                    if(handleError(errorCode)) return@observeOnce
-                    // Else, sign in
-                    signIn()
-                })
+                try {
+                    viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { exception ->
+                        // If the call fails, show error message and hide loading spinner
+                        if(handleError(exception)) return@observeOnce
+                        // Else, sign in
+                        signIn()
+                    })
+                } catch(_: NullPointerException) {
+                    showMessage()
+                }
             }
             // Else (the user is signed in), navigate back to home
             else
-                navigateTo(R.id.action_navigation_login_to_navigation_home)
+                navigateTo(R.id.from_login_to_home)
         }
 
         // On register button click, navigate to Register1 fragment
         buttonToRegister1.setOnClickListener {
-            navigateTo(R.id.action_navigation_login_to_navigation_register1)
+            navigateTo(R.id.from_login_to_register1)
         }
     }
 
@@ -54,14 +55,17 @@ class LoginFragment : VFragment(
         val email = inputToString(editTextEmail)
         val password = inputToString(editTextPassword)
 
-        if(email == null || password == null)
+        // Check email and password after conversion
+        if (email == null || password == null) {
+            showMessage()
             return
+        }
 
-        viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { errorCode ->
+        viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { exception ->
             // If the call fails, show error message and hide loading spinner
-            if(handleError(errorCode)) return@observeOnce
+            if(handleError(exception)) return@observeOnce
             // Else, redirect to home
-            navigateTo(R.id.action_navigation_login_to_navigation_home)
+            navigateTo(R.id.from_login_to_home)
         })
     }
 
