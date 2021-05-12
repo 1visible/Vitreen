@@ -231,6 +231,49 @@ class FirestoreViewModel : ViewModel() {
         return request(repository.deleteUser(user))
     }
 
+    // TODO      vvv Vérifier refactor vvv
+
+    fun getDiscussions(
+        userId: String? = null,
+        productOwner: String? = null
+    ): LiveData<Pair<Int, List<Discussion>>> {
+        return getList(repository.getDiscussions(userId, productOwner), discussionsLiveData)
+    }
+
+    fun getDiscussion(discussionId: String): LiveData<Pair<Int, Discussion>> {
+        repository.getDiscussion(discussionId).addSnapshotListener { discussion, exception ->
+            var errorCode = if (exception == null) -1 else R.string.network_error
+            val discussionData: Discussion
+
+            if (discussion == null || !discussion.exists()) {
+                discussionData = Discussion()
+                if (exception == null)
+                    errorCode = R.string.error_404
+            } else
+                discussionData =
+                    toObject(discussion as QueryDocumentSnapshot, Discussion::class.java)
+
+            discussionLiveData.value = Pair(errorCode, discussionData)
+        }
+        return discussionLiveData
+    }
+
+    fun updateDiscussion(id: String, messages: ArrayList<Message>) {
+        repository.updateDiscussion(id, messages)
+    }
+
+    fun addDiscussion(discussion: Discussion): LiveData<Pair<Int, String>> {
+        repository.addDiscussion(discussion).addOnCompleteListener { task ->
+            val discussionData = task.result
+            val errorCode =
+                if (task.isSuccessful && discussionData != null) -1 else R.string.network_error
+            if (discussionData != null) {
+                DiscussionLiveData.value = Pair(errorCode, discussionData.id)
+            }
+        }
+        return DiscussionLiveData
+    }
+
     private inline fun <reified T : Entity> requestList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
             val exception = if (error == null) -1 else R.string.NetworkException

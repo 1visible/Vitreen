@@ -2,6 +2,7 @@ package c0d3.vitreen.app.utils
 
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSION_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
@@ -154,5 +155,30 @@ class FirestoreRepository {
 
     fun deleteUser(user: FirebaseUser): Task<Void> {
         return user.delete()
+    }
+
+    // TODO      vvv Vérifier refactor vvv
+
+    fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
+        var query: Query = db.collection(DISCUSSION_COLLECTION)
+        if (userId != null)
+            query = query.whereEqualTo("userId", userId)
+        if (productOwner != null)
+            query = query.whereEqualTo("productOwner", productOwner)
+        return query
+    }
+
+    fun getDiscussion(discussionId: String): DocumentReference {
+        return db.collection(DISCUSSION_COLLECTION).document(discussionId)
+    }
+
+    fun updateDiscussion(id:String,messages:ArrayList<Message>){
+        db.collection(DISCUSSION_COLLECTION).document(id).update("messages",messages)
+    }
+
+    fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
+        return db.collection(DISCUSSION_COLLECTION).add(discussion).addOnCompleteListener {
+            it.result!!.id
+        }
     }
 }

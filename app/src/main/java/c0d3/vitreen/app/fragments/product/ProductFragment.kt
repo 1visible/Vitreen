@@ -7,8 +7,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.Consultation
+import c0d3.vitreen.app.models.Discussion
+import c0d3.vitreen.app.models.Message
 import c0d3.vitreen.app.models.Product
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.Constants.Companion.TAG
@@ -114,6 +118,36 @@ class ProductFragment : VFragment(
                         imageViewProduct.setImageBitmap(images[imageIndex])
                     }
                 })
+
+                // TODO      vvv Vérifier refactor vvv
+
+                buttonSendMessage.setOnClickListener { view ->
+                    viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pairUser ->
+                        if (handleError(pairUser.first)) return@observeOnce
+                        var firstMessage = ArrayList<Message>()
+                        firstMessage.add(
+                            Message(
+                                pairUser.second.id,
+                                getString(R.string.createDiscussion)
+                            )
+                        )
+                        val discussion = Discussion(
+                            pairUser.second.id,
+                            pair.second.id,
+                            pair.second.title,
+                            pair.second.ownerId,
+                            firstMessage
+                        )
+                        viewModel.addDiscussion(discussion)
+                            .observeOnce(viewLifecycleOwner, addDiscussion@{ pair ->
+                                if (handleError(pair.first)) return@addDiscussion
+                                navigateTo(
+                                    R.id.action_navigation_product_to_navigation_discussion,
+                                    KEY_DISCUSSION_ID to pair.second
+                                )
+                            })
+                    })
+                }
             })
         } catch (_: NullPointerException) {
             showMessage(R.string.error_404)
