@@ -1,7 +1,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/1visible/Vitreen">
-  <img alt="Vitreen" src="content/title.png" width="300"></img>
+  <img alt="Vitreen" src="content/title.png"></img>
   </a>
 
   <p align="center">
