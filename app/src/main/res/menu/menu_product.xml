@@ -5,20 +5,19 @@
     <item
         android:id="@+id/action_add_favorite"
         android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
+        android:icon="@drawable/ic_baseline_favorite_border_24"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_remove_favorite"
         android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
+        android:icon="@drawable/ic_baseline_favorite_24"
         android:visible="false"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_statistics"
         android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
         app:showAsAction="never" />
 
 </menu>

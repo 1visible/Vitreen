@@ -7,10 +7,6 @@ import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
@@ -33,9 +29,9 @@ abstract class VFragment(
 ) : Fragment() {
 
     private lateinit var menu: Menu
-    lateinit var viewModel: FirestoreViewModel
     lateinit var auth: FirebaseAuth
     var user: FirebaseUser? = null
+    lateinit var viewModel: FirestoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +45,6 @@ abstract class VFragment(
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
         auth = Firebase.auth
         user = auth.currentUser
 
@@ -64,7 +59,8 @@ abstract class VFragment(
 
         val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
         (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
-        setSpinnerVisibility(GONE)
+
+        viewModel = (activity as MainActivity).viewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

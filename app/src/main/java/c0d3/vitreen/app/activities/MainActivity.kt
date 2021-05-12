@@ -15,12 +15,14 @@ import androidx.core.os.postDelayed
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
@@ -31,12 +33,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var backPressedOnce = false
+    lateinit var viewModel: FirestoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Firebase.firestore.firestoreSettings = firestoreSettings { isPersistenceEnabled = false }
+        viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
