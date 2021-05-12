@@ -40,9 +40,9 @@ class HomeFragment : VFragment(
         // If the user is signed out
         if(user == null) {
             // Try to sign in with anonymous account
-            viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, { errorCode ->
+            viewModel.signInAnonymously().observeOnce(viewLifecycleOwner, { exception ->
                 // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(errorCode, R.string.no_products)) return@observeOnce
+                if(handleError(exception, R.string.no_products)) return@observeOnce
 
                 // Else, show the products
                 showProducts()
@@ -57,10 +57,10 @@ class HomeFragment : VFragment(
             // Get current user informations
             try {
                 viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                    val errorCode = pair.first
+                    val exception = pair.first
                     val user = pair.second
                     // If the call fails, show error message, hide loading spinner and show empty view
-                    if(handleError(errorCode, R.string.no_products)) return@observeOnce
+                    if(handleError(exception, R.string.no_products)) return@observeOnce
 
                     // Else, show the products according to user location
                     showProducts(user.location)
@@ -72,10 +72,10 @@ class HomeFragment : VFragment(
 
         // Fill categories in the search section
         viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val categories = pair.second
             // If the call fails, show error message and hide loading spinner
-            if (handleError(errorCode)) return@observeOnce
+            if (handleError(exception)) return@observeOnce
 
             // Else, put categories as edit text choices
             val categoryNames = categories.map { category -> category.name }
@@ -86,10 +86,10 @@ class HomeFragment : VFragment(
 
         // Fill locations in the search section
         viewModel.getLocations().observeOnce(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val locations = pair.second
             // If the call fails, show error message and hide loading spinner
-            if (handleError(errorCode)) return@observeOnce
+            if (handleError(exception)) return@observeOnce
 
             // Else, put locations as edit text choices
             val locationNames = locations.map { location -> location.city }
@@ -133,10 +133,10 @@ class HomeFragment : VFragment(
 
     private fun showProducts(location: Location? = null) {
         viewModel.getProducts(location = location).observe(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val products = pair.second
             // If the call fails, show error message, hide loading spinner and show empty view
-            if(handleError(errorCode, R.string.no_products)) return@observe
+            if(handleError(exception, R.string.no_products)) return@observe
 
             // Else if there is no products to display, hide loading spinner and show empty view
             if(products.isNullOrEmpty()) {

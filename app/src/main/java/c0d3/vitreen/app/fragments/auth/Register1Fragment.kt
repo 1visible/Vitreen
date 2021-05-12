@@ -40,17 +40,17 @@ class Register1Fragment : VFragment(
             }
 
             if(user == null) {
-                viewModel.registerUser(email, password).observeOnce(viewLifecycleOwner, { errorCode ->
+                viewModel.registerUser(email, password).observeOnce(viewLifecycleOwner, { exception ->
                     // If the call fails, show error message and hide loading spinner
-                    if(handleError(errorCode)) return@observeOnce
+                    if(handleError(exception)) return@observeOnce
                     // Else, navigate to Register2 fragment
                     navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
                 })
             } else if(!isUserSignedIn()) {
                 try {
-                    viewModel.linkUser(user!!, email, password).observeOnce(viewLifecycleOwner, { errorCode ->
+                    viewModel.linkUser(user!!, email, password).observeOnce(viewLifecycleOwner, { exception ->
                         // If the call fails, show error message and hide loading spinner
-                        if(handleError(errorCode)) return@observeOnce
+                        if(handleError(exception)) return@observeOnce
                         // Else, navigate to Register2 fragment
                         navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
                     })

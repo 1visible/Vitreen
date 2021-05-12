@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import kotlinx.android.synthetic.main.product_item.view.*
@@ -30,15 +31,16 @@ class ProductAdapter(private val viewModel: FirestoreViewModel, private val owne
             productDTO = product
 
             // Try to get product images
-            product.id?.let { id ->
-                viewModel.getImages(id, 1).observeOnce(owner, { pair ->
-                    val errorCode = pair.first
-                    val images = pair.second
+            if(product.nbImages > 0)
+                product.id?.let { id ->
+                    viewModel.getImages(id, 1).observeOnce(owner, { pair ->
+                        val exception = pair.first
+                        val images = pair.second
 
-                    if(errorCode == -1 && images.isNotEmpty())
-                        itemView.imageViewProduct.setImageBitmap(images.first())
-                })
-            }
+                        if(exception == -1 && images.isNotEmpty())
+                            itemView.imageViewProduct.setImageBitmap(images.first())
+                    })
+                }
 
             // Fill product with informations
             itemView.textViewTitle.text = product.title
@@ -75,11 +77,3 @@ object ProductDiffCallback : DiffUtil.ItemCallback<ProductDTO>() {
     }
 }
 
-fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: (T) -> Unit) {
-    observe(owner, object: Observer<T> {
-        override fun onChanged(value: T) {
-            removeObserver(this)
-            observer(value)
-        }
-    })
-}

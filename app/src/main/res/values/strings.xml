@@ -7,6 +7,9 @@
     <string name="required_input">Champ obligatoire</string>
     <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="network_error">Oups ! Vérifiez votre connexion internet puis réessayez.</string>
+    <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
+    <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>
+    <string name="ImageNotFoundException">Certaines images n\'ont pas pu être chargées…</string>
     <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
     <string name="error_404">Nous n\'avons pas pu trouver ce que vous cherchez…</string>
     <!-- Fragment label -->
@@ -41,7 +44,7 @@
     <string name="next">Suivant</string>
     <string name="passwords_not_equals">Les mots de passe doivent être identiques…</string>
     <!-- Register2 fragment -->
-    <string name="fullname">Nom complet</string>
+    <string name="username">Nom d\'utilisateur</string>
     <string name="phone_number">N° de téléphone</string>
     <string name="contact_by_phone">Je veux être contacté par téléphone</string>
     <string name="contact_by_email">Je veux être contacté par e-mail</string>
@@ -80,6 +83,27 @@
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
     <string name="postal_address">Ville</string>
+    <!-- Statistics fragment -->
+    <string name="day_monday">LUN</string>
+    <string name="day_tuesday">MAR</string>
+    <string name="day_wednesday">MER</string>
+    <string name="day_thursday">JEU</string>
+    <string name="day_friday">VEN</string>
+    <string name="day_saturday">SAM</string>
+    <string name="day_sunday">DIM</string>
+    <string name="month_january">JAN</string>
+    <string name="month_february">FÉV</string>
+    <string name="month_march">MAR</string>
+    <string name="month_april">AVR</string>
+    <string name="month_may">MAI</string>
+    <string name="month_june">JUN</string>
+    <string name="month_july">JUI</string>
+    <string name="month_august">AOÛ</string>
+    <string name="month_september">SEP</string>
+    <string name="month_october">OCT</string>
+    <string name="month_november">NOV</string>
+    <string name="month_december">DÉC</string>
+
     <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>

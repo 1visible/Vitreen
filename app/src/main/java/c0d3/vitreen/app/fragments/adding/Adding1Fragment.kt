@@ -52,10 +52,10 @@ class Adding1Fragment : VFragment(
 
         // Get categories to put them as edit text choices
         viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
-            val errorCode = pair.first
+            val exception = pair.first
             val categories = pair.second
             // If the call fails, show error message and hide loading spinner
-            if (handleError(errorCode)) return@observeOnce
+            if (handleError(exception)) return@observeOnce
 
             // Else, put categories as edit text choices
             categoriesDTO.addAll(categories)
@@ -97,14 +97,14 @@ class Adding1Fragment : VFragment(
 
             // Get location from city name
             viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 var location = pair.second
                 val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
                 // If the call fails, show error message and hide loading spinner
-                if(errorCode != R.string.error_404 && handleError(errorCode)) return@observeOnce
+                if(exception != R.string.error_404 && handleError(exception)) return@observeOnce
 
                 // Else if location could not be found, create new location
-                if(errorCode == R.string.error_404) {
+                if(exception == R.string.error_404) {
                     location = Location(locationName, zipCodeL)
                     viewModel.addLocation(location)
                 }

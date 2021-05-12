@@ -59,19 +59,19 @@ class Register2Fragment : VFragment(
         // On submit button click, create user account
         buttonSubmitRegister.setOnClickListener {
             // Check if required inputs are filled
-            if(isAnyRequiredInputEmpty(editTextFullname, editTextPhoneNumber, editTextLocation))
+            if(isAnyRequiredInputEmpty(editTextUsername, editTextPhoneNumber, editTextLocation))
                 return@setOnClickListener
             if(switchProfessionalAccount.isChecked && isAnyRequiredInputEmpty(editTextCompany, editTextSiret))
                 return@setOnClickListener
 
-            val fullname = inputToString(editTextFullname)
+            val username = inputToString(editTextUsername)
             val phoneNumber = inputToString(editTextPhoneNumber)
             val locationName = inputToString(editTextLocation)?.toLowerCase(Locale.ROOT)?.capitalize(Locale.ROOT)
             val company = inputToString(editTextCompany)
             val siret = inputToString(editTextSiret)
 
             // Double check personal informations after conversion
-            if (fullname == null || phoneNumber == null || locationName == null) {
+            if (username == null || phoneNumber == null || locationName == null) {
                 showMessage()
                 return@setOnClickListener
             }
@@ -84,14 +84,14 @@ class Register2Fragment : VFragment(
 
             // Get location from city name
             viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
-                val errorCode = pair.first
+                val exception = pair.first
                 var location = pair.second
                 val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
                 // If the call fails, show error message and hide loading spinner
-                if(errorCode != R.string.error_404 && handleError(errorCode)) return@observeOnce
+                if(exception != R.string.error_404 && handleError(exception)) return@observeOnce
 
                 // Else if location could not be found, create new location
-                if(errorCode == R.string.error_404) {
+                if(exception == R.string.error_404) {
                     location = Location(locationName, zipCodeL)
                     viewModel.addLocation(location)
                 }
@@ -104,7 +104,7 @@ class Register2Fragment : VFragment(
                 try {
                     // Create user profile with filled informations
                     val user = User(
-                        fullname = fullname,
+                        username = username,
                         emailAddress = emailAddress!!,
                         phoneNumber = phoneNumber,
                         location = location,
@@ -115,9 +115,9 @@ class Register2Fragment : VFragment(
                     )
 
                     // Register user profile to database
-                    viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { errorCode2 ->
+                    viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { exception2 ->
                         // If the call fails, show error message and hide loading spinner
-                        if(handleError(errorCode2)) return@observeOnce2
+                        if(handleError(exception2)) return@observeOnce2
 
                         // Else, navigate to profile fragment
                         navigateTo(R.id.from_register2_to_profile)

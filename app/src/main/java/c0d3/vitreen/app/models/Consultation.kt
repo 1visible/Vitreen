@@ -1,6 +1,9 @@
 package c0d3.vitreen.app.models
 
+import java.io.Serializable
+import java.util.*
+
 data class Consultation(
-    var date: String = "",
-    var location: Location = Location(),
-)
+    var date: Date = Calendar.getInstance().time,
+    var city: String = "",
+): Serializable
