@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.models
 
+import java.io.Serializable
 import java.util.ArrayList
 
 data class User(
@@ -13,4 +14,4 @@ data class User(
     val companyName: String? = null,
     val siretNumber: String? = null,
     val favoritesIds: ArrayList<String> = ArrayList(),
-): Entity()
+): Entity(), Serializable

@@ -23,6 +23,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     var user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     var categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     var locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
+    var discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
 
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
@@ -261,7 +262,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             if(exception2 == -1 && exception != -1)
                 exception2 = exception
 
-            exception2 to product
+            productLiveData.value = exception2 to product
         }
 
         return productLiveData
@@ -326,52 +327,42 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    // TODO      vvv Vérifier refactor vvv
-
-    /*
-
-    fun getDiscussions(
-        userId: String? = null,
-        productOwner: String? = null
-    ): LiveData<Pair<Int, List<Discussion>>> {
-        return getList(repository.getDiscussions(userId, productOwner), discussionsLiveData)
+    fun getDiscussions(userId: String? = null, productOwner: String? = null): LiveData<Pair<Int, List<Discussion>>> {
+        return requestList(repository.getDiscussions(userId, productOwner), discussions)
     }
 
-    fun getDiscussion(discussionId: String): LiveData<Pair<Int, Discussion>> {
-        repository.getDiscussion(discussionId).addSnapshotListener { discussion, exception ->
-            var errorCode = if (exception == null) -1 else R.string.network_error
-            val discussionData: Discussion
+    fun updateDiscussion(id: String, message: Message): LiveData<Int> {
+        return request(repository.updateDiscussion(id, message))
+    }
 
-            if (discussion == null || !discussion.exists()) {
-                discussionData = Discussion()
-                if (exception == null)
-                    errorCode = R.string.error_404
-            } else
-                discussionData =
-                    toObject(discussion as QueryDocumentSnapshot, Discussion::class.java)
+    fun addDiscussion(discussion: Discussion): MutableLiveData<Pair<Int, Discussion>> {
+        val discussionLiveData = MutableLiveData<Pair<Int, Discussion>>()
 
-            discussionLiveData.value = Pair(errorCode, discussionData)
+        repository.addDiscussion(discussion).addOnCompleteListener { task ->
+            val discussionData = task.result
+            val exception = if (task.isSuccessful && discussionData != null) -1 else R.string.NetworkException
+
+            if(discussionData != null)
+                discussion.id = discussionData.id
+
+            discussionLiveData.value = exception to discussion
         }
+
         return discussionLiveData
     }
 
-    fun updateDiscussion(id: String, messages: ArrayList<Message>) {
-        repository.updateDiscussion(id, messages)
-    }
-
-    fun addDiscussion(discussion: Discussion): LiveData<Pair<Int, String>> {
-        repository.addDiscussion(discussion).addOnCompleteListener { task ->
-            val discussionData = task.result
-            val errorCode =
-                if (task.isSuccessful && discussionData != null) -1 else R.string.network_error
-            if (discussionData != null) {
-                DiscussionLiveData.value = Pair(errorCode, discussionData.id)
-            }
+    fun getDiscussion(id: String): LiveData<Pair<Int, Discussion>> {
+        return Transformations.map(discussions) { (exception, discussions) ->
+            if (exception == -1) {
+                val discussion = discussions.firstOrNull { conv -> conv.id == id }
+                if (discussion != null)
+                    exception to discussion
+                else
+                    R.string.NotFoundException to Discussion()
+            } else
+                exception to Discussion()
         }
-        return DiscussionLiveData
     }
-
-     */
 
     private inline fun <reified T : Entity> requestList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->

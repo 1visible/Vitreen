@@ -161,26 +161,21 @@ class FirestoreRepository {
 
     fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
         var query: Query = db.collection(DISCUSSIONS_COLLECTION)
+
         if (userId != null)
             query = query.whereEqualTo("userId", userId)
+
         if (productOwner != null)
             query = query.whereEqualTo("productOwner", productOwner)
+
         return query
     }
 
-    fun getDiscussion(discussionId: String): DocumentReference {
-        return db.collection(DISCUSSIONS_COLLECTION).document(discussionId)
+    fun updateDiscussion (id: String, message: Message): Task<Void> {
+        return db.collection(DISCUSSIONS_COLLECTION).document(id).update("messages", FieldValue.arrayUnion(message))
     }
 
-    fun updateDiscussion (id:String,messages:ArrayList<Message>) {
-        db.collection(DISCUSSIONS_COLLECTION).document(id).update("messages",messages)
-    }
-/*
     fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
-        return db.collection(DISCUSSIONS_COLLECTION).add(discussion).addOnCompleteListener {
-            it.result!!.id
-        }
+        return db.collection(DISCUSSIONS_COLLECTION).add(discussion)
     }
-
- */
 }
