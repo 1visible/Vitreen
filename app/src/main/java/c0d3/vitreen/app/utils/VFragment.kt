@@ -2,7 +2,7 @@ package c0d3.vitreen.app.utils
 
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -11,10 +11,7 @@ import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.loading_spinner.*
 
 abstract class VFragment(
     @LayoutRes private val layoutId: Int,
@@ -27,8 +24,6 @@ abstract class VFragment(
 ) : Fragment() {
 
     private lateinit var menu: Menu
-    lateinit var auth: FirebaseAuth
-    var user: FirebaseUser? = null
     val viewModel: FirestoreViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +38,16 @@ abstract class VFragment(
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        auth = Firebase.auth
-        user = auth.currentUser
-
-        if (requireAuth && !isUserSignedIn())
+        if (requireAuth && !viewModel.isUserSignedIn)
             navigateTo(loginNavigationId)
 
         return inflater.inflate(layoutId, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Show loading spinner
+        loadingSpinner.visibility = VISIBLE
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -66,16 +64,6 @@ abstract class VFragment(
             inflater.inflate(topMenuId, menu)
 
         this.menu = menu
-    }
-
-    fun isUserSignedIn(): Boolean {
-        try {
-            if (user == null || user!!.isAnonymous)
-                return false
-        } catch (_: NullPointerException) {
-            return false
-        }
-        return true
     }
 
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
@@ -123,7 +111,7 @@ abstract class VFragment(
         return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
     }
 
-    fun showMessage(@StringRes messageId: Int = R.string.error_placeholder) {
+    fun showSnackbarMessage(@StringRes messageId: Int = R.string.error_placeholder) {
         (activity as? MainActivity)?.showMessage(messageId)
     }
 
@@ -134,17 +122,6 @@ abstract class VFragment(
         }
 
         return false
-    }
-
-    fun setSpinnerVisibility(visibility: Int) {
-        (activity as? MainActivity)?.setSpinnerVisibility(visibility)
-    }
-
-    fun handleError(@StringRes exception: Int): Boolean {
-        if(exception == -1) return false
-        showMessage(exception)
-        setSpinnerVisibility(GONE)
-        return true
     }
 
     fun setIconVisibility(@IdRes id: Int, visible: Boolean) {

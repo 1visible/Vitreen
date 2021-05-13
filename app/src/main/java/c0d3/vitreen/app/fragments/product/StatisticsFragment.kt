@@ -42,7 +42,7 @@ class StatisticsFragment : VFragment(
 
         // Check if argument could be retrieved
         if(product == null) {
-            showMessage()
+            showSnackbarMessage()
             goBack()
             return
         }

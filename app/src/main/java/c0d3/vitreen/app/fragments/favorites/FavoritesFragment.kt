@@ -10,10 +10,12 @@ import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.fragment_favorites.recyclerViewProducts
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.loading_spinner.*
 
 class FavoritesFragment : VFragment(
     layoutId = R.layout.fragment_favorites,
@@ -25,28 +27,70 @@ class FavoritesFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
-
-        // Listen to favorites
-        showFavorites()
-
-        // Get current user informations
-        try {
-            viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val user = pair.second
-                // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(exception, R.string.no_products)) return@observe
-
-                // Else, update products for listener
-                viewModel.getProducts(limit = false, ids = user.favoritesIds, owner = viewLifecycleOwner)
-            })
-        } catch (_: NullPointerException) {
-            // Update favorites with empty favorites if the user can't be found
-            viewModel.productsLiveData.value = -1 to mutableListOf()
+        if(viewModel.isUserAvailable()) {
+            // Set elements visibility (while loading)
+            emptyView.visibility = GONE
+            recyclerViewProducts.visibility = GONE
+        } else {
+            // Set elements visibility
+            loadingSpinner.visibility = GONE
+            emptyView.visibility = VISIBLE
+            recyclerViewProducts.visibility = GONE
+            // Show error message
+            showSnackbarMessage(R.string.SignedOutException)
         }
+
+        viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+            // If the call failed: show error message and show empty view
+            if(exception != -1) {
+                showSnackbarMessage(exception)
+                loadingSpinner.visibility = GONE
+                recyclerViewProducts.visibility = GONE
+                emptyView.visibility = VISIBLE
+                return@observe
+            }
+
+            // If the user has no favorites, show empty view
+            if(user.favoritesIds.isEmpty()) {
+                loadingSpinner.visibility = GONE
+                recyclerViewProducts.visibility = GONE
+                emptyView.visibility = VISIBLE
+                return@observe
+            }
+
+            // Else, get favorites list
+            recyclerViewProducts.visibility = GONE
+            emptyView.visibility = GONE
+            loadingSpinner.visibility = VISIBLE
+            viewModel.getProducts(limit = false, ids = user.favoritesIds)
+
+            viewModel.products.observe(viewLifecycleOwner, observe1@ { (exception, products) ->
+                // When the call finishes, hide loading spinner
+                loadingSpinner.visibility = GONE
+
+                // If the call failed: show error message and show empty view
+                if(exception != -1) {
+                    showSnackbarMessage(exception)
+                    recyclerViewProducts.visibility = GONE
+                    emptyView.visibility = VISIBLE
+                    return@observe1
+                }
+
+                // If there are no products: show empty view
+                if(products.isNullOrEmpty()) {
+                    recyclerViewProducts.visibility = GONE
+                    emptyView.visibility = VISIBLE
+                    return@observe1
+                }
+
+                // Else, display products in the recycler view
+                val adapter = ProductAdapter { product -> adapterOnClick(product) }
+                adapter.submitList(products.map { product -> product.toDTO() })
+                recyclerViewProducts.adapter = adapter
+                emptyView.visibility = GONE
+                recyclerViewProducts.visibility = VISIBLE
+            })
+        })
     }
 
     // TODO : Ajouter les items
@@ -59,29 +103,5 @@ class FavoritesFragment : VFragment(
 
     private fun adapterOnClick(product: ProductDTO) {
         navigateTo(R.id.from_favorites_to_product, KEY_PRODUCT_ID to product.id)
-    }
-
-    private fun showFavorites() {
-        // Observe products without making any request
-        viewModel.productsLiveData.value = -1 to mutableListOf()
-        viewModel.productsLiveData.observe(viewLifecycleOwner, { pair ->
-            val exception = pair.first
-            val products = pair.second
-            // If the call fails, show error message, hide loading spinner and show empty view
-            if(handleError(exception, R.string.no_favorites)) return@observe
-
-            // Else if there is no products to display, hide loading spinner and show empty view
-            if(products.isNullOrEmpty()) {
-                setSpinnerVisibility(GONE)
-                setEmptyView(VISIBLE, R.string.no_favorites)
-                return@observe
-            }
-
-            // Else, show products in recycler view
-            val adapter = ProductAdapter { product -> adapterOnClick(product) }
-            adapter.submitList(products.map { product -> product.toDTO() })
-            recyclerViewProducts.adapter = adapter
-            recyclerViewProducts.visibility = VISIBLE
-        })
     }
 }

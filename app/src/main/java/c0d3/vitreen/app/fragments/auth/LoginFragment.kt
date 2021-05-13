@@ -38,7 +38,7 @@ class LoginFragment : VFragment(
                         signIn()
                     })
                 } catch(_: NullPointerException) {
-                    showMessage()
+                    showSnackbarMessage()
                 }
             }
             // Else (the user is signed in), navigate back to home
@@ -58,7 +58,7 @@ class LoginFragment : VFragment(
 
         // Check email and password after conversion
         if (email == null || password == null) {
-            showMessage()
+            showSnackbarMessage()
             return
         }
 

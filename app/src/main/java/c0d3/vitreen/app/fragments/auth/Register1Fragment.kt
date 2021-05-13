@@ -28,7 +28,7 @@ class Register1Fragment : VFragment(
 
             // Double check email and password after conversion
             if (email == null || password == null) {
-                showMessage()
+                showSnackbarMessage()
                 return@setOnClickListener
             }
 
@@ -36,7 +36,7 @@ class Register1Fragment : VFragment(
             if(password != passwordConfirmation) {
                 editTextPassword.editText?.text?.clear()
                 editTextPasswordConfirmation.editText?.text?.clear()
-                showMessage(R.string.passwords_not_equals)
+                showSnackbarMessage(R.string.passwords_not_equals)
                 return@setOnClickListener
             }
 
@@ -56,7 +56,7 @@ class Register1Fragment : VFragment(
                         navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
                     })
                 } catch (_: NullPointerException) {
-                    showMessage()
+                    showSnackbarMessage()
                 }
             } else
                 navigateTo(R.id.from_register1_to_home)

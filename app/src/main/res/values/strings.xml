@@ -14,6 +14,7 @@
     <string name="NotFoundException">Nous n\'avons pas pu trouver ce que vous cherchiez…</string>
     <string name="ProductNotDeletedException">Impossible de supprimer le(s) produit(s), veuillez réessayer.</string>
     <string name="AuthentificationException">Nous n\'avons pas pu vous authentifier…</string>
+    <string name="SignedOutException">Essayez de vous connecter à un compte, puis réessayez.</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>

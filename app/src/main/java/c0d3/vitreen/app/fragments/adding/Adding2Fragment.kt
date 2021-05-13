@@ -79,7 +79,7 @@ class Adding2Fragment : VFragment(
             || category !is Category
             || location == null
             || location !is Location) {
-            showMessage()
+            showSnackbarMessage()
             navigateTo(R.id.from_adding2_to_adding1)
             return
         }
@@ -119,16 +119,16 @@ class Adding2Fragment : VFragment(
 
                             // Else, navigate to home fragment and show confirmation message
                             navigateTo(R.id.from_adding2_to_home)
-                            showMessage(R.string.add_product_success)
+                            showSnackbarMessage(R.string.add_product_success)
                         })
                     } catch (_: NullPointerException) {
-                        showMessage()
+                        showSnackbarMessage()
                         navigateTo(R.id.from_adding2_to_adding1)
                     }
                 }
             })
         } catch (_: NullPointerException) {
-            showMessage()
+            showSnackbarMessage()
             navigateTo(R.id.from_adding2_to_adding1)
             return
         }
@@ -195,7 +195,7 @@ class Adding2Fragment : VFragment(
                 || (data.clipData != null && data.clipData!!.itemCount < 1))
                 return
         } catch (_: NullPointerException) {
-            showMessage()
+            showSnackbarMessage()
             return
         }
 
@@ -213,7 +213,7 @@ class Adding2Fragment : VFragment(
 
         // Check if the new images size does not exceed the max
         if(uriList.size + tempUriList.size > nbImagesMax) {
-            showMessage(R.string.max_images_error)
+            showSnackbarMessage(R.string.max_images_error)
             return
         }
 
@@ -226,7 +226,7 @@ class Adding2Fragment : VFragment(
 
         // Check if all streams could be retrieved
         if(tempUriList.size != tempInputStreamList.size) {
-            showMessage()
+            showSnackbarMessage()
             return
         }
 

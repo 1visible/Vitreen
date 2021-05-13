@@ -24,7 +24,6 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_register1.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Adding1Fragment : VFragment(
     layoutId = R.layout.fragment_adding1,
@@ -36,12 +35,11 @@ class Adding1Fragment : VFragment(
 ) {
 
     private var locationGPS = Location()
-    private var categoriesDTO = ArrayList<Category>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner and hide empty view
+        // Show loading spinner and hide layout
         setSpinnerVisibility(VISIBLE)
 
         // If user is not signed in, skip this part
@@ -78,7 +76,7 @@ class Adding1Fragment : VFragment(
 
             // Double check category and location after conversion
             if (categoryName == null || locationName == null) {
-                showMessage()
+                showSnackbarMessage()
                 return@setOnClickListener
             }
 
@@ -92,7 +90,7 @@ class Adding1Fragment : VFragment(
 
             // Check if category could be retrieved
             if (categoryDTO == null) {
-                showMessage()
+                showSnackbarMessage()
                 return@setOnClickListener
             }
 
@@ -125,7 +123,7 @@ class Adding1Fragment : VFragment(
 
     private fun navigateToAdding2(category: Category?, location: Location) {
         if(category == null) {
-            showMessage()
+            showSnackbarMessage()
             return
         }
 

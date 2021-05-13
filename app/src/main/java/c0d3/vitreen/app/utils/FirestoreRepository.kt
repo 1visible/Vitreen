@@ -10,11 +10,11 @@ import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.UploadTask
@@ -72,21 +72,12 @@ class FirestoreRepository {
         return query
     }
 
-    fun signInAnonymously(): Task<AuthResult> {
-        return auth.signInAnonymously()
-    }
-
     fun signIn(email: String, password: String): Task<AuthResult> {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
     fun getUser(email: String): Query {
         return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", email).limit(1)
-    }
-
-    fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
-        val credential = EmailAuthProvider.getCredential(email, password)
-        return user.linkWithCredential(credential)
     }
 
     fun registerUser(email: String, password: String): Task<AuthResult> {
@@ -156,8 +147,6 @@ class FirestoreRepository {
     fun deleteUser(): Task<Void>? {
         return auth.currentUser?.delete()
     }
-
-    // TODO      vvv Vérifier refactor vvv
 
     fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
         var query: Query = db.collection(DISCUSSIONS_COLLECTION)

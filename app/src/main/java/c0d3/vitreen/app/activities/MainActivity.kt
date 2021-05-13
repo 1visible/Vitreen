@@ -26,6 +26,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
@@ -33,7 +34,7 @@ import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     private var backPressedOnce = false
     private lateinit var viewModel: FirestoreViewModel
 
@@ -109,16 +110,27 @@ class MainActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    fun setSpinnerVisibility(visibility: Int) {
-        spinner.visibility = visibility
-    }
-
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        FirebaseAuth.getInstance().addAuthStateListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        FirebaseAuth.getInstance().removeAuthStateListener(this)
+    }
+
+    // Update user (model and state) on auth state changes
+    override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
+        viewModel.setUserState(firebaseAuth.currentUser != null)
     }
 }
 

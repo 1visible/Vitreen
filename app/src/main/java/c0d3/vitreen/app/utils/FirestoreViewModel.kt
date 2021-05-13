@@ -7,17 +7,16 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.InputStream
 import java.util.*
 
-
 class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
 
+    var isUserSignedIn: Boolean = false
     val product: MutableLiveData<Product> = state.getLiveData("product")
     var products: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
@@ -29,6 +28,24 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
     fun select(product: Product) {
         this.product.value = product
+    }
+
+    fun isUserAvailable(): Boolean {
+        user.value?.let { (exception, user) ->
+            if(exception == -1 && user.emailAddress.isNotEmpty())
+                return true
+        }
+
+        return false
+    }
+
+    fun setUserState(isUserSignedIn: Boolean, email: String? = null) {
+        this.isUserSignedIn = isUserSignedIn
+
+        when(isUserSignedIn) {
+            false -> user.value = R.string.SignedOutException to User()
+            true -> email?.let { mail -> getUser(mail) }
+        }
     }
 
     init {
@@ -64,10 +81,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return products
     }
 
-    fun signInAnonymously(): LiveData<Int> {
-        return request(repository.signInAnonymously())
-    }
-
     fun signIn(email: String, password: String): LiveData<Int> {
         return request(repository.signIn(email, password))
     }
@@ -86,10 +99,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
 
         return user
-    }
-
-    fun linkUser(user: FirebaseUser, email: String, password: String): LiveData<Int> {
-        return request(repository.linkUser(user, email, password))
     }
 
     fun registerUser(email: String, password: String): LiveData<Int> {
