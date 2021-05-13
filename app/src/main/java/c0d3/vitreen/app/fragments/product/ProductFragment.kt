@@ -1,5 +1,5 @@
 package c0d3.vitreen.app.fragments.product
-/*
+
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
@@ -15,8 +15,11 @@ import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.empty_view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
 import kotlinx.android.synthetic.main.product_item.view.*
 import java.util.*
 
@@ -24,102 +27,55 @@ class ProductFragment : VFragment(
     layoutId = R.layout.fragment_product,
     topIcon = R.drawable.bigicon_adding,
     hasOptionsMenu = true,
-    topMenuId = R.menu.menu_product,
-    requireAuth = true,
-    loginNavigationId = R.id.from_product_to_login
+    topMenuId = R.menu.menu_product
 ) {
 
-    private var product: Product? = null
-    private var productId: String? = null
     private var imageIndex = 0
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        productId = arguments?.getString(KEY_PRODUCT_ID)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // If user is not signed in, skip this part
-        if (!isUserSignedIn())
-            return
+        // Set elements visibility (while loading)
+        // TODO
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
+        viewModel.product.observe(viewLifecycleOwner, { product ->
+            val city = viewModel.user.value?.second?.location?.city
+            val consultation = Consultation(city = city)
 
-        // Try to show product if possible, otherwise go back to home
-        try {
-            viewModel.getProduct(productId!!).observe(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val product = pair.second
-                // If the call fails, show error message, hide loading spinner and go back to home
-                if (handleError(exception)) {
-                    navigateTo(R.id.from_product_to_home)
-                    return@observe
-                }
+            product.id?.let { id -> viewModel.addConsultation(id, consultation) }
+            fillProductDetails(product)
 
-                // Else, get product images
-                viewModel.getImages(productId!!, product.nbImages).observe(viewLifecycleOwner, observe2@ { pair2 ->
-                    val exception2 = pair2.first
-                    val images = pair2.second
-                    // If the call fails, show error message, hide loading spinner and go back to home
-                    if (handleError(exception2)) {
-                        navigateTo(R.id.from_product_to_home)
-                        return@observe2
-                    }
+            // Check if there are loaded images
+            if(product.images.isNullOrEmpty())
+                return@observe
 
-                    // Else, fill and display product informations
-                    fillProductDetails(product)
-                    this.product = product
+            // Show previous and next buttons to switch between images
+            buttonPreviousImage.visibility = VISIBLE
+            buttonNextImage.visibility = VISIBLE
 
-                    // Try to add new consultation to product
-                    viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair3 ->
-                        val exception3 = pair3.first
-                        val user = pair3.second
+            // Display product images (first one)
+            imageViewProduct.setImageBitmap(product.images[imageIndex])
 
-                        // If the call doesn't fail, update product with consultation
-                        if (exception3 == -1) {
-                            val consultation = Consultation(city = user.location.city)
-                            product.consultations.add(consultation)
-                            product.id?.let { id -> viewModel.updateProduct(id, consultation) }
-                        }
-                    })
+            // On previous button click, go to previous image
+            buttonPreviousImage.setOnClickListener {
+                if(product.images.isEmpty())
+                    return@setOnClickListener
 
-                    // Check if there are loaded images
-                    if(images.isNullOrEmpty())
-                        return@observe2
+                imageIndex = if (imageIndex <= 0) (product.images.size - 1) else imageIndex--
+                imageViewProduct.setImageBitmap(product.images[imageIndex])
+            }
 
-                    // Show previous and next buttons to switch between images
-                    buttonPreviousImage.visibility = VISIBLE
-                    buttonNextImage.visibility = VISIBLE
+            // On next button click, go to next image
+            buttonNextImage.setOnClickListener {
+                if(product.images.isEmpty())
+                    return@setOnClickListener
 
-                    // Display product images (first one)
-                    imageViewProduct.setImageBitmap(images[imageIndex])
+                imageIndex = if (imageIndex >= product.images.size - 1) 0 else imageIndex++
+                imageViewProduct.setImageBitmap(product.images[imageIndex])
+            }
 
-                    // On previous button click, go to previous image
-                    buttonPreviousImage.setOnClickListener {
-                        if(images.isEmpty())
-                            return@setOnClickListener
-
-                        imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
-                        imageViewProduct.setImageBitmap(images[imageIndex])
-                    }
-
-                    // On next button click, go to next image
-                    buttonNextImage.setOnClickListener {
-                        if(images.isEmpty())
-                            return@setOnClickListener
-
-                        imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
-                        imageViewProduct.setImageBitmap(images[imageIndex])
-                    }
-                })
-
-                // TODO      vvv Vérifier refactor vvv
-
-                buttonSendMessage.setOnClickListener { view ->
+            /*
+            buttonSendMessage.setOnClickListener { view ->
                     viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pairUser ->
                         if (handleError(pairUser.first)) return@observeOnce
                         var firstMessage = ArrayList<Message>()
@@ -146,12 +102,8 @@ class ProductFragment : VFragment(
                             })
                     })
                 }
-            })
-        } catch (_: NullPointerException) {
-            showMessage(R.string.error_404)
-            navigateTo(R.id.from_product_to_home)
-            return
-        }
+             */
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -159,8 +111,10 @@ class ProductFragment : VFragment(
             R.id.action_add_favorite -> setFavorite(true)
             R.id.action_remove_favorite -> setFavorite(false)
             R.id.action_statistics -> {
-                if(product != null)
-                    navigateTo(R.id.from_product_to_statistics, KEY_PRODUCT to product)
+                if(viewModel.product.value != null)
+                    navigateTo(R.id.from_product_to_statistics)
+                else
+                    showSnackbarMessage(R.string.NotFoundException)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -196,6 +150,11 @@ class ProductFragment : VFragment(
         }
     }
 
+    private fun setFavorite(setFavorite: Boolean): Boolean {
+        return true
+    }
+
+    /*
     private fun setFavorite(setFavorite: Boolean): Boolean {
         // Check if the user is signed in
         if(!isUserSignedIn()) {
@@ -255,6 +214,6 @@ class ProductFragment : VFragment(
         return true
     }
 
-}
+     */
 
- */
+}

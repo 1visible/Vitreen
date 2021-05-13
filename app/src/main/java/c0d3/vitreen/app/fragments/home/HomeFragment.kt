@@ -8,8 +8,7 @@ import android.view.View.VISIBLE
 import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
-import c0d3.vitreen.app.models.dto.ProductDTO
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_adding1.*
@@ -55,7 +54,7 @@ class HomeFragment : VFragment(
 
             // Else, display products in the recycler view
             val adapter = ProductAdapter { product -> adapterOnClick(product) }
-            adapter.submitList(products.map { product -> product.toDTO() })
+            adapter.submitList(products)
             recyclerViewProducts.adapter = adapter
             emptyView.visibility = GONE
             recyclerViewProducts.visibility = VISIBLE
@@ -136,8 +135,9 @@ class HomeFragment : VFragment(
         }
     }
 
-    private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(R.id.from_home_to_product, KEY_PRODUCT_ID to product.id)
+    private fun adapterOnClick(product: Product) {
+        viewModel.select(product)
+        navigateTo(R.id.from_home_to_product)
     }
 
 }

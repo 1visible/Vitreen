@@ -7,34 +7,34 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.dto.ProductDTO
+import c0d3.vitreen.app.models.Product
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val onClick: (ProductDTO) -> Unit)
-    : ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val onClick: (Product) -> Unit)
+    : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
-        private var productDTO: ProductDTO = ProductDTO()
+    class ProductViewHolder(itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
+        private var product: Product = Product()
 
         init {
             itemView.setOnClickListener {
-                onClick(productDTO)
+                onClick(product)
             }
         }
 
-        fun bind(product: ProductDTO) {
-            productDTO = product
+        fun bind(product: Product) {
+            this.product = product
 
             // Display product image if available
-            if(productDTO.image != null)
-                itemView.imageViewProduct.setImageBitmap(productDTO.image)
+            if(product.images.isNotEmpty())
+                itemView.imageViewProduct.setImageBitmap(product.images.first())
 
             // Fill product with informations
-            itemView.textViewTitle.text = productDTO.title
-            itemView.textViewCategory.text = productDTO.category.name
-            val zipCode = if(productDTO.location.zipCode == null) "?" else productDTO.location.zipCode.toString()
-            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, productDTO.location.city, zipCode)
-            itemView.textViewPrice.text = itemView.context.getString(R.string.price, productDTO.price)
+            itemView.textViewTitle.text = product.title
+            itemView.textViewCategory.text = product.category.name
+            val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
+            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, product.location.city, zipCode)
+            itemView.textViewPrice.text = itemView.context.getString(R.string.price, product.price)
         }
 
     }
@@ -48,18 +48,17 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit)
 
     // Get current product and use it to bind view.
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = getItem(position)
-        holder.bind(product)
+        holder.bind(getItem(position))
     }
 
 }
 
-object ProductDiffCallback : DiffUtil.ItemCallback<ProductDTO>() {
-    override fun areItemsTheSame(oldItem: ProductDTO, newItem: ProductDTO): Boolean {
+object ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
+    override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: ProductDTO, newItem: ProductDTO): Boolean {
+    override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem.id == newItem.id
     }
 }
