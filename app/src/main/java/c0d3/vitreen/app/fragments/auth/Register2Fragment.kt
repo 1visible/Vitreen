@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_register2.*
 import kotlinx.android.synthetic.main.fragment_register2.editTextLocation
 import java.lang.NullPointerException
 import java.util.*
-
+/*
 class Register2Fragment : VFragment(
     layoutId = R.layout.fragment_register2,
     topIcon = R.drawable.bigicon_authentification
@@ -172,3 +172,5 @@ class Register2Fragment : VFragment(
     }
 
 }
+
+ */

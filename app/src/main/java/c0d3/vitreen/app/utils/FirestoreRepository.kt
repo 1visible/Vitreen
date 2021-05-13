@@ -64,16 +64,12 @@ class FirestoreRepository {
             query = query.whereLessThanOrEqualTo("price", price)
                 .orderBy("price", Query.Direction.ASCENDING)
 
-        query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+        // query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
 
         if(title != null)
             query = query.orderBy("title", Query.Direction.DESCENDING)
 
         return query
-    }
-
-    fun getProduct(id: String): DocumentReference {
-        return db.collection(PRODUCTS_COLLECTION).document(id)
     }
 
     fun signInAnonymously(): Task<AuthResult> {
@@ -84,8 +80,8 @@ class FirestoreRepository {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun getUser(user: FirebaseUser): Query {
-        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1)
+    fun getUser(email: String): Query {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", email).limit(1)
     }
 
     fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
@@ -117,16 +113,16 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
-    fun addConsultation(id: String, consultation: Consultation): Task<Void> {
-        return db.collection(PRODUCTS_COLLECTION).document(id).update("consultations", FieldValue.arrayUnion(consultation))
+    fun addConsultation(productId: String, consultation: Consultation): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(productId).update("consultations", FieldValue.arrayUnion(consultation))
     }
 
-    fun addToFavorites(id: String, favoriteId: String): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
+    fun addToFavorites(userId: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(userId).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
     }
 
-    fun removeFromFavorites(id: String, favoriteId: String): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayRemove(favoriteId))
+    fun removeFromFavorites(userId: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(userId).update("favoritesIds", FieldValue.arrayRemove(favoriteId))
     }
 
     fun addLocation(location: Location): Task<DocumentReference> {
@@ -157,8 +153,8 @@ class FirestoreRepository {
         return storage.reference.child("images/${path}").delete()
     }
 
-    fun deleteUser(user: FirebaseUser): Task<Void> {
-        return user.delete()
+    fun deleteUser(): Task<Void>? {
+        return auth.currentUser?.delete()
     }
 
     // TODO      vvv Vérifier refactor vvv
@@ -179,10 +175,12 @@ class FirestoreRepository {
     fun updateDiscussion (id:String,messages:ArrayList<Message>) {
         db.collection(DISCUSSIONS_COLLECTION).document(id).update("messages",messages)
     }
-
+/*
     fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
         return db.collection(DISCUSSIONS_COLLECTION).add(discussion).addOnCompleteListener {
             it.result!!.id
         }
     }
+
+ */
 }

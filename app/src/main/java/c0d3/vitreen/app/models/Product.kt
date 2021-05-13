@@ -23,7 +23,7 @@ data class Product(
     @Exclude
     @set:Exclude
     @get:Exclude
-    var images: List<Bitmap> = ArrayList()
+    var images: ArrayList<Bitmap> = ArrayList()
 ) : Entity(), Serializable {
 
     fun toDTO(): ProductDTO {

@@ -2,8 +2,10 @@ package c0d3.vitreen.app.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.annotation.DrawableRes
@@ -33,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var backPressedOnce = false
-    lateinit var viewModel: FirestoreViewModel
+    private lateinit var viewModel: FirestoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,9 +82,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 backPressedOnce = true
-                showMessage(R.string.press_back)
+                showMessage(R.string.press_back_again)
 
-                Handler().postDelayed(2000) {
+                Handler(Looper.getMainLooper()).postDelayed(2000) {
                     backPressedOnce = false
                 }
                 // TODO : Gérer les cas de login, register 1 et register 2 avec comportement de back button (si nécessaire)
@@ -112,9 +114,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+            && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
     }
 }

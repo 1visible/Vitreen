@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
 import java.lang.NullPointerException
 
-
+/*
 class ProfileFragment : VFragment(
     layoutId = R.layout.fragment_profile,
     topIcon = R.drawable.bigicon_profile,
@@ -190,3 +190,5 @@ class ProfileFragment : VFragment(
     }
 
 }
+
+ */

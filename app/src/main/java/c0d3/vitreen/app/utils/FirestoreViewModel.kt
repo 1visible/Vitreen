@@ -1,37 +1,40 @@
 package c0d3.vitreen.app.utils
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.annotation.NonNull
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
-class FirestoreViewModel : ViewModel() {
+
+class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
-    var exceptionLiveData = MutableLiveData<Int>()
-    private var userLiveData = MutableLiveData<Pair<Int, User>>()
-    var productsLiveData = MutableLiveData<Pair<Int, List<Product>>>()
-    var categoriesLiveData = MutableLiveData<Pair<Int, List<Category>>>()
-    var locationsLiveData = MutableLiveData<Pair<Int, List<Location>>>()
-    var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
-    private var privateExceptionLiveData = MutableLiveData<Pair<Int, List<Bitmap>>>()
-    private var privateBooleanLiveData = MutableLiveData<Boolean>()
+
+    val product: MutableLiveData<Product> = state.getLiveData("product")
+    var products: LiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
+    var user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
+    var categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
+    var locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
+
+    // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
+
+    fun select(product: Product) {
+        this.product.value = product
+    }
+
+    init {
+        getProducts(limit = true)
+    }
 
     fun getProducts(
-        owner: LifecycleOwner,
         limit: Boolean,
         title: String? = null,
         price: Double? = null,
@@ -43,82 +46,18 @@ class FirestoreViewModel : ViewModel() {
     ): LiveData<Pair<Int, List<Product>>> {
         val query = repository.getProducts(limit, title, price, brand, location, category, ownerId, ids)
 
-        query.addSnapshotListener { documents, error ->
+        query.addSnapshotListener { value, error ->
             val exception = if (error == null) -1 else R.string.NetworkException
-            val products = mutableListOf<Product>()
-            var productTaskCounter = 0
+            var products = toObjects(value, Product::class.java)
+            products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
-            privateBooleanLiveData.observeOnce(owner, {
-                productsLiveData.value = exception to products
-            })
-
-            if(documents == null || documents.isEmpty)
-                privateBooleanLiveData.value = true
-            else
-                documents.forEach { document ->
-                    val product = toObject(document, Product::class.java)
-
-                    if(product.reporters.size < REPORT_THRESHOLD) {
-                        if(product.imagesPaths.isEmpty()) {
-                            productTaskCounter++
-                            products.add(product)
-
-                            if(productTaskCounter == documents.size())
-                                privateBooleanLiveData.value = true
-
-                            return@forEach
-                        }
-
-                        getImages(product.imagesPaths.first()).observeOnce(owner, { pair ->
-                            productTaskCounter++
-                            val images = pair.second
-
-                            if (images.isNotEmpty())
-                                product.images = images
-
-                            products.add(product)
-
-                            if(productTaskCounter == documents.size())
-                                privateBooleanLiveData.value = true
-                        })
-                    } else {
-                        productTaskCounter++
-
-                        if(productTaskCounter == documents.size())
-                            privateBooleanLiveData.value = true
-                    }
-                }
-        }
-
-        return productsLiveData
-    }
-
-    fun getProduct(id: String, owner: LifecycleOwner): MutableLiveData<Pair<Int, List<Product>>> {
-        repository.getProduct(id).addSnapshotListener { document, error ->
-            var exception = if (error == null) -1 else R.string.NetworkException
-            var product = document?.let { doc -> toObject(doc, Product::class.java) }
-
-            if(product == null) {
-                product = Product()
-
-                if(exception == -1)
-                    exception = R.string.ProductNotFoundException
+            val productsImages = getProductsImage(products)
+            this.products = Transformations.map(productsImages) { (_, productsData) ->
+                exception to productsData
             }
-
-            if(product.imagesPaths.isNotEmpty())
-                getImages(*product.imagesPaths.toTypedArray()).observeOnce(owner, { pair ->
-                    val images = pair.second
-
-                    if (images.isNotEmpty())
-                        product.images = images
-
-                    productsLiveData.value = exception to mutableListOf(product)
-                })
-            else
-                productsLiveData.value = exception to mutableListOf(product)
         }
 
-        return productsLiveData
+        return products
     }
 
     fun signInAnonymously(): LiveData<Int> {
@@ -129,20 +68,20 @@ class FirestoreViewModel : ViewModel() {
         return request(repository.signIn(email, password))
     }
 
-    fun getUser(user: FirebaseUser): LiveData<Pair<Int, User>> {
-        repository.getUser(user).addSnapshotListener { documents, error ->
+    fun getUser(email: String): LiveData<Pair<Int, User>> {
+        repository.getUser(email).addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.NetworkException
             var userData = User()
 
-            if (documents != null && !documents.isEmpty)
-                userData = toObject(documents.first(), User::class.java)
+            if (value != null && !value.isEmpty)
+                userData = toObject(value.first(), User::class.java)
             else if(exception == -1)
                 exception = R.string.NotFoundException
 
-            userLiveData.value = exception to userData
+            user.value = exception to userData
         }
 
-        return userLiveData
+        return user
     }
 
     fun linkUser(user: FirebaseUser, email: String, password: String): LiveData<Int> {
@@ -158,110 +97,184 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun getCategories(): LiveData<Pair<Int, List<Category>>> {
-        return requestList(repository.getCategories(), categoriesLiveData)
+        return requestList(repository.getCategories(), categories)
     }
 
     fun getLocations(): LiveData<Pair<Int, List<Location>>> {
-        return requestList(repository.getLocations(), locationsLiveData)
+        return requestList(repository.getLocations(), locations)
     }
 
-    fun getLocation(city: String): Location? {
-        return locationsLiveData.value?.second?.first { location -> location.city == city }
+    fun getLocation(city: String): LiveData<Pair<Int, Location>> {
+        return Transformations.map(locations) { (exception, locations) ->
+            if (exception == -1) {
+                val location = locations.firstOrNull { loc -> loc.city == city }
+                if (location != null)
+                    exception to location
+                else
+                    R.string.NotFoundException to Location()
+            } else
+                exception to Location()
+        }
     }
 
-    fun getImages(vararg paths: String): MutableLiveData<Pair<Int, List<Bitmap>>> {
-        val images = mutableListOf<Bitmap>()
-        var imageTaskCounter = 0
+    private fun getProductImages(product: Product): LiveData<Pair<Int, Product>> {
+        val productLiveData = MutableLiveData<Pair<Int, Product>>()
+        val paths = product.imagesPaths
+        var imagesTaskCounter = 0
         var exception = -1
 
-        if(paths.isEmpty())
-            privateExceptionLiveData.value = -1 to images
-        else
-            paths.forEach { path ->
-                repository.getImage(path).addOnCompleteListener { task ->
-                    imageTaskCounter++
-                    val bytes = task.result
+        if(paths.isEmpty()) {
+            productLiveData.value = exception to product
+            return productLiveData
+        }
 
-                    if(!task.isSuccessful || bytes == null)
-                        exception = R.string.ImageNotFoundException
-                    else {
-                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                        images.add(bitmap)
-                    }
+        paths.forEach { path ->
+            repository.getImage(path).addOnCompleteListener { task ->
+                val bytes = task.result
 
-                    if(imageTaskCounter == paths.size)
-                        privateExceptionLiveData.value = exception to images
+                if(!task.isSuccessful || bytes == null)
+                    exception = R.string.ImageNotFoundException
+                else {
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    product.images.add(bitmap)
                 }
+
+                imagesTaskCounter++
+
+                if (imagesTaskCounter == paths.size)
+                    productLiveData.value = exception to product
+            }
+        }
+
+        return productLiveData
+    }
+
+    private fun getProductsImage(products: List<Product>): LiveData<Pair<Int, List<Product>>> {
+        val productsLiveData = MutableLiveData<Pair<Int, List<Product>>>()
+        var productsTaskCounter = 0
+        var exception = -1
+
+        products.forEach { product ->
+            val path = product.imagesPaths.firstOrNull()
+
+            if(path == null) {
+                productsTaskCounter++
+
+                if (productsTaskCounter == products.size)
+                    productsLiveData.value = exception to products
+
+                return@forEach
             }
 
-        return privateExceptionLiveData
+            repository.getImage(path).addOnCompleteListener { task ->
+                val bytes = task.result
+
+                if(!task.isSuccessful || bytes == null)
+                    exception = R.string.ImageNotFoundException
+                else {
+                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    product.images.add(bitmap)
+                }
+
+                productsTaskCounter++
+
+                if (productsTaskCounter == products.size)
+                    productsLiveData.value = exception to products
+            }
+        }
+
+        return productsLiveData
     }
 
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
-        return request(repository.updateLocation(locationId, zipCode), false)
+        return request(repository.updateLocation(locationId, zipCode))
     }
 
     fun addConsultation(productId: String, consultation: Consultation): LiveData<Int> {
-        return request(repository.addConsultation(productId, consultation), false)
+        return request(repository.addConsultation(productId, consultation))
     }
 
-    fun addToFavorites(id: String, favoriteId: String): LiveData<Int> {
-        return request(repository.addToFavorites(id, favoriteId))
+    fun addToFavorites(userId: String, favoriteId: String): LiveData<Int> {
+        return request(repository.addToFavorites(userId, favoriteId))
     }
 
-    fun removeFromFavorites(id: String, favoriteId: String): LiveData<Int> {
-        return request(repository.removeFromFavorites(id, favoriteId))
+    fun removeFromFavorites(userId: String, favoriteId: String): LiveData<Int> {
+        return request(repository.removeFromFavorites(userId, favoriteId))
     }
 
     fun addLocation(location: Location): LiveData<Int> {
         return request(repository.addLocation(location))
     }
 
-    fun addProduct(product: Product, inputStreamList: ArrayList<InputStream>, owner: LifecycleOwner): MutableLiveData<Pair<Int, List<Product>>> {
+    private fun addProductImages(product: Product, images: ArrayList<InputStream>): LiveData<Pair<Int, Product>> {
+        val productLiveData = MutableLiveData<Pair<Int, Product>>()
         val folder = UUID.randomUUID().toString()
-        val imagesPaths = ArrayList<String>()
+        var imagesTaskCounter = 0
         var exception = -1
-        var imageTaskCounter = 0
 
-        privateExceptionLiveData.observeOnce(owner, {
-            product.imagesPaths = imagesPaths
+        if(images.isEmpty()) {
+            productLiveData.value = exception to product
+            return productLiveData
+        }
 
-            repository.addProduct(product).addOnCompleteListener { task ->
-                val productData = task.result
-                var exception2 = if (task.isSuccessful && productData != null) -1 else R.string.NetworkException
+        images.forEach { image ->
+            val path = "${folder}/${UUID.randomUUID()}"
 
-                if(productData != null)
-                    product.id = productData.id
+            repository.addImage(path, image).addOnCompleteListener { task ->
+                if(task.isSuccessful)
+                    product.imagesPaths.add(path)
+                else
+                    exception = R.string.ImageNotAddedException
 
-                if(exception2 == -1 && exception != -1)
-                    exception2 = exception
+                imagesTaskCounter++
 
-                productsLiveData.value = exception2 to mutableListOf(product)
+                if(imagesTaskCounter == images.size)
+                    productLiveData.value = exception to product
             }
-        })
+        }
 
-        if(inputStreamList.isEmpty())
-            privateExceptionLiveData.value = -1 to mutableListOf()
-        else
-            inputStreamList.forEach { inputStream ->
-                val path = "${folder}/${UUID.randomUUID()}"
-                repository.addImage(path, inputStream).addOnCompleteListener { task ->
-                    imageTaskCounter++
-
-                    if(!task.isSuccessful)
-                        exception = R.string.ImageNotAddedException
-                    else
-                        imagesPaths.add(path)
-
-                    if(imageTaskCounter == inputStreamList.size)
-                        privateExceptionLiveData.value = exception to mutableListOf()
-                }
-            }
-
-        return productsLiveData
+        return productLiveData
     }
 
-    fun deleteProducts(ownerId: String): LiveData<Int> {
+    fun addProduct(product: Product, images: ArrayList<InputStream>): LiveData<Pair<Int, Product>> {
+        val productImages = addProductImages(product, images)
+
+        return Transformations.switchMap(productImages) { (exception, product) ->
+            val productAdding = productAdding(product, exception)
+
+            Transformations.map(productAdding) { (exception2, product2) ->
+                exception2 to product2
+            }
+        }
+    }
+
+    private fun productAdding(product: Product, exception: Int): LiveData<Pair<Int, Product>> {
+        val productLiveData = MutableLiveData<Pair<Int, Product>>()
+
+        repository.addProduct(product).addOnCompleteListener { task ->
+            val productData = task.result
+            var exception2 = if (task.isSuccessful && productData != null) -1 else R.string.NetworkException
+
+            if(productData != null)
+                product.id = productData.id
+
+            if(exception2 == -1 && exception != -1)
+                exception2 = exception
+
+            exception2 to product
+        }
+
+        return productLiveData
+    }
+
+    private fun deleteProducts(ownerId: String?): LiveData<Int> {
+        val exceptionLiveData = MutableLiveData<Int>()
+
+        if(ownerId == null) {
+            exceptionLiveData.value = R.string.NotFoundException
+            return exceptionLiveData
+        }
+
         repository.getProducts(limit = false, ownerId = ownerId).get().addOnCompleteListener { task ->
             var exception = if (task.isSuccessful) -1 else R.string.ProductNotDeletedException
             val products = task.result
@@ -298,8 +311,19 @@ class FirestoreViewModel : ViewModel() {
         }
     }
 
-    fun deleteUser(user: FirebaseUser): LiveData<Int> {
-        return request(repository.deleteUser(user))
+    fun deleteUser(user: User): LiveData<Int> {
+        val deleteProducts = deleteProducts(user.id)
+
+        return Transformations.switchMap(deleteProducts) { exception ->
+            if (exception == -1) {
+                val deleteFirebaseUser = request(repository.deleteUser())
+
+                Transformations.map(deleteFirebaseUser) { exception2 ->
+                    exception2
+                }
+            } else
+                MutableLiveData(exception)
+        }
     }
 
     // TODO      vvv Vérifier refactor vvv
@@ -365,12 +389,17 @@ class FirestoreViewModel : ViewModel() {
         return liveData
     }
 
-    private fun <T> request(request: Task<T>, updateLiveData: Boolean = true): LiveData<Int> {
+    private fun <T> request(request: Task<T>?): LiveData<Int> {
+        val exceptionLiveData = MutableLiveData<Int>()
+
+        if(request == null) {
+            exceptionLiveData.value = R.string.NotFoundException
+            return exceptionLiveData
+        }
+
         request.addOnCompleteListener { task ->
             val exception = if (task.isSuccessful) -1 else R.string.NetworkException
-
-            if(updateLiveData)
-                exceptionLiveData.value = exception
+            exceptionLiveData.value = exception
         }
 
         return exceptionLiveData
@@ -385,6 +414,16 @@ class FirestoreViewModel : ViewModel() {
         else {
             obj.id = document.id
             value = obj
+        }
+
+        return value
+    }
+
+    private inline fun <reified T : Entity> toObjects(documents: QuerySnapshot?, @NonNull type: Class<T>): List<T> {
+        val value = mutableListOf<T>()
+
+        documents?.forEach { document ->
+            value.add(toObject(document, type))
         }
 
         return value

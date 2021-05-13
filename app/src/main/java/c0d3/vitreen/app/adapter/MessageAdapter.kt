@@ -13,7 +13,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.dto.MessageDTO
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import kotlinx.android.synthetic.main.message_item.view.*
-
+/*
 class MessageAdapter(
     private val onClick: (MessageDTO) -> Unit,
     val lifecycle: LifecycleOwner,
@@ -78,3 +78,5 @@ object MessageDiffCallback : DiffUtil.ItemCallback<MessageDTO>() {
         return oldItem.id == newItem.id
     }
 }
+
+ */

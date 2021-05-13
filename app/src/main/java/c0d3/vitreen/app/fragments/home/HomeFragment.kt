@@ -1,11 +1,13 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
+import androidx.lifecycle.ViewModelProvider
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
@@ -13,6 +15,8 @@ import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.dto.ProductDTO
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
+import c0d3.vitreen.app.utils.FirestoreViewModel
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_adding1.*
@@ -33,11 +37,37 @@ class HomeFragment : VFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // Show loading spinner and hide empty view
         setSpinnerVisibility(VISIBLE)
         setEmptyView(GONE)
 
+        viewModel.products.observe(viewLifecycleOwner, { (_, products) ->
+            Log.i(VTAG, "Products: $products")
+        })
+
+        /*
+        viewModel.productsLiveData.observe(viewLifecycleOwner, { pair ->
+            val exception = pair.first
+            val products = pair.second
+            // If the call fails, show error message, hide loading spinner and show empty view
+            if(handleError(exception, R.string.no_products)) return@observe
+
+            // Else if there is no products to display, hide loading spinner and show empty view
+            if(products.isNullOrEmpty()) {
+                setSpinnerVisibility(GONE)
+                setEmptyView(VISIBLE, R.string.no_products)
+                return@observe
+            }
+
+            // Else, show products in recycler view
+            val adapter = ProductAdapter { product -> adapterOnClick(product) }
+            adapter.submitList(products.map { product -> product.toDTO() })
+            recyclerViewProducts.adapter = adapter
+            recyclerViewProducts.visibility = VISIBLE
+        })
+        */
+
+        /*
         // If the user is signed out
         if(user == null) {
             // Try to sign in with anonymous account
@@ -123,6 +153,7 @@ class HomeFragment : VFragment(
                 owner = viewLifecycleOwner
             )
         }
+        */
     }
 
     // TODO : Ajouter les items

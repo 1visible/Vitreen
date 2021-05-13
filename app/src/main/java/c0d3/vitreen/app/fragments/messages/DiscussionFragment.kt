@@ -1,5 +1,5 @@
 package c0d3.vitreen.app.fragments.messages
-
+/*
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -59,3 +59,5 @@ class DiscussionFragment : VFragment(
     }
 
 }
+
+ */

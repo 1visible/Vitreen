@@ -5,7 +5,7 @@
     <!-- General strings -->
     <string name="app_name">Vitreen</string>
     <string name="required_input">Champ obligatoire</string>
-    <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
+    <string name="press_back_again">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="network_error">Oups ! Vérifiez votre connexion internet puis réessayez.</string>
     <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
     <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>

@@ -17,7 +17,7 @@ import c0d3.vitreen.app.models.dto.MessageDTO
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import kotlinx.android.synthetic.main.discussion_item.view.*
 import kotlinx.android.synthetic.main.message_item.view.*
-
+/*
 class DiscussionAdapter(
     val lifecycle: LifecycleOwner,
     val fragment: Fragment,
@@ -103,3 +103,5 @@ object DiscussionDiffCallback : DiffUtil.ItemCallback<Message>() {
         return oldItem.content == newItem.content
     }
 }
+
+ */

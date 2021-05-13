@@ -1,5 +1,5 @@
 package c0d3.vitreen.app.fragments.product
-
+/*
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
@@ -256,3 +256,5 @@ class ProductFragment : VFragment(
     }
 
 }
+
+ */

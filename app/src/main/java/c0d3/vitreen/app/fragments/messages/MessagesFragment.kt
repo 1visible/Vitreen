@@ -1,5 +1,5 @@
 package c0d3.vitreen.app.fragments.messages
-
+/*
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -78,3 +78,5 @@ class MessagesFragment : VFragment(
     }
 
 }
+
+ */
