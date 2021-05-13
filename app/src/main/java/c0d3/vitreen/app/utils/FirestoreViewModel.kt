@@ -19,11 +19,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
 
     val product: MutableLiveData<Product> = state.getLiveData("product")
-    var products: LiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
-    var user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
-    var categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
-    var locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
-    var discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
+    var products: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
+    val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
+    val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
+    val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
+    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
 
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
@@ -33,6 +33,8 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
     init {
         getProducts(limit = true)
+        getCategories()
+        getLocations()
     }
 
     fun getProducts(
@@ -53,8 +55,9 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
             val productsImages = getProductsImage(products)
-            this.products = Transformations.map(productsImages) { (_, productsData) ->
-                exception to productsData
+
+            Transformations.map(productsImages) { (_, productsData) ->
+                this.products.value = exception to productsData
             }
         }
 

@@ -1,69 +1,63 @@
 package c0d3.vitreen.app.adapter
 
-/*
-class MessageAdapter(
-    private val onClick: (MessageDTO) -> Unit,
-    val lifecycle: LifecycleOwner,
-    val fragment: Fragment
-) :
-    ListAdapter<MessageDTO, MessageAdapter.MessageViewHolder>(MessageDiffCallback) {
-    class MessageViewHolder(
-        itemView: View,
-        val onClick: (MessageDTO) -> Unit,
-        val lifecycle: LifecycleOwner,
-        val fragment: Fragment
-    ) :
-        RecyclerView.ViewHolder(itemView) {
-        private var currentMessage: MessageDTO? = null
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Message
+import kotlinx.android.synthetic.main.discussion_item.view.*
 
-        private var viewModel: FirestoreViewModel =
-            ViewModelProvider(fragment).get(FirestoreViewModel::class.java)
 
-        init {
-            itemView.setOnClickListener {
-                currentMessage.let {
-                    if (it != null) {
-                        onClick(it)
-                    }
-                }
-            }
+class MessageAdapter(val senderId: String)
+    : ListAdapter<Message, MessageAdapter.MessageViewHolder>(MessageDiffCallback) {
+
+    class MessageViewHolder(itemView: View, val senderId: String): RecyclerView.ViewHolder(itemView) {
+        private var messageDTO: Message = Message()
+
+        fun bind(message: Message) {
+            messageDTO = message
+
+            // TODO : Tout revoir
+            itemView.textViewMe.text = messageDTO.content // TODO : Revoir ça
+            itemView.textViewMyContent.text = messageDTO.content
+            itemView.textViewMyDate.text = messageDTO.date.toString()
+            itemView.textViewMe.visibility = VISIBLE
+            itemView.textViewMyContent.visibility = VISIBLE
+            itemView.textViewMyDate.visibility = VISIBLE
+            itemView.textViewOwnerName.visibility = GONE
+            itemView.textViewOwnerContent.visibility = GONE
+            itemView.textViewOwnerDate.visibility = GONE
         }
 
-        fun bind(message: MessageDTO) {
-            currentMessage = message
-            viewModel.getImages(currentMessage!!.productId, 1)
-                .observe(lifecycle, { pair ->
-                    itemView.imageViewMessage.setImageBitmap(pair.second.first())
-                    itemView.textViewTitleMessage.text =
-                        fragment.getString(R.string.about).plus(currentMessage!!.productName)
-                    itemView.textViewLastMessage.text = currentMessage!!.lastMessage.content
-                })
-        }
     }
 
-    /* Creates and inflates view and return FlowerViewHolder. */
+    // Create and inflate view and return MessageViewHolder.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.message_item, parent, false)
-        return MessageViewHolder(view, onClick, lifecycle, fragment)
+        return MessageViewHolder(view, senderId)
     }
 
-    /* Gets current flower and uses it to bind view. */
+    // Get current message and use it to bind view.
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val message = getItem(position)
         holder.bind(message)
 
     }
+
 }
 
-object MessageDiffCallback : DiffUtil.ItemCallback<MessageDTO>() {
-    override fun areItemsTheSame(oldItem: MessageDTO, newItem: MessageDTO): Boolean {
+object MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+    override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: MessageDTO, newItem: MessageDTO): Boolean {
-        return oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+        return oldItem.content == newItem.content
     }
 }
-
- */

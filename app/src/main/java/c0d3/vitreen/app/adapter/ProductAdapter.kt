@@ -14,11 +14,11 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit)
     : ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
     class ProductViewHolder(itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
-        private var productDTO: ProductDTO? = null
+        private var productDTO: ProductDTO = ProductDTO()
 
         init {
             itemView.setOnClickListener {
-                productDTO?.let { product -> onClick(product) }
+                onClick(productDTO)
             }
         }
 
@@ -26,15 +26,15 @@ class ProductAdapter(private val onClick: (ProductDTO) -> Unit)
             productDTO = product
 
             // Display product image if available
-            if(product.image != null)
-                itemView.imageViewProduct.setImageBitmap(product.image)
+            if(productDTO.image != null)
+                itemView.imageViewProduct.setImageBitmap(productDTO.image)
 
             // Fill product with informations
-            itemView.textViewTitle.text = product.title
-            itemView.textViewCategory.text = product.category.name
-            val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
-            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, product.location.city, zipCode)
-            itemView.textViewPrice.text = itemView.context.getString(R.string.price, product.price)
+            itemView.textViewTitle.text = productDTO.title
+            itemView.textViewCategory.text = productDTO.category.name
+            val zipCode = if(productDTO.location.zipCode == null) "?" else productDTO.location.zipCode.toString()
+            itemView.textViewLocation.text = itemView.context.getString(R.string.location_template, productDTO.location.city, zipCode)
+            itemView.textViewPrice.text = itemView.context.getString(R.string.price, productDTO.price)
         }
 
     }

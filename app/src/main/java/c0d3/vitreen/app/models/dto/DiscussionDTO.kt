@@ -6,6 +6,6 @@ import c0d3.vitreen.app.models.Message
 
 data class DiscussionDTO(
     val productId: String = "",
-    val productName:String="",
-    val lastMessage:Message
+    val productName: String = "",
+    val lastMessage: Message = Message()
 ): Entity()

@@ -3,7 +3,6 @@ package c0d3.vitreen.app.utils
 import android.os.Bundle
 import android.view.*
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -16,8 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.empty_view.*
-
 
 abstract class VFragment(
     @LayoutRes private val layoutId: Int,
@@ -139,21 +136,14 @@ abstract class VFragment(
         return false
     }
 
-    fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {
-        emptyView.visibility = visibility
-        if(visibility == VISIBLE)
-            textViewEmpty.text = getString(messageId)
-    }
-
     fun setSpinnerVisibility(visibility: Int) {
         (activity as? MainActivity)?.setSpinnerVisibility(visibility)
     }
 
-    fun handleError(@StringRes exception: Int, @StringRes messageId: Int = -1): Boolean {
+    fun handleError(@StringRes exception: Int): Boolean {
         if(exception == -1) return false
         showMessage(exception)
         setSpinnerVisibility(GONE)
-        if(messageId != -1) setEmptyView(VISIBLE, messageId)
         return true
     }
 
