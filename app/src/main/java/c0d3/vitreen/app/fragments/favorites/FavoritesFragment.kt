@@ -1,7 +1,6 @@
 package c0d3.vitreen.app.fragments.favorites
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -18,9 +17,7 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 class FavoritesFragment : VFragment(
     layoutId = R.layout.fragment_favorites,
-    topIcon = R.drawable.bigicon_favorites,
-    hasOptionsMenu = true,
-    topMenuId = R.menu.menu_favorites
+    topIcon = R.drawable.bigicon_favorites
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,14 +87,6 @@ class FavoritesFragment : VFragment(
                 recyclerViewProducts.visibility = VISIBLE
             })
         })
-    }
-
-    // TODO : Ajouter les items
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            // Put things here
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun adapterOnClick(product: Product) {

@@ -123,7 +123,6 @@ class ProductFragment : VFragment(
                 }
             })
         } catch (_: NullPointerException) {
-            loadingSpinner.visibility = GONE
             showSnackbarMessage(R.string.ProductNotFoundException)
             goBack()
             return

@@ -362,6 +362,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    fun signOut() {
+        repository.signOut()
+    }
+
     fun getDiscussions(userId: String): LiveData<Pair<Int, List<Discussion>>> {
         return requestList(repository.getDiscussions(userId), discussions)
     }

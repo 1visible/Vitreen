@@ -124,10 +124,10 @@ class HomeFragment : VFragment(
         */
     }
 
-    // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_search -> {
+            R.id.search_products -> {
+                TODO()
                 // navigate to search screen
                 true
             }

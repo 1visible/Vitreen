@@ -77,6 +77,10 @@ class FirestoreRepository {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
+    fun signOut() {
+        auth.signOut()
+    }
+
     fun getUser(email: String): Query {
         return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", email).limit(1)
     }
