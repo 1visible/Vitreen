@@ -59,7 +59,7 @@ class StatisticsFragment : VFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_add_favorite -> true // TODO
+            R.id.action_add_to_favorites -> true // TODO
             else -> super.onOptionsItemSelected(item)
         }
     }

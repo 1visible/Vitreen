@@ -6,6 +6,7 @@
     <string name="required_input">Champ obligatoire</string>
     <string name="press_back_again">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
+    <string name="choose_app">Choisissez une application</string>
     <!-- Exceptions -->
     <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
     <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>
@@ -50,8 +51,8 @@
     <!-- Register2 fragment -->
     <string name="username">Nom d\'utilisateur</string>
     <string name="phone_number">N° de téléphone</string>
-    <string name="contact_by_phone">Je veux être contacté par téléphone</string>
-    <string name="contact_by_email">Je veux être contacté par e-mail</string>
+    <string name="choice_contact_by_phone">Je veux être contacté par téléphone</string>
+    <string name="choice_contact_by_email">Je veux être contacté par e-mail</string>
     <string name="professional_account">Je suis un professionnel</string>
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
@@ -85,6 +86,11 @@
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
     <string name="postal_address">Ville</string>
+    <string name="add_to_favorites">Ajouter aux favoris</string>
+    <string name="remove_from_favorites">Retirer des favoris</string>
+    <string name="send_message">Envoyer un message privé</string>
+    <string name="contact_owner">Contacter l\'annonceur</string>
+    <string name="show_statistics">Voir les statistiques</string>
     <!-- Statistics fragment -->
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>

@@ -1,5 +1,7 @@
 package c0d3.vitreen.app.fragments.product
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -35,10 +37,11 @@ class ProductFragment : VFragment(
 
         // Set elements visibility (while loading)
         // TODO
-        setMenuItemVisibile(R.id.action_add_favorite, false)
-        setMenuItemVisibile(R.id.action_remove_favorite, false)
-        setMenuItemVisibile(R.id.action_send_message, false)
-        setMenuItemVisibile(R.id.action_statistics, false)
+        setMenuItemVisibile(R.id.add_to_favorites, false)
+        setMenuItemVisibile(R.id.remove_from_favorites, false)
+        setMenuItemVisibile(R.id.send_message, false)
+        setMenuItemVisibile(R.id.contact_owner, false)
+        setMenuItemVisibile(R.id.show_statistics, false)
 
         product = viewModel.product.value
 
@@ -48,18 +51,23 @@ class ProductFragment : VFragment(
                     this.user = user
 
                     setFavoriteItemVisibility()
-                    setMenuItemVisibile(R.id.action_send_message, true)
 
-                    if(user.id == product!!.ownerId)
-                        setMenuItemVisibile(R.id.action_statistics, true)
-                    else
-                        setMenuItemVisibile(R.id.action_statistics, false)
+                    if(user.id == product!!.ownerId) {
+                        setMenuItemVisibile(R.id.send_message, false)
+                        setMenuItemVisibile(R.id.contact_owner, false)
+                        setMenuItemVisibile(R.id.show_statistics, true)
+                    } else {
+                        setMenuItemVisibile(R.id.send_message, true)
+                        setMenuItemVisibile(R.id.contact_owner, true)
+                        setMenuItemVisibile(R.id.show_statistics, false)
+                    }
                 } else {
                     this.user = null
-                    setMenuItemVisibile(R.id.action_add_favorite, false)
-                    setMenuItemVisibile(R.id.action_remove_favorite, false)
-                    setMenuItemVisibile(R.id.action_send_message, false)
-                    setMenuItemVisibile(R.id.action_statistics, false)
+                    setMenuItemVisibile(R.id.add_to_favorites, false)
+                    setMenuItemVisibile(R.id.remove_from_favorites, false)
+                    setMenuItemVisibile(R.id.send_message, false)
+                    setMenuItemVisibile(R.id.contact_owner, true)
+                    setMenuItemVisibile(R.id.show_statistics, false)
                 }
             })
 
@@ -120,10 +128,11 @@ class ProductFragment : VFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_add_favorite -> setFavorite(true)
-            R.id.action_remove_favorite -> setFavorite(false)
-            R.id.action_send_message -> sendMessage()
-            R.id.action_statistics -> {
+            R.id.add_to_favorites -> setFavorite(true)
+            R.id.remove_from_favorites -> setFavorite(false)
+            R.id.send_message -> sendMessage()
+            R.id.contact_owner -> contactOwner()
+            R.id.show_statistics -> {
                 if(product != null)
                     navigateTo(R.id.from_product_to_statistics)
                 else
@@ -131,6 +140,56 @@ class ProductFragment : VFragment(
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun contactOwner(): Boolean {
+        try {
+            viewModel.getUserById(product!!.ownerId).observeOnce(viewLifecycleOwner, { (exception, user) ->
+                // If the call failed: show error message
+                if(exception != -1) {
+                    showSnackbarMessage(exception)
+                    return@observeOnce
+                }
+
+                if(user.contactByPhone)
+                    sendSMS(user.phoneNumber, product!!.title)
+                else
+                    sendEmail(user.emailAddress, product!!.title)
+
+            })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
+
+        return true
+    }
+
+    private fun sendSMS(phoneNumber: String, productName: String) {
+        val uri = Uri.parse("smsto:${phoneNumber}")
+        val intent = Intent(Intent.ACTION_SENDTO, uri)
+
+        intent.putExtra("sms_body", getString(R.string.about_product, productName))
+
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+            showSnackbarMessage(R.string.error_placeholder)
+        }
+    }
+
+    private fun sendEmail(emailAddress: String, productName: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+
+        intent.data = Uri.parse("mailto:")
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_product, productName))
+
+        try {
+            startActivity(Intent.createChooser(intent, getString(R.string.choose_app)))
+        } catch (_: Exception) {
+            showSnackbarMessage(R.string.error_placeholder)
         }
     }
 
@@ -215,11 +274,11 @@ class ProductFragment : VFragment(
 
     private fun setFavoriteItemVisibility() {
         if (user!!.favoritesIds.contains(product!!.id!!)) {
-            setMenuItemVisibile(R.id.action_add_favorite, false)
-            setMenuItemVisibile(R.id.action_remove_favorite, true)
+            setMenuItemVisibile(R.id.add_to_favorites, false)
+            setMenuItemVisibile(R.id.remove_from_favorites, true)
         } else {
-            setMenuItemVisibile(R.id.action_remove_favorite, false)
-            setMenuItemVisibile(R.id.action_add_favorite, true)
+            setMenuItemVisibile(R.id.remove_from_favorites, false)
+            setMenuItemVisibile(R.id.add_to_favorites, true)
         }
     }
 

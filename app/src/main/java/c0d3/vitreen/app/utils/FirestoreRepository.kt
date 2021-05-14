@@ -13,6 +13,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -78,6 +79,10 @@ class FirestoreRepository {
 
     fun getUser(email: String): Query {
         return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", email).limit(1)
+    }
+
+    fun getUserById(id: String): Task<DocumentSnapshot> {
+        return db.collection(USERS_COLLECTION).document(id).get()
     }
 
     fun registerUser(email: String, password: String): Task<AuthResult> {

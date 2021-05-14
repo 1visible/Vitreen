@@ -101,6 +101,25 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return user
     }
 
+    fun getUserById(id: String): LiveData<Pair<Int, User>> {
+        val userLiveData = MutableLiveData<Pair<Int, User>>()
+
+        repository.getUserById(id).addOnCompleteListener { task ->
+            val value = task.result
+            var exception = if (task.isSuccessful) -1 else R.string.NetworkException
+            var user = User()
+
+            if (value != null) {
+                user = toObject(value, User::class.java)
+            } else if(exception == -1)
+                exception = R.string.NotFoundException
+
+            userLiveData.value = exception to user
+        }
+
+        return userLiveData
+    }
+
     fun registerUser(email: String, password: String): LiveData<Int> {
         return request(repository.registerUser(email, password))
     }
