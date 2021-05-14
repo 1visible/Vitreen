@@ -124,7 +124,7 @@ abstract class VFragment(
         return false
     }
 
-    fun setIconVisibility(@IdRes id: Int, visible: Boolean) {
+    fun setMenuItemVisibile(@IdRes id: Int, visible: Boolean) {
         menu.findItem(id)?.isVisible = visible
     }
 

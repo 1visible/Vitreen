@@ -88,7 +88,7 @@ class StatisticsFragment : VFragment(
     }
 
     private fun orderBy(order: Int, consultations: List<Consultation>): ArrayList<Pair<String, Float>> {
-        var values = arrayListOf<Pair<String, Float>>()
+        var values = ArrayList<Pair<String, Float>>()
 
         if(order == Calendar.MONTH)
             values = arrayListOf(

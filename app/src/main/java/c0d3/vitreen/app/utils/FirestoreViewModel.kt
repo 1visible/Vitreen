@@ -90,9 +90,9 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             var exception = if (error == null) -1 else R.string.NetworkException
             var userData = User()
 
-            if (value != null && !value.isEmpty)
+            if (value != null && !value.isEmpty) {
                 userData = toObject(value.first(), User::class.java)
-            else if(exception == -1)
+            } else if(exception == -1)
                 exception = R.string.NotFoundException
 
             user.value = exception to userData
@@ -130,7 +130,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    private fun getProductImages(product: Product): LiveData<Pair<Int, Product>> {
+    fun getProductImages(product: Product): LiveData<Pair<Int, Product>> {
         val productLiveData = MutableLiveData<Pair<Int, Product>>()
         val paths = product.imagesPaths
         var imagesTaskCounter = 0
@@ -339,8 +339,8 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    fun getDiscussions(userId: String? = null, productOwner: String? = null): LiveData<Pair<Int, List<Discussion>>> {
-        return requestList(repository.getDiscussions(userId, productOwner), discussions)
+    fun getDiscussions(userId: String): LiveData<Pair<Int, List<Discussion>>> {
+        return requestList(repository.getDiscussions(userId), discussions)
     }
 
     fun updateDiscussion(id: String, message: Message): LiveData<Int> {
@@ -367,6 +367,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return Transformations.map(discussions) { (exception, discussions) ->
             if (exception == -1) {
                 val discussion = discussions.firstOrNull { conv -> conv.id == id }
+
                 if (discussion != null)
                     exception to discussion
                 else
@@ -376,10 +377,18 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    fun getDiscussionId(discussion: Discussion, discussions: List<Discussion>): String? {
+        return discussions.find { conv ->
+            discussion.productId == conv.productId
+                    && discussion.userId == conv.userId
+                    && discussion.ownerId == conv.ownerId
+        }?.id
+    }
+
     private inline fun <reified T : Entity> requestList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
             val exception = if (error == null) -1 else R.string.NetworkException
-            val values: MutableList<T> = mutableListOf()
+            val values: ArrayList<T> = ArrayList()
 
             documents?.forEach { document ->
                 val value = toObject(document, T::class.java)
@@ -423,7 +432,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     }
 
     private inline fun <reified T : Entity> toObjects(documents: QuerySnapshot?, @NonNull type: Class<T>): List<T> {
-        val value = mutableListOf<T>()
+        val value = ArrayList<T>()
 
         documents?.forEach { document ->
             value.add(toObject(document, type))

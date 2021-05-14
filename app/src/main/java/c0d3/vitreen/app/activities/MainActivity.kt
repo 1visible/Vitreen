@@ -59,6 +59,19 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
         requestLocationPermission()
+
+        viewModel.user.observe(this, { (exception, user) ->
+            if (exception != -1) {
+                viewModel.discussions.value = exception to ArrayList()
+                return@observe
+            }
+
+             try {
+                 viewModel.getDiscussions(userId = user.id!!)
+             } catch(_: Exception) {
+                 viewModel.discussions.value = R.string.NotFoundException to ArrayList()
+             }
+        })
     }
 
     // Handle toolbar back button

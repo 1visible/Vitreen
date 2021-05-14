@@ -64,7 +64,7 @@ class FirestoreRepository {
             query = query.whereLessThanOrEqualTo("price", price)
                 .orderBy("price", Query.Direction.ASCENDING)
 
-        // query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+        // TODO query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
 
         if(title != null)
             query = query.orderBy("title", Query.Direction.DESCENDING)
@@ -148,16 +148,8 @@ class FirestoreRepository {
         return auth.currentUser?.delete()
     }
 
-    fun getDiscussions(userId: String? = null, productOwner: String? = null): Query {
-        var query: Query = db.collection(DISCUSSIONS_COLLECTION)
-
-        if (userId != null)
-            query = query.whereEqualTo("userId", userId)
-
-        if (productOwner != null)
-            query = query.whereEqualTo("productOwner", productOwner)
-
-        return query
+    fun getDiscussions(userId: String): Query {
+        return db.collection(DISCUSSIONS_COLLECTION).whereArrayContains("usersIds", userId)
     }
 
     fun updateDiscussion (id: String, message: Message): Task<Void> {
