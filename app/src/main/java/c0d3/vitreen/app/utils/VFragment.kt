@@ -47,7 +47,7 @@ abstract class VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Show loading spinner
-        loadingSpinner.visibility = VISIBLE
+        loadingSpinner?.visibility = VISIBLE
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -111,7 +111,7 @@ abstract class VFragment(
         return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
     }
 
-    fun showSnackbarMessage(@StringRes messageId: Int = R.string.error_placeholder) {
+    fun showSnackbarMessage(@StringRes messageId: Int) {
         (activity as? MainActivity)?.showMessage(messageId)
     }
 

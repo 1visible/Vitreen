@@ -28,7 +28,7 @@ class Register1Fragment : VFragment(
 
             // Double check email and password after conversion
             if (email == null || password == null) {
-                showSnackbarMessage()
+                showSnackbarMessage(R.string.error_placeholder)
                 return@setOnClickListener
             }
 

@@ -42,8 +42,8 @@ class Register2Fragment : VFragment(
 
         // Check if argument could be retrieved
         if(emailAddress == null) {
-            showMessage()
-            navigateTo(R.id.from_register2_to_register1)
+            showSnackbarMessage(R.string.error_placeholder)
+            goBack()
             return
         }
 
@@ -73,33 +73,35 @@ class Register2Fragment : VFragment(
 
             // Double check personal informations after conversion
             if (username == null || phoneNumber == null || locationName == null) {
-                showMessage()
+                showSnackbarMessage(R.string.error_placeholder)
                 return@setOnClickListener
             }
 
             // Double check professional informations after conversion
             if (switchProfessionalAccount.isChecked && (company == null || siret == null)) {
-                showMessage()
+                showSnackbarMessage(R.string.error_placeholder)
                 return@setOnClickListener
             }
 
             // Get location from city name
-            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                var location = pair.second
-                val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
-                // If the call fails, show error message and hide loading spinner
-                if(exception != R.string.error_404 && handleError(exception)) return@observeOnce
+            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { (exception, location) ->
+                val zipCode = if(location.city == locationGPS.city) locationGPS.zipCode else null
+                // If the call fails, show error message
+                if(exception != -1 && exception != R.string.NotFoundException) {
+                    showSnackbarMessage(exception)
+                    return@observeOnce
+                }
 
                 // Else if location could not be found, create new location
-                if(exception == R.string.error_404) {
-                    location = Location(locationName, zipCodeL)
+                if(exception == R.string.NotFoundException) {
+                    location.city = locationName
+                    location.zipCode = zipCode
                     viewModel.addLocation(location)
                 }
                 // Else if location has no zip code, update it
-                else if(location.zipCode == null && zipCodeL != null) {
-                    location.zipCode = zipCodeL
-                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
+                else if(location.zipCode == null && zipCode != null) {
+                    location.zipCode = zipCode
+                    location.id?.let { id -> viewModel.updateLocation(id, zipCode) }
                 }
 
                 try {
@@ -116,17 +118,20 @@ class Register2Fragment : VFragment(
                     )
 
                     // Register user profile to database
-                    viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce2@ { exception2 ->
-                        // If the call fails, show error message and hide loading spinner
-                        if(handleError(exception2)) return@observeOnce2
+                    viewModel.addUser(user).observeOnce(viewLifecycleOwner, observeOnce1@ { exception1 ->
+                        // If the call fails, show error message
+                        if(exception1 != -1) {
+                            showSnackbarMessage(exception1)
+                            return@observeOnce1
+                        }
 
                         // Else, navigate to profile fragment
                         navigateTo(R.id.from_register2_to_profile)
-                        showMessage(R.string.register_success)
+                        showSnackbarMessage(R.string.register_success)
                     })
                 } catch (_: NullPointerException) {
-                    showMessage()
-                    navigateTo(R.id.from_register2_to_register1)
+                    showSnackbarMessage(R.string.error_placeholder)
+                    goBack()
                 }
             })
         }

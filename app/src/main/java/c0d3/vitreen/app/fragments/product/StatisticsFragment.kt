@@ -25,10 +25,8 @@ class StatisticsFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         // If user is not signed in, skip this part
-        if (!viewModel.isUserSignedIn) {
-            goBack() // TODO Vérifier si ça fout pas la merde avec navigateTo
+        if (!viewModel.isUserSignedIn)
             return
-        }
 
         // Check if argument could be retrieved
         if(product == null) {
