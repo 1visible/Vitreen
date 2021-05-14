@@ -61,9 +61,12 @@
                 android:id="@+id/buttonRemoveImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
+                android:layout_alignStart="@+id/buttonNextImage"
+                android:layout_alignLeft="@+id/buttonNextImage"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:src="@drawable/icon_close"
                 tools:ignore="ContentDescription" />
 
@@ -97,6 +100,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAddImage"
+        style="@style/Vitreen.Button.Outline"
+        app:icon="@drawable/ic_icon_message"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/spacing_md"
         android:layout_marginBottom="@dimen/spacing_lg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

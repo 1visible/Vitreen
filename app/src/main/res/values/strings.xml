@@ -91,6 +91,8 @@
     <string name="send_message">Envoyer un message privé</string>
     <string name="contact_owner">Contacter l\'annonceur</string>
     <string name="show_statistics">Voir les statistiques</string>
+    <string name="report_product">Signaler l\'annonce</string>
+    <string name="product_reported">L\'annonce a bien été signalée !</string>
     <!-- Statistics fragment -->
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>
@@ -111,6 +113,9 @@
     <string name="month_october">OCT</string>
     <string name="month_november">NOV</string>
     <string name="month_december">DÉC</string>
+    <string name="this_week">Cette semaine</string>
+    <string name="this_month">Ce mois</string>
+    <string name="this_year">Cette année</string>
     <!-- Discussion fragment -->
     <string name="about_product">À propos de %1$s</string>
     <!-- TODO : Enlever les strings inutiles -->

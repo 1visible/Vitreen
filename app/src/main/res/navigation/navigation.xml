@@ -17,7 +17,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_messages"
+        android:id="@+id/navigation_discussions"
         android:name="c0d3.vitreen.app.fragments.messages.MessagesFragment"
         android:label="@string/label_messages"
         tools:layout="@layout/fragment_messages">
@@ -152,7 +152,7 @@
             app:destination="@id/navigation_statistics" />
         <action
             android:id="@+id/from_product_to_messages"
-            app:destination="@id/navigation_messages" />
+            app:destination="@id/navigation_discussions" />
     </fragment>
 
 </navigation>

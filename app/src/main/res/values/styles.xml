@@ -3,8 +3,8 @@
 
     <!-- TODO: Badge style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
-        <item name="backgroundColor">@color/teal</item>
-        <item name="android:background">@color/teal</item>
+        <item name="backgroundColor">?attr/colorPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
 
     <!-- ShapeAppearance style -->

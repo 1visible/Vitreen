@@ -36,12 +36,13 @@ class ProductFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         // Set elements visibility (while loading)
-        // TODO
+        productDetails.visibility = GONE
         setMenuItemVisibile(R.id.add_to_favorites, false)
         setMenuItemVisibile(R.id.remove_from_favorites, false)
         setMenuItemVisibile(R.id.send_message, false)
         setMenuItemVisibile(R.id.contact_owner, false)
         setMenuItemVisibile(R.id.show_statistics, false)
+        setMenuItemVisibile(R.id.report_product, false)
 
         product = viewModel.product.value
 
@@ -56,10 +57,12 @@ class ProductFragment : VFragment(
                         setMenuItemVisibile(R.id.send_message, false)
                         setMenuItemVisibile(R.id.contact_owner, false)
                         setMenuItemVisibile(R.id.show_statistics, true)
+                        setMenuItemVisibile(R.id.report_product, false)
                     } else {
                         setMenuItemVisibile(R.id.send_message, true)
                         setMenuItemVisibile(R.id.contact_owner, true)
                         setMenuItemVisibile(R.id.show_statistics, false)
+                        setMenuItemVisibile(R.id.report_product, true)
                     }
                 } else {
                     this.user = null
@@ -68,6 +71,7 @@ class ProductFragment : VFragment(
                     setMenuItemVisibile(R.id.send_message, false)
                     setMenuItemVisibile(R.id.contact_owner, true)
                     setMenuItemVisibile(R.id.show_statistics, false)
+                    setMenuItemVisibile(R.id.report_product, false)
                 }
             })
 
@@ -132,15 +136,43 @@ class ProductFragment : VFragment(
             R.id.remove_from_favorites -> setFavorite(false)
             R.id.send_message -> sendMessage()
             R.id.contact_owner -> contactOwner()
-            R.id.show_statistics -> {
-                if(product != null)
-                    navigateTo(R.id.from_product_to_statistics)
-                else
-                    showSnackbarMessage(R.string.NotFoundException)
-                true
-            }
+            R.id.show_statistics -> showStatistics()
+            R.id.report_product -> reportProduct()
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showStatistics(): Boolean {
+        if(product != null)
+            navigateTo(R.id.from_product_to_statistics)
+        else
+            showSnackbarMessage(R.string.NotFoundException)
+
+        return true
+    }
+
+    private fun reportProduct(): Boolean {
+        // If the user can't be found
+        if (!viewModel.isUserSignedIn || user == null) {
+            showSnackbarMessage(R.string.SignedOutException)
+            return true
+        }
+
+        try {
+            viewModel.reportProduct(user!!.id!!, product!!.id!!).observeOnce(viewLifecycleOwner, { exception ->
+                // If the call failed: show error message
+                if(exception != -1) {
+                    showSnackbarMessage(exception)
+                    return@observeOnce
+                }
+
+                showSnackbarMessage(R.string.product_reported)
+            })
+        } catch(_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
+
+        return true
     }
 
     private fun contactOwner(): Boolean {
@@ -252,24 +284,21 @@ class ProductFragment : VFragment(
         val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
         textViewLocation.text = getString(R.string.location_template, product.location.city, zipCode)
 
-        // Show product informations
-        imageViewProduct.visibility = VISIBLE
-        textViewTitle.visibility = VISIBLE
-        textViewDescription.visibility = VISIBLE
-        textViewPrice.visibility = VISIBLE
-        textViewCategory.visibility = VISIBLE
-        textViewLocation.visibility = VISIBLE
-
         // Show optional fields (if they exist)
         if(product.brand != null) {
             textViewBrand.text = product.brand
             textViewBrand.visibility = VISIBLE
-        }
+        } else
+            textViewBrand.visibility = GONE
 
         if(product.size != null) {
             textViewDimensions.text = product.size
             textViewDimensions.visibility = VISIBLE
-        }
+        } else
+            textViewDimensions.visibility = GONE
+
+        // Show product details
+        productDetails.visibility = VISIBLE
     }
 
     private fun setFavoriteItemVisibility() {

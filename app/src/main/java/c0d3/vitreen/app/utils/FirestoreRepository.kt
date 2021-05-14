@@ -85,6 +85,10 @@ class FirestoreRepository {
         return db.collection(USERS_COLLECTION).document(id).get()
     }
 
+    fun reportProduct(id: String, userId: String): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).update("reporters", FieldValue.arrayUnion(userId))
+    }
+
     fun registerUser(email: String, password: String): Task<AuthResult> {
         return auth.createUserWithEmailAndPassword(email, password)
     }

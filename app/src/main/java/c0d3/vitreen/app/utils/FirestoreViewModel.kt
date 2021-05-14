@@ -120,6 +120,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return userLiveData
     }
 
+    fun reportProduct(id: String, userId: String): LiveData<Int> {
+        return request(repository.reportProduct(id, userId))
+    }
+
     fun registerUser(email: String, password: String): LiveData<Int> {
         return request(repository.registerUser(email, password))
     }

@@ -64,7 +64,7 @@ class MessagesFragment : VFragment(
 
     private fun adapterOnClick(messageDTO: MessageDTO) {
         navigateTo(
-            R.id.action_navigation_messages_to_navigation_discussion,
+            R.id.action_navigation_discussions_to_navigation_discussion,
             Constants.KEY_DISCUSSION_ID to messageDTO.id
         )
     }

@@ -33,7 +33,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_content.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     private var backPressedOnce = false
     private lateinit var viewModel: FirestoreViewModel
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         val appBarConfiguration = AppBarConfiguration(
                 topLevelDestinationIds = setOf(
                         R.id.navigation_home,
-                        R.id.navigation_messages,
+                        R.id.navigation_discussions,
                         R.id.navigation_adding1,
                         R.id.navigation_favorites,
                         R.id.navigation_profile,
