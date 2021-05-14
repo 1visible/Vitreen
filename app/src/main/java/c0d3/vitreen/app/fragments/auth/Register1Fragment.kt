@@ -36,28 +36,20 @@ class Register1Fragment : VFragment(
             if(password != passwordConfirmation) {
                 editTextPassword.editText?.text?.clear()
                 editTextPasswordConfirmation.editText?.text?.clear()
-                showSnackbarMessage(R.string.passwords_not_equals)
+                editTextPassword.error = getString(R.string.passwords_not_equals)
                 return@setOnClickListener
             }
 
-            if(user == null) {
+            if(!viewModel.isUserSignedIn) {
                 viewModel.registerUser(email, password).observeOnce(viewLifecycleOwner, { exception ->
-                    // If the call fails, show error message and hide loading spinner
-                    if(handleError(exception)) return@observeOnce
-                    // Else, navigate to Register2 fragment
+                    // TODO : Gérer les différents erreurs
+                    if(exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
                     navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
                 })
-            } else if(!isUserSignedIn()) {
-                try {
-                    viewModel.linkUser(user!!, email, password).observeOnce(viewLifecycleOwner, { exception ->
-                        // If the call fails, show error message and hide loading spinner
-                        if(handleError(exception)) return@observeOnce
-                        // Else, navigate to Register2 fragment
-                        navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
-                    })
-                } catch (_: NullPointerException) {
-                    showSnackbarMessage()
-                }
             } else
                 navigateTo(R.id.from_register1_to_home)
         }

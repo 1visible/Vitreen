@@ -1,14 +1,11 @@
 package c0d3.vitreen.app.fragments.product
 
-import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Consultation
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
@@ -24,21 +21,14 @@ class StatisticsFragment : VFragment(
 
     private var product: Product? = null
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        product = arguments?.get(KEY_PRODUCT) as? Product?
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // If user is not signed in, skip this part
-        if (!isUserSignedIn())
+        if (!viewModel.isUserSignedIn) {
+            goBack() // TODO Vérifier si ça fout pas la merde avec navigateTo
             return
-
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
+        }
 
         // Check if argument could be retrieved
         if(product == null) {
@@ -57,9 +47,12 @@ class StatisticsFragment : VFragment(
         // TODO
     }
 
+    // TODO : Faire les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_add_to_favorites -> true // TODO
+            R.id.this_week -> true
+            R.id.this_month -> true
+            R.id.this_year -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
