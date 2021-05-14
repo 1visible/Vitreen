@@ -1,11 +1,13 @@
 package c0d3.vitreen.app.utils
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
@@ -16,15 +18,26 @@ import java.util.*
 class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
 
+    private val rawProducts: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("rawProducts")
     var isUserSignedIn: Boolean = false
     val product: MutableLiveData<Product> = state.getLiveData("product")
-    var products: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
     val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
 
+    val products: LiveData<Pair<Int, List<Product>>> = Transformations.switchMap(rawProducts) { (exception, products) ->
+        Transformations.map(getProductsImage(products)) { (_, products1) ->
+            exception to products1
+        }
+    }
+
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
+
+    init {
+        getCategories()
+        getLocations()
+    }
 
     fun select(product: Product) {
         this.product.value = product
@@ -48,12 +61,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    init {
-        getProducts(limit = true)
-        getCategories()
-        getLocations()
-    }
-
     fun getProducts(
         limit: Boolean,
         title: String? = null,
@@ -63,7 +70,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         category: Category? = null,
         ownerId: String? = null,
         ids: ArrayList<String>? = null
-    ): LiveData<Pair<Int, List<Product>>> {
+    ) {
         val query = repository.getProducts(limit, title, price, brand, location, category, ownerId, ids)
 
         query.addSnapshotListener { value, error ->
@@ -71,21 +78,15 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             var products = toObjects(value, Product::class.java)
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
-            val productsImages = getProductsImage(products)
-
-            Transformations.map(productsImages) { (_, productsData) ->
-                this.products.value = exception to productsData
-            }
+            rawProducts.value = exception to products
         }
-
-        return products
     }
 
     fun signIn(email: String, password: String): LiveData<Int> {
         return request(repository.signIn(email, password))
     }
 
-    fun getUser(email: String): LiveData<Pair<Int, User>> {
+    private fun getUser(email: String): LiveData<Pair<Int, User>> {
         repository.getUser(email).addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.NetworkException
             var userData = User()
@@ -167,7 +168,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         paths.forEach { path ->
             repository.getImage(path).addOnCompleteListener { task ->
                 val bytes = task.result
-
                 if(!task.isSuccessful || bytes == null)
                     exception = R.string.ImageNotFoundException
                 else {
@@ -185,10 +185,15 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productLiveData
     }
 
-    private fun getProductsImage(products: List<Product>): LiveData<Pair<Int, List<Product>>> {
+    fun getProductsImage(products: List<Product>): LiveData<Pair<Int, List<Product>>> {
         val productsLiveData = MutableLiveData<Pair<Int, List<Product>>>()
         var productsTaskCounter = 0
         var exception = -1
+
+        if(products.isEmpty()) {
+            productsLiveData.value = exception to products
+            return productsLiveData
+        }
 
         products.forEach { product ->
             val path = product.imagesPaths.firstOrNull()
@@ -218,7 +223,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     productsLiveData.value = exception to products
             }
         }
-
+        Log.i(VTAG, "Et je retourne bien")
         return productsLiveData
     }
 

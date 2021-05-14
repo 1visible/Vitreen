@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.annotation.DrawableRes
@@ -24,6 +25,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -58,6 +60,10 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
         requestLocationPermission()
+
+        viewModel.products.observe(this, {
+            Log.i(VTAG, "Le test")
+        })
 
         viewModel.user.observe(this, { (exception, user) ->
             if (exception != -1) {
