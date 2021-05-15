@@ -21,6 +21,7 @@
         <item name="borderlessButtonStyle">@style/Vitreen.Button.Text</item>
         <item name="materialButtonOutlinedStyle">@style/Vitreen.Button.Outline</item>
         <item name="imageButtonStyle">@style/Vitreen.ImageButton</item>
+        <item name="popupMenuBackground">@color/dark</item>
         <!-- Font -->
         <item name="fontFamily">@font/roboto</item>
         <item name="android:fontFamily">@font/roboto</item>

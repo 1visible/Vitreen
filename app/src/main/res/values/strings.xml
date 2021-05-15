@@ -36,6 +36,8 @@
     <!-- Home fragment -->
     <string name="my_location">Ma localisation</string>
     <string name="nothing_here">Il n\'y a rien à afficher ici pour le moment…</string>
+    <string name="product_price_min">Prix min.</string>
+    <string name="product_price_max">Prix max.</string>
     <!-- Login fragment -->
     <string name="have_no_account">Pas de compte ?</string>
     <string name="register_underline"><u>S\'inscrire</u></string>
@@ -60,7 +62,7 @@
     <string name="register_success">Votre compte a été créé avec succès !</string>
     <!-- Adding1 fragment -->
     <string name="product_category">Catégorie</string>
-    <string name="product_title">Titre</string>
+    <string name="product_name">Nom du produit</string>
     <string name="product_price">Prix</string>
     <string name="product_location">Ville</string>
     <string name="product_description">Description</string>

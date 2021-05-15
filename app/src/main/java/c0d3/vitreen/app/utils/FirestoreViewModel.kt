@@ -36,7 +36,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
     init {
-        getProducts(limit = true)
         getCategories()
         getLocations()
     }
@@ -49,7 +48,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return MutableLiveData()
     }
 
-    fun isUserAvailable(): Boolean {
+    private fun isUserAvailable(): Boolean {
         user.value?.let { (exception, user) ->
             if(exception == -1 && user.emailAddress.isNotEmpty())
                 return true
@@ -82,7 +81,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         query.addSnapshotListener { value, error ->
             val exception = if (error == null) -1 else R.string.NetworkException
             var products = toObjects(value, Product::class.java)
+            Log.i(VTAG, "Query with limit=$limit, location=$location, ownerId=$ownerId, ids=$ids")
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
+
+            error?.message?.let { Log.i(VTAG, it) }
 
             rawProducts.value = exception to products
         }

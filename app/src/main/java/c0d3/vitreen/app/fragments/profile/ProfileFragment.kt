@@ -2,6 +2,7 @@ package c0d3.vitreen.app.fragments.profile
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -11,6 +12,7 @@ import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.empty_view.*
@@ -46,6 +48,7 @@ class ProfileFragment : VFragment(
         // Get current user informations
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
             if(exception != -1) {
+                Log.i(VTAG, "Oui c'est là")
                 this.user = null
                 showSnackbarMessage(exception)
                 goBack()
@@ -58,7 +61,7 @@ class ProfileFragment : VFragment(
 
             try {
                 viewModel.getProducts(limit = false, ownerId = user.id!!)
-            } catch (_: NullPointerException) {
+            } catch (e: NullPointerException) {
                 showSnackbarMessage(R.string.NetworkException)
                 goBack()
                 return@observe
@@ -75,6 +78,8 @@ class ProfileFragment : VFragment(
                 goBack()
                 return@observe
             }
+
+            setMenuItemVisibile(R.id.logout, true)
 
             // If there are no products: show empty view
             if(products.isNullOrEmpty()) {
@@ -112,11 +117,7 @@ class ProfileFragment : VFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.logout -> {
-                viewModel.signOut()
-                goBack()
-                true
-            }
+            R.id.logout -> { viewModel.signOut(); true }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -169,18 +170,20 @@ class ProfileFragment : VFragment(
         if(!viewModel.isUserSignedIn) {
             showSnackbarMessage(R.string.SignedOutException)
             try { dialog.dismiss() } catch (_: Exception) { }
-            goBack()
             return
         }
 
-        viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { exception ->
-            if(exception == -1)
-                showSnackbarMessage(R.string.account_deleted)
-            else
-                showSnackbarMessage(exception)
+        try {
+            viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { exception ->
+                if(exception == -1)
+                    showSnackbarMessage(R.string.account_deleted)
+                else
+                    showSnackbarMessage(exception)
 
-            try { dialog.dismiss() } catch (_: Exception) { }
-            goBack()
-        })
+                try { dialog.dismiss() } catch (_: Exception) { }
+            })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
     }
 }

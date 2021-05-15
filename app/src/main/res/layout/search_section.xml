@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Search section -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchSection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark"
     android:orientation="vertical"
-    tools:context=".fragments.adding.Adding1Fragment">
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <!-- Title input -->
     <com.google.android.material.textfield.TextInputLayout
@@ -15,9 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_header"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
         android:hint="@string/product_name" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -33,9 +35,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_tree"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
         android:hint="@string/product_category" >
         <AutoCompleteTextView
             android:layout_width="match_parent"
@@ -44,69 +43,65 @@
             tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Price input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_money"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/product_price" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
-
     <!-- Location input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextLocation"
+        android:id="@+id/textInputLocation"
+        style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
         app:startIconDrawable="@drawable/icon_location"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
         android:hint="@string/product_location" >
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
+            android:completionThreshold="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Description input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextDescription"
+    <!-- Price input -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        app:counterEnabled="true"
-        app:counterMaxLength="200"
-        android:layout_marginBottom="@dimen/spacing_lg"
-        android:hint="@string/product_description" >
-        <com.google.android.material.textfield.TextInputEditText
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:baselineAligned="false">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextPriceMin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:gravity="top|start"
-            android:minLines="5"
-            android:maxLength="200"
-            android:overScrollMode="always"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            android:scrollHorizontally="false" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/spacing_sm"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            app:startIconDrawable="@drawable/icon_money"
+            android:hint="@string/product_price_min" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextPriceMax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/spacing_sm"
+            android:layout_marginStart="@dimen/spacing_sm"
+            app:startIconDrawable="@drawable/icon_money"
+            android:hint="@string/product_price_max" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/buttonToAdding2"
+        android:id="@+id/buttonSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/next" />
+        android:text="@string/search" />
 
 </LinearLayout>

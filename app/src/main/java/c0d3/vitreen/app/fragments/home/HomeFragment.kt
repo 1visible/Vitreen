@@ -1,7 +1,6 @@
 package c0d3.vitreen.app.fragments.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -9,16 +8,16 @@ import android.view.View.VISIBLE
 import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.Category
+import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.utils.Constants
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
-import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.recyclerViewProducts
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.loading_spinner.*
 
 class HomeFragment : VFragment(
@@ -33,8 +32,11 @@ class HomeFragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         // Set elements visibility (while loading)
+        searchSection.visibility = GONE
         emptyView.visibility = GONE
         recyclerViewProducts.visibility = GONE
+
+        viewModel.getProducts(limit = true)
 
         viewModel.products.observe(viewLifecycleOwner, { (exception, products) ->
             // When the call finishes, hide loading spinner
@@ -81,7 +83,7 @@ class HomeFragment : VFragment(
             val categoryNames = categories.map { category -> category.name }
             val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, categoryNames) }
 
-            // TODO (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         })
 
         // Fill locations in the search section
@@ -96,45 +98,34 @@ class HomeFragment : VFragment(
             val locationNames = locations.map { location -> location.city }
             val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, locationNames) }
 
-            // TODO (autoCompleteLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            (textInputLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         })
-
-        /*
-        // On search button click, query products according to search filters
-        buttonResearch.setOnClickListener {
-            // Check if all inputs are empty
-            if(areAllInputsEmpty(editTextMaxPrice, textInputCategory, autoCompleteLocation, editTextBrand, editTextResearchText))
-                return@setOnClickListener
-
-            // Get all search filters
-            val title = inputToString(editTextResearchText)
-            val price = inputToString(editTextMaxPrice)?.toDoubleOrNull()
-            val brand = inputToString(editTextBrand)
-            val location: Location? = viewModel.locationsLiveData.value?.second?.findLast { it.city == inputToString(autoCompleteLocation) }
-            val category: Category? = viewModel.categoriesLiveData.value?.second?.findLast { it.name == inputToString(textInputCategory) }
-
-            // Search products according to filters
-            viewModel.getProducts(
-                limit = false,
-                title = title,
-                price = price,
-                brand = brand,
-                location = location,
-                category = category,
-                owner = viewLifecycleOwner
-            )
-        }
-        */
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_products -> {
-                TODO()
-                // navigate to search screen
+                searchSection.visibility = if(searchSection.visibility == VISIBLE) GONE else VISIBLE
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun research() {
+        // On search button click, make the query
+        buttonSearch.setOnClickListener {
+            searchSection.visibility = GONE
+            // Check if required inputs are filled
+            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle))
+                return@setOnClickListener
+
+            // Get all search filters
+            val title = inputToString(editTextTitle)
+            val location: Location? = viewModel.locations.value?.second?.firstOrNull { it.city == inputToString(textInputLocation) }
+            val category: Category? = viewModel.categories.value?.second?.firstOrNull { it.name == inputToString(textInputCategory) }
+
+            viewModel.getProducts(limit = false, title = title, location = location, category = category)
         }
     }
 

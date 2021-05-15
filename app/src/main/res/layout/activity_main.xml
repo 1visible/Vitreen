@@ -30,6 +30,7 @@
         android:id="@+id/navContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         android:padding="@dimen/spacing_md"
         android:background="?attr/colorSurface"
         app:layout_anchor="@+id/activity_content"

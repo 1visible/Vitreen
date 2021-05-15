@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.utils
 
+import android.util.Log
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSIONS_COLLECTION
@@ -8,14 +9,12 @@ import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.UploadTask
@@ -39,36 +38,50 @@ class FirestoreRepository {
         ids: ArrayList<String>? = null
     ): Query {
         var query: Query = db.collection(PRODUCTS_COLLECTION)
+        var orderByDate = true
 
-        if (title != null)
-            query = query.whereEqualTo("title", title)
+        if (title != null) {
+            query = query.whereGreaterThanOrEqualTo("title", title)
+                .orderBy("title")
+            orderByDate = false
+        }
 
-        if (brand != null)
+        if (brand != null) {
             query = query.whereEqualTo("brand", brand)
+            orderByDate = false
+        }
 
-        if (location != null)
+        if (location != null) {
             query = query.whereEqualTo("location", location)
+            orderByDate = true
+        }
 
-        if (category != null)
+        if (category != null) {
             query = query.whereEqualTo("category", category)
+            orderByDate = false
+        }
 
-        if (ownerId != null)
+        if (ownerId != null) {
             query = query.whereEqualTo("ownerId", ownerId)
+            orderByDate = false
+        }
 
-        if(!ids.isNullOrEmpty())
-            query = query.whereIn("id", ids)
+        if (price != null) {
+            query = query.whereLessThanOrEqualTo("price", price)
+                .orderBy("price", Query.Direction.ASCENDING)
+            orderByDate = false
+        }
+
+        if(!ids.isNullOrEmpty()) {
+            query = query.whereIn(FieldPath.documentId(), ids)
+            orderByDate = false
+        }
+
+        if(orderByDate)
+            query = query.orderBy("modifiedAt")
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)
-
-        if (price != null)
-            query = query.whereLessThanOrEqualTo("price", price)
-                .orderBy("price", Query.Direction.ASCENDING)
-
-        // query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
-
-        if(title != null)
-            query = query.orderBy("title", Query.Direction.DESCENDING)
 
         return query
     }
