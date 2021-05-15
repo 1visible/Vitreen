@@ -48,7 +48,6 @@ class ProfileFragment : VFragment(
         // Get current user informations
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
             if(exception != -1) {
-                Log.i(VTAG, "Oui c'est là")
                 this.user = null
                 showSnackbarMessage(exception)
                 goBack()

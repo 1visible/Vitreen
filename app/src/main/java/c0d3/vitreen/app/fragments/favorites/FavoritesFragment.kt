@@ -39,10 +39,8 @@ class FavoritesFragment : VFragment(
         }
 
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
-            Log.i(VTAG, "User observed")
             // If the call failed: show error message and show empty view
             if(exception != -1) {
-                Log.i(VTAG, "Error")
                 showSnackbarMessage(exception)
                 loadingSpinner.visibility = GONE
                 recyclerViewProducts.visibility = GONE
@@ -52,14 +50,12 @@ class FavoritesFragment : VFragment(
 
             // If the user has no favorites, show empty view
             if(user.favoritesIds.isEmpty()) {
-                Log.i(VTAG, "No favorites")
                 loadingSpinner.visibility = GONE
                 recyclerViewProducts.visibility = GONE
                 emptyView.visibility = VISIBLE
                 return@observe
             }
 
-            Log.i(VTAG, "Put favorites : " + user.favoritesIds)
             // Else, get favorites list
             recyclerViewProducts.visibility = GONE
             emptyView.visibility = GONE
@@ -67,13 +63,11 @@ class FavoritesFragment : VFragment(
             viewModel.getProducts(limit = false, ids = user.favoritesIds)
 
             viewModel.products.observe(viewLifecycleOwner, observe1@ { (exception, products) ->
-                Log.i(VTAG, "Products observed")
                 // When the call finishes, hide loading spinner
                 loadingSpinner.visibility = GONE
 
                 // If the call failed: show error message and show empty view
                 if(exception != -1) {
-                    Log.i(VTAG, "Products failed")
                     showSnackbarMessage(exception)
                     recyclerViewProducts.visibility = GONE
                     emptyView.visibility = VISIBLE
@@ -82,13 +76,11 @@ class FavoritesFragment : VFragment(
 
                 // If there are no products: show empty view
                 if(products.isNullOrEmpty()) {
-                    Log.i(VTAG, "No products")
                     recyclerViewProducts.visibility = GONE
                     emptyView.visibility = VISIBLE
                     return@observe1
                 }
 
-                Log.i(VTAG, "Put products")
                 // Else, display products in the recycler view
                 val adapter = ProductAdapter { product -> adapterOnClick(product) }
                 adapter.submitList(products)

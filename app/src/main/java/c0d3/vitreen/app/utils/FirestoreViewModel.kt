@@ -82,7 +82,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         query.addSnapshotListener { value, error ->
             val exception = if (error == null) -1 else R.string.NetworkException
             var products = toObjects(value, Product::class.java)
-            Log.i(VTAG, "Query with limit=$limit, location=$location, ownerId=$ownerId, ids=$ids")
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
             error?.message?.let { Log.i(VTAG, it) }

@@ -1,12 +1,13 @@
 package c0d3.vitreen.app.models
 
 import android.graphics.Bitmap
-import c0d3.vitreen.app.models.dto.ProductDTO
 import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.IgnoreExtraProperties
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
+@IgnoreExtraProperties
 data class Product(
     val title: String = "",
     val description: String = "",
@@ -24,13 +25,4 @@ data class Product(
     @set:Exclude
     @get:Exclude
     var images: ArrayList<Bitmap> = ArrayList()
-) : Entity(), Serializable {
-
-    fun toDTO(): ProductDTO {
-        val productDTO = ProductDTO(title, price, images.firstOrNull(), location, category)
-        productDTO.id = this.id
-
-        return productDTO
-    }
-
-}
+) : Entity(), Serializable
