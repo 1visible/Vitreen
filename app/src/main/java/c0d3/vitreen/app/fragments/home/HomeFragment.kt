@@ -101,10 +101,11 @@ class HomeFragment : VFragment(
 
         // On search button click, make the query
         buttonSearch.setOnClickListener {
-            searchSection.visibility = GONE
             // Check if required inputs are filled
-            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle, editTextPriceMin, editTextPriceMax))
+            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle, editTextPriceMin, editTextPriceMax)) {
+                toggleSearchSectionVisibility()
                 return@setOnClickListener
+            }
 
             // Get all search filters
             val title = inputToString(editTextTitle)
@@ -121,6 +122,8 @@ class HomeFragment : VFragment(
                 location = location,
                 category = category
             )
+
+            toggleSearchSectionVisibility()
         }
     }
 
@@ -139,6 +142,11 @@ class HomeFragment : VFragment(
             }
 
             searchSection.visibility = GONE
+            editTextTitle.editText?.text?.clear()
+            textInputCategory.editText?.text?.clear()
+            textInputLocation.editText?.text?.clear()
+            editTextPriceMin.editText?.text?.clear()
+            editTextPriceMax.editText?.text?.clear()
         } else
             searchSection.visibility = VISIBLE
 

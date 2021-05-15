@@ -67,13 +67,18 @@ class FirestoreRepository {
             orderByDate = false
         }
 
-        if (priceMin != null) {
+        if(priceMin != null && priceMax != null) {
+            query = query.orderBy("price", Query.Direction.ASCENDING).startAt(priceMin).endAt(priceMax)
+            orderByDate = false
+        }
+
+        else if (priceMin != null) {
             query = query.whereGreaterThanOrEqualTo("price", priceMin)
                 .orderBy("price", Query.Direction.ASCENDING)
             orderByDate = false
         }
 
-        if (priceMax != null) {
+        else if (priceMax != null) {
             query = query.whereLessThanOrEqualTo("price", priceMax)
                 .orderBy("price", Query.Direction.ASCENDING)
             orderByDate = false
