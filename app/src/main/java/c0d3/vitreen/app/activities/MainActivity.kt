@@ -61,10 +61,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         setupActionBarWithNavController(navController, appBarConfiguration)
         requestLocationPermission()
 
-        viewModel.products.observe(this, {
-            Log.i(VTAG, "Le test")
-        })
-
         viewModel.user.observe(this, { (exception, user) ->
             if (exception != -1) {
                 viewModel.discussions.value = exception to ArrayList()
@@ -148,7 +144,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
 
     // Update user (model and state) on auth state changes
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
-        viewModel.setUserState(firebaseAuth.currentUser != null)
+        viewModel.setUserState(firebaseAuth.currentUser != null, firebaseAuth.currentUser?.email)
     }
 }
 

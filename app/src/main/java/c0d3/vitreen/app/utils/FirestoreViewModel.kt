@@ -2,6 +2,7 @@ package c0d3.vitreen.app.utils
 
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.view.Menu
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import c0d3.vitreen.app.R
@@ -17,8 +18,8 @@ import java.util.*
 
 class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
-
     private val rawProducts: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("rawProducts")
+
     var isUserSignedIn: Boolean = false
     val product: MutableLiveData<Product> = state.getLiveData("product")
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
@@ -35,12 +36,17 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
     init {
+        getProducts(limit = true)
         getCategories()
         getLocations()
     }
 
     fun select(product: Product) {
         this.product.value = product
+    }
+
+    fun getMenu(): MutableLiveData<Menu> {
+        return MutableLiveData()
     }
 
     fun isUserAvailable(): Boolean {
@@ -57,7 +63,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         when(isUserSignedIn) {
             false -> user.value = R.string.SignedOutException to User()
-            true -> email?.let { mail -> getUser(mail) }
+            true -> if(!isUserAvailable()) email?.let { mail -> getUser(mail) }
         }
     }
 
@@ -223,7 +229,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     productsLiveData.value = exception to products
             }
         }
-        Log.i(VTAG, "Et je retourne bien")
+
         return productsLiveData
     }
 

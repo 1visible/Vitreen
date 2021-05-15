@@ -65,7 +65,7 @@ class FirestoreRepository {
             query = query.whereLessThanOrEqualTo("price", price)
                 .orderBy("price", Query.Direction.ASCENDING)
 
-        query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+        // query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
 
         if(title != null)
             query = query.orderBy("title", Query.Direction.DESCENDING)

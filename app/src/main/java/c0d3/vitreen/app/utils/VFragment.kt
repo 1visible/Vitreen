@@ -7,9 +7,12 @@ import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
+import c0d3.vitreen.app.activities.observeOnce
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.loading_spinner.*
 
@@ -23,8 +26,8 @@ abstract class VFragment(
     @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
-    private lateinit var menu: Menu
     val viewModel: FirestoreViewModel by activityViewModels()
+    lateinit var menu: MutableLiveData<Menu>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,7 @@ abstract class VFragment(
         super.onViewCreated(view, savedInstanceState)
         // Show loading spinner
         loadingSpinner?.visibility = VISIBLE
+        menu = viewModel.getMenu()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -62,8 +66,12 @@ abstract class VFragment(
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
+    }
 
-        this.menu = menu
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        this.menu.value = menu
     }
 
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
@@ -125,7 +133,9 @@ abstract class VFragment(
     }
 
     fun setMenuItemVisibile(@IdRes id: Int, visible: Boolean) {
-        menu.findItem(id)?.isVisible = visible
+        menu.observeOnce(viewLifecycleOwner, { menu ->
+            menu.findItem(id)?.isVisible = visible
+        })
     }
 
 }
