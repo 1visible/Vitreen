@@ -69,14 +69,15 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     fun getProducts(
         limit: Boolean,
         title: String? = null,
-        price: Double? = null,
+        priceMin: Double? = null,
+        priceMax: Double? = null,
         brand: String? = null,
         location: Location? = null,
         category: Category? = null,
         ownerId: String? = null,
         ids: ArrayList<String>? = null
     ) {
-        val query = repository.getProducts(limit, title, price, brand, location, category, ownerId, ids)
+        val query = repository.getProducts(limit, title, priceMin, priceMax, brand, location, category, ownerId, ids)
 
         query.addSnapshotListener { value, error ->
             val exception = if (error == null) -1 else R.string.NetworkException

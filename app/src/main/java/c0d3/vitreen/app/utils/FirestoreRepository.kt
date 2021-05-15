@@ -30,7 +30,8 @@ class FirestoreRepository {
     fun getProducts(
         limit: Boolean,
         title: String? = null,
-        price: Double? = null,
+        priceMin: Double? = null,
+        priceMax: Double? = null,
         brand: String? = null,
         location: Location? = null,
         category: Category? = null,
@@ -66,8 +67,14 @@ class FirestoreRepository {
             orderByDate = false
         }
 
-        if (price != null) {
-            query = query.whereLessThanOrEqualTo("price", price)
+        if (priceMin != null) {
+            query = query.whereGreaterThanOrEqualTo("price", priceMin)
+                .orderBy("price", Query.Direction.ASCENDING)
+            orderByDate = false
+        }
+
+        if (priceMax != null) {
+            query = query.whereLessThanOrEqualTo("price", priceMax)
                 .orderBy("price", Query.Direction.ASCENDING)
             orderByDate = false
         }
@@ -78,7 +85,7 @@ class FirestoreRepository {
         }
 
         if(orderByDate)
-            query = query.orderBy("modifiedAt")
+            query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
 
         if (limit)
             query = query.limit(DOCUMENTS_LIMIT)

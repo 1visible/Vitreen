@@ -1,10 +1,12 @@
 package c0d3.vitreen.app.fragments.home
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
@@ -19,6 +21,8 @@ import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.loading_spinner.*
+import kotlinx.android.synthetic.main.search_section.*
+
 
 class HomeFragment : VFragment(
     layoutId = R.layout.fragment_home,
@@ -65,12 +69,6 @@ class HomeFragment : VFragment(
             recyclerViewProducts.visibility = VISIBLE
         })
 
-        viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
-            // TODO : Gérer le fait qu'il n'y ait pas de produits sur la location
-            if (exception == -1)
-                viewModel.getProducts(limit = false, location = user.location)
-        })
-
         // Fill categories in the search section
         viewModel.categories.observe(viewLifecycleOwner, { (exception, categories) ->
             // If the call failed: show error message
@@ -100,33 +98,51 @@ class HomeFragment : VFragment(
 
             (textInputLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         })
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.search_products -> {
-                searchSection.visibility = if(searchSection.visibility == VISIBLE) GONE else VISIBLE
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun research() {
         // On search button click, make the query
         buttonSearch.setOnClickListener {
             searchSection.visibility = GONE
             // Check if required inputs are filled
-            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle))
+            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle, editTextPriceMin, editTextPriceMax))
                 return@setOnClickListener
 
             // Get all search filters
             val title = inputToString(editTextTitle)
+            val priceMin = inputToString(editTextPriceMin)?.toDoubleOrNull()
+            val priceMax = inputToString(editTextPriceMax)?.toDoubleOrNull()
             val location: Location? = viewModel.locations.value?.second?.firstOrNull { it.city == inputToString(textInputLocation) }
             val category: Category? = viewModel.categories.value?.second?.firstOrNull { it.name == inputToString(textInputCategory) }
 
-            viewModel.getProducts(limit = false, title = title, location = location, category = category)
+            viewModel.getProducts(
+                limit = false,
+                title = title,
+                priceMin = priceMin,
+                priceMax = priceMax,
+                location = location,
+                category = category
+            )
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_products -> toggleSearchSectionVisibility()
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun toggleSearchSectionVisibility(): Boolean {
+        if(searchSection.visibility == VISIBLE) {
+            if(searchSection.focusedChild != null && context != null) {
+                val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(searchSection.focusedChild.windowToken, 0)
+            }
+
+            searchSection.visibility = GONE
+        } else
+            searchSection.visibility = VISIBLE
+
+        return true
     }
 
     private fun adapterOnClick(product: Product) {
