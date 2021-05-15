@@ -1,5 +1,6 @@
 package c0d3.vitreen.app.adapter
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,10 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val onClick: (Product) -> Unit)
+class ProductAdapter(private val image: Bitmap?, private val onClick: (Product) -> Unit)
     : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
+    class ProductViewHolder(val image: Bitmap?, itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
         private var product: Product = Product()
 
         init {
@@ -26,8 +27,8 @@ class ProductAdapter(private val onClick: (Product) -> Unit)
             this.product = product
 
             // Display product image if available
-            if(product.images.isNotEmpty())
-                itemView.imageViewProduct.setImageBitmap(product.images.first())
+            if(image != null)
+                itemView.imageViewProduct.setImageBitmap(image)
 
             // Fill product with informations
             itemView.textViewTitle.text = product.title
@@ -43,7 +44,7 @@ class ProductAdapter(private val onClick: (Product) -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false)
-        return ProductViewHolder(view, onClick)
+        return ProductViewHolder(image, view, onClick)
     }
 
     // Get current product and use it to bind view.

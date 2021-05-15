@@ -7,7 +7,6 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
-@IgnoreExtraProperties
 data class Product(
     val title: String = "",
     val description: String = "",
@@ -20,9 +19,5 @@ data class Product(
     val category: Category = Category(),
     var imagesPaths: ArrayList<String> = ArrayList(),
     val ownerId: String = "",
-    val modifiedAt: Date = Calendar.getInstance().time,
-    @Exclude
-    @set:Exclude
-    @get:Exclude
-    var images: ArrayList<Bitmap> = ArrayList()
+    val modifiedAt: Date = Calendar.getInstance().time
 ) : Entity(), Serializable

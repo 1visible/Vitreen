@@ -37,6 +37,8 @@ class ProductFragment : VFragment(
 
         // Set elements visibility (while loading)
         productDetails.visibility = GONE
+        buttonPreviousImage.visibility = GONE
+        buttonNextImage.visibility = GONE
         setMenuItemVisibile(R.id.add_to_favorites, false)
         setMenuItemVisibile(R.id.remove_from_favorites, false)
         setMenuItemVisibile(R.id.send_message, false)
@@ -87,47 +89,48 @@ class ProductFragment : VFragment(
                 this.discussions = if (exception == -1) discussions else null
             })
 
-            viewModel.getProductImages(product!!).observeOnce(viewLifecycleOwner, { (exception, product) ->
+            viewModel.getProductImages(product!!.imagesPaths).observeOnce(viewLifecycleOwner, { images ->
                 // When the call finishes, hide loading spinner
                 loadingSpinner.visibility = GONE
-
-                // If the call failed: show error message
-                if(exception != -1)
-                    showSnackbarMessage(exception)
 
                 val city = viewModel.user.value?.second?.location?.city
                 val consultation = Consultation(city = city)
 
-                product.id?.let { id -> viewModel.addConsultation(id, consultation) }
-                fillProductDetails(product)
+                product?.id?.let { id -> viewModel.addConsultation(id, consultation) }
+
+                fillProductDetails(product!!)
 
                 // Check if there are loaded images
-                if(product.images.isNullOrEmpty())
+                if(images.isEmpty())
                     return@observeOnce
 
+                // Display product images (first one)
+                imageIndex = 0
+                imageViewProduct.setImageBitmap(images[imageIndex])
+
                 // Show previous and next buttons to switch between images
+                if(images.size < 2)
+                    return@observeOnce
+
                 buttonPreviousImage.visibility = VISIBLE
                 buttonNextImage.visibility = VISIBLE
 
-                // Display product images (first one)
-                imageViewProduct.setImageBitmap(product.images[imageIndex])
-
                 // On previous button click, go to previous image
                 buttonPreviousImage.setOnClickListener {
-                    if(product.images.isEmpty())
+                    if(images.isEmpty())
                         return@setOnClickListener
 
-                    imageIndex = if (imageIndex <= 0) (product.images.size - 1) else imageIndex--
-                    imageViewProduct.setImageBitmap(product.images[imageIndex])
+                    imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
+                    imageViewProduct.setImageBitmap(images[imageIndex])
                 }
 
                 // On next button click, go to next image
                 buttonNextImage.setOnClickListener {
-                    if(product.images.isEmpty())
+                    if(images.isEmpty())
                         return@setOnClickListener
 
-                    imageIndex = if (imageIndex >= product.images.size - 1) 0 else imageIndex++
-                    imageViewProduct.setImageBitmap(product.images[imageIndex])
+                    imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
+                    imageViewProduct.setImageBitmap(images[imageIndex])
                 }
             })
         } catch (_: NullPointerException) {
