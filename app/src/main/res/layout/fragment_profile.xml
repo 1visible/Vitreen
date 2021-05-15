@@ -31,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_user"
-            android:drawableLeft="@drawable/icon_user"
+            android:drawableStart="@drawable/ic_user"
+            android:drawableLeft="@drawable/ic_user"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/username"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -42,10 +42,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_envelope"
-            android:drawableLeft="@drawable/icon_envelope"
-            android:drawableEnd="@drawable/icon_checkmark"
-            android:drawableRight="@drawable/icon_checkmark"
+            android:drawableStart="@drawable/ic_envelope"
+            android:drawableLeft="@drawable/ic_envelope"
+            android:drawableEnd="@drawable/ic_checkmark"
+            android:drawableRight="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/email_address"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -55,10 +55,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_phone"
-            android:drawableLeft="@drawable/icon_phone"
-            android:drawableEnd="@drawable/icon_checkmark"
-            android:drawableRight="@drawable/icon_checkmark"
+            android:drawableStart="@drawable/ic_phone"
+            android:drawableLeft="@drawable/ic_phone"
+            android:drawableEnd="@drawable/ic_checkmark"
+            android:drawableRight="@drawable/ic_checkmark"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/phone_number"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -67,8 +67,8 @@
             android:id="@+id/textViewPostalAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/icon_location"
-            android:drawableLeft="@drawable/icon_location"
+            android:drawableStart="@drawable/ic_location"
+            android:drawableLeft="@drawable/ic_location"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/postal_address"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -89,8 +89,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_company"
-            android:drawableLeft="@drawable/icon_company"
+            android:drawableStart="@drawable/ic_company"
+            android:drawableLeft="@drawable/ic_company"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/company_name"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -99,8 +99,8 @@
             android:id="@+id/textViewSiretNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/icon_number"
-            android:drawableLeft="@drawable/icon_number"
+            android:drawableStart="@drawable/ic_number"
+            android:drawableLeft="@drawable/ic_number"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/siret_number"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -130,7 +130,7 @@
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDeleteAccount"
             style="@style/Vitreen.Button.Outline.Error"
             android:layout_width="match_parent"

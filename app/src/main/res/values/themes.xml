@@ -13,6 +13,7 @@
         <item name="colorOnBackground">@color/white</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorOnError">@color/darker</item>
+        <item name="colorControlNormal">@color/white</item>
         <!-- Override components style -->
         <item name="materialCardViewStyle">@style/Vitreen.CardView</item>
         <item name="bottomNavigationStyle">@style/Vitreen.BottomNavigationView</item>

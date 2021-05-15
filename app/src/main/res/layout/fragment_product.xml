@@ -46,7 +46,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:padding="@dimen/spacing_md"
-                    android:src="@drawable/icon_angle_left"
+                    android:src="@drawable/ic_previous"
                     tools:ignore="ContentDescription" />
 
                 <!-- Next image button -->
@@ -58,7 +58,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:padding="@dimen/spacing_md"
-                    android:src="@drawable/icon_angle_right"
+                    android:src="@drawable/ic_next"
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>
@@ -105,8 +105,8 @@
             android:id="@+id/textViewCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/icon_tree"
-            android:drawableLeft="@drawable/icon_tree"
+            android:drawableStart="@drawable/ic_category"
+            android:drawableLeft="@drawable/ic_category"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/placeholder_category"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -116,8 +116,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_location"
-            android:drawableLeft="@drawable/icon_location"
+            android:drawableStart="@drawable/ic_location"
+            android:drawableLeft="@drawable/ic_location"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/placeholder_location"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -127,8 +127,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_number"
-            android:drawableLeft="@drawable/icon_number"
+            android:drawableStart="@drawable/ic_number"
+            android:drawableLeft="@drawable/ic_number"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/product_reference"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -138,8 +138,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_tag"
-            android:drawableLeft="@drawable/icon_tag"
+            android:drawableStart="@drawable/ic_tag"
+            android:drawableLeft="@drawable/ic_tag"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/product_brand"
             tools:ignore="UseCompatTextViewDrawableXml" />
@@ -149,8 +149,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_sm"
-            android:drawableStart="@drawable/icon_size"
-            android:drawableLeft="@drawable/icon_size"
+            android:drawableStart="@drawable/ic_size"
+            android:drawableLeft="@drawable/ic_size"
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/product_dimensions"
             tools:ignore="UseCompatTextViewDrawableXml" />

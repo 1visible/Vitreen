@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:text="@string/have_no_account" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonToRegister1"
             style="?attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_envelope"
+        app:startIconDrawable="@drawable/ic_envelope"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lg"
-        app:startIconDrawable="@drawable/icon_lockpad"
+        app:startIconDrawable="@drawable/ic_lockpad"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -67,7 +67,7 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSubmitLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

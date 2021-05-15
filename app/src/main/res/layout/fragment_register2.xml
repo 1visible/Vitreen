@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_user"
+        app:startIconDrawable="@drawable/ic_user"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_phone"
+        app:startIconDrawable="@drawable/ic_phone"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_location"
+        app:startIconDrawable="@drawable/ic_location"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_company"
+        app:startIconDrawable="@drawable/ic_company"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_marginBottom="@dimen/spacing_lg"
-        app:startIconDrawable="@drawable/icon_number"
+        app:startIconDrawable="@drawable/ic_number"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -129,7 +129,7 @@
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSubmitRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

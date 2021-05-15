@@ -138,14 +138,14 @@ class ProfileFragment : VFragment(
         // Remove checkmark on least prefered contact method
         if (user.contactByPhone)
             textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.icon_envelope,
+                R.drawable.ic_envelope,
                 0,
                 0,
                 0
             )
         else
             textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.icon_phone,
+                R.drawable.ic_phone,
                 0,
                 0,
                 0

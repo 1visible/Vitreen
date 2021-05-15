@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_tag"
+        app:startIconDrawable="@drawable/ic_tag"
         android:hint="@string/product_brand" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_size"
+        app:startIconDrawable="@drawable/ic_size"
         android:hint="@string/product_dimensions" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/spacing_sm"
-                android:src="@drawable/icon_close"
+                android:src="@drawable/ic_close"
                 tools:ignore="ContentDescription" />
 
             <!-- Previous image button -->
@@ -78,7 +78,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/icon_angle_left"
+                android:src="@drawable/ic_previous"
                 android:padding="@dimen/spacing_md"
                 tools:ignore="ContentDescription" />
 
@@ -90,7 +90,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/icon_angle_right"
+                android:src="@drawable/ic_next"
                 android:padding="@dimen/spacing_md"
                 tools:ignore="ContentDescription" />
 
@@ -101,7 +101,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAddImage"
         style="@style/Vitreen.Button.Outline"
-        app:icon="@drawable/ic_message"
+        app:icon="@drawable/ic_add"
         app:iconGravity="textStart"
         app:iconPadding="@dimen/spacing_md"
         android:layout_marginBottom="@dimen/spacing_lg"
@@ -109,10 +109,13 @@
         android:layout_height="wrap_content"
         android:text="@string/add_image" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonConfirmation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:icon="@drawable/ic_checkmark"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/spacing_md"
         android:text="@string/confirmation" />
 
 </LinearLayout>

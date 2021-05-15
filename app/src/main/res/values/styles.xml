@@ -82,6 +82,7 @@
     <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button.Outline">
         <item name="android:textColor">?attr/colorError</item>
         <item name="strokeColor">?attr/colorError</item>
+        <item name="rippleColor">?attr/colorError</item>
     </style>
 
 </resources>

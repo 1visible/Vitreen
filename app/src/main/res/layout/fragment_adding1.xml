@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_header"
+        app:startIconDrawable="@drawable/ic_header"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_tree"
+        app:startIconDrawable="@drawable/ic_category"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_money"
+        app:startIconDrawable="@drawable/ic_money"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_location"
+        app:startIconDrawable="@drawable/ic_location"
         app:helperText="@string/required_input"
         app:helperTextEnabled="true"
         app:errorEnabled="true"
@@ -103,7 +103,7 @@
             android:scrollHorizontally="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonToAdding2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

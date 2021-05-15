@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_header"
+        app:startIconDrawable="@drawable/ic_header"
         android:hint="@string/product_name" >
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_tree"
+        app:startIconDrawable="@drawable/ic_category"
         android:hint="@string/product_category" >
         <AutoCompleteTextView
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/icon_location"
+        app:startIconDrawable="@drawable/ic_location"
         android:hint="@string/product_location" >
         <AutoCompleteTextView
             android:completionThreshold="1"
@@ -73,7 +73,7 @@
             android:layout_weight="1"
             android:layout_marginRight="@dimen/spacing_sm"
             android:layout_marginEnd="@dimen/spacing_sm"
-            app:startIconDrawable="@drawable/icon_money"
+            app:startIconDrawable="@drawable/ic_money"
             android:hint="@string/product_price_min" >
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -88,7 +88,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/spacing_sm"
             android:layout_marginStart="@dimen/spacing_sm"
-            app:startIconDrawable="@drawable/icon_money"
+            app:startIconDrawable="@drawable/ic_money"
             android:hint="@string/product_price_max" >
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -98,7 +98,7 @@
 
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
