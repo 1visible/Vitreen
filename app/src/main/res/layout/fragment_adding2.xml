@@ -101,7 +101,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAddImage"
         style="@style/Vitreen.Button.Outline"
-        app:icon="@drawable/ic_icon_message"
+        app:icon="@drawable/ic_message"
         app:iconGravity="textStart"
         app:iconPadding="@dimen/spacing_md"
         android:layout_marginBottom="@dimen/spacing_lg"

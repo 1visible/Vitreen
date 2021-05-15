@@ -316,6 +316,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         return productLiveData
     }
+    
+    fun deleteProduct(id: String, imagesPaths: ArrayList<String>): LiveData<Int> {
+        deleteImages(imagesPaths)
+
+        return request(repository.deleteProduct(id))
+    }
 
     private fun deleteProducts(ownerId: String?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()

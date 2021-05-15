@@ -43,6 +43,7 @@ class ProductFragment : VFragment(
         setMenuItemVisibile(R.id.contact_owner, false)
         setMenuItemVisibile(R.id.show_statistics, false)
         setMenuItemVisibile(R.id.report_product, false)
+        setMenuItemVisibile(R.id.delete_product, false)
 
         product = viewModel.product.value
 
@@ -56,13 +57,19 @@ class ProductFragment : VFragment(
                     if(user.id == product!!.ownerId) {
                         setMenuItemVisibile(R.id.send_message, false)
                         setMenuItemVisibile(R.id.contact_owner, false)
-                        setMenuItemVisibile(R.id.show_statistics, true)
                         setMenuItemVisibile(R.id.report_product, false)
+                        setMenuItemVisibile(R.id.delete_product, true)
+
+                        if(user.isProfessional)
+                            setMenuItemVisibile(R.id.show_statistics, true)
+                        else
+                            setMenuItemVisibile(R.id.show_statistics, false)
                     } else {
                         setMenuItemVisibile(R.id.send_message, true)
                         setMenuItemVisibile(R.id.contact_owner, true)
                         setMenuItemVisibile(R.id.show_statistics, false)
                         setMenuItemVisibile(R.id.report_product, true)
+                        setMenuItemVisibile(R.id.delete_product, false)
                     }
                 } else {
                     this.user = null
@@ -72,6 +79,7 @@ class ProductFragment : VFragment(
                     setMenuItemVisibile(R.id.contact_owner, true)
                     setMenuItemVisibile(R.id.show_statistics, false)
                     setMenuItemVisibile(R.id.report_product, false)
+                    setMenuItemVisibile(R.id.delete_product, false)
                 }
             })
 
@@ -137,15 +145,38 @@ class ProductFragment : VFragment(
             R.id.contact_owner -> contactOwner()
             R.id.show_statistics -> showStatistics()
             R.id.report_product -> reportProduct()
+            R.id.delete_product -> deleteProduct()
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private fun deleteProduct(): Boolean {
+        try {
+            viewModel.deleteProduct(product!!.id!!, product!!.imagesPaths).observeOnce(viewLifecycleOwner, { exception ->
+                if(exception != -1) {
+                    showSnackbarMessage(exception)
+                    return@observeOnce
+                }
+
+                showSnackbarMessage(R.string.product_deleted)
+                goBack()
+            })
+        } catch(_: NullPointerException) {
+            showSnackbarMessage(R.string.ProductNotDeletedException)
+        }
+
+        return true
+    }
+
     private fun showStatistics(): Boolean {
-        if(product != null)
-            navigateTo(R.id.from_product_to_statistics)
-        else
+        try {
+            if(product != null && user!!.isProfessional)
+                navigateTo(R.id.from_product_to_statistics)
+            else
+                showSnackbarMessage(R.string.NotFoundException)
+        } catch(_: NullPointerException) {
             showSnackbarMessage(R.string.NotFoundException)
+        }
 
         return true
     }
@@ -295,6 +326,13 @@ class ProductFragment : VFragment(
             textViewDimensions.visibility = VISIBLE
         } else
             textViewDimensions.visibility = GONE
+
+        if(user?.id == product.ownerId) {
+            textViewReference.text = product.id
+            textViewReference.visibility = VISIBLE
+        } else {
+            textViewReference.visibility = GONE
+        }
 
         // Show product details
         productDetails.visibility = VISIBLE

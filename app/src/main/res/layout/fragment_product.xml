@@ -123,6 +123,17 @@
             tools:ignore="UseCompatTextViewDrawableXml" />
 
         <TextView
+            android:id="@+id/textViewReference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:drawableStart="@drawable/icon_number"
+            android:drawableLeft="@drawable/icon_number"
+            android:drawablePadding="@dimen/spacing_sm"
+            android:text="@string/product_reference"
+            tools:ignore="UseCompatTextViewDrawableXml" />
+
+        <TextView
             android:id="@+id/textViewBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

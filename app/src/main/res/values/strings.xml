@@ -95,6 +95,9 @@
     <string name="show_statistics">Voir les statistiques</string>
     <string name="report_product">Signaler l\'annonce</string>
     <string name="product_reported">L\'annonce a bien été signalée !</string>
+    <string name="product_reference">Référence du produit</string>
+    <string name="delete_product">Supprimer le produit</string>
+    <string name="product_deleted">Le produit a été supprimé avec succès !</string>
     <!-- Statistics fragment -->
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>

@@ -98,6 +98,10 @@ class FirestoreRepository {
         return query
     }
 
+    fun deleteProduct(id: String): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).delete()
+    }
+
     fun signIn(email: String, password: String): Task<AuthResult> {
         return auth.signInWithEmailAndPassword(email, password)
     }

@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/add_to_favorites"
-        android:icon="@drawable/ic_icon_favorite_outline"
+        android:icon="@drawable/ic_favorite_outline"
         android:title="@string/add_to_favorites"
         app:showAsAction="ifRoom" />
 
@@ -13,14 +13,14 @@
         android:id="@+id/remove_from_favorites"
         android:title="@string/remove_from_favorites"
         android:visible="false"
-        android:icon="@drawable/ic_icon_favorite_filled"
+        android:icon="@drawable/ic_favorite_filled"
         android:iconTint="?attr/colorPrimary"
         app:showAsAction="ifRoom"
         tools:targetApi="o" />
 
     <item
         android:id="@+id/send_message"
-        android:icon="@drawable/ic_icon_message"
+        android:icon="@drawable/ic_message"
         android:title="@string/send_message"
         app:showAsAction="ifRoom" />
 
@@ -37,6 +37,11 @@
     <item
         android:id="@+id/report_product"
         android:title="@string/report_product"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_product"
+        android:title="@string/delete_product"
         app:showAsAction="never" />
 
 </menu>
