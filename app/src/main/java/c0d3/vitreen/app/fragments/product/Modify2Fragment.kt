@@ -9,13 +9,13 @@ import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
-import kotlinx.android.synthetic.main.fragment_adding2.*
+import kotlinx.android.synthetic.main.fragment_modify2.*
 
 class Modify2Fragment : VFragment(
-    layoutId = R.layout.fragment_adding2,
+    layoutId = R.layout.fragment_modify2,
     topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
-    loginNavigationId = R.id.from_adding1_to_login
+    loginNavigationId = R.id.from_modify2_to_login
 ) {
     private var product_title: String? = null
     private var product_price: String? = null

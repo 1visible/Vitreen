@@ -5,18 +5,17 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
-import kotlinx.android.synthetic.main.fragment_adding1.*
+import kotlinx.android.synthetic.main.fragment_modify1.*
 import java.util.*
 
 class Modify1Fragment : VFragment(
-    layoutId = R.layout.fragment_adding1,
+    layoutId = R.layout.fragment_modify1,
     topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
-    loginNavigationId = R.id.from_adding1_to_login
+    loginNavigationId = R.id.from_modify1_to_login
 ) {
     private var categories: List<Category>? = null
 
