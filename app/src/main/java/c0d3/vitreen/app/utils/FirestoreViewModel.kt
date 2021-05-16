@@ -94,7 +94,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     if(productsTaskCounter == products.size)
                         productsContainer.value = ProductsContainer(exception, list)
 
-                    return@addSnapshotListener
+                    return@forEach
                 }
 
                 repository.getImage(path).addOnCompleteListener { task ->

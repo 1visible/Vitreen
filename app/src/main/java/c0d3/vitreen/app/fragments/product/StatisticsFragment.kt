@@ -1,14 +1,19 @@
 package c0d3.vitreen.app.fragments.product
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.core.content.ContextCompat.getColor
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Consultation
 import c0d3.vitreen.app.models.Product
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class StatisticsFragment : VFragment(
     layoutId = R.layout.fragment_statistics,
@@ -19,7 +24,9 @@ class StatisticsFragment : VFragment(
     loginNavigationId = R.id.from_statistics_to_login
 ) {
 
-    private var product: Product? = null
+    private lateinit var dayLabels: ArrayList<String>
+    private lateinit var monthLabels: ArrayList<String>
+    private val currentDate = Calendar.getInstance()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,21 +35,36 @@ class StatisticsFragment : VFragment(
         if (!viewModel.isUserSignedIn)
             return
 
-        // Check if argument could be retrieved
-        if(product == null) {
-            showSnackbarMessage(R.string.error_placeholder)
-            goBack()
-            return
+        dayLabels = getDays()
+        monthLabels = getMonths()
+
+        var consultations: List<Consultation> = viewModel.product.consultations
+        val reports = viewModel.product.reporters.size
+
+        textViewConsultations.text = getString(R.string.total_consultations, consultations.size)
+        textViewReports.text = getString(R.string.total_reports, reports)
+
+        context?.let { context ->
+            if(reports > 0)
+                textViewReports.setTextColor(getColor(context, R.color.red))
+            else
+                textViewReports.setTextColor(getColor(context, R.color.white))
         }
 
-        initResValues()
+        consultations = consultations.filter { consultation ->
+            val consultationDate = Calendar.getInstance()
+            consultationDate.time = consultation.date
 
-        val consultations = product!!.consultations
-        val values = orderBy(Calendar.MONTH, consultations)
+            consultationDate.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR)
+        }
 
-        myChart.show(values)
+        val (perDate, perCity) = orderByWeek(consultations)
 
-        // TODO
+        chartViewTimeline.labelsFormatter = { label -> label.roundToInt().toString() }
+        chartViewCities.labelsFormatter = { label -> label.roundToInt().toString() }
+
+        chartViewTimeline.show(perDate)
+        chartViewCities.show(perCity)
     }
 
     // TODO : Faire les items
@@ -55,72 +77,83 @@ class StatisticsFragment : VFragment(
         }
     }
 
-    private fun initResValues() {
-        Res.MON.get = getString(R.string.day_monday)
-        Res.TUE.get = getString(R.string.day_tuesday)
-        Res.WED.get = getString(R.string.day_wednesday)
-        Res.THU.get = getString(R.string.day_thursday)
-        Res.FRI.get = getString(R.string.day_friday)
-        Res.SAT.get = getString(R.string.day_saturday)
-        Res.SUN.get = getString(R.string.day_sunday)
+    private fun orderByWeek(consults: List<Consultation>): Pair<ArrayList<Pair<String, Float>>, ArrayList<Pair<String, Float>>> {
+        val perDate = arrayListOf<Pair<String, Float>>()
 
-        Res.JAN.get = getString(R.string.month_january)
-        Res.FEB.get = getString(R.string.month_february)
-        Res.MAR.get = getString(R.string.month_march)
-        Res.APR.get = getString(R.string.month_april)
-        Res.MAY.get = getString(R.string.month_may)
-        Res.JUN.get = getString(R.string.month_june)
-        Res.JUL.get = getString(R.string.month_july)
-        Res.AUG.get = getString(R.string.month_august)
-        Res.SEP.get = getString(R.string.month_september)
-        Res.OCT.get = getString(R.string.month_october)
-        Res.NOV.get = getString(R.string.month_november)
-        Res.DEC.get = getString(R.string.month_december)
+        val consultations = consults.filter { consultation ->
+            val consultationDate = Calendar.getInstance()
+            consultationDate.time = consultation.date
+
+            consultationDate.get(Calendar.WEEK_OF_YEAR) == currentDate.get(Calendar.WEEK_OF_YEAR)
+        }
+
+        for(day in 6 downTo 0) {
+            val dayLabel = dayLabels[day]
+            val dayDate = if(day == 6) 1 else day+2
+
+            val consultationsSize = consultations.filter { consultation ->
+                val consultationDate = Calendar.getInstance()
+                consultationDate.time = consultation.date
+
+                consultationDate.get(Calendar.DAY_OF_WEEK) == dayDate
+            }.size.toFloat()
+
+            perDate.add(dayLabel to consultationsSize)
+        }
+
+        return perDate to orderByCity(consultations)
     }
 
-    private fun orderBy(order: Int, consultations: List<Consultation>): ArrayList<Pair<String, Float>> {
-        var values = ArrayList<Pair<String, Float>>()
+    private fun orderByCity(consultations: List<Consultation>): ArrayList<Pair<String, Float>> {
+        val perCity = arrayListOf<Pair<String, Float>>()
+        val cities = arrayListOf<String>()
 
-        if(order == Calendar.MONTH)
-            values = arrayListOf(
-                Res.DEC.get to filter(consultations, order, Calendar.DECEMBER),
-                Res.NOV.get to filter(consultations, order, Calendar.NOVEMBER),
-                Res.OCT.get to filter(consultations, order, Calendar.OCTOBER),
-                Res.SEP.get to filter(consultations, order, Calendar.SEPTEMBER),
-                Res.AUG.get to filter(consultations, order, Calendar.AUGUST),
-                Res.JUL.get to filter(consultations, order, Calendar.JULY),
-                Res.JUN.get to filter(consultations, order, Calendar.JUNE),
-                Res.MAY.get to filter(consultations, order, Calendar.MAY),
-                Res.APR.get to filter(consultations, order, Calendar.APRIL),
-                Res.MAR.get to filter(consultations, order, Calendar.MARCH),
-                Res.FEB.get to filter(consultations, order, Calendar.FEBRUARY),
-                Res.JAN.get to filter(consultations, order, Calendar.JANUARY),
-            )
-        else if(order == Calendar.DAY_OF_WEEK)
-            values = arrayListOf(
-                Res.MON.get to filter(consultations, order, Calendar.MONDAY),
-                Res.TUE.get to filter(consultations, order, Calendar.TUESDAY),
-                Res.WED.get to filter(consultations, order, Calendar.WEDNESDAY),
-                Res.THU.get to filter(consultations, order, Calendar.THURSDAY),
-                Res.FRI.get to filter(consultations, order, Calendar.FRIDAY),
-                Res.SAT.get to filter(consultations, order, Calendar.SATURDAY),
-                Res.SUN.get to filter(consultations, order, Calendar.SUNDAY)
-            )
+        cities.addAll(consultations.map { consultation -> consultation.city }.distinct())
 
-        return values
+        if(!cities.contains(""))
+            cities.add("")
+
+        cities.forEach { city ->
+            val cityLabel = if(city.isBlank()) getString(R.string.other_label) else city
+            val consultationsSize = consultations.filter { consultation ->
+                consultation.city == city
+            }.size.toFloat()
+
+            perCity.add(cityLabel to consultationsSize)
+        }
+
+        perCity.sortBy { pair -> pair.second }
+
+        return perCity
     }
 
-    fun filter(consultations: List<Consultation>, order: Int, value: Int): Float {
-        return consultations.filter { consultation ->
-            val date = Calendar.getInstance()
-            date.time = consultation.date
-            date.get(order) == value
-        }.size.toFloat()
+    private fun getMonths(): ArrayList<String> {
+        return arrayListOf(
+            getString(R.string.month_january),
+            getString(R.string.month_february),
+            getString(R.string.month_march),
+            getString(R.string.month_april),
+            getString(R.string.month_may),
+            getString(R.string.month_june),
+            getString(R.string.month_july),
+            getString(R.string.month_august),
+            getString(R.string.month_september),
+            getString(R.string.month_october),
+            getString(R.string.month_november),
+            getString(R.string.month_december)
+        )
     }
 
-    enum class Res(var get: String = "") {
-        JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC,
-        MON, TUE, WED, THU, FRI, SAT, SUN
+    private fun getDays(): ArrayList<String> {
+        return arrayListOf(
+            getString(R.string.day_monday),
+            getString(R.string.day_tuesday),
+            getString(R.string.day_wednesday),
+            getString(R.string.day_thursday),
+            getString(R.string.day_friday),
+            getString(R.string.day_saturday),
+            getString(R.string.day_sunday)
+        )
     }
 
 }

@@ -1,25 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
+    android:id="@+id/statisticsDetails"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.product.StatisticsFragment">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".fragments.product.StatisticsFragment" >
 
-    <!-- Consultations chart -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:text="@string/general_informations"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewConsultations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/total_consultations" />
+
+    <TextView
+        android:id="@+id/textViewReports"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:text="@string/total_reports" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_md"
+        android:text="@string/product_statistics"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewChartTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/sorted_by_day" />
+
+    <!-- Consultations timeline chart -->
     <com.db.williamchart.view.HorizontalBarChartView
-        android:id="@+id/myChart"
+        android:id="@+id/chartViewTimeline"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        app:chart_labelsColor="?attr/colorOnBackground"
-        app:chart_labelsSize="10dp"
-        app:chart_barsColor="?attr/colorOnBackground"
+        android:layout_marginBottom="@dimen/spacing_md"
         app:chart_barsBackgroundColor="@color/white_4dp"
+        app:chart_barsColor="?attr/colorOnBackground"
         app:chart_barsRadius="@dimen/spacing_sm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:chart_labelsColor="?attr/colorOnBackground"
+        app:chart_labelsSize="@dimen/spacing_sm" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/sorted_by_city" />
+
+    <!-- Consultations cities chart -->
+    <com.db.williamchart.view.HorizontalBarChartView
+        android:id="@+id/chartViewCities"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:chart_barsBackgroundColor="@color/white_4dp"
+        app:chart_barsColor="?attr/colorOnBackground"
+        app:chart_barsRadius="@dimen/spacing_sm"
+        app:chart_labelsColor="?attr/colorOnBackground"
+        app:chart_labelsSize="@dimen/spacing_sm" />
+
+</LinearLayout>

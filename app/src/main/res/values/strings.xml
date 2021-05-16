@@ -100,6 +100,13 @@
     <string name="delete_product">Supprimer le produit</string>
     <string name="product_deleted">Le produit a été supprimé avec succès !</string>
     <!-- Statistics fragment -->
+    <string name="general_informations">Informations générales</string>
+    <string name="product_statistics">Statistiques du produit</string>
+    <string name="total_consultations">Votre annonce a été visitée %1$d fois au total.</string>
+    <string name="total_reports">Votre annonce a été signalée %1$d fois au total.</string>
+    <string name="sorted_by_day">Consultations triées par jour</string>
+    <string name="sorted_by_month">Consultations triées par mois</string>
+    <string name="sorted_by_city">Consultations triées par ville</string>
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>
     <string name="day_wednesday">MER</string>
@@ -122,6 +129,7 @@
     <string name="this_week">Cette semaine</string>
     <string name="this_month">Ce mois</string>
     <string name="this_year">Cette année</string>
+    <string name="other_label">Autre</string>
     <!-- Discussion fragment -->
     <string name="about_product">À propos de %1$s</string>
     <!-- TODO : Enlever les strings inutiles -->
@@ -134,7 +142,7 @@
     <string name="research">Entrez votre Recherche...</string>
     <string name="research_max_price">Prix Max...</string>
     <string name="buttonResearch">Rechercher</string>
-    <string name="researchSelectCountry">Sélectionnez une Ville</string>
+    <string name="researchSelectCity">Sélectionnez une Ville</string>
     <string name="sendMessage">Envoyer un message</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

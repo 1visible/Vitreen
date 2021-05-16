@@ -5,5 +5,5 @@ import java.util.*
 
 data class Consultation(
     var date: Date = Calendar.getInstance().time,
-    var city: String? = null,
+    var city: String = "",
 ): Serializable
