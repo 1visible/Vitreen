@@ -30,9 +30,11 @@
     <include
         layout="@layout/search_section"
         android:visibility="gone"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent" />
 
     <!-- Loading spinner -->
     <include

@@ -12,11 +12,6 @@
             app:showAsAction="never" />
 
         <item
-            android:id="@+id/this_month"
-            android:title="@string/this_month"
-            app:showAsAction="never" />
-
-        <item
             android:id="@+id/this_year"
             android:title="@string/this_year"
             app:showAsAction="never" />

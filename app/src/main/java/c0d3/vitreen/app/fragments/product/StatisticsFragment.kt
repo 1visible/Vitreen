@@ -4,15 +4,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Consultation
-import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class StatisticsFragment : VFragment(
@@ -24,6 +25,7 @@ class StatisticsFragment : VFragment(
     loginNavigationId = R.id.from_statistics_to_login
 ) {
 
+    private lateinit var consultations: List<Consultation>
     private lateinit var dayLabels: ArrayList<String>
     private lateinit var monthLabels: ArrayList<String>
     private val currentDate = Calendar.getInstance()
@@ -38,7 +40,7 @@ class StatisticsFragment : VFragment(
         dayLabels = getDays()
         monthLabels = getMonths()
 
-        var consultations: List<Consultation> = viewModel.product.consultations
+        consultations = viewModel.product.consultations
         val reports = viewModel.product.reporters.size
 
         textViewConsultations.text = getString(R.string.total_consultations, consultations.size)
@@ -58,47 +60,97 @@ class StatisticsFragment : VFragment(
             consultationDate.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR)
         }
 
-        val (perDate, perCity) = orderByWeek(consultations)
-
         chartViewTimeline.labelsFormatter = { label -> label.roundToInt().toString() }
         chartViewCities.labelsFormatter = { label -> label.roundToInt().toString() }
 
-        chartViewTimeline.show(perDate)
-        chartViewCities.show(perCity)
+        orderBy(true)
     }
 
-    // TODO : Faire les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.this_week -> true
-            R.id.this_month -> true
-            R.id.this_year -> true
+            R.id.this_week -> { item.isChecked = true; orderBy(true) }
+            R.id.this_year -> { item.isChecked = true; orderBy(false) }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun orderByWeek(consults: List<Consultation>): Pair<ArrayList<Pair<String, Float>>, ArrayList<Pair<String, Float>>> {
+    private fun orderBy(week: Boolean): Boolean {
+        val scale = resources.displayMetrics.density
+        val timelineParams: ViewGroup.LayoutParams = chartViewTimeline.layoutParams
+        val citiesParams: ViewGroup.LayoutParams = chartViewCities.layoutParams
+        val (perDate, perCity) = if(week) orderByWeek() else orderByYear()
+
+        if(perDate.isEmpty()) {
+            chartViewTimeline.visibility = GONE
+            textViewEmptyTimeline.visibility = VISIBLE
+        } else {
+            textViewEmptyTimeline.visibility = GONE
+            chartViewTimeline.visibility = VISIBLE
+
+            timelineParams.height = ((24 * perDate.size + 12) * scale + 0.5f).toInt()
+            chartViewTimeline.layoutParams = timelineParams
+            chartViewTimeline.show(perDate)
+        }
+
+        if(perCity.isEmpty()) {
+            chartViewCities.visibility = GONE
+            textViewEmptyCities.visibility = VISIBLE
+        } else {
+            textViewEmptyCities.visibility = GONE
+            chartViewCities.visibility = VISIBLE
+
+            citiesParams.height = ((24 * perCity.size + 12) * scale + 0.5f).toInt()
+            chartViewCities.layoutParams = citiesParams
+            chartViewCities.show(perCity)
+        }
+
+         return true
+    }
+
+    private fun orderByWeek(): Pair<ArrayList<Pair<String, Float>>, ArrayList<Pair<String, Float>>> {
         val perDate = arrayListOf<Pair<String, Float>>()
 
-        val consultations = consults.filter { consultation ->
+        val consultations = consultations.filter { consultation ->
             val consultationDate = Calendar.getInstance()
             consultationDate.time = consultation.date
 
             consultationDate.get(Calendar.WEEK_OF_YEAR) == currentDate.get(Calendar.WEEK_OF_YEAR)
         }
 
-        for(day in 6 downTo 0) {
-            val dayLabel = dayLabels[day]
-            val dayDate = if(day == 6) 1 else day+2
+        for(number in 6 downTo 0) {
+            val label = dayLabels[number]
+            val date = if(number == 6) 1 else number+2
 
             val consultationsSize = consultations.filter { consultation ->
                 val consultationDate = Calendar.getInstance()
                 consultationDate.time = consultation.date
 
-                consultationDate.get(Calendar.DAY_OF_WEEK) == dayDate
+                consultationDate.get(Calendar.DAY_OF_WEEK) == date
             }.size.toFloat()
 
-            perDate.add(dayLabel to consultationsSize)
+            perDate.add(label to consultationsSize)
+        }
+
+        return perDate to orderByCity(consultations)
+    }
+
+    private fun orderByYear(): Pair<ArrayList<Pair<String, Float>>, ArrayList<Pair<String, Float>>> {
+        val perDate = arrayListOf<Pair<String, Float>>()
+
+        val consultations = arrayListOf<Consultation>()
+        consultations.addAll(this.consultations)
+
+        for(number in 11 downTo 0) {
+            val label = monthLabels[number]
+
+            val consultationsSize = consultations.filter { consultation ->
+                val consultationDate = Calendar.getInstance()
+                consultationDate.time = consultation.date
+
+                consultationDate.get(Calendar.MONTH) == number
+            }.size.toFloat()
+
+            perDate.add(label to consultationsSize)
         }
 
         return perDate to orderByCity(consultations)

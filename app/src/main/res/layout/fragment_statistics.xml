@@ -47,24 +47,31 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="@dimen/spacing_sm"
-        android:text="@string/sorted_by_day" />
+        android:text="@string/sorted_by_time" />
 
     <!-- Consultations timeline chart -->
     <com.db.williamchart.view.HorizontalBarChartView
         android:id="@+id/chartViewTimeline"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="@dimen/spacing_md"
+        android:layout_height="100dp"
         app:chart_barsBackgroundColor="@color/white_4dp"
         app:chart_barsColor="?attr/colorOnBackground"
         app:chart_barsRadius="@dimen/spacing_sm"
         app:chart_labelsColor="?attr/colorOnBackground"
-        app:chart_labelsSize="@dimen/spacing_sm" />
+        app:chart_labelsSize="12sp" />
+
+    <TextView
+        android:id="@+id/textViewEmptyTimeline"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_enough_data" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_md"
         android:layout_marginBottom="@dimen/spacing_sm"
         android:text="@string/sorted_by_city" />
 
@@ -72,11 +79,18 @@
     <com.db.williamchart.view.HorizontalBarChartView
         android:id="@+id/chartViewCities"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="100dp"
         app:chart_barsBackgroundColor="@color/white_4dp"
         app:chart_barsColor="?attr/colorOnBackground"
         app:chart_barsRadius="@dimen/spacing_sm"
         app:chart_labelsColor="?attr/colorOnBackground"
-        app:chart_labelsSize="@dimen/spacing_sm" />
+        app:chart_labelsSize="12sp" />
+
+    <TextView
+        android:id="@+id/textViewEmptyCities"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_enough_data" />
 
 </LinearLayout>

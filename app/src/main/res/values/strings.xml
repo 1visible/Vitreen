@@ -103,10 +103,10 @@
     <string name="general_informations">Informations générales</string>
     <string name="product_statistics">Statistiques du produit</string>
     <string name="total_consultations">Votre annonce a été visitée %1$d fois au total.</string>
-    <string name="total_reports">Votre annonce a été signalée %1$d fois au total.</string>
-    <string name="sorted_by_day">Consultations triées par jour</string>
-    <string name="sorted_by_month">Consultations triées par mois</string>
-    <string name="sorted_by_city">Consultations triées par ville</string>
+    <string name="total_reports">Votre annonce a été signalée %1$d fois.</string>
+    <string name="sorted_by_time">Consultations par temporalité</string>
+    <string name="sorted_by_city">Consultations par zone géographique</string>
+    <string name="not_enough_data">Il n\'y a pas assez de données pour le moment.</string>
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>
     <string name="day_wednesday">MER</string>
@@ -126,9 +126,8 @@
     <string name="month_october">OCT</string>
     <string name="month_november">NOV</string>
     <string name="month_december">DÉC</string>
-    <string name="this_week">Cette semaine</string>
-    <string name="this_month">Ce mois</string>
-    <string name="this_year">Cette année</string>
+    <string name="this_week">Données hebdomadaires</string>
+    <string name="this_year">Données annuelles</string>
     <string name="other_label">Autre</string>
     <!-- Discussion fragment -->
     <string name="about_product">À propos de %1$s</string>
