@@ -47,8 +47,6 @@ class ProductFragment : VFragment(
         setMenuItemVisibile(R.id.report_product, false)
         setMenuItemVisibile(R.id.delete_product, false)
 
-        product = viewModel.product.value
-
         try {
             viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
                 if(exception == -1) {
@@ -89,16 +87,20 @@ class ProductFragment : VFragment(
                 this.discussions = if (exception == -1) discussions else null
             })
 
-            viewModel.getProductImages(product!!.imagesPaths).observeOnce(viewLifecycleOwner, { images ->
+            viewModel.getProduct().observeOnce(viewLifecycleOwner, { (exception, product, images) ->
+                this.product = product
                 // When the call finishes, hide loading spinner
                 loadingSpinner.visibility = GONE
+
+                if(exception != -1)
+                    showSnackbarMessage(exception)
 
                 val city = viewModel.user.value?.second?.location?.city
                 val consultation = Consultation(city = city)
 
-                product?.id?.let { id -> viewModel.addConsultation(id, consultation) }
+                product.id?.let { id -> viewModel.addConsultation(id, consultation) }
 
-                fillProductDetails(product!!)
+                fillProductDetails(product)
 
                 // Check if there are loaded images
                 if(images.isEmpty())

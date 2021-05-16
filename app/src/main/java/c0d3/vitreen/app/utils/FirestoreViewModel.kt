@@ -16,30 +16,22 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.HashMap
 
 class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
 
     var isUserSignedIn: Boolean = false
-    val productsImage: MutableLiveData<HashMap<String, Bitmap>> = state.getLiveData("productsImage")
-    val product: MutableLiveData<Product> = state.getLiveData("product")
+    private var product: Product = Product()
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
-    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
-    val products: MutableLiveData<Pair<Int, List<Product>>> = state.getLiveData("products")
+    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions") // TODO changer en Transformations sur user
 
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
     init {
         getCategories()
         getLocations()
-    }
-
-    fun select(product: Product) {
-        this.product.value = product
-        getProductImages(product.imagesPaths)
     }
 
     fun getMenu(): MutableLiveData<Menu> {
@@ -74,26 +66,59 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         category: Category? = null,
         ownerId: String? = null,
         ids: ArrayList<String>? = null
-    ) {
+    ): MutableLiveData<ProductsContainer> {
+        val productsContainer = MutableLiveData<ProductsContainer>()
         val query = repository.getProducts(limit, title, priceMin, priceMax, brand, location, category, ownerId, ids)
 
         query.addSnapshotListener { value, error ->
-            val exception = if (error == null) -1 else R.string.NetworkException
-            val images = hashMapOf<String, String?>()
+            var exception = if (error == null) -1 else R.string.NetworkException
+            val list = arrayListOf<Pair<Product, Bitmap?>>()
             var products = toObjects(value, Product::class.java)
+            var productsTaskCounter = 0
 
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
-            products.forEach { product ->
-                product.id?.let { id -> images[id] = product.imagesPaths.firstOrNull() }
+            if(products.isEmpty()) {
+                productsContainer.value = ProductsContainer(exception, list)
+                return@addSnapshotListener
             }
 
-            getProductsImage(images)
+            products.forEach { product ->
+                val path = product.imagesPaths.firstOrNull()
+
+                if(path == null) {
+                    list.add(product to null)
+                    productsTaskCounter++
+
+                    if(productsTaskCounter == products.size)
+                        productsContainer.value = ProductsContainer(exception, list)
+
+                    return@addSnapshotListener
+                }
+
+                repository.getImage(path).addOnCompleteListener { task ->
+                    val bytes = task.result
+                    var bitmap: Bitmap? = null
+
+                    if(!task.isSuccessful || bytes == null) {
+                        if(exception == -1)
+                            exception = R.string.ImageNotFoundException
+                    } else
+                        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+                    list.add(product to bitmap)
+
+                    productsTaskCounter++
+
+                    if (productsTaskCounter == products.size)
+                        productsContainer.value = ProductsContainer(exception, list)
+                }
+            }
 
             error?.message?.let { Log.i(VTAG, it) }
-
-            this.products.value = exception to products
         }
+
+        return productsContainer
     }
 
     fun signIn(email: String, password: String): LiveData<Int> {
@@ -168,21 +193,25 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    fun getProductImages(imagesPaths: ArrayList<String>): MutableLiveData<ArrayList<Bitmap>> {
-        val productImages = MutableLiveData<ArrayList<Bitmap>>()
+    fun getProduct(): LiveData<ProductContainer> {
+        val imagesPaths = product.imagesPaths
+        val productContainer = MutableLiveData<ProductContainer>()
         val images = arrayListOf<Bitmap>()
+        var exception = -1
         var imagesTaskCounter = 0
 
         if(imagesPaths.isEmpty()) {
-            productImages.value = images
-            return productImages
+            productContainer.value = ProductContainer(exception, product, images)
+            return productContainer
         }
 
         imagesPaths.forEach { path ->
             repository.getImage(path).addOnCompleteListener { task ->
                 val bytes = task.result
 
-                if(task.isSuccessful && bytes != null) {
+                if(!task.isSuccessful || bytes == null)
+                    exception = R.string.ImageNotFoundException
+                else {
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     images.add(bitmap)
                 }
@@ -190,51 +219,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                 imagesTaskCounter++
 
                 if (imagesTaskCounter == imagesPaths.size)
-                    productImages.value = images
+                    productContainer.value = ProductContainer(exception, product, images)
             }
         }
 
-        return productImages
-    }
-
-    fun getProductsImage(products: HashMap<String, String?>): MutableLiveData<HashMap<String, Bitmap>> {
-        val images = hashMapOf<String, Bitmap>()
-        var productsTaskCounter = 0
-
-        if(products.isEmpty()) {
-            productsImage.value = images
-            return productsImage
-        }
-
-        products.forEach { product ->
-            val id = product.key
-            val path = product.value
-
-            if(path == null) {
-                productsTaskCounter++
-
-                if (productsTaskCounter == products.size)
-                    productsImage.value = images
-
-                return@forEach
-            }
-
-            repository.getImage(path).addOnCompleteListener { task ->
-                val bytes = task.result
-
-                if(task.isSuccessful && bytes != null) {
-                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    images[id] = bitmap
-                }
-
-                productsTaskCounter++
-
-                if (productsTaskCounter == products.size)
-                    productsImage.value = images
-            }
-        }
-
-        return productsImage
+        return productContainer
     }
 
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
@@ -488,4 +477,22 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         return value
     }
+}
+
+class ProductContainer(
+    val exception: Int,
+    val product: Product,
+    val images: ArrayList<Bitmap>
+) {
+    operator fun component1(): Int { return exception }
+    operator fun component2(): Product { return product }
+    operator fun component3(): ArrayList<Bitmap> { return images }
+}
+
+class ProductsContainer(
+    val exception: Int,
+    val products: List<Pair<Product, Bitmap?>>
+) {
+    operator fun component1(): Int { return exception }
+    operator fun component2(): List<Pair<Product, Bitmap?>> { return products }
 }
