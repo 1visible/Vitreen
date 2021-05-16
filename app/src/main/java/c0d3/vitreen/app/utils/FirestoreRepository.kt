@@ -144,6 +144,10 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
+    fun updateUserLocation(id: String, zipCode: Long): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(id).update("location.zipCode", zipCode)
+    }
+
     fun addConsultation(productId: String, consultation: Consultation): Task<Void> {
         return db.collection(PRODUCTS_COLLECTION).document(productId).update("consultations", FieldValue.arrayUnion(consultation))
     }

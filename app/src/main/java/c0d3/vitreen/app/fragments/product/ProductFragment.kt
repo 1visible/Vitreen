@@ -3,7 +3,6 @@ package c0d3.vitreen.app.fragments.product
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -12,7 +11,6 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -33,6 +31,7 @@ class ProductFragment : VFragment(
     private var user: User? = null
     private var discussions: List<Discussion>? = null
     private var imageIndex = 0
+    private var hasConsulted = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,12 +56,19 @@ class ProductFragment : VFragment(
             viewModel.getProduct().observeOnce(viewLifecycleOwner, { (exception, product, images) ->
                 this.product = product
 
-                // TODO : Tout faire à l'intérieur de cet observer
+                if(exception != -1)
+                    showSnackbarMessage(exception)
+
                 viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+                    // When the call finishes, hide loading spinner
+                    loadingSpinner.visibility = GONE
+
+                    fillProductDetails(product)
+
                     if(exception == -1) {
                         this.user = user
 
-                        setFavoriteItemVisibility()
+                        setFavoriteItemVisibility(user, product)
 
                         if(user.id == product.ownerId) {
                             setMenuItemVisibile(R.id.send_message, false)
@@ -91,20 +97,18 @@ class ProductFragment : VFragment(
                         setMenuItemVisibile(R.id.report_product, false)
                         setMenuItemVisibile(R.id.delete_product, false)
                     }
-                })
 
-                // When the call finishes, hide loading spinner
-                loadingSpinner.visibility = GONE
+                    if (!hasConsulted) {
+                        hasConsulted = true
+                        val city = user.location.city
+                        val consultation = Consultation(city = city)
+
+                        product.id?.let { id -> viewModel.addConsultation(id, consultation) }
+                    }
+                })
 
                 if(exception != -1)
                     showSnackbarMessage(exception)
-
-                val city = viewModel.user.value?.second?.location?.city
-                val consultation = Consultation(city = city)
-
-                product.id?.let { id -> viewModel.addConsultation(id, consultation) }
-
-                fillProductDetails(product)
 
                 // Check if there are loaded images
                 if(images.isEmpty())
@@ -347,13 +351,19 @@ class ProductFragment : VFragment(
         productDetails.visibility = VISIBLE
     }
 
-    private fun setFavoriteItemVisibility() {
-        if (user!!.favoritesIds.contains(product!!.id!!)) {
-            setMenuItemVisibile(R.id.add_to_favorites, false)
-            setMenuItemVisibile(R.id.remove_from_favorites, true)
-        } else {
+    private fun setFavoriteItemVisibility(user: User, product: Product) {
+        try {
+            if (user.favoritesIds.contains(product.id!!)) {
+                setMenuItemVisibile(R.id.add_to_favorites, false)
+                setMenuItemVisibile(R.id.remove_from_favorites, true)
+            } else {
+                setMenuItemVisibile(R.id.remove_from_favorites, false)
+                setMenuItemVisibile(R.id.add_to_favorites, true)
+            }
+        } catch(_: NullPointerException) {
             setMenuItemVisibile(R.id.remove_from_favorites, false)
-            setMenuItemVisibile(R.id.add_to_favorites, true)
+            setMenuItemVisibile(R.id.add_to_favorites, false)
+            showSnackbarMessage(R.string.error_placeholder)
         }
     }
 

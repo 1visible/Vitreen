@@ -13,6 +13,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.InputStream
 import java.util.*
@@ -128,14 +129,25 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private fun getUser(email: String): LiveData<Pair<Int, User>> {
         repository.getUser(email).addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.NetworkException
-            var userData = User()
+            var user = User()
 
             if (value != null && !value.isEmpty) {
-                userData = toObject(value.first(), User::class.java)
+                val document: QueryDocumentSnapshot = value.first()
+                user = toObject(document, User::class.java)
+
+                if(user.location.zipCode == null)
+                    locations.value?.second?.let { locations ->
+                        val location = locations.firstOrNull { loc -> loc.city == user.location.city }
+
+                        location?.zipCode?.let { zipCode ->
+                            user.location.zipCode = zipCode
+                            repository.updateUserLocation(document.id, zipCode)
+                        }
+                    }
             } else if(exception == -1)
                 exception = R.string.NotFoundException
 
-            user.value = exception to userData
+            this.user.value = exception to user
         }
 
         return user
