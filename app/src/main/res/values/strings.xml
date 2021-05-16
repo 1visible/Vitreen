@@ -24,8 +24,11 @@
     <string name="label_adding2">Ajouter une annonce (2/2)</string>
     <string name="label_favorites">Mes favoris</string>
     <string name="label_profile">Mon profil</string>
-    <string name="label_register">Inscription</string>
+    <string name="label_register1">Inscription</string>
+    <string name="label_register2">Inscription</string>
+    <string name="label_statistics">Statistiques</string>
     <string name="label_login">Connexion</string>
+    <string name="label_search">Recherche</string>
     <string name="label_product">Détail du produit</string>
     <!-- Menu title -->
     <string name="title_home">Accueil</string>

@@ -23,6 +23,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
     var isUserSignedIn: Boolean = false
     var product: Product = Product()
+    var searchQuery: SearchQuery = SearchQuery()
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
@@ -57,19 +58,9 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
-    fun getProducts(
-        limit: Boolean,
-        title: String? = null,
-        priceMin: Double? = null,
-        priceMax: Double? = null,
-        brand: String? = null,
-        location: Location? = null,
-        category: Category? = null,
-        ownerId: String? = null,
-        ids: ArrayList<String>? = null
-    ): MutableLiveData<ProductsContainer> {
+    fun getProducts(search: SearchQuery): MutableLiveData<ProductsContainer> {
         val productsContainer = MutableLiveData<ProductsContainer>()
-        val query = repository.getProducts(limit, title, priceMin, priceMax, brand, location, category, ownerId, ids)
+        val query = repository.getProducts(search)
 
         query.addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.NetworkException
@@ -336,7 +327,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             return exceptionLiveData
         }
 
-        repository.getProducts(limit = false, ownerId = ownerId).get().addOnCompleteListener { task ->
+        repository.getProducts(SearchQuery(ownerId = ownerId)).get().addOnCompleteListener { task ->
             var exception = if (task.isSuccessful) -1 else R.string.ProductNotDeletedException
             val products = task.result
 

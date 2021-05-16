@@ -14,6 +14,9 @@
         <action
             android:id="@+id/from_home_to_product"
             app:destination="@id/navigation_product" />
+        <action
+            android:id="@+id/from_home_to_search"
+            app:destination="@id/navigation_search" />
     </fragment>
 
     <fragment
@@ -82,7 +85,7 @@
     <fragment
         android:id="@+id/navigation_statistics"
         android:name="c0d3.vitreen.app.fragments.product.StatisticsFragment"
-        android:label="@string/label_product"
+        android:label="@string/label_statistics"
         tools:layout="@layout/fragment_statistics">
         <action
             android:id="@+id/from_statistics_to_login"
@@ -90,9 +93,16 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_search"
+        android:name="c0d3.vitreen.app.fragments.home.SearchFragment"
+        android:label="@string/label_search"
+        tools:layout="@layout/fragment_search">
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_register1"
         android:name="c0d3.vitreen.app.fragments.auth.Register1Fragment"
-        android:label="@string/label_register"
+        android:label="@string/label_register1"
         tools:layout="@layout/fragment_register1">
         <action
             android:id="@+id/from_register1_to_register2"
@@ -108,7 +118,7 @@
     <fragment
         android:id="@+id/navigation_register2"
         android:name="c0d3.vitreen.app.fragments.auth.Register2Fragment"
-        android:label="@string/label_register"
+        android:label="@string/label_register2"
         tools:layout="@layout/fragment_register2">
         <argument
             android:name="email"

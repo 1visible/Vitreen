@@ -11,6 +11,7 @@ import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
+import c0d3.vitreen.app.utils.SearchQuery
 import c0d3.vitreen.app.utils.VFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.empty_view.*
@@ -57,7 +58,7 @@ class ProfileFragment : VFragment(
             fillProfile(user)
 
             try {
-                viewModel.getProducts(limit = false, ownerId = user.id!!).observe(viewLifecycleOwner, observe1@ { (exception, products) ->
+                viewModel.getProducts(SearchQuery(ownerId = user.id!!)).observe(viewLifecycleOwner, observe1@ { (exception, products) ->
                     // When the call finishes, hide loading spinner
                     loadingSpinner.visibility = GONE
 

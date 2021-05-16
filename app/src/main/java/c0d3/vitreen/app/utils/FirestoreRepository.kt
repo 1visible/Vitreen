@@ -20,24 +20,14 @@ import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FirestoreRepository {
     private val db = Firebase.firestore
     private val auth: FirebaseAuth = Firebase.auth
     private val storage = Firebase.storage
 
-    fun getProducts(
-        limit: Boolean,
-        title: String? = null,
-        priceMin: Double? = null,
-        priceMax: Double? = null,
-        brand: String? = null,
-        location: Location? = null,
-        category: Category? = null,
-        ownerId: String? = null,
-        ids: ArrayList<String>? = null
-    ): Query {
+    fun getProducts(search: SearchQuery): Query {
+        val (title, priceMin, priceMax, brand, location, category, ownerId, ids) = search
         var query: Query = db.collection(PRODUCTS_COLLECTION)
         var orderByDate = true
 
@@ -54,7 +44,7 @@ class FirestoreRepository {
 
         if (location != null) {
             query = query.whereEqualTo("location", location)
-            orderByDate = true
+            orderByDate = false
         }
 
         if (category != null) {
@@ -88,9 +78,7 @@ class FirestoreRepository {
 
         if (orderByDate)
             query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
-
-        if (limit)
-            query = query.limit(DOCUMENTS_LIMIT)
+                .limit(DOCUMENTS_LIMIT)
 
         return query
     }
