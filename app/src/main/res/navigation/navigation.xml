@@ -155,4 +155,20 @@
             app:destination="@id/navigation_discussions" />
     </fragment>
 
+    <fragment
+        android:id="@+id/navigation_modify1"
+        android:name="c0d3.vitreen.app.fragments.product.ModifyProductFragment1"
+        android:label="@string/label_modify1"
+        tools:layout="@layout/fragment_adding1">
+        <action
+            android:id="@+id/from_modify1_to_modify2"
+            app:destination="@id/navigation_modify2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_modify2"
+        android:name="c0d3.vitreen.app.fragments.product.ModifyProductFragment2"
+        android:label="@string/label_modify2"
+        tools:layout="@layout/fragment_adding2" />
+
 </navigation>
