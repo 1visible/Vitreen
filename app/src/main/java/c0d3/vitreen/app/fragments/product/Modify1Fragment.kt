@@ -12,7 +12,7 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import java.util.*
 
-class ModifyProductFragment1 : VFragment(
+class Modify1Fragment : VFragment(
     layoutId = R.layout.fragment_adding1,
     topIcon = R.drawable.bigicon_adding,
     requireAuth = true,

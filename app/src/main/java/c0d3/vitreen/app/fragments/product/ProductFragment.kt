@@ -208,6 +208,11 @@ class ProductFragment : VFragment(
         }
 
         try {
+            if(product!!.reporters.contains(user!!.id!!)) {
+                showSnackbarMessage(R.string.already_reported)
+                return true
+            }
+
             viewModel.reportProduct(product!!.id!!, user!!.id!!)
                 .observeOnce(viewLifecycleOwner, { exception ->
                     // If the call failed: show error message

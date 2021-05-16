@@ -170,7 +170,7 @@
 
     <fragment
         android:id="@+id/navigation_modify1"
-        android:name="c0d3.vitreen.app.fragments.product.ModifyProductFragment1"
+        android:name="c0d3.vitreen.app.fragments.product.Modify1Fragment"
         android:label="@string/label_modify1"
         tools:layout="@layout/fragment_adding1">
         <action
@@ -180,7 +180,7 @@
 
     <fragment
         android:id="@+id/navigation_modify2"
-        android:name="c0d3.vitreen.app.fragments.product.ModifyProductFragment2"
+        android:name="c0d3.vitreen.app.fragments.product.Modify2Fragment"
         android:label="@string/label_modify2"
         tools:layout="@layout/fragment_adding2">
         <action
