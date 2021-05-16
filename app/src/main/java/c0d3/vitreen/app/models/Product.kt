@@ -17,4 +17,8 @@ data class Product(
     var imagesPaths: ArrayList<String> = ArrayList(),
     val ownerId: String = "",
     val modifiedAt: Date = Calendar.getInstance().time
-) : Entity(), Serializable
+) : Entity(), Serializable{
+    override fun toString(): String {
+        return "${title},${description},${price.toString()},${size},${location.city},${category.name}"
+    }
+}

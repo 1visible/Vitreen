@@ -153,6 +153,9 @@
         <action
             android:id="@+id/from_product_to_messages"
             app:destination="@id/navigation_discussions" />
+        <action
+            android:id="@+id/from_product_to_modify1"
+            app:destination="@id/navigation_modify1" />
     </fragment>
 
     <fragment

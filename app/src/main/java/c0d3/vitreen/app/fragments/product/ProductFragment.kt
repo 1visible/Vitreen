@@ -56,7 +56,7 @@ class ProductFragment : VFragment(
             viewModel.getProduct().observeOnce(viewLifecycleOwner, { (exception, product, images) ->
                 this.product = product
 
-                if(exception != -1)
+                if (exception != -1)
                     showSnackbarMessage(exception)
 
                 viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
@@ -65,18 +65,22 @@ class ProductFragment : VFragment(
 
                     fillProductDetails(product)
 
-                    if(exception == -1) {
+                    if (exception == -1) {
                         this.user = user
 
                         setFavoriteItemVisibility(user, product)
 
-                        if(user.id == product.ownerId) {
+                        if (user.id == product.ownerId) {
                             setMenuItemVisibile(R.id.send_message, false)
                             setMenuItemVisibile(R.id.contact_owner, false)
                             setMenuItemVisibile(R.id.report_product, false)
                             setMenuItemVisibile(R.id.delete_product, true)
-
-                            if(user.isProfessional)
+                            buttonModify.visibility = View.VISIBLE
+                            buttonModify.setOnClickListener {
+                                viewModel.product = product
+                                navigateTo(R.id.from_product_to_modify1)
+                            }
+                            if (user.isProfessional)
                                 setMenuItemVisibile(R.id.show_statistics, true)
                             else
                                 setMenuItemVisibile(R.id.show_statistics, false)
@@ -86,6 +90,7 @@ class ProductFragment : VFragment(
                             setMenuItemVisibile(R.id.show_statistics, false)
                             setMenuItemVisibile(R.id.report_product, true)
                             setMenuItemVisibile(R.id.delete_product, false)
+                            buttonModify.visibility = View.GONE
                         }
                     } else {
                         this.user = null
@@ -107,11 +112,11 @@ class ProductFragment : VFragment(
                     }
                 })
 
-                if(exception != -1)
+                if (exception != -1)
                     showSnackbarMessage(exception)
 
                 // Check if there are loaded images
-                if(images.isEmpty())
+                if (images.isEmpty())
                     return@observeOnce
 
                 // Display product images (first one)
@@ -119,7 +124,7 @@ class ProductFragment : VFragment(
                 imageViewProduct.setImageBitmap(images[imageIndex])
 
                 // Show previous and next buttons to switch between images
-                if(images.size < 2)
+                if (images.size < 2)
                     return@observeOnce
 
                 buttonPreviousImage.visibility = VISIBLE
@@ -127,7 +132,7 @@ class ProductFragment : VFragment(
 
                 // On previous button click, go to previous image
                 buttonPreviousImage.setOnClickListener {
-                    if(images.isEmpty())
+                    if (images.isEmpty())
                         return@setOnClickListener
 
                     imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
@@ -136,7 +141,7 @@ class ProductFragment : VFragment(
 
                 // On next button click, go to next image
                 buttonNextImage.setOnClickListener {
-                    if(images.isEmpty())
+                    if (images.isEmpty())
                         return@setOnClickListener
 
                     imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
@@ -165,16 +170,17 @@ class ProductFragment : VFragment(
 
     private fun deleteProduct(): Boolean {
         try {
-            viewModel.deleteProduct(product!!.id!!, product!!.imagesPaths).observeOnce(viewLifecycleOwner, { exception ->
-                if(exception != -1) {
-                    showSnackbarMessage(exception)
-                    return@observeOnce
-                }
+            viewModel.deleteProduct(product!!.id!!, product!!.imagesPaths)
+                .observeOnce(viewLifecycleOwner, { exception ->
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
 
-                showSnackbarMessage(R.string.product_deleted)
-                goBack()
-            })
-        } catch(_: NullPointerException) {
+                    showSnackbarMessage(R.string.product_deleted)
+                    goBack()
+                })
+        } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.ProductNotDeletedException)
         }
 
@@ -183,11 +189,11 @@ class ProductFragment : VFragment(
 
     private fun showStatistics(): Boolean {
         try {
-            if(product != null && user!!.isProfessional)
+            if (product != null && user!!.isProfessional)
                 navigateTo(R.id.from_product_to_statistics)
             else
                 showSnackbarMessage(R.string.NotFoundException)
-        } catch(_: NullPointerException) {
+        } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.NotFoundException)
         }
 
@@ -202,16 +208,17 @@ class ProductFragment : VFragment(
         }
 
         try {
-            viewModel.reportProduct(product!!.id!!, user!!.id!!).observeOnce(viewLifecycleOwner, { exception ->
-                // If the call failed: show error message
-                if(exception != -1) {
-                    showSnackbarMessage(exception)
-                    return@observeOnce
-                }
+            viewModel.reportProduct(product!!.id!!, user!!.id!!)
+                .observeOnce(viewLifecycleOwner, { exception ->
+                    // If the call failed: show error message
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
 
-                showSnackbarMessage(R.string.product_reported)
-            })
-        } catch(_: NullPointerException) {
+                    showSnackbarMessage(R.string.product_reported)
+                })
+        } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.NetworkException)
         }
 
@@ -220,19 +227,20 @@ class ProductFragment : VFragment(
 
     private fun contactOwner(): Boolean {
         try {
-            viewModel.getUserById(product!!.ownerId).observeOnce(viewLifecycleOwner, { (exception, user) ->
-                // If the call failed: show error message
-                if(exception != -1) {
-                    showSnackbarMessage(exception)
-                    return@observeOnce
-                }
+            viewModel.getUserById(product!!.ownerId)
+                .observeOnce(viewLifecycleOwner, { (exception, user) ->
+                    // If the call failed: show error message
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
 
-                if(user.contactByPhone)
-                    sendSMS(user.phoneNumber, product!!.title)
-                else
-                    sendEmail(user.emailAddress, product!!.title)
+                    if (user.contactByPhone)
+                        sendSMS(user.phoneNumber, product!!.title)
+                    else
+                        sendEmail(user.emailAddress, product!!.title)
 
-            })
+                })
         } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.NetworkException)
         }
@@ -276,7 +284,7 @@ class ProductFragment : VFragment(
         }
 
         try {
-            if(user!!.id == product!!.ownerId) {
+            if (user!!.id == product!!.ownerId) {
                 showSnackbarMessage(R.string.SelfMessageException)
                 return true
             }
@@ -300,16 +308,20 @@ class ProductFragment : VFragment(
             // Else, go to discussion fragment
                 navigateTo(R.id.from_product_to_messages, KEY_DISCUSSION_ID to discussionId)
             else
-                viewModel.addDiscussion(discussion).observeOnce(viewLifecycleOwner, { (exception, discussion) ->
-                    // If the call failed: show error message
-                    if(exception != -1) {
-                        showSnackbarMessage(exception)
-                        return@observeOnce
-                    }
+                viewModel.addDiscussion(discussion)
+                    .observeOnce(viewLifecycleOwner, { (exception, discussion) ->
+                        // If the call failed: show error message
+                        if (exception != -1) {
+                            showSnackbarMessage(exception)
+                            return@observeOnce
+                        }
 
-                    // Else, go to discussion fragment
-                    navigateTo(R.id.from_product_to_messages, KEY_DISCUSSION_ID to discussion.id!!)
-                })
+                        // Else, go to discussion fragment
+                        navigateTo(
+                            R.id.from_product_to_messages,
+                            KEY_DISCUSSION_ID to discussion.id!!
+                        )
+                    })
         } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.NetworkException)
             return true
@@ -324,23 +336,25 @@ class ProductFragment : VFragment(
         textViewDescription.text = product.description
         textViewPrice.text = getString(R.string.price, product.price)
         textViewCategory.text = product.category.name
-        val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
-        textViewLocation.text = getString(R.string.location_template, product.location.city, zipCode)
+        val zipCode =
+            if (product.location.zipCode == null) "?" else product.location.zipCode.toString()
+        textViewLocation.text =
+            getString(R.string.location_template, product.location.city, zipCode)
 
         // Show optional fields (if they exist)
-        if(product.brand != null) {
+        if (product.brand != null) {
             textViewBrand.text = product.brand
             textViewBrand.visibility = VISIBLE
         } else
             textViewBrand.visibility = GONE
 
-        if(product.size != null) {
+        if (product.size != null) {
             textViewDimensions.text = product.size
             textViewDimensions.visibility = VISIBLE
         } else
             textViewDimensions.visibility = GONE
 
-        if(user?.id == product.ownerId) {
+        if (user?.id == product.ownerId) {
             textViewReference.text = product.id
             textViewReference.visibility = VISIBLE
         } else {
@@ -360,7 +374,7 @@ class ProductFragment : VFragment(
                 setMenuItemVisibile(R.id.remove_from_favorites, false)
                 setMenuItemVisibile(R.id.add_to_favorites, true)
             }
-        } catch(_: NullPointerException) {
+        } catch (_: NullPointerException) {
             setMenuItemVisibile(R.id.remove_from_favorites, false)
             setMenuItemVisibile(R.id.add_to_favorites, false)
             showSnackbarMessage(R.string.error_placeholder)

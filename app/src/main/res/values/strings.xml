@@ -151,4 +151,5 @@
     <string name="placeholder_name">Jean Philippe</string>
     <string name="label_modify1">Modifier un produit (1/2)</string>
     <string name="label_modify2">Modifier un produit (2/2)</string>
+    <string name="modifyButton">Modifier</string>
 </resources>

@@ -154,6 +154,11 @@
             android:drawablePadding="@dimen/spacing_sm"
             android:text="@string/product_dimensions"
             tools:ignore="UseCompatTextViewDrawableXml" />
+        <Button
+            android:id="@+id/buttonModify"
+            android:text="@string/modifyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
