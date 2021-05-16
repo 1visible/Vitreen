@@ -2,7 +2,6 @@ package c0d3.vitreen.app.fragments.profile
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -12,7 +11,6 @@ import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.empty_view.*
@@ -59,42 +57,40 @@ class ProfileFragment : VFragment(
             fillProfile(user)
 
             try {
-                viewModel.getProducts(limit = false, ownerId = user.id!!)
+                viewModel.getProducts(limit = false, ownerId = user.id!!).observe(viewLifecycleOwner, observe1@ { (exception, products) ->
+                    // When the call finishes, hide loading spinner
+                    loadingSpinner.visibility = GONE
+
+                    // If the call failed: show error message and show empty view
+                    if(exception != -1) {
+                        showSnackbarMessage(exception)
+                        goBack()
+                        return@observe1
+                    }
+
+                    setMenuItemVisibile(R.id.logout, true)
+
+                    // If there are no products: show empty view
+                    if(products.isEmpty()) {
+                        recyclerViewProducts.visibility = GONE
+                        textViewNoProducts.visibility = VISIBLE
+                        profileDetails.visibility = VISIBLE
+                        return@observe1
+                    }
+
+                    // Else, display products in the recycler view
+                    val adapter = ProductAdapter { product -> adapterOnClick(product) }
+                    adapter.submitList(products)
+                    recyclerViewProducts.adapter = adapter
+                    textViewNoProducts.visibility = GONE
+                    recyclerViewProducts.visibility = VISIBLE
+                    profileDetails.visibility = VISIBLE
+                })
             } catch (e: NullPointerException) {
                 showSnackbarMessage(R.string.NetworkException)
                 goBack()
                 return@observe
             }
-        })
-
-        viewModel.products.observe(viewLifecycleOwner, { (exception, products) ->
-            // When the call finishes, hide loading spinner
-            loadingSpinner.visibility = GONE
-
-            // If the call failed: show error message and show empty view
-            if(exception != -1) {
-                showSnackbarMessage(exception)
-                goBack()
-                return@observe
-            }
-
-            setMenuItemVisibile(R.id.logout, true)
-
-            // If there are no products: show empty view
-            if(products.isNullOrEmpty()) {
-                recyclerViewProducts.visibility = GONE
-                textViewNoProducts.visibility = VISIBLE
-                profileDetails.visibility = VISIBLE
-                return@observe
-            }
-
-            // Else, display products in the recycler view
-            val adapter = ProductAdapter { product -> adapterOnClick(product) }
-            adapter.submitList(products)
-            recyclerViewProducts.adapter = adapter
-            textViewNoProducts.visibility = GONE
-            recyclerViewProducts.visibility = VISIBLE
-            profileDetails.visibility = VISIBLE
         })
 
 
@@ -122,7 +118,7 @@ class ProfileFragment : VFragment(
     }
 
     private fun adapterOnClick(product: Product) {
-        viewModel.select(product)
+        viewModel.product = product
         navigateTo(R.id.from_profile_to_product)
     }
 

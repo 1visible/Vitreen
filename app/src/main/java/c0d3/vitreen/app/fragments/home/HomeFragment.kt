@@ -40,9 +40,7 @@ class HomeFragment : VFragment(
         emptyView.visibility = GONE
         recyclerViewProducts.visibility = GONE
 
-        viewModel.getProducts(limit = true)
-
-        viewModel.products.observe(viewLifecycleOwner, { (exception, products) ->
+        viewModel.getProducts(limit = true).observe(viewLifecycleOwner, { (exception, products) ->
             // When the call finishes, hide loading spinner
             loadingSpinner.visibility = GONE
 
@@ -154,7 +152,7 @@ class HomeFragment : VFragment(
     }
 
     private fun adapterOnClick(product: Product) {
-        viewModel.select(product)
+        viewModel.product = product
         navigateTo(R.id.from_home_to_product)
     }
 

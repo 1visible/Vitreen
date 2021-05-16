@@ -1,8 +1,5 @@
 package c0d3.vitreen.app.models
 
-import android.graphics.Bitmap
-import com.google.firebase.firestore.Exclude
-import com.google.firebase.firestore.IgnoreExtraProperties
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList

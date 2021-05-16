@@ -1,14 +1,12 @@
 package c0d3.vitreen.app.fragments.favorites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.adapter.ProductAdapter
 import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_favorites.*
@@ -60,9 +58,8 @@ class FavoritesFragment : VFragment(
             recyclerViewProducts.visibility = GONE
             emptyView.visibility = GONE
             loadingSpinner.visibility = VISIBLE
-            viewModel.getProducts(limit = false, ids = user.favoritesIds)
 
-            viewModel.products.observe(viewLifecycleOwner, observe1@ { (exception, products) ->
+            viewModel.getProducts(limit = false, ids = user.favoritesIds).observe(viewLifecycleOwner, observe1@ { (exception, products) ->
                 // When the call finishes, hide loading spinner
                 loadingSpinner.visibility = GONE
 
@@ -75,7 +72,7 @@ class FavoritesFragment : VFragment(
                 }
 
                 // If there are no products: show empty view
-                if(products.isNullOrEmpty()) {
+                if(products.isEmpty()) {
                     recyclerViewProducts.visibility = GONE
                     emptyView.visibility = VISIBLE
                     return@observe1
@@ -92,7 +89,7 @@ class FavoritesFragment : VFragment(
     }
 
     private fun adapterOnClick(product: Product) {
-        viewModel.select(product)
+        viewModel.product = product
         navigateTo(R.id.from_favorites_to_product)
     }
 }

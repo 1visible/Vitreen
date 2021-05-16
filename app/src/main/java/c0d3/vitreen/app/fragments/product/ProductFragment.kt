@@ -48,47 +48,49 @@ class ProductFragment : VFragment(
         setMenuItemVisibile(R.id.delete_product, false)
 
         try {
-            viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
-                if(exception == -1) {
-                    this.user = user
-
-                    setFavoriteItemVisibility()
-
-                    if(user.id == product!!.ownerId) {
-                        setMenuItemVisibile(R.id.send_message, false)
-                        setMenuItemVisibile(R.id.contact_owner, false)
-                        setMenuItemVisibile(R.id.report_product, false)
-                        setMenuItemVisibile(R.id.delete_product, true)
-
-                        if(user.isProfessional)
-                            setMenuItemVisibile(R.id.show_statistics, true)
-                        else
-                            setMenuItemVisibile(R.id.show_statistics, false)
-                    } else {
-                        setMenuItemVisibile(R.id.send_message, true)
-                        setMenuItemVisibile(R.id.contact_owner, true)
-                        setMenuItemVisibile(R.id.show_statistics, false)
-                        setMenuItemVisibile(R.id.report_product, true)
-                        setMenuItemVisibile(R.id.delete_product, false)
-                    }
-                } else {
-                    this.user = null
-                    setMenuItemVisibile(R.id.add_to_favorites, false)
-                    setMenuItemVisibile(R.id.remove_from_favorites, false)
-                    setMenuItemVisibile(R.id.send_message, false)
-                    setMenuItemVisibile(R.id.contact_owner, true)
-                    setMenuItemVisibile(R.id.show_statistics, false)
-                    setMenuItemVisibile(R.id.report_product, false)
-                    setMenuItemVisibile(R.id.delete_product, false)
-                }
-            })
-
             viewModel.discussions.observe(viewLifecycleOwner, { (exception, discussions) ->
                 this.discussions = if (exception == -1) discussions else null
             })
 
             viewModel.getProduct().observeOnce(viewLifecycleOwner, { (exception, product, images) ->
                 this.product = product
+
+                // TODO : Tout faire à l'intérieur de cet observer
+                viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+                    if(exception == -1) {
+                        this.user = user
+
+                        setFavoriteItemVisibility()
+
+                        if(user.id == product.ownerId) {
+                            setMenuItemVisibile(R.id.send_message, false)
+                            setMenuItemVisibile(R.id.contact_owner, false)
+                            setMenuItemVisibile(R.id.report_product, false)
+                            setMenuItemVisibile(R.id.delete_product, true)
+
+                            if(user.isProfessional)
+                                setMenuItemVisibile(R.id.show_statistics, true)
+                            else
+                                setMenuItemVisibile(R.id.show_statistics, false)
+                        } else {
+                            setMenuItemVisibile(R.id.send_message, true)
+                            setMenuItemVisibile(R.id.contact_owner, true)
+                            setMenuItemVisibile(R.id.show_statistics, false)
+                            setMenuItemVisibile(R.id.report_product, true)
+                            setMenuItemVisibile(R.id.delete_product, false)
+                        }
+                    } else {
+                        this.user = null
+                        setMenuItemVisibile(R.id.add_to_favorites, false)
+                        setMenuItemVisibile(R.id.remove_from_favorites, false)
+                        setMenuItemVisibile(R.id.send_message, false)
+                        setMenuItemVisibile(R.id.contact_owner, true)
+                        setMenuItemVisibile(R.id.show_statistics, false)
+                        setMenuItemVisibile(R.id.report_product, false)
+                        setMenuItemVisibile(R.id.delete_product, false)
+                    }
+                })
+
                 // When the call finishes, hide loading spinner
                 loadingSpinner.visibility = GONE
 

@@ -11,10 +11,10 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Product
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val image: Bitmap?, private val onClick: (Product) -> Unit)
-    : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val onClick: (Product) -> Unit)
+    : ListAdapter<Pair<Product, Bitmap?>, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(val image: Bitmap?, itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
+    class ProductViewHolder(itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
         private var product: Product = Product()
 
         init {
@@ -23,7 +23,9 @@ class ProductAdapter(private val image: Bitmap?, private val onClick: (Product) 
             }
         }
 
-        fun bind(product: Product) {
+        fun bind(pair: Pair<Product, Bitmap?>) {
+            val (product, image) = pair
+
             this.product = product
 
             // Display product image if available
@@ -44,7 +46,7 @@ class ProductAdapter(private val image: Bitmap?, private val onClick: (Product) 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false)
-        return ProductViewHolder(image, view, onClick)
+        return ProductViewHolder(view, onClick)
     }
 
     // Get current product and use it to bind view.
@@ -54,13 +56,13 @@ class ProductAdapter(private val image: Bitmap?, private val onClick: (Product) 
 
 }
 
-object ProductDiffCallback : DiffUtil.ItemCallback<Product>() {
-    override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+object ProductDiffCallback : DiffUtil.ItemCallback<Pair<Product, Bitmap?>>() {
+    override fun areItemsTheSame(oldItem: Pair<Product, Bitmap?>, newItem: Pair<Product, Bitmap?>): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
-        return oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Pair<Product, Bitmap?>, newItem: Pair<Product, Bitmap?>): Boolean {
+        return oldItem.first.id == newItem.first.id
     }
 }
 
