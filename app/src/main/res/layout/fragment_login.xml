@@ -7,31 +7,31 @@
     android:orientation="vertical"
     tools:context=".fragments.auth.LoginFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lg">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/have_no_account" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonToRegister1"
             style="?attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:gravity="end"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="@string/register_underline"
-            tools:ignore="RelativeOverlap" />
+            android:text="@string/register_underline" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <!-- Email input -->
     <com.google.android.material.textfield.TextInputLayout

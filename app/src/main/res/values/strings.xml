@@ -126,7 +126,7 @@
     <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>
-    <string name="welcome">Bienvenue</string>
+    <string name="welcome">Bienvenue sur Vitreen !</string>
     <!-- Appbar menu items -->
     <string name="search">Rechercher</string>
     <string name="logout">Se déconnecter</string>

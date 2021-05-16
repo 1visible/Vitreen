@@ -3,6 +3,7 @@ package c0d3.vitreen.app.fragments.product
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -11,6 +12,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
