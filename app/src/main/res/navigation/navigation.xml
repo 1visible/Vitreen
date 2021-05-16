@@ -169,6 +169,10 @@
         android:id="@+id/navigation_modify2"
         android:name="c0d3.vitreen.app.fragments.product.ModifyProductFragment2"
         android:label="@string/label_modify2"
-        tools:layout="@layout/fragment_adding2" />
+        tools:layout="@layout/fragment_adding2">
+        <action
+            android:id="@+id/from_modify2_to_product"
+            app:destination="@id/navigation_product" />
+    </fragment>
 
 </navigation>

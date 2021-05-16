@@ -19,6 +19,8 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FirestoreRepository {
     private val db = Firebase.firestore
@@ -65,29 +67,26 @@ class FirestoreRepository {
             orderByDate = false
         }
 
-        if(priceMin != null && priceMax != null) {
-            query = query.orderBy("price", Query.Direction.ASCENDING).startAt(priceMin).endAt(priceMax)
+        if (priceMin != null && priceMax != null) {
+            query =
+                query.orderBy("price", Query.Direction.ASCENDING).startAt(priceMin).endAt(priceMax)
             orderByDate = false
-        }
-
-        else if (priceMin != null) {
+        } else if (priceMin != null) {
             query = query.whereGreaterThanOrEqualTo("price", priceMin)
                 .orderBy("price", Query.Direction.ASCENDING)
             orderByDate = false
-        }
-
-        else if (priceMax != null) {
+        } else if (priceMax != null) {
             query = query.whereLessThanOrEqualTo("price", priceMax)
                 .orderBy("price", Query.Direction.ASCENDING)
             orderByDate = false
         }
 
-        if(!ids.isNullOrEmpty()) {
+        if (!ids.isNullOrEmpty()) {
             query = query.whereIn(FieldPath.documentId(), ids)
             orderByDate = false
         }
 
-        if(orderByDate)
+        if (orderByDate)
             query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
 
         if (limit)
@@ -117,7 +116,8 @@ class FirestoreRepository {
     }
 
     fun reportProduct(id: String, userId: String): Task<Void> {
-        return db.collection(PRODUCTS_COLLECTION).document(id).update("reporters", FieldValue.arrayUnion(userId))
+        return db.collection(PRODUCTS_COLLECTION).document(id)
+            .update("reporters", FieldValue.arrayUnion(userId))
     }
 
     fun registerUser(email: String, password: String): Task<AuthResult> {
@@ -148,16 +148,41 @@ class FirestoreRepository {
         return db.collection(USERS_COLLECTION).document(id).update("location.zipCode", zipCode)
     }
 
+
+    fun updateProduct(product: Product): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(product.id!!).update(
+            "title",
+            product.title,
+            "description",
+            product.description,
+            "price",
+            product.price,
+            "brand",
+            product.brand,
+            "size",
+            product.size,
+            "location",
+            product.location,
+            "category",
+            product.category,
+            "modifiedAt",
+            Calendar.getInstance().time
+        )
+    }
+
     fun addConsultation(productId: String, consultation: Consultation): Task<Void> {
-        return db.collection(PRODUCTS_COLLECTION).document(productId).update("consultations", FieldValue.arrayUnion(consultation))
+        return db.collection(PRODUCTS_COLLECTION).document(productId)
+            .update("consultations", FieldValue.arrayUnion(consultation))
     }
 
     fun addToFavorites(userId: String, favoriteId: String): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(userId).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
+        return db.collection(USERS_COLLECTION).document(userId)
+            .update("favoritesIds", FieldValue.arrayUnion(favoriteId))
     }
 
     fun removeFromFavorites(userId: String, favoriteId: String): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(userId).update("favoritesIds", FieldValue.arrayRemove(favoriteId))
+        return db.collection(USERS_COLLECTION).document(userId)
+            .update("favoritesIds", FieldValue.arrayRemove(favoriteId))
     }
 
     fun addLocation(location: Location): Task<DocumentReference> {
@@ -196,8 +221,9 @@ class FirestoreRepository {
         return db.collection(DISCUSSIONS_COLLECTION).whereArrayContains("usersIds", userId)
     }
 
-    fun updateDiscussion (id: String, message: Message): Task<Void> {
-        return db.collection(DISCUSSIONS_COLLECTION).document(id).update("messages", FieldValue.arrayUnion(message))
+    fun updateDiscussion(id: String, message: Message): Task<Void> {
+        return db.collection(DISCUSSIONS_COLLECTION).document(id)
+            .update("messages", FieldValue.arrayUnion(message))
     }
 
     fun addDiscussion(discussion: Discussion): Task<DocumentReference> {

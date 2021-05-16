@@ -238,6 +238,9 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productContainer
     }
 
+    fun updateProduct(product: Product):LiveData<Int> {
+        return request(repository.updateProduct(product))
+    }
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
         return request(repository.updateLocation(locationId, zipCode))
     }
