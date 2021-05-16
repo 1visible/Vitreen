@@ -56,8 +56,11 @@ class LoginFragment : VFragment(
             if (isAnyRequiredInputEmpty(editTextEmail)) return@setOnClickListener
             val email = inputToString(editTextEmail)
             if (email != null) {
-                viewModel.resetPassword(email)
-                showSnackbarMessage(R.string.send_email)
+                viewModel.resetPassword(email).observeOnce(viewLifecycleOwner, { exception ->
+                    if (exception != -1) showSnackbarMessage(exception)
+                    else
+                        showSnackbarMessage(R.string.send_email)
+                })
             }
         }
     }
