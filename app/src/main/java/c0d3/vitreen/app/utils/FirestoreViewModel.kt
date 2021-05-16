@@ -437,6 +437,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }?.id
     }
 
+    fun resetPassword(email:String):LiveData<Int>{
+        return request(repository.resetPassword(email))
+    }
+
     private inline fun <reified T : Entity> requestList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
             val exception = if (error == null) -1 else R.string.NetworkException

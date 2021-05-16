@@ -41,6 +41,7 @@
     <!-- Login fragment -->
     <string name="have_no_account">Pas de compte ?</string>
     <string name="register_underline"><u>S\'inscrire</u></string>
+    <string name="reset_password"><u>Réinitialiser mon mot de passe</u></string>
     <string name="email_address">Adresse e-mail</string>
     <string name="password">Mot de passe</string>
     <string name="login">Se connecter</string>
@@ -152,4 +153,5 @@
     <string name="label_modify1">Modifier un produit (1/2)</string>
     <string name="label_modify2">Modifier un produit (2/2)</string>
     <string name="modifyButton">Modifier</string>
+    <string name="send_email">Un email a été envoyé</string>
 </resources>

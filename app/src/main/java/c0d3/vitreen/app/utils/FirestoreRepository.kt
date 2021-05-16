@@ -229,4 +229,8 @@ class FirestoreRepository {
     fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
         return db.collection(DISCUSSIONS_COLLECTION).add(discussion)
     }
+
+    fun resetPassword(email: String): Task<Void> {
+        return auth.sendPasswordResetEmail(email)
+    }
 }

@@ -19,7 +19,7 @@ class LoginFragment : VFragment(
         // On submit button click, try to login the user
         buttonSubmitLogin.setOnClickListener {
             // Check if required inputs are filled
-            if(isAnyRequiredInputEmpty(editTextEmail, editTextPassword))
+            if (isAnyRequiredInputEmpty(editTextEmail, editTextPassword))
                 return@setOnClickListener
 
             val email = inputToString(editTextEmail)
@@ -35,7 +35,7 @@ class LoginFragment : VFragment(
             if (!viewModel.isUserSignedIn)
                 viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { exception ->
                     // TODO : Gérer les différents erreurs
-                    if(exception != -1) {
+                    if (exception != -1) {
                         showSnackbarMessage(exception)
                         return@observeOnce
                     }
@@ -50,6 +50,15 @@ class LoginFragment : VFragment(
         // On register button click, navigate to Register1 fragment
         buttonToRegister1.setOnClickListener {
             navigateTo(R.id.from_login_to_register1)
+        }
+        //On reset password button click, send an email
+        buttonToResetPassword.setOnClickListener {
+            if (isAnyRequiredInputEmpty(editTextEmail)) return@setOnClickListener
+            val email = inputToString(editTextEmail)
+            if (email != null) {
+                viewModel.resetPassword(email)
+                showSnackbarMessage(R.string.send_email)
+            }
         }
     }
 
