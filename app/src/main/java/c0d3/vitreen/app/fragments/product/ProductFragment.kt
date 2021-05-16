@@ -198,7 +198,7 @@ class ProductFragment : VFragment(
         }
 
         try {
-            viewModel.reportProduct(user!!.id!!, product!!.id!!).observeOnce(viewLifecycleOwner, { exception ->
+            viewModel.reportProduct(product!!.id!!, user!!.id!!).observeOnce(viewLifecycleOwner, { exception ->
                 // If the call failed: show error message
                 if(exception != -1) {
                     showSnackbarMessage(exception)
