@@ -135,7 +135,7 @@ class ProductFragment : VFragment(
                     if (images.isEmpty())
                         return@setOnClickListener
 
-                    imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
+                    imageIndex = if (imageIndex-- <= 0) (images.size - 1) else imageIndex--
                     imageViewProduct.setImageBitmap(images[imageIndex])
                 }
 
@@ -144,7 +144,7 @@ class ProductFragment : VFragment(
                     if (images.isEmpty())
                         return@setOnClickListener
 
-                    imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
+                    imageIndex = if (imageIndex++ >= images.size - 1) 0 else imageIndex++
                     imageViewProduct.setImageBitmap(images[imageIndex])
                 }
             })
