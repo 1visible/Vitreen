@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.MessageAdapter
@@ -38,7 +39,8 @@ class MessagesFragment: VFragment(
         }
 
         // Set elements visibility (while loading)
-        messagesDetails.visibility = GONE
+        recyclerViewMessages.visibility = GONE
+        sendMessageField.visibility = GONE
 
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
             // If the call failed: show error message and go back
@@ -66,7 +68,8 @@ class MessagesFragment: VFragment(
                     val adapter = MessageAdapter(user.id!!, messages)
                     adapter.submitList(messages)
                     recyclerViewMessages.adapter = adapter
-                    messagesDetails.visibility = View.VISIBLE
+                    recyclerViewMessages.visibility = VISIBLE
+                    sendMessageField.visibility = VISIBLE
                 } catch(_: NullPointerException) {
                     showSnackbarMessage(exception)
                     goBack()
