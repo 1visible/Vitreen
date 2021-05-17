@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.core.view.size
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.MessageAdapter
@@ -70,6 +71,7 @@ class MessagesFragment: VFragment(
                     recyclerViewMessages.adapter = adapter
                     recyclerViewMessages.visibility = VISIBLE
                     sendMessageField.visibility = VISIBLE
+                    recyclerViewMessages.scrollToPosition(adapter.itemCount - 1)
                 } catch(_: NullPointerException) {
                     showSnackbarMessage(exception)
                     goBack()

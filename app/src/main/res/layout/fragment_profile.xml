@@ -158,18 +158,20 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonUpdateProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Vitreen.Button.Outline"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:text="@string/update_profile" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonDeleteAccount"
                     style="@style/Vitreen.Button.Outline.Error"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:layout_marginTop="@dimen/spacing_sm"
                     android:text="@string/delete_account" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonUpdateProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lg"
-                    android:text="@string/update_profile" />
 
             </LinearLayout>
 
