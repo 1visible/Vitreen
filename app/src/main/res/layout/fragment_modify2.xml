@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.product.Modify2Fragment">
+    tools:context=".fragments.modify.Modify2Fragment">
 
     <!-- Brand input -->
     <com.google.android.material.textfield.TextInputLayout

@@ -97,8 +97,6 @@ class ProfileFragment : VFragment(
             }
         })
 
-
-
         // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
             try {

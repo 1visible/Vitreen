@@ -4,6 +4,8 @@
     app:cardCornerRadius="@dimen/spacing_sm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lg"
+    android:layout_marginStart="@dimen/spacing_lg"
     android:layout_marginBottom="@dimen/spacing_md"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
@@ -20,33 +22,31 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/textViewTitle"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="?attr/colorPrimary"
-                android:text="@string/about_product"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:textColor="@color/white_20"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_sm"
-                android:layout_marginLeft="@dimen/spacing_sm"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                android:layout_marginRight="@dimen/spacing_sm"
                 android:text="@string/date_format" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/placeholer_me"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textViewLastMessage"
+            android:id="@+id/textViewMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:gravity="end"
             android:text="@string/no_message" />
 
     </LinearLayout>

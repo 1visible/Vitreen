@@ -7,27 +7,41 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.dto.DiscussionDTO
-import kotlinx.android.synthetic.main.message_item.view.*
-import kotlinx.android.synthetic.main.product_item.view.*
+import c0d3.vitreen.app.models.Discussion
+import kotlinx.android.synthetic.main.discussion_item.view.*
+import kotlinx.android.synthetic.main.product_item.view.textViewTitle
+import java.text.SimpleDateFormat
+import java.util.*
 
-class DiscussionAdapter(private val onClick: (DiscussionDTO) -> Unit):
-    ListAdapter<DiscussionDTO, DiscussionAdapter.DiscussionViewHolder>(DiscussionDiffCallback) {
+class DiscussionAdapter(private val onClick: (Discussion) -> Unit):
+    ListAdapter<Discussion, DiscussionAdapter.DiscussionViewHolder>(DiscussionDiffCallback) {
 
-    class DiscussionViewHolder(itemView: View, val onClick: (DiscussionDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
-        private var discussionDTO: DiscussionDTO = DiscussionDTO()
+    class DiscussionViewHolder(itemView: View, val onClick: (Discussion) -> Unit): RecyclerView.ViewHolder(itemView) {
+        private var discussion: Discussion = Discussion()
 
         init {
             itemView.setOnClickListener {
-                onClick(discussionDTO)
+                onClick(discussion)
             }
         }
 
-        fun bind(discussion: DiscussionDTO) {
-            discussionDTO = discussion
-            // Fill product with informations
-            itemView.textViewTitle.text = itemView.context.getString(R.string.about_product, discussionDTO.productName)
-            itemView.textViewLastMessage.text = discussionDTO.lastMessage.content
+        fun bind(discussion: Discussion) {
+            this.discussion = discussion
+
+            val dateFormat = SimpleDateFormat(itemView.context.getString(R.string.date_format), Locale.getDefault())
+            var date = dateFormat.format(Calendar.getInstance().time)
+            var content = itemView.context.getString(R.string.no_message)
+
+            if(discussion.messages.isNotEmpty()){
+                val message = discussion.messages.last()
+                date = dateFormat.format(message.date)
+                content = message.content
+            }
+
+            // Fill discussion with informations
+            itemView.textViewTitle.text = itemView.context.getString(R.string.about_product, discussion.productName)
+            itemView.textViewDate.text = date
+            itemView.textViewLastMessage.text = content
         }
 
     }
@@ -48,12 +62,12 @@ class DiscussionAdapter(private val onClick: (DiscussionDTO) -> Unit):
 
 }
 
-object DiscussionDiffCallback : DiffUtil.ItemCallback<DiscussionDTO>() {
-    override fun areItemsTheSame(oldItem: DiscussionDTO, newItem: DiscussionDTO): Boolean {
+object DiscussionDiffCallback : DiffUtil.ItemCallback<Discussion>() {
+    override fun areItemsTheSame(oldItem: Discussion, newItem: Discussion): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: DiscussionDTO, newItem: DiscussionDTO): Boolean {
+    override fun areContentsTheSame(oldItem: Discussion, newItem: Discussion): Boolean {
         return oldItem.id == newItem.id
     }
 }

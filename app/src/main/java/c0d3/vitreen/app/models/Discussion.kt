@@ -1,6 +1,5 @@
 package c0d3.vitreen.app.models
 
-import c0d3.vitreen.app.models.dto.DiscussionDTO
 import java.io.Serializable
 
 data class Discussion(
@@ -8,15 +7,7 @@ data class Discussion(
     val ownerId: String = "",
     val productId: String = "",
     val productName: String = "",
+    val haveMessages: Boolean = false,
     val messages: ArrayList<Message> = ArrayList(),
     val usersIds: ArrayList<String> = arrayListOf(userId, ownerId)
-) : Entity(), Serializable {
-
-    fun toDTO(): DiscussionDTO {
-        val discussionDTO = DiscussionDTO(productId, productName, messages.last())
-        discussionDTO.id = this.id
-
-        return discussionDTO
-    }
-
-}
+) : Entity(), Serializable

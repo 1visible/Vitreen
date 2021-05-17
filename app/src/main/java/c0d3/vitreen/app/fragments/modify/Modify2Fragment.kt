@@ -1,4 +1,4 @@
-package c0d3.vitreen.app.fragments.product
+package c0d3.vitreen.app.fragments.modify
 
 import android.content.Context
 import android.os.Bundle

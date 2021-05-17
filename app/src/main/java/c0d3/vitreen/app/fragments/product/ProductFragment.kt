@@ -309,10 +309,11 @@ class ProductFragment : VFragment(
 
             val discussionId = viewModel.getDiscussionId(discussion, discussions!!)
 
-            if (discussionId != null)
+            if (discussionId != null) {
             // Else, go to discussion fragment
-                navigateTo(R.id.from_product_to_messages, KEY_DISCUSSION_ID to discussionId)
-            else
+                viewModel.discussionId = discussionId
+                navigateTo(R.id.from_product_to_messages)
+            } else {
                 viewModel.addDiscussion(discussion)
                     .observeOnce(viewLifecycleOwner, { (exception, discussion) ->
                         // If the call failed: show error message
@@ -322,11 +323,10 @@ class ProductFragment : VFragment(
                         }
 
                         // Else, go to discussion fragment
-                        navigateTo(
-                            R.id.from_product_to_messages,
-                            KEY_DISCUSSION_ID to discussion.id!!
-                        )
+                        viewModel.discussionId = discussion.id!!
+                        navigateTo(R.id.from_product_to_messages)
                     })
+            }
         } catch (_: NullPointerException) {
             showSnackbarMessage(R.string.NetworkException)
             return true

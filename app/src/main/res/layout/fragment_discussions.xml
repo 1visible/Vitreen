@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.profile.FavoritesFragment">
+    tools:context=".fragments.messages.DiscussionsFragment">
 
     <!-- Empty view -->
     <include
@@ -15,10 +15,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Products list -->
+    <!-- Discussions list -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProducts"
         android:overScrollMode="never"
+        android:id="@+id/recyclerViewDiscussions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"

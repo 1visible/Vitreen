@@ -133,8 +133,13 @@
     <string name="this_week">Données hebdomadaires</string>
     <string name="this_year">Données annuelles</string>
     <string name="other_label">Autre</string>
-    <!-- Discussion fragment -->
+    <!-- Discussions fragment -->
     <string name="about_product">À propos de %1$s</string>
+    <string name="date_format">dd/MM, HH:mm</string>
+    <string name="no_message">Aucun message</string>
+    <!-- Messages fragment -->
+    <string name="write_message">Écrivez un message…</string>
+
     <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>
@@ -142,6 +147,7 @@
     <!-- Appbar menu items -->
     <string name="search">Rechercher</string>
     <string name="logout">Se déconnecter</string>
+
     <string name="research">Entrez votre Recherche...</string>
     <string name="research_max_price">Prix Max...</string>
     <string name="buttonResearch">Rechercher</string>
@@ -154,7 +160,6 @@
     <string name="delete">Supprimer</string>
     <string name="ownerTitle">Trouver un nom(Mes produits)</string>
     <string name="otherTitle">Trouver un autre titre (Autre produit)</string>
-    <string name="placeholder_message">Message</string>
     <string name="createDiscussion">Vous avez créé la discussion</string>
     <string name="label_discussion">Mes discussions</string>
     <string name="message">Message</string>

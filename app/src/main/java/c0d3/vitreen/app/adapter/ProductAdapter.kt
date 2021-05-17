@@ -65,4 +65,3 @@ object ProductDiffCallback : DiffUtil.ItemCallback<Pair<Product, Bitmap?>>() {
         return oldItem.first.id == newItem.first.id
     }
 }
-

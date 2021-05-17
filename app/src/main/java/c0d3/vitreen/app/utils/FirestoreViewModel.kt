@@ -24,13 +24,19 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private val repository = FirestoreRepository()
 
     var isUserSignedIn: Boolean = false
+    var discussionId: String = ""
     var product: Product = Product()
     var searchQuery: SearchQuery = SearchQuery()
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
-    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> =
-        state.getLiveData("discussions") // TODO changer en Transformations sur user
+    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions")
+
+    val notification: LiveData<Int> = Transformations.switchMap(user) { (_, user) ->
+        Transformations.map(listenNotification(user.id)) { exception ->
+            exception
+        }
+    }
 
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
@@ -228,11 +234,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return request(repository.addUser(user))
     }
 
-    fun getCategories(): LiveData<Pair<Int, List<Category>>> {
+    private fun getCategories(): LiveData<Pair<Int, List<Category>>> {
         return requestList(repository.getCategories(), categories)
     }
 
-    fun getLocations(): LiveData<Pair<Int, List<Location>>> {
+    private fun getLocations(): LiveData<Pair<Int, List<Location>>> {
         return requestList(repository.getLocations(), locations)
     }
 
@@ -523,6 +529,16 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
     fun getDiscussions(userId: String): LiveData<Pair<Int, List<Discussion>>> {
         return requestList(repository.getDiscussions(userId), discussions)
+    }
+
+    private fun listenNotification(userId: String?): LiveData<Int> {
+        val notificationLiveData = MutableLiveData<Int>()
+        if(userId != null)
+            repository.getDiscussions(userId, true).addSnapshotListener { _, error ->
+                notificationLiveData.value = if (error == null) -1 else R.string.NetworkException
+            }
+
+        return notificationLiveData
     }
 
     fun updateDiscussion(id: String, message: Message): LiveData<Int> {

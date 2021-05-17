@@ -8,4 +8,4 @@ data class Message(
     val senderName: String = "",
     val content: String = "",
     val date: Date = Calendar.getInstance().time
-): Entity(), Serializable
+): Serializable

@@ -12,6 +12,9 @@ class Constants {
         const val KEY_EMAIL = "email"
         const val KEY_DISCUSSION_ID = "discussionId"
 
+        const val MESSAGE_SENT = 0
+        const val MESSAGE_RECEIVED = 1
+
         const val GALLERY_REQUEST = 12254
         const val LOCALISATION_REQUEST = 15266
 

@@ -1,4 +1,4 @@
-package c0d3.vitreen.app.fragments.favorites
+package c0d3.vitreen.app.fragments.profile
 
 import android.os.Bundle
 import android.view.View
@@ -24,17 +24,18 @@ class FavoritesFragment : VFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(viewModel.isUserSignedIn) {
-            // Set elements visibility (while loading)
-            emptyView.visibility = GONE
-            recyclerViewProducts.visibility = GONE
-        } else {
+        // Set elements visibility (while loading)
+        emptyView.visibility = GONE
+        recyclerViewProducts.visibility = GONE
+
+        if(!viewModel.isUserSignedIn) {
             // Set elements visibility
             loadingSpinner.visibility = GONE
             emptyView.visibility = VISIBLE
             recyclerViewProducts.visibility = GONE
             // Show error message
             showSnackbarMessage(R.string.SignedOutException)
+            return
         }
 
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->

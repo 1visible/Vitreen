@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/vitreen_ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Vitreen.Theme" >
-        <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustNothing">
+        <activity android:name=".activities.MainActivity" android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

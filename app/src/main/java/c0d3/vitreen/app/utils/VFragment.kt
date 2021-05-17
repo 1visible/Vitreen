@@ -88,7 +88,7 @@ abstract class VFragment(
 
     fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (input != null && input.editText?.text.isNullOrBlank()) {
+            if (input != null && !input.editText?.text.isNullOrBlank()) {
                 return false
             }
         }

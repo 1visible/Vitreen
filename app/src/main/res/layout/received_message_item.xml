@@ -4,6 +4,9 @@
     app:cardCornerRadius="@dimen/spacing_sm"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardElevation="@dimen/spacing_sm"
+    android:layout_marginRight="@dimen/spacing_lg"
+    android:layout_marginEnd="@dimen/spacing_lg"
     android:layout_marginBottom="@dimen/spacing_md"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
@@ -20,14 +23,13 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/textViewTitle"
+                android:id="@+id/textViewUsername"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="?attr/colorPrimary"
-                android:text="@string/about_product"
+                android:text="@string/username"
                 android:textStyle="bold" />
 
             <TextView
@@ -42,11 +44,9 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textViewLastMessage"
+            android:id="@+id/textViewMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@string/no_message" />
 
     </LinearLayout>

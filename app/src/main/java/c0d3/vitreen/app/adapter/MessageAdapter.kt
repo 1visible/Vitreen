@@ -2,54 +2,82 @@ package c0d3.vitreen.app.adapter
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Message
-import kotlinx.android.synthetic.main.discussion_item.view.*
+import c0d3.vitreen.app.utils.Constants.Companion.MESSAGE_RECEIVED
+import c0d3.vitreen.app.utils.Constants.Companion.MESSAGE_SENT
+import kotlinx.android.synthetic.main.discussion_item.view.textViewDate
+import kotlinx.android.synthetic.main.received_message_item.view.*
+import kotlinx.android.synthetic.main.sent_message_item.view.textViewMessage
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-class MessageAdapter(val senderId: String)
-    : ListAdapter<Message, MessageAdapter.MessageViewHolder>(MessageDiffCallback) {
+class MessageAdapter(private val userId: String, private val messages: List<Message>)
+    : ListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback) {
 
-    class MessageViewHolder(itemView: View, val senderId: String): RecyclerView.ViewHolder(itemView) {
-        private var messageDTO: Message = Message()
+    class SentMessageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        private var message: Message = Message()
 
         fun bind(message: Message) {
-            messageDTO = message
+            this.message = message
 
-            // TODO : Tout revoir
-            itemView.textViewMe.text = messageDTO.content // TODO : Revoir ça
-            itemView.textViewMyContent.text = messageDTO.content
-            itemView.textViewMyDate.text = messageDTO.date.toString()
-            itemView.textViewMe.visibility = VISIBLE
-            itemView.textViewMyContent.visibility = VISIBLE
-            itemView.textViewMyDate.visibility = VISIBLE
-            itemView.textViewOwnerName.visibility = GONE
-            itemView.textViewOwnerContent.visibility = GONE
-            itemView.textViewOwnerDate.visibility = GONE
+            val dateFormat = SimpleDateFormat(itemView.context.getString(R.string.date_format), Locale.getDefault())
+
+            itemView.textViewDate.text = dateFormat.format(message.date)
+            itemView.textViewMessage.text = message.content
         }
+    }
 
+    class ReceivedMessageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        private var message: Message = Message()
+
+        fun bind(message: Message) {
+            this.message = message
+
+            val dateFormat = SimpleDateFormat(itemView.context.getString(R.string.date_format), Locale.getDefault())
+
+            itemView.textViewUsername.text = message.senderName
+            itemView.textViewDate.text = dateFormat.format(message.date)
+            itemView.textViewMessage.text = message.content
+        }
     }
 
     // Create and inflate view and return MessageViewHolder.
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.message_item, parent, false)
-        return MessageViewHolder(view, senderId)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if(viewType == MESSAGE_SENT) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.sent_message_item, parent, false)
+
+            SentMessageViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.received_message_item, parent, false)
+
+            ReceivedMessageViewHolder(view)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if(messages[position].senderId == userId)
+            MESSAGE_SENT
+        else
+            MESSAGE_RECEIVED
     }
 
     // Get current message and use it to bind view.
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = getItem(position)
-        holder.bind(message)
 
+        if(holder.itemViewType == MESSAGE_SENT)
+            (holder as SentMessageViewHolder).bind(message)
+        else
+            (holder as ReceivedMessageViewHolder).bind(message)
     }
-
 }
 
 object MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
@@ -58,6 +86,6 @@ object MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
     }
 
     override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
-        return oldItem.content == newItem.content
+        return oldItem.content == newItem.content && oldItem.date == newItem.date
     }
 }
