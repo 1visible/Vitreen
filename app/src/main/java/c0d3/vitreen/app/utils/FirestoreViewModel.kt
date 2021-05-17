@@ -502,7 +502,6 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                         else->exception = R.string.firestore_exception
                     }
                 }
-                else -> exception = R.string.error_placeholder
             }
             exceptionLiveData.value = exception
         }
