@@ -497,8 +497,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                         FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
                         FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
                         FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
+                        else->exception = R.string.firestore_exception
                     }
                 }
+                else -> exception = R.string.error_placeholder
             }
             exceptionLiveData.value = exception
         }

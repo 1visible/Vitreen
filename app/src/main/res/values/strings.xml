@@ -186,8 +186,11 @@
     <string name="sign_in_user_exception">Veuillez vous connecter</string>
     <string name="aborted">L\'opération a été annulée</string>
     <string name="canceled">L\'opération a été annulée</string>
-    <string name="data_loss_exception">Impossible de récupérer les données à cause d'une corruption ou perte des données</string>
+    <string name="data_loss_exception">Impossible de récupérer les données à cause d\'une corruption ou perte des données</string>
     <string name="already_exist_exception">Les données que vous souhaitez créer existent déjà</string>
     <string name="internal_exception">Une erreur interne s\'est produite</string>
     <string name="unknown_exception">Une erreur inconnue s\'est produite</string>
+    <string name="permission_denied_exception">Vous n\'avez pas la permission pour effectuer cette opération</string>
+    <string name="unauthentificated_exception">Veuillez vous authentifier pour avoir accès à cette ressource</string>
+    <string name="firestore_exception">Une erreur avec la base de données s\'est produites</string>
 </resources>
