@@ -9,8 +9,7 @@ import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -220,5 +219,25 @@ class FirestoreRepository {
 
     fun resetPassword(email: String): Task<Void> {
         return auth.sendPasswordResetEmail(email)
+    }
+    fun updateUser(user: User): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(user.id!!).update(
+            "username",
+            user.username,
+            "phoneNumber",
+            user.phoneNumber,
+            "contactByPhone",
+            user.contactByPhone,
+            "isProfessional",
+            user.isProfessional,
+            "location",
+            user.location,
+            "companyName",
+            user.companyName,
+            "siretNumber",
+            user.siretNumber,
+            "favoritesIds",
+            user.favoritesIds
+        )
     }
 }

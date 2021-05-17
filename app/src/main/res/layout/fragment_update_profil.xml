@@ -7,51 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.profile.UpdateProfilFragment">
-    <!-- Email input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_envelope"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/email_address" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Password input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextOldPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_lockpad"
-        android:hint="@string/old_password" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Password confirmation input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextNewPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_lockpad"
-        android:hint="@string/new_password" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
-
     <!-- Username input -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextUsername"

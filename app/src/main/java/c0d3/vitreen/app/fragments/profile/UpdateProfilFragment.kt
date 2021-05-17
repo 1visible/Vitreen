@@ -12,7 +12,7 @@ class UpdateProfilFragment : VFragment(
     layoutId = R.layout.fragment_update_profil,
     topIcon = R.drawable.bigicon_profile,
     requireAuth = true,
-    loginNavigationId = R.id.from_profile_to_login
+    loginNavigationId = R.id.from_update_profile_to_login
 ) {
 
     private var oldUser: User? = null
@@ -46,7 +46,6 @@ class UpdateProfilFragment : VFragment(
         })
         buttonUpdate.setOnClickListener {
             if (isAnyRequiredInputEmpty(
-                    editTextEmail,
                     editTextUsername,
                     editTextPhoneNumber,
                     editTextLocation
@@ -57,21 +56,7 @@ class UpdateProfilFragment : VFragment(
                     editTextSiret
                 ))
             ) return@setOnClickListener
-            if ((!isAnyRequiredInputEmpty(editTextOldPassword) || !isAnyRequiredInputEmpty(
-                    editTextNewPassword
-                )) && (isAnyRequiredInputEmpty(editTextOldPassword, editTextNewPassword))
-            ) return@setOnClickListener
-            if ((!isAnyRequiredInputEmpty(
-                    editTextOldPassword,
-                    editTextNewPassword
-                )) && (inputToString(editTextOldPassword).equals(inputToString(editTextNewPassword)))
-            ) {
-                showSnackbarMessage(R.string.passwords_equals)
-                return@setOnClickListener
-            }
             if (hasAnyChanged(oldUser!!, this.user!!)) {
-                if (!inputToString(editTextEmail)!!.equals(this.user!!.emailAddress)) this.user!!.emailAddress =
-                    inputToString(editTextEmail)!!
                 if (!inputToString(editTextUsername)!!.equals(this.user!!.username)) this.user!!.username =
                     inputToString(editTextUsername)!!
                 if (!inputToString(editTextPhoneNumber)!!.equals(this.user!!.phoneNumber)) this.user!!.phoneNumber =
@@ -110,6 +95,13 @@ class UpdateProfilFragment : VFragment(
                         inputToString(editTextSiret)!!
                 }
 
+                viewModel.updateUser(this.user!!).observeOnce(viewLifecycleOwner, { exception ->
+                    if (exception != -1) {
+                        showSnackbarMessage(R.string.update_profil_failed)
+                        return@observeOnce
+                    }
+                    showSnackbarMessage(R.string.update_profil_OK)
+                })
             }
             navigateTo(R.id.from_update_profile_to_profile)
         }
@@ -120,7 +112,6 @@ class UpdateProfilFragment : VFragment(
     }
 
     private fun fillFields() {
-        editTextEmail.editText?.setText(this.user!!.emailAddress)
         editTextUsername.editText?.setText(this.user!!.username)
         editTextPhoneNumber.editText?.setText(this.user!!.phoneNumber)
         editTextLocation.editText?.setText(this.user!!.location.city)
@@ -138,10 +129,10 @@ class UpdateProfilFragment : VFragment(
             editTextSiret.visibility = View.GONE
         }
         switchProfessionalAccount.setOnClickListener {
-            if(switchProfessionalAccount.isChecked){
+            if (switchProfessionalAccount.isChecked) {
                 editTextCompany.visibility = View.VISIBLE
                 editTextSiret.visibility = View.VISIBLE
-            }else{
+            } else {
                 editTextCompany.visibility = View.GONE
                 editTextSiret.visibility = View.GONE
             }

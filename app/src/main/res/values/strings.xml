@@ -171,4 +171,9 @@
     <string name="new_password">Nouveau Mot de passe</string>
     <string name="update">Mettre à jour</string>
     <string name="passwords_equals">Votre nouveau Mot de passe doit être différent</string>
+    <string name="update_profil_failed">La mise à jour du profil a échoué</string>
+    <string name="update_password_OK">Votre mot de passe a bien été mis à jour</string>
+    <string name="update_profil_OK">Les informations de votre profils ont bien été mise à jour</string>
+    <string name="update_email_OK">Votre adresse mail a bien été mise à jour</string>
+    <string name="old_password_required">Pour modifer votre adresse mail vous devez entrez votre mot de passe dans le champs Ancien Mot de Passe</string>
 </resources>

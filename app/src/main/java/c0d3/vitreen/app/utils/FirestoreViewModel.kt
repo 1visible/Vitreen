@@ -11,6 +11,8 @@ import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -27,7 +29,8 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     val user: MutableLiveData<Pair<Int, User>> = state.getLiveData("user")
     val categories: MutableLiveData<Pair<Int, List<Category>>> = state.getLiveData("categories")
     val locations: MutableLiveData<Pair<Int, List<Location>>> = state.getLiveData("locations")
-    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> = state.getLiveData("discussions") // TODO changer en Transformations sur user
+    val discussions: MutableLiveData<Pair<Int, List<Discussion>>> =
+        state.getLiveData("discussions") // TODO changer en Transformations sur user
 
     // var discussionsLiveData = MutableLiveData<Pair<Int, List<Discussion>>>()
 
@@ -42,7 +45,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
     private fun isUserAvailable(): Boolean {
         user.value?.let { (exception, user) ->
-            if(exception == -1 && user.emailAddress.isNotEmpty())
+            if (exception == -1 && user.emailAddress.isNotEmpty())
                 return true
         }
 
@@ -52,9 +55,9 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     fun setUserState(isUserSignedIn: Boolean, email: String? = null) {
         this.isUserSignedIn = isUserSignedIn
 
-        when(isUserSignedIn) {
+        when (isUserSignedIn) {
             false -> user.value = R.string.SignedOutException to User()
-            true -> if(!isUserAvailable()) email?.let { mail -> getUser(mail) }
+            true -> if (!isUserAvailable()) email?.let { mail -> getUser(mail) }
         }
     }
 
@@ -70,7 +73,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
 
-            if(products.isEmpty()) {
+            if (products.isEmpty()) {
                 productsContainer.value = ProductsContainer(exception, list)
                 return@addSnapshotListener
             }
@@ -78,11 +81,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             products.forEach { product ->
                 val path = product.imagesPaths.firstOrNull()
 
-                if(path == null) {
+                if (path == null) {
                     list.add(product to null)
                     productsTaskCounter++
 
-                    if(productsTaskCounter == products.size)
+                    if (productsTaskCounter == products.size)
                         productsContainer.value = ProductsContainer(exception, list)
 
                     return@forEach
@@ -92,8 +95,8 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     val bytes = task.result
                     var bitmap: Bitmap? = null
 
-                    if(!task.isSuccessful || bytes == null) {
-                        if(exception == -1)
+                    if (!task.isSuccessful || bytes == null) {
+                        if (exception == -1)
                             exception = R.string.ImageNotFoundException
                     } else
                         bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -126,16 +129,17 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                 val document: QueryDocumentSnapshot = value.first()
                 user = toObject(document, User::class.java)
 
-                if(user.location.zipCode == null)
+                if (user.location.zipCode == null)
                     locations.value?.second?.let { locations ->
-                        val location = locations.firstOrNull { loc -> loc.city == user.location.city }
+                        val location =
+                            locations.firstOrNull { loc -> loc.city == user.location.city }
 
                         location?.zipCode?.let { zipCode ->
                             user.location.zipCode = zipCode
                             repository.updateUserLocation(document.id, zipCode)
                         }
                     }
-            } else if(exception == -1)
+            } else if (exception == -1)
                 exception = R.string.NotFoundException
 
             this.user.value = exception to user
@@ -154,7 +158,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
             if (value != null) {
                 user = toObject(value, User::class.java)
-            } else if(exception == -1)
+            } else if (exception == -1)
                 exception = R.string.NotFoundException
 
             userLiveData.value = exception to user
@@ -203,7 +207,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         var exception = -1
         var imagesTaskCounter = 0
 
-        if(imagesPaths.isEmpty()) {
+        if (imagesPaths.isEmpty()) {
             productContainer.value = ProductContainer(exception, product, images)
             return productContainer
         }
@@ -212,7 +216,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             repository.getImage(path).addOnCompleteListener { task ->
                 val bytes = task.result
 
-                if(!task.isSuccessful || bytes == null)
+                if (!task.isSuccessful || bytes == null)
                     exception = R.string.ImageNotFoundException
                 else {
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -229,9 +233,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productContainer
     }
 
-    fun updateProduct(product: Product):LiveData<Int> {
+    fun updateProduct(product: Product): LiveData<Int> {
         return request(repository.updateProduct(product))
     }
+
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
         return request(repository.updateLocation(locationId, zipCode))
     }
@@ -252,13 +257,16 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return request(repository.addLocation(location))
     }
 
-    private fun addProductImages(product: Product, images: ArrayList<InputStream>): LiveData<Pair<Int, Product>> {
+    private fun addProductImages(
+        product: Product,
+        images: ArrayList<InputStream>
+    ): LiveData<Pair<Int, Product>> {
         val productLiveData = MutableLiveData<Pair<Int, Product>>()
         val folder = UUID.randomUUID().toString()
         var imagesTaskCounter = 0
         var exception = -1
 
-        if(images.isEmpty()) {
+        if (images.isEmpty()) {
             productLiveData.value = exception to product
             return productLiveData
         }
@@ -267,14 +275,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             val path = "${folder}/${UUID.randomUUID()}"
 
             repository.addImage(path, image).addOnCompleteListener { task ->
-                if(task.isSuccessful)
+                if (task.isSuccessful)
                     product.imagesPaths.add(path)
                 else
                     exception = R.string.ImageNotAddedException
 
                 imagesTaskCounter++
 
-                if(imagesTaskCounter == images.size)
+                if (imagesTaskCounter == images.size)
                     productLiveData.value = exception to product
             }
         }
@@ -299,12 +307,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         repository.addProduct(product).addOnCompleteListener { task ->
             val productData = task.result
-            var exception2 = if (task.isSuccessful && productData != null) -1 else R.string.NetworkException
+            var exception2 =
+                if (task.isSuccessful && productData != null) -1 else R.string.NetworkException
 
-            if(productData != null)
+            if (productData != null)
                 product.id = productData.id
 
-            if(exception2 == -1 && exception != -1)
+            if (exception2 == -1 && exception != -1)
                 exception2 = exception
 
             productLiveData.value = exception2 to product
@@ -312,7 +321,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         return productLiveData
     }
-    
+
     fun deleteProduct(id: String, imagesPaths: ArrayList<String>): LiveData<Int> {
         deleteImages(imagesPaths)
 
@@ -322,7 +331,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private fun deleteProducts(ownerId: String?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
-        if(ownerId == null) {
+        if (ownerId == null) {
             exceptionLiveData.value = R.string.NotFoundException
             return exceptionLiveData
         }
@@ -331,7 +340,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             var exception = if (task.isSuccessful) -1 else R.string.ProductNotDeletedException
             val products = task.result
 
-            if(products == null || products.isEmpty)
+            if (products == null || products.isEmpty)
                 exceptionLiveData.value = exception
             else
                 products.let { docs ->
@@ -344,9 +353,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     }
 
                     repository.deleteProducts(*ids).addOnCompleteListener { task2 ->
-                        val exception2 = if (task2.isSuccessful) -1 else R.string.ProductNotDeletedException
+                        val exception2 =
+                            if (task2.isSuccessful) -1 else R.string.ProductNotDeletedException
 
-                        if(exception == -1 && exception2 != -1)
+                        if (exception == -1 && exception2 != -1)
                             exception = exception2
 
                         exceptionLiveData.value = exception
@@ -395,9 +405,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         repository.addDiscussion(discussion).addOnCompleteListener { task ->
             val discussionData = task.result
-            val exception = if (task.isSuccessful && discussionData != null) -1 else R.string.NetworkException
+            val exception =
+                if (task.isSuccessful && discussionData != null) -1 else R.string.NetworkException
 
-            if(discussionData != null)
+            if (discussionData != null)
                 discussion.id = discussionData.id
 
             discussionLiveData.value = exception to discussion
@@ -428,11 +439,18 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }?.id
     }
 
-    fun resetPassword(email:String):LiveData<Int>{
+    fun resetPassword(email: String): LiveData<Int> {
         return request(repository.resetPassword(email))
     }
 
-    private inline fun <reified T : Entity> requestList(query: Query, liveData: MutableLiveData<Pair<Int, List<T>>>): LiveData<Pair<Int, List<T>>> {
+    fun updateUser(user: User): LiveData<Int> {
+        return request(repository.updateUser(user))
+    }
+
+    private inline fun <reified T : Entity> requestList(
+        query: Query,
+        liveData: MutableLiveData<Pair<Int, List<T>>>
+    ): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
             val exception = if (error == null) -1 else R.string.NetworkException
             val values: ArrayList<T> = ArrayList()
@@ -451,7 +469,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private fun <T> request(request: Task<T>?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
-        if(request == null) {
+        if (request == null) {
             exceptionLiveData.value = R.string.NotFoundException
             return exceptionLiveData
         }
@@ -464,11 +482,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return exceptionLiveData
     }
 
-    private inline fun <reified T : Entity> toObject(document: DocumentSnapshot, @NonNull type: Class<T>): T {
+    private inline fun <reified T : Entity> toObject(
+        document: DocumentSnapshot,
+        @NonNull type: Class<T>
+    ): T {
         val value: T
         val obj = document.toObject(type)
 
-        if(obj == null)
+        if (obj == null)
             value = T::class.java.newInstance()
         else {
             obj.id = document.id
@@ -478,7 +499,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return value
     }
 
-    private inline fun <reified T : Entity> toObjects(documents: QuerySnapshot?, @NonNull type: Class<T>): List<T> {
+    private inline fun <reified T : Entity> toObjects(
+        documents: QuerySnapshot?,
+        @NonNull type: Class<T>
+    ): List<T> {
         val value = ArrayList<T>()
 
         documents?.forEach { document ->
@@ -494,15 +518,28 @@ class ProductContainer(
     val product: Product,
     val images: ArrayList<Bitmap>
 ) {
-    operator fun component1(): Int { return exception }
-    operator fun component2(): Product { return product }
-    operator fun component3(): ArrayList<Bitmap> { return images }
+    operator fun component1(): Int {
+        return exception
+    }
+
+    operator fun component2(): Product {
+        return product
+    }
+
+    operator fun component3(): ArrayList<Bitmap> {
+        return images
+    }
 }
 
 class ProductsContainer(
     val exception: Int,
     val products: List<Pair<Product, Bitmap?>>
 ) {
-    operator fun component1(): Int { return exception }
-    operator fun component2(): List<Pair<Product, Bitmap?>> { return products }
+    operator fun component1(): Int {
+        return exception
+    }
+
+    operator fun component2(): List<Pair<Product, Bitmap?>> {
+        return products
+    }
 }
