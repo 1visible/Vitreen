@@ -144,7 +144,7 @@ class Adding2Fragment : VFragment(
             if(uriList.isEmpty())
                 return@setOnClickListener
 
-            imageIndex = if (imageIndex <= 0) (uriList.size - 1) else imageIndex--
+            imageIndex = if (imageIndex-- <= 0) (uriList.size - 1) else imageIndex--
             imageViewProduct.setImageURI(uriList[imageIndex])
         }
 
@@ -153,7 +153,7 @@ class Adding2Fragment : VFragment(
             if(uriList.isEmpty())
                 return@setOnClickListener
 
-            imageIndex = if (imageIndex >= uriList.size - 1) 0 else imageIndex++
+            imageIndex = if (imageIndex++ >= uriList.size - 1) 0 else imageIndex++
             imageViewProduct.setImageURI(uriList[imageIndex])
         }
 
