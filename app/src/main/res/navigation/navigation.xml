@@ -67,6 +67,10 @@
         <action
             android:id="@+id/from_profile_to_product"
             app:destination="@id/navigation_product" />
+
+        <action
+            android:id="@+id/from_profile_to_update_profile"
+            app:destination="@id/navigation_update_profil" />
     </fragment>
 
     <fragment
@@ -96,8 +100,7 @@
         android:id="@+id/navigation_search"
         android:name="c0d3.vitreen.app.fragments.home.SearchFragment"
         android:label="@string/label_search"
-        tools:layout="@layout/fragment_search">
-    </fragment>
+        tools:layout="@layout/fragment_search"></fragment>
 
     <fragment
         android:id="@+id/navigation_register1"
@@ -178,8 +181,7 @@
             app:destination="@id/navigation_modify2" />
         <action
             android:id="@+id/from_modify1_to_login"
-            app:destination="@id/navigation_login"
-            />
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
@@ -192,8 +194,21 @@
             app:destination="@id/navigation_product" />
         <action
             android:id="@+id/from_modify2_to_login"
-            app:destination="@id/navigation_login"
-            />
+            app:destination="@id/navigation_login" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_update_profil"
+        android:name="c0d3.vitreen.app.fragments.profile.UpdateProfilFragment"
+        android:label="@string/label_update_profil"
+        tools:layout="@layout/fragment_update_profil">
+        <action
+            android:id="@+id/from_update_profile_to_login"
+            app:destination="@id/navigation_login" />
+
+        <action
+            android:id="@+id/from_update_profile_to_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
 </navigation>

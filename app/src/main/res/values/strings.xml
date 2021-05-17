@@ -165,4 +165,10 @@
     <string name="label_modify2">Modifier un produit (2/2)</string>
     <string name="modifyButton">Modifier</string>
     <string name="send_email">Un email a été envoyé</string>
+    <string name="label_update_profil">Modifier le profil</string>
+    <string name="update_profile">Modifier mon profil</string>
+    <string name="old_password">Ancien Mot de passe</string>
+    <string name="new_password">Nouveau Mot de passe</string>
+    <string name="update">Mettre à jour</string>
+    <string name="passwords_equals">Votre nouveau Mot de passe doit être différent</string>
 </resources>

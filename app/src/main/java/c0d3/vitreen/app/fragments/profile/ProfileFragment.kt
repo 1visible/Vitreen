@@ -92,6 +92,9 @@ class ProfileFragment : VFragment(
                 goBack()
                 return@observe
             }
+            buttonUpdateProfile.setOnClickListener {
+                navigateTo(R.id.from_profile_to_update_profile)
+            }
         })
 
 
