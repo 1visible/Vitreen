@@ -1,112 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:overScrollMode="never"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragments.modify.Modify1Fragment">
+    android:fillViewport="true"
+    tools:context=".fragments.modify.Modify1Fragment" >
 
-    <!-- Title input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextTitle"
+    <!-- Fragment container -->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_header"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/product_name" >
-        <com.google.android.material.textfield.TextInputEditText
+        android:paddingBottom="100dp" >
+
+        <!-- Top view -->
+        <c0d3.vitreen.app.utils.TopView
+            android:id="@+id/topView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:icon="@drawable/bigicon_authentification"
+            app:title="@string/welcome" />
 
-    <!-- Category input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputCategory"
-        style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_category"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/product_category" >
-        <AutoCompleteTextView
+        <!-- Main content -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            tools:ignore="LabelFor" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginBottom="@dimen/spacing_lg"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:layout_marginRight="@dimen/spacing_md" >
 
-    <!-- Price input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_money"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/product_price" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Title input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:startIconDrawable="@drawable/ic_header"
+                app:helperText="@string/required_input"
+                app:helperTextEnabled="true"
+                app:errorEnabled="true"
+                android:hint="@string/product_name" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Location input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
-        app:startIconDrawable="@drawable/ic_location"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        android:hint="@string/product_location" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Category input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputCategory"
+                style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:startIconDrawable="@drawable/ic_category"
+                app:helperText="@string/required_input"
+                app:helperTextEnabled="true"
+                app:errorEnabled="true"
+                android:hint="@string/product_category" >
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Description input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:helperText="@string/required_input"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        app:counterEnabled="true"
-        app:counterMaxLength="200"
-        android:layout_marginBottom="@dimen/spacing_lg"
-        android:hint="@string/product_description" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:gravity="top|start"
-            android:minLines="5"
-            android:maxLength="200"
-            android:overScrollMode="always"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            android:scrollHorizontally="false" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Price input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:startIconDrawable="@drawable/ic_money"
+                app:helperText="@string/required_input"
+                app:helperTextEnabled="true"
+                app:errorEnabled="true"
+                android:hint="@string/product_price" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonToAdding2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/next" />
+            <!-- Location input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:startIconDrawable="@drawable/ic_location"
+                app:helperText="@string/required_input"
+                app:helperTextEnabled="true"
+                app:errorEnabled="true"
+                android:hint="@string/product_location" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+            <!-- Description input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:helperText="@string/required_input"
+                app:helperTextEnabled="true"
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="200"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:hint="@string/product_description" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:gravity="top|start"
+                    android:minLines="5"
+                    android:maxLength="200"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:scrollHorizontally="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonToAdding2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

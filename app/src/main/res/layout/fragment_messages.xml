@@ -5,57 +5,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.messages.MessagesFragment">
-    
-    <LinearLayout
-        android:id="@+id/messagesDetails"
+    android:paddingBottom="100dp"
+    tools:context=".fragments.messages.MessagesFragment" >
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Messages -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="@dimen/spacing_md" >
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewMessages"
-                android:overScrollMode="never"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        </ScrollView>
-
+        <!-- Fragment container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextMessage"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <!-- Top view -->
+            <c0d3.vitreen.app.utils.TopView
+                android:id="@+id/topView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/write_message" >
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:icon="@drawable/bigicon_messages"
+                app:title="@string/welcome" />
 
-            <ImageButton
-                android:id="@+id/buttonSendMessage"
-                android:layout_width="wrap_content"
+            <!-- Messages -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMessages"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_md"
-                android:layout_marginStart="@dimen/spacing_md"
-                android:src="@drawable/menu_icon_messages"
-                tools:ignore="ContentDescription" />
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginRight="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_md"
+        android:layout_marginRight="@dimen/spacing_md"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/write_message">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/buttonSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:src="@drawable/menu_icon_messages"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 

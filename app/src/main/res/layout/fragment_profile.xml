@@ -1,158 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:overScrollMode="never"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.profile.ProfileFragment">
+    android:fillViewport="true"
+    tools:context=".fragments.profile.ProfileFragment" >
 
+    <!-- Fragment container -->
     <LinearLayout
-        android:id="@+id/profileDetails"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingBottom="100dp" >
 
-        <TextView
-            android:id="@+id/textViewPersonalInformations"
+        <!-- Top view -->
+        <c0d3.vitreen.app.utils.TopView
+            android:id="@+id/topView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:text="@string/personal_informations"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            app:icon="@drawable/bigicon_profile"
+            app:title="@string/welcome" />
 
-        <TextView
-            android:id="@+id/textViewUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/ic_user"
-            android:drawableLeft="@drawable/ic_user"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/username"
-            tools:ignore="UseCompatTextViewDrawableXml" />
-
-        <TextView
-            android:id="@+id/textViewEmailAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/ic_envelope"
-            android:drawableLeft="@drawable/ic_envelope"
-            android:drawableEnd="@drawable/ic_checkmark"
-            android:drawableRight="@drawable/ic_checkmark"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/email_address"
-            tools:ignore="UseCompatTextViewDrawableXml" />
-
-        <TextView
-            android:id="@+id/textViewPhoneNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/ic_phone"
-            android:drawableLeft="@drawable/ic_phone"
-            android:drawableEnd="@drawable/ic_checkmark"
-            android:drawableRight="@drawable/ic_checkmark"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/phone_number"
-            tools:ignore="UseCompatTextViewDrawableXml" />
-
-        <TextView
-            android:id="@+id/textViewPostalAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_location"
-            android:drawableLeft="@drawable/ic_location"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/postal_address"
-            tools:ignore="UseCompatTextViewDrawableXml" />
-
-        <TextView
-            android:id="@+id/textViewProfessionalInformations"
+        <!-- Main content -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_lg"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:text="@string/professional_informations"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_lg"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:layout_marginRight="@dimen/spacing_md" >
 
-        <TextView
-            android:id="@+id/textViewCompanyName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_sm"
-            android:drawableStart="@drawable/ic_company"
-            android:drawableLeft="@drawable/ic_company"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/company_name"
-            tools:ignore="UseCompatTextViewDrawableXml" />
+            <LinearLayout
+                android:id="@+id/profileDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewSiretNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_number"
-            android:drawableLeft="@drawable/ic_number"
-            android:drawablePadding="@dimen/spacing_sm"
-            android:text="@string/siret_number"
-            tools:ignore="UseCompatTextViewDrawableXml" />
+                <TextView
+                    android:id="@+id/textViewPersonalInformations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    android:text="@string/personal_informations"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textViewMyProducts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:text="@string/my_products"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textViewUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:drawableStart="@drawable/ic_user"
+                    android:drawableLeft="@drawable/ic_user"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/username"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
 
-        <TextView
-            android:id="@+id/textViewNoProducts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/nothing_here" />
+                <TextView
+                    android:id="@+id/textViewEmailAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:drawableStart="@drawable/ic_envelope"
+                    android:drawableLeft="@drawable/ic_envelope"
+                    android:drawableEnd="@drawable/ic_checkmark"
+                    android:drawableRight="@drawable/ic_checkmark"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/email_address"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewProducts"
-            android:overScrollMode="never"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                <TextView
+                    android:id="@+id/textViewPhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:drawableStart="@drawable/ic_phone"
+                    android:drawableLeft="@drawable/ic_phone"
+                    android:drawableEnd="@drawable/ic_checkmark"
+                    android:drawableRight="@drawable/ic_checkmark"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/phone_number"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDeleteAccount"
-            style="@style/Vitreen.Button.Outline.Error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:text="@string/delete_account" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonUpdateProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:text="@string/update_profile" />
+                <TextView
+                    android:id="@+id/textViewPostalAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawableLeft="@drawable/ic_location"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/postal_address"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
+
+                <TextView
+                    android:id="@+id/textViewProfessionalInformations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    android:text="@string/professional_informations"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewCompanyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_sm"
+                    android:drawableStart="@drawable/ic_company"
+                    android:drawableLeft="@drawable/ic_company"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/company_name"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
+
+                <TextView
+                    android:id="@+id/textViewSiretNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_number"
+                    android:drawableLeft="@drawable/ic_number"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="@string/siret_number"
+                    tools:ignore="UseCompatTextViewDrawableXml" />
+
+                <TextView
+                    android:id="@+id/textViewMyProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    android:text="@string/my_products"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewNoProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/nothing_here" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewProducts"
+                    android:overScrollMode="never"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonDeleteAccount"
+                    style="@style/Vitreen.Button.Outline.Error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:text="@string/delete_account" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonUpdateProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lg"
+                    android:text="@string/update_profile" />
+
+            </LinearLayout>
+
+            <!-- Loading spinner -->
+            <include
+                layout="@layout/loading_spinner"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
-    <!-- Loading spinner -->
-    <include
-        layout="@layout/loading_spinner"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

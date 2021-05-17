@@ -211,7 +211,7 @@
         android:id="@+id/navigation_update_profil"
         android:name="c0d3.vitreen.app.fragments.profile.UpdateProfilFragment"
         android:label="@string/label_update_profil"
-        tools:layout="@layout/fragment_update_profil">
+        tools:layout="@layout/fragment_update">
         <action
             android:id="@+id/from_update_profile_to_login"
             app:destination="@id/navigation_login" />
