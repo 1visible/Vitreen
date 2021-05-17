@@ -86,6 +86,8 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             }
             val list = arrayListOf<Pair<Product, Bitmap?>>()
             var products = toObjects(value, Product::class.java)
+            if(search.priceMin!=null)products = products.filter { product -> product.price >= search.priceMin }
+            if(search.priceMax!=null)products = products.filter { product -> product.price <= search.priceMax }
             var productsTaskCounter = 0
 
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
