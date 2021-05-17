@@ -10,13 +10,13 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import c0d3.vitreen.app.utils.Constants.Companion.VTAG
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
+import com.firebase.ui.auth.util.FirebaseAuthError
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.*
+import com.google.firebase.firestore.*
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException
 import java.io.InputStream
 import java.util.*
 
@@ -475,7 +475,31 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
 
         request.addOnCompleteListener { task ->
-            val exception = if (task.isSuccessful) -1 else R.string.NetworkException
+            var exception = if (task.isSuccessful) -1 else R.string.NetworkException
+            when(task.exception){
+                is FirebaseAuthInvalidCredentialsException -> exception = R.string.password_email_exception
+                is FirebaseAuthInvalidUserException -> exception = R.string.invalid_user_exception
+                is FirebaseAuthUserCollisionException -> exception = R.string.conflict_user_exception
+                is FirebaseAuthEmailException -> exception = R.string.auth_email_exception
+                is FirebaseAuthActionCodeException -> exception = R.string.expired_code_exception
+                is FirebaseAuthWeakPasswordException -> exception = R.string.weak_password_exception
+                is FirebaseAuthWebException -> exception = R.string.incomplete_operation_exception
+                is FirebaseAuthException -> exception = R.string.AuthentificationException
+                is FirebaseNetworkException -> exception = R.string.NetworkException
+                is FirebaseNoSignedInUserException -> exception = R.string.sign_in_user_exception
+                is FirebaseFirestoreException -> {
+                    val currentException = task.exception as FirebaseFirestoreException
+                    when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
+                        FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
+                        FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
+                        FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
+                        FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
+                    }
+                }
+            }
             exceptionLiveData.value = exception
         }
 

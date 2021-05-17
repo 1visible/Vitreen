@@ -176,4 +176,18 @@
     <string name="update_profil_OK">Les informations de votre profils ont bien été mise à jour</string>
     <string name="update_email_OK">Votre adresse mail a bien été mise à jour</string>
     <string name="old_password_required">Pour modifer votre adresse mail vous devez entrez votre mot de passe dans le champs Ancien Mot de Passe</string>
+    <string name="password_email_exception">Adresse e-mail ou Mot de Passe incorrect</string>
+    <string name="invalid_user_exception">Utilisateur invalide</string>
+    <string name="conflict_user_exception">Un utilisateur identique existe déjà</string>
+    <string name="auth_email_exception">L\'envoi du mail a échoué</string>
+    <string name="expired_code_exception">Le code est incorrect ou à expirer</string>
+    <string name="weak_password_exception">Renforcez la sécurité de votre mot de passe</string>
+    <string name="incomplete_operation_exception">L\'opération n\'a pas pu aboutir</string>
+    <string name="sign_in_user_exception">Veuillez vous connecter</string>
+    <string name="aborted">L\'opération a été annulée</string>
+    <string name="canceled">L\'opération a été annulée</string>
+    <string name="data_loss_exception">Impossible de récupérer les données à cause d'une corruption ou perte des données</string>
+    <string name="already_exist_exception">Les données que vous souhaitez créer existent déjà</string>
+    <string name="internal_exception">Une erreur interne s\'est produite</string>
+    <string name="unknown_exception">Une erreur inconnue s\'est produite</string>
 </resources>
