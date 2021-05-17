@@ -67,7 +67,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
         query.addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.firestore_exception
-            when(error!!.code){
+            when(error?.code){
                 FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
                 FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
                 FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
@@ -134,7 +134,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     private fun getUser(email: String): LiveData<Pair<Int, User>> {
         repository.getUser(email).addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.firestore_exception
-            when(error!!.code){
+            when(error?.code){
                 FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
                 FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
                 FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
@@ -609,7 +609,7 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     ): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
             var exception = if (error == null) -1 else R.string.firestore_exception
-            when(error!!.code){
+            when(error?.code){
                 FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
                 FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
                 FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
