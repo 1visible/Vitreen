@@ -6,7 +6,7 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.VFragment
-import kotlinx.android.synthetic.main.fragment_update_profil.*
+import kotlinx.android.synthetic.main.fragment_update.*
 
 class UpdateProfilFragment : VFragment(
     layoutId = R.layout.fragment_update,
