@@ -5,7 +5,7 @@
   </a>
 
   <p align="center">
-    A University shopping project for Android !
+    A University classified ads project for Android !
     <br />
   <a href="https://github.com/1visible/Vitreen#usage"><strong>View Demo</strong></a>
     •
@@ -32,7 +32,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Vitreen is a mobile app available on Android... [INSERT DESCRIPTION HERE]. This project was carried out as a team during our training in M1 Computer Science at the University of Montpellier.
+Vitreen is an online classified ads mobile application project for individuals or professionals. Its goal is to allow users to put back in the showcase the objects they want to get rid of in order to give them a second life.
+Vitreen differs from other applications by its ability to accommodate inventory in a warehouse, avoiding waste, particularly due to the inability of companies to carry out their destocking.
+This project was carried out as a team during our training in M1 Computer Science at the University of Montpellier.
 If you want more details on the realization of this project, do not hesitate to consult our project report in french [here](https://github.com/1visible/Vitreen/blob/master/report/Vitreen%20report.pdf).
 
 ### Tools used
