@@ -42,81 +42,89 @@ class Modify2Fragment : VFragment(
             || productLocation == null
             || productCategory == null
             || productCategory !is Category
-            || productDescription == null) {
+            || productDescription == null
+        ) {
             showSnackbarMessage(R.string.error_placeholder)
             goBack()
             return
         }
 
-        if (viewModel.product.brand != null)
-            editTextBrand.editText?.setText(viewModel.product.brand)
+        try {
+            if (viewModel.product.brand != null)
+                editTextBrand.editText?.setText(viewModel.product.brand)
 
-        if (viewModel.product.size != null)
-            editTextDimensions.editText?.setText(viewModel.product.size)
+            if (viewModel.product.size != null)
+                editTextDimensions.editText?.setText(viewModel.product.size)
 
-        relativeLayoutProduct.visibility = View.GONE
-        buttonAddImage.visibility = View.GONE
+            relativeLayoutProduct.visibility = View.GONE
+            buttonAddImage.visibility = View.GONE
 
-        buttonConfirmation.setOnClickListener {
-            val product = Product(
-                viewModel.product.title,
-                viewModel.product.description,
-                viewModel.product.price,
-                viewModel.product.brand,
-                viewModel.product.size,
-                viewModel.product.consultations,
-                viewModel.product.reporters,
-                viewModel.product.location,
-                viewModel.product.category,
-                viewModel.product.imagesPaths,
-                viewModel.product.ownerId,
-                viewModel.product.modifiedAt
-            )
+            buttonConfirmation.setOnClickListener {
+                val product = Product(
+                    viewModel.product.title,
+                    viewModel.product.description,
+                    viewModel.product.price,
+                    viewModel.product.brand,
+                    viewModel.product.size,
+                    viewModel.product.consultations,
+                    viewModel.product.reporters,
+                    viewModel.product.location,
+                    viewModel.product.category,
+                    viewModel.product.imagesPaths,
+                    viewModel.product.ownerId,
+                    viewModel.product.modifiedAt
+                )
 
-            val productBrand = inputToString(editTextBrand)
-            val productDimensions = inputToString(editTextDimensions)
+                val productBrand = inputToString(editTextBrand)
+                val productDimensions = inputToString(editTextDimensions)
 
-            if (viewModel.product.title != productTitle)
-                viewModel.product.title = productTitle!!
+                if (viewModel.product.title != productTitle)
+                    viewModel.product.title = productTitle!!
 
-            if (viewModel.product.category != productCategory)
-                viewModel.product.category = productCategory!!
+                if (viewModel.product.category != productCategory)
+                    viewModel.product.category = productCategory!!
 
-            if (viewModel.product.price != productPrice!!.toDouble())
-                viewModel.product.price = productPrice!!.toDouble()
+                if (viewModel.product.price != productPrice!!.toDouble())
+                    viewModel.product.price = productPrice!!.toDouble()
 
-            if (viewModel.product.description != productDescription)
-                viewModel.product.description = productDescription!!
+                if (viewModel.product.description != productDescription)
+                    viewModel.product.description = productDescription!!
 
-            if (viewModel.product.location.city != productLocation) {
-                viewModel.getLocation(productLocation!!).observeOnce(viewLifecycleOwner, { (exception, location) ->
-                    // If the call fails, show error message
-                    if (exception != -1 && exception != R.string.NotFoundException) {
-                        showSnackbarMessage(exception)
-                        return@observeOnce
-                    }
+                if (viewModel.product.location.city != productLocation) {
+                    viewModel.getLocation(productLocation!!)
+                        .observeOnce(viewLifecycleOwner, { (exception, location) ->
+                            // If the call fails, show error message
+                            if (exception != -1 && exception != R.string.NotFoundException) {
+                                showSnackbarMessage(exception)
+                                return@observeOnce
+                            }
 
-                    // Else if location could not be found, create new location
-                    if (exception == R.string.NotFoundException) {
-                        location.city = productLocation!!
-                        location.zipCode = null
-                        viewModel.addLocation(location)
-                    }
+                            // Else if location could not be found, create new location
+                            if (exception == R.string.NotFoundException) {
+                                location.city = productLocation!!
+                                location.zipCode = null
+                                viewModel.addLocation(location)
+                            }
 
-                    viewModel.product.location = location
-                })
+                            viewModel.product.location = location
+                        })
+                }
+
+                if (viewModel.product.brand != productBrand)
+                    viewModel.product.brand = productBrand
+
+                if (viewModel.product.size != productDimensions)
+                    viewModel.product.size = productDimensions
+
+                if (isProductChanged(product, viewModel.product))
+                    viewModel.updateProduct(viewModel.product)
+
+                navigateTo(R.id.from_modify2_to_product)
             }
-
-            if (viewModel.product.brand != productBrand)
-                viewModel.product.brand = productBrand
-
-            if (viewModel.product.size != productDimensions)
-                viewModel.product.size = productDimensions
-
-            if (isProductChanged(product, viewModel.product))
-                viewModel.updateProduct(viewModel.product)
-
-            navigateTo(R.id.from_modify2_to_product)
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.error_placeholder)
+            goBack()
+            return
         }
     }
 
