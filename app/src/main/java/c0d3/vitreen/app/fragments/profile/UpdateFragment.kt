@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.fragment_update.*
 
 class UpdateFragment : VFragment(
     layoutId = R.layout.fragment_update,
-    topIcon = R.drawable.bigicon_profile,
     requireAuth = true,
     loginNavigationId = R.id.from_update_profile_to_login
 ) {

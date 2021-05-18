@@ -16,8 +16,7 @@ import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.loading_spinner.*
 
 class DiscussionsFragment: VFragment(
-    layoutId = R.layout.fragment_discussions,
-    topIcon = R.drawable.bigicon_messages
+    layoutId = R.layout.fragment_discussions
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -18,9 +18,7 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 
 class SearchFragment : VFragment(
-    layoutId = R.layout.fragment_search,
-    topIcon = R.drawable.bigicon_logo,
-    topTitleId = R.string.welcome
+    layoutId = R.layout.fragment_search
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

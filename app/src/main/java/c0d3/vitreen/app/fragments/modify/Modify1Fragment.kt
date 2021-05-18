@@ -13,7 +13,6 @@ import java.util.*
 
 class Modify1Fragment : VFragment(
     layoutId = R.layout.fragment_modify1,
-    topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_modify1_to_login
 ) {

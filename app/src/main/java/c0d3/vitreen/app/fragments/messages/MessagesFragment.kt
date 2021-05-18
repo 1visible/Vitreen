@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 class MessagesFragment: VFragment(
     layoutId = R.layout.fragment_messages,
-    topIcon = R.drawable.bigicon_messages,
     requireAuth = true,
     loginNavigationId = R.id.from_messages_to_login
 ) {

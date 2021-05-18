@@ -17,8 +17,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.loading_spinner.*
 
 class FavoritesFragment : VFragment(
-    layoutId = R.layout.fragment_favorites,
-    topIcon = R.drawable.bigicon_favorites
+    layoutId = R.layout.fragment_favorites
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

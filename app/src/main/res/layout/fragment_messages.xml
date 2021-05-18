@@ -15,8 +15,7 @@
         android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:icon="@drawable/bigicon_messages"
-        app:title="@string/welcome" />
+        app:icon="@drawable/icon_messages" />
 
     <!-- Main content -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,9 +63,10 @@
                     android:id="@+id/buttonSendMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_md"
-                    android:layout_marginLeft="@dimen/spacing_md"
-                    android:src="@drawable/menu_icon_messages"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:layout_marginLeft="@dimen/spacing_sm"
+                    android:src="@drawable/ic_send"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>

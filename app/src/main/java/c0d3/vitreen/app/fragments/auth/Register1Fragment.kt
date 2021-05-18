@@ -9,8 +9,7 @@ import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register1.*
 
 class Register1Fragment : VFragment(
-    layoutId = R.layout.fragment_register1,
-    topIcon = R.drawable.bigicon_authentification
+    layoutId = R.layout.fragment_register1
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

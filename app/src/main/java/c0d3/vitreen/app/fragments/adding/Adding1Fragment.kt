@@ -28,7 +28,6 @@ import java.util.*
 
 class Adding1Fragment : VFragment(
     layoutId = R.layout.fragment_adding1,
-    topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_adding1_to_login
 ) {

@@ -14,13 +14,7 @@ class TopView(
     attrs: AttributeSet?
 ) : ConstraintLayout(context, attrs) {
 
-    private var title: String = ""
-        set(value) {
-            field = value
-            titleView.text = field
-        }
-
-    @DrawableRes private var icon: Int = R.drawable.bigicon_logo
+    @DrawableRes private var icon: Int = R.drawable.icon_home
         set(value) {
             field = value
             iconView.setImageDrawable(resources.getDrawable(field))
@@ -31,19 +25,9 @@ class TopView(
 
         attrs?.let {
             val styledAttributes = context.obtainStyledAttributes(it, R.styleable.TopView, 0, 0)
-            title = styledAttributes.getString(R.styleable.TopView_title).orEmpty()
-            icon = styledAttributes.getResourceId(R.styleable.TopView_icon, R.drawable.bigicon_logo)
-
-            titleView.text = title
+            icon = styledAttributes.getResourceId(R.styleable.TopView_icon, R.drawable.icon_home)
             iconView.setImageDrawable(resources.getDrawable(icon))
-
             styledAttributes.recycle()
         }
     }
-
-    fun setAttributes(title: String, @DrawableRes icon: Int) {
-        this.title = title
-        this.icon = icon
-    }
-
 }

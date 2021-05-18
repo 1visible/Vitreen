@@ -101,6 +101,7 @@
     <string name="product_reported">L\'annonce a bien été signalée !</string>
     <string name="already_reported">Vous avez déjà signalé cette annonce.</string>
     <string name="product_reference">Référence du produit</string>
+    <string name="modify_product">Modifier le produit</string>
     <string name="delete_product">Supprimer le produit</string>
     <string name="product_deleted">Le produit a été supprimé avec succès !</string>
     <!-- Statistics fragment -->

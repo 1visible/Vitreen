@@ -21,8 +21,6 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 class HomeFragment : VFragment(
     layoutId = R.layout.fragment_home,
-    topIcon = R.drawable.bigicon_logo,
-    topTitleId = R.string.welcome,
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_home
 ) {

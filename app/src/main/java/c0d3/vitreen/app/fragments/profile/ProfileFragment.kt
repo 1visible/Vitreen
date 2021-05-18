@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 class ProfileFragment : VFragment(
     layoutId = R.layout.fragment_profile,
-    topIcon = R.drawable.bigicon_profile,
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_profile,
     requireAuth = true,

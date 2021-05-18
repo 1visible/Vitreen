@@ -10,7 +10,6 @@ import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.*
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -22,7 +21,6 @@ import java.util.*
 
 class ProductFragment : VFragment(
     layoutId = R.layout.fragment_product,
-    topIcon = R.drawable.bigicon_adding,
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_product
 ) {
@@ -47,6 +45,7 @@ class ProductFragment : VFragment(
         setMenuItemVisibile(R.id.show_statistics, false)
         setMenuItemVisibile(R.id.report_product, false)
         setMenuItemVisibile(R.id.delete_product, false)
+        setMenuItemVisibile(R.id.modify_product, false)
 
         try {
             viewModel.discussions.observe(viewLifecycleOwner, { (exception, discussions) ->
@@ -75,11 +74,7 @@ class ProductFragment : VFragment(
                             setMenuItemVisibile(R.id.contact_owner, false)
                             setMenuItemVisibile(R.id.report_product, false)
                             setMenuItemVisibile(R.id.delete_product, true)
-                            buttonModify.visibility = View.VISIBLE
-                            buttonModify.setOnClickListener {
-                                viewModel.product = product
-                                navigateTo(R.id.from_product_to_modify1)
-                            }
+                            setMenuItemVisibile(R.id.modify_product, true)
                             if (user.isProfessional)
                                 setMenuItemVisibile(R.id.show_statistics, true)
                             else
@@ -90,7 +85,7 @@ class ProductFragment : VFragment(
                             setMenuItemVisibile(R.id.show_statistics, false)
                             setMenuItemVisibile(R.id.report_product, true)
                             setMenuItemVisibile(R.id.delete_product, false)
-                            buttonModify.visibility = View.GONE
+                            setMenuItemVisibile(R.id.modify_product, false)
                         }
                     } else {
                         this.user = null
@@ -101,6 +96,7 @@ class ProductFragment : VFragment(
                         setMenuItemVisibile(R.id.show_statistics, false)
                         setMenuItemVisibile(R.id.report_product, false)
                         setMenuItemVisibile(R.id.delete_product, false)
+                        setMenuItemVisibile(R.id.modify_product, false)
                     }
 
                     if (!hasConsulted) {
@@ -164,8 +160,15 @@ class ProductFragment : VFragment(
             R.id.show_statistics -> showStatistics()
             R.id.report_product -> reportProduct()
             R.id.delete_product -> deleteProduct()
+            R.id.modify_product -> modifyProduct()
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun modifyProduct(): Boolean {
+        navigateTo(R.id.from_product_to_modify1)
+
+        return true
     }
 
     private fun deleteProduct(): Boolean {

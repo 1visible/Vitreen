@@ -21,8 +21,7 @@
             android:id="@+id/topView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:icon="@drawable/bigicon_authentification"
-            app:title="@string/welcome" />
+            app:icon="@drawable/icon_profile" />
 
         <!-- Main content -->
         <LinearLayout

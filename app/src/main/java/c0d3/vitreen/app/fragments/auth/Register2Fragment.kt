@@ -24,8 +24,7 @@ import java.lang.NullPointerException
 import java.util.*
 
 class Register2Fragment : VFragment(
-    layoutId = R.layout.fragment_register2,
-    topIcon = R.drawable.bigicon_authentification
+    layoutId = R.layout.fragment_register2
 ) {
 
     private var emailAddress: String? = null

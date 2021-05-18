@@ -9,8 +9,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import java.util.*
 
 class LoginFragment : VFragment(
-    layoutId = R.layout.fragment_login,
-    topIcon = R.drawable.bigicon_authentification
+    layoutId = R.layout.fragment_login
 ) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

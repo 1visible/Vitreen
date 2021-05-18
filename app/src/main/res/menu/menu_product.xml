@@ -40,6 +40,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/modify_product"
+        android:title="@string/modify_product"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/delete_product"
         android:title="@string/delete_product"
         app:showAsAction="never" />

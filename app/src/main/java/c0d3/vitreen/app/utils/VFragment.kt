@@ -17,8 +17,6 @@ import kotlinx.android.synthetic.main.loading_spinner.*
 
 abstract class VFragment(
     @LayoutRes private val layoutId: Int,
-    @DrawableRes private val topIcon: Int,
-    @StringRes private val topTitleId: Int = -1,
     private val hasOptionsMenu: Boolean = false,
     @MenuRes private val topMenuId: Int = -1,
     private val requireAuth: Boolean = false,
@@ -51,13 +49,6 @@ abstract class VFragment(
         // Show loading spinner
         loadingSpinner?.visibility = VISIBLE
         menu = viewModel.getMenu()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
-        (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

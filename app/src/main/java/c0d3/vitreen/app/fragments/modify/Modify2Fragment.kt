@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.fragment_modify2.*
 
 class Modify2Fragment : VFragment(
     layoutId = R.layout.fragment_modify2,
-    topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_modify2_to_login
 ) {

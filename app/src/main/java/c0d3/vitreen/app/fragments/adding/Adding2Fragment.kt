@@ -37,7 +37,6 @@ import kotlin.collections.ArrayList
 
 class Adding2Fragment : VFragment(
     layoutId = R.layout.fragment_adding2,
-    topIcon = R.drawable.bigicon_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_adding2_to_home
 ) {

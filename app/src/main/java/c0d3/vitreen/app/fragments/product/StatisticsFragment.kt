@@ -1,7 +1,6 @@
 package c0d3.vitreen.app.fragments.product
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Consultation
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
@@ -18,7 +16,6 @@ import kotlin.math.roundToInt
 
 class StatisticsFragment : VFragment(
     layoutId = R.layout.fragment_statistics,
-    topIcon = R.drawable.bigicon_adding,
     hasOptionsMenu = true,
     topMenuId = R.menu.menu_statistics,
     requireAuth = true,

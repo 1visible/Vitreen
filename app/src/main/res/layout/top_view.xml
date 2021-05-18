@@ -40,24 +40,7 @@
         app:layout_constraintEnd_toEndOf="@+id/glass_frame"
         app:layout_constraintStart_toStartOf="@+id/glass_frame"
         app:layout_constraintTop_toTopOf="@+id/glass_frame"
-        android:src="@drawable/bigicon_logo"
+        android:src="@drawable/icon_home"
         tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/titleView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_md"
-        android:layout_marginLeft="@dimen/spacing_md"
-        android:layout_marginEnd="@dimen/spacing_md"
-        android:layout_marginRight="@dimen/spacing_md"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/app_name"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/glass_frame"
-        app:layout_constraintTop_toTopOf="@+id/glass_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
