@@ -1,20 +1,22 @@
 package c0d3.vitreen.app.fragments.product
 
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.models.Consultation
-import c0d3.vitreen.app.models.Product
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
-import c0d3.vitreen.app.utils.Constants.Companion.TAG
+import c0d3.vitreen.app.activities.observeOnce
+import c0d3.vitreen.app.models.*
+import c0d3.vitreen.app.utils.Constants.Companion.KEY_DISCUSSION_ID
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.empty_view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.loading_spinner.*
 import kotlinx.android.synthetic.main.product_item.view.*
 import java.util.*
 
@@ -22,117 +24,315 @@ class ProductFragment : VFragment(
     layoutId = R.layout.fragment_product,
     topIcon = R.drawable.bigicon_adding,
     hasOptionsMenu = true,
-    topMenuId = R.menu.menu_product,
-    requireAuth = true,
-    loginNavigationId = R.id.from_product_to_login
+    topMenuId = R.menu.menu_product
 ) {
 
     private var product: Product? = null
-    private var productId: String? = null
+    private var user: User? = null
+    private var discussions: List<Discussion>? = null
     private var imageIndex = 0
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        productId = arguments?.getString(KEY_PRODUCT_ID)
-    }
+    private var hasConsulted = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // If user is not signed in, skip this part
-        if (!isUserSignedIn())
-            return
+        // Set elements visibility (while loading)
+        productDetails.visibility = GONE
+        buttonPreviousImage.visibility = GONE
+        buttonNextImage.visibility = GONE
+        setMenuItemVisibile(R.id.add_to_favorites, false)
+        setMenuItemVisibile(R.id.remove_from_favorites, false)
+        setMenuItemVisibile(R.id.send_message, false)
+        setMenuItemVisibile(R.id.contact_owner, false)
+        setMenuItemVisibile(R.id.show_statistics, false)
+        setMenuItemVisibile(R.id.report_product, false)
+        setMenuItemVisibile(R.id.delete_product, false)
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
-
-        // Try to show product if possible, otherwise go back to home
         try {
-            viewModel.getProduct(productId!!).observe(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val product = pair.second
-                // If the call fails, show error message, hide loading spinner and go back to home
-                if (handleError(exception)) {
-                    navigateTo(R.id.from_product_to_home)
-                    return@observe
-                }
+            viewModel.discussions.observe(viewLifecycleOwner, { (exception, discussions) ->
+                this.discussions = if (exception == -1) discussions else null
+            })
 
-                // Else, get product images
-                viewModel.getImages(productId!!, product.nbImages).observe(viewLifecycleOwner, observe2@ { pair2 ->
-                    val exception2 = pair2.first
-                    val images = pair2.second
-                    // If the call fails, show error message, hide loading spinner and go back to home
-                    if (handleError(exception2)) {
-                        navigateTo(R.id.from_product_to_home)
-                        return@observe2
-                    }
+            viewModel.getProduct().observeOnce(viewLifecycleOwner, { (exception, product, images) ->
+                this.product = product
 
-                    // Else, fill and display product informations
+                if (exception != -1)
+                    showSnackbarMessage(exception)
+
+                viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+                    // When the call finishes, hide loading spinner
+                    loadingSpinner.visibility = GONE
+
                     fillProductDetails(product)
-                    this.product = product
 
-                    // Try to add new consultation to product
-                    viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair3 ->
-                        val exception3 = pair3.first
-                        val user = pair3.second
+                    if (exception == -1) {
+                        this.user = user
 
-                        // If the call doesn't fail, update product with consultation
-                        if (exception3 == -1) {
-                            val consultation = Consultation(city = user.location.city)
-                            product.consultations.add(consultation)
-                            product.id?.let { id -> viewModel.updateProduct(id, consultation) }
+                        setFavoriteItemVisibility(user, product)
+
+                        if (user.id == product.ownerId) {
+                            setMenuItemVisibile(R.id.send_message, false)
+                            setMenuItemVisibile(R.id.contact_owner, false)
+                            setMenuItemVisibile(R.id.report_product, false)
+                            setMenuItemVisibile(R.id.delete_product, true)
+                            buttonModify.visibility = View.VISIBLE
+                            buttonModify.setOnClickListener {
+                                viewModel.product = product
+                                navigateTo(R.id.from_product_to_modify1)
+                            }
+                            if (user.isProfessional)
+                                setMenuItemVisibile(R.id.show_statistics, true)
+                            else
+                                setMenuItemVisibile(R.id.show_statistics, false)
+                        } else {
+                            setMenuItemVisibile(R.id.send_message, true)
+                            setMenuItemVisibile(R.id.contact_owner, true)
+                            setMenuItemVisibile(R.id.show_statistics, false)
+                            setMenuItemVisibile(R.id.report_product, true)
+                            setMenuItemVisibile(R.id.delete_product, false)
+                            buttonModify.visibility = View.GONE
                         }
-                    })
-
-                    // Check if there are loaded images
-                    if(images.isNullOrEmpty())
-                        return@observe2
-
-                    // Show previous and next buttons to switch between images
-                    buttonPreviousImage.visibility = VISIBLE
-                    buttonNextImage.visibility = VISIBLE
-
-                    // Display product images (first one)
-                    imageViewProduct.setImageBitmap(images[imageIndex])
-
-                    // On previous button click, go to previous image
-                    buttonPreviousImage.setOnClickListener {
-                        if(images.isEmpty())
-                            return@setOnClickListener
-
-                        imageIndex = if (imageIndex <= 0) (images.size - 1) else imageIndex--
-                        imageViewProduct.setImageBitmap(images[imageIndex])
+                    } else {
+                        this.user = null
+                        setMenuItemVisibile(R.id.add_to_favorites, false)
+                        setMenuItemVisibile(R.id.remove_from_favorites, false)
+                        setMenuItemVisibile(R.id.send_message, false)
+                        setMenuItemVisibile(R.id.contact_owner, true)
+                        setMenuItemVisibile(R.id.show_statistics, false)
+                        setMenuItemVisibile(R.id.report_product, false)
+                        setMenuItemVisibile(R.id.delete_product, false)
                     }
 
-                    // On next button click, go to next image
-                    buttonNextImage.setOnClickListener {
-                        if(images.isEmpty())
-                            return@setOnClickListener
+                    if (!hasConsulted) {
+                        hasConsulted = true
+                        val city = user.location.city
+                        val consultation = Consultation(city = city)
 
-                        imageIndex = if (imageIndex >= images.size - 1) 0 else imageIndex++
-                        imageViewProduct.setImageBitmap(images[imageIndex])
+                        product.id?.let { id -> viewModel.addConsultation(id, consultation) }
                     }
                 })
+
+                if (exception != -1)
+                    showSnackbarMessage(exception)
+
+                // Check if there are loaded images
+                if (images.isEmpty())
+                    return@observeOnce
+
+                // Display product images (first one)
+                imageIndex = 0
+                imageViewProduct.setImageBitmap(images[imageIndex])
+
+                // Show previous and next buttons to switch between images
+                if (images.size < 2)
+                    return@observeOnce
+
+                buttonPreviousImage.visibility = VISIBLE
+                buttonNextImage.visibility = VISIBLE
+
+                // On previous button click, go to previous image
+                buttonPreviousImage.setOnClickListener {
+                    if (images.isEmpty())
+                        return@setOnClickListener
+
+                    imageIndex = if (imageIndex-- <= 0) (images.size - 1) else imageIndex--
+                    imageViewProduct.setImageBitmap(images[imageIndex])
+                }
+
+                // On next button click, go to next image
+                buttonNextImage.setOnClickListener {
+                    if (images.isEmpty())
+                        return@setOnClickListener
+
+                    imageIndex = if (imageIndex++ >= images.size - 1) 0 else imageIndex++
+                    imageViewProduct.setImageBitmap(images[imageIndex])
+                }
             })
         } catch (_: NullPointerException) {
-            showMessage(R.string.error_404)
-            navigateTo(R.id.from_product_to_home)
+            showSnackbarMessage(R.string.ProductNotFoundException)
+            goBack()
             return
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_add_favorite -> setFavorite(true)
-            R.id.action_remove_favorite -> setFavorite(false)
-            R.id.action_statistics -> {
-                if(product != null)
-                    navigateTo(R.id.from_product_to_statistics, KEY_PRODUCT to product)
-                true
-            }
+            R.id.add_to_favorites -> setFavorite(true)
+            R.id.remove_from_favorites -> setFavorite(false)
+            R.id.send_message -> sendMessage()
+            R.id.contact_owner -> contactOwner()
+            R.id.show_statistics -> showStatistics()
+            R.id.report_product -> reportProduct()
+            R.id.delete_product -> deleteProduct()
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun deleteProduct(): Boolean {
+        try {
+            viewModel.deleteProduct(product!!.id!!, product!!.imagesPaths)
+                .observeOnce(viewLifecycleOwner, { exception ->
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
+                    showSnackbarMessage(R.string.product_deleted)
+                    goBack()
+                })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.ProductNotDeletedException)
+        }
+
+        return true
+    }
+
+    private fun showStatistics(): Boolean {
+        try {
+            if (product != null && user!!.isProfessional)
+                navigateTo(R.id.from_product_to_statistics)
+            else
+                showSnackbarMessage(R.string.NotFoundException)
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NotFoundException)
+        }
+
+        return true
+    }
+
+    private fun reportProduct(): Boolean {
+        // If the user can't be found
+        if (!viewModel.isUserSignedIn || user == null) {
+            showSnackbarMessage(R.string.SignedOutException)
+            return true
+        }
+
+        try {
+            if(product!!.reporters.contains(user!!.id!!)) {
+                showSnackbarMessage(R.string.already_reported)
+                return true
+            }
+
+            viewModel.reportProduct(product!!.id!!, user!!.id!!)
+                .observeOnce(viewLifecycleOwner, { exception ->
+                    // If the call failed: show error message
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
+                    showSnackbarMessage(R.string.product_reported)
+                })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
+
+        return true
+    }
+
+    private fun contactOwner(): Boolean {
+        try {
+            viewModel.getUserById(product!!.ownerId)
+                .observeOnce(viewLifecycleOwner, { (exception, user) ->
+                    // If the call failed: show error message
+                    if (exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
+                    if (user.contactByPhone)
+                        sendSMS(user.phoneNumber, product!!.title)
+                    else
+                        sendEmail(user.emailAddress, product!!.title)
+
+                })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
+
+        return true
+    }
+
+    private fun sendSMS(phoneNumber: String, productName: String) {
+        val uri = Uri.parse("smsto:${phoneNumber}")
+        val intent = Intent(Intent.ACTION_SENDTO, uri)
+
+        intent.putExtra("sms_body", getString(R.string.about_product, productName))
+
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+            showSnackbarMessage(R.string.error_placeholder)
+        }
+    }
+
+    private fun sendEmail(emailAddress: String, productName: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+
+        intent.data = Uri.parse("mailto:")
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailAddress))
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_product, productName))
+
+        try {
+            startActivity(Intent.createChooser(intent, getString(R.string.choose_app)))
+        } catch (_: Exception) {
+            showSnackbarMessage(R.string.error_placeholder)
+        }
+    }
+
+    private fun sendMessage(): Boolean {
+        // If the user can't be found
+        if (!viewModel.isUserSignedIn || user == null) {
+            showSnackbarMessage(R.string.SignedOutException)
+            return true
+        }
+
+        try {
+            if (user!!.id == product!!.ownerId) {
+                showSnackbarMessage(R.string.SelfMessageException)
+                return true
+            }
+
+            // Else, create a new discussion
+            val discussion = Discussion(
+                userId = user!!.id!!,
+                ownerId = product!!.ownerId,
+                productId = product!!.id!!,
+                productName = product!!.title
+            )
+
+            if (discussions == null) {
+                showSnackbarMessage(R.string.NetworkException)
+                return true
+            }
+
+            val discussionId = viewModel.getDiscussionId(discussion, discussions!!)
+
+            if (discussionId != null) {
+            // Else, go to discussion fragment
+                viewModel.discussionId = discussionId
+                navigateTo(R.id.from_product_to_messages)
+            } else {
+                viewModel.addDiscussion(discussion)
+                    .observeOnce(viewLifecycleOwner, { (exception, discussion) ->
+                        // If the call failed: show error message
+                        if (exception != -1) {
+                            showSnackbarMessage(exception)
+                            return@observeOnce
+                        }
+
+                        // Else, go to discussion fragment
+                        viewModel.discussionId = discussion.id!!
+                        navigateTo(R.id.from_product_to_messages)
+                    })
+            }
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+            return true
+        }
+
+        return true
     }
 
     private fun fillProductDetails(product: Product) {
@@ -141,83 +341,71 @@ class ProductFragment : VFragment(
         textViewDescription.text = product.description
         textViewPrice.text = getString(R.string.price, product.price)
         textViewCategory.text = product.category.name
-        val zipCode = if(product.location.zipCode == null) "?" else product.location.zipCode.toString()
-        textViewLocation.text = getString(R.string.location_template, product.location.city, zipCode)
-
-        // Show product informations
-        imageViewProduct.visibility = VISIBLE
-        textViewTitle.visibility = VISIBLE
-        textViewDescription.visibility = VISIBLE
-        textViewPrice.visibility = VISIBLE
-        textViewCategory.visibility = VISIBLE
-        textViewLocation.visibility = VISIBLE
+        val zipCode =
+            if (product.location.zipCode == null) "?" else product.location.zipCode.toString()
+        textViewLocation.text =
+            getString(R.string.location_template, product.location.city, zipCode)
 
         // Show optional fields (if they exist)
-        if(product.brand != null) {
+        if (product.brand != null) {
             textViewBrand.text = product.brand
             textViewBrand.visibility = VISIBLE
-        }
+        } else
+            textViewBrand.visibility = GONE
 
-        if(product.size != null) {
+        if (product.size != null) {
             textViewDimensions.text = product.size
             textViewDimensions.visibility = VISIBLE
+        } else
+            textViewDimensions.visibility = GONE
+
+        if (user?.id == product.ownerId) {
+            textViewReference.text = product.id
+            textViewReference.visibility = VISIBLE
+        } else {
+            textViewReference.visibility = GONE
+        }
+
+        // Show product details
+        productDetails.visibility = VISIBLE
+    }
+
+    private fun setFavoriteItemVisibility(user: User, product: Product) {
+        try {
+            if (user.favoritesIds.contains(product.id!!)) {
+                setMenuItemVisibile(R.id.add_to_favorites, false)
+                setMenuItemVisibile(R.id.remove_from_favorites, true)
+            } else {
+                setMenuItemVisibile(R.id.remove_from_favorites, false)
+                setMenuItemVisibile(R.id.add_to_favorites, true)
+            }
+        } catch (_: NullPointerException) {
+            setMenuItemVisibile(R.id.remove_from_favorites, false)
+            setMenuItemVisibile(R.id.add_to_favorites, false)
+            showSnackbarMessage(R.string.error_placeholder)
         }
     }
 
     private fun setFavorite(setFavorite: Boolean): Boolean {
-        // Check if the user is signed in
-        if(!isUserSignedIn()) {
-            showMessage(R.string.network_error)
+        // If the user can't be found
+        if (!viewModel.isUserSignedIn || user == null) {
+            showSnackbarMessage(R.string.SignedOutException)
             return true
         }
 
-        // Try to add product to favorites
+        // Update favorites
         try {
-            viewModel.getUser(user!!).observe(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val user = pair.second
-                // If the call fails, show error message and hide loading spinner
-                if (handleError(exception)) return@observe
+            val favoritesIds = user!!.favoritesIds
+            val productId = product!!.id!!
 
-                // Check if product id could be retrieved
-                if(productId == null) {
-                    showMessage()
-                    return@observe
-                }
-
-                val favoritesIds = user.favoritesIds
-
-                // Update favorites with product id
-                try {
-                    if (setFavorite && !favoritesIds.contains(productId)) {
-                        favoritesIds.add(productId!!)
-                    } else if (!setFavorite && favoritesIds.contains(productId)) {
-                        favoritesIds.remove(productId)
-                    } else
-                        return@observe
-
-                    // Update user with new favorites
-                    viewModel.updateUser(user.id!!, favoritesIds = favoritesIds).observeOnce(viewLifecycleOwner, { exception2 ->
-                        // If the call fails, show error message and hide loading spinner
-                        if (handleError(exception2)) {
-                            if(setFavorite)
-                                favoritesIds.remove(productId)
-                            else
-                                favoritesIds.add(productId!!)
-
-                            return@observeOnce
-                        }
-
-                        // Else, toggle favorite icon visibility
-                        setIconVisibility(R.id.action_add_favorite, !setFavorite)
-                        setIconVisibility(R.id.action_remove_favorite, setFavorite)
-                    })
-                } catch(_: NullPointerException) {
-                    showMessage()
-                }
-            })
-        } catch(_: NullPointerException) {
-            showMessage()
+            if (setFavorite && !favoritesIds.contains(productId))
+                viewModel.addToFavorites(user!!.id!!, productId)
+            else if (!setFavorite && favoritesIds.contains(productId))
+                viewModel.removeFromFavorites(user!!.id!!, productId)
+            else
+                return true
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
         }
 
         return true

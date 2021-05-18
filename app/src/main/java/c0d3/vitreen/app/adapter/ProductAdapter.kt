@@ -1,46 +1,36 @@
 package c0d3.vitreen.app.adapter
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.observeOnce
-import c0d3.vitreen.app.models.dto.ProductDTO
-import c0d3.vitreen.app.utils.FirestoreViewModel
+import c0d3.vitreen.app.models.Product
 import kotlinx.android.synthetic.main.product_item.view.*
 
-class ProductAdapter(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, private val onClick: (ProductDTO) -> Unit)
-    : ListAdapter<ProductDTO, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductAdapter(private val onClick: (Product) -> Unit)
+    : ListAdapter<Pair<Product, Bitmap?>, ProductAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(private val viewModel: FirestoreViewModel, private val owner: LifecycleOwner, itemView: View, val onClick: (ProductDTO) -> Unit): RecyclerView.ViewHolder(itemView) {
-        private var productDTO: ProductDTO? = null
+    class ProductViewHolder(itemView: View, val onClick: (Product) -> Unit): RecyclerView.ViewHolder(itemView) {
+        private var product: Product = Product()
 
         init {
             itemView.setOnClickListener {
-                productDTO?.let { product -> onClick(product) }
+                onClick(product)
             }
         }
 
-        fun bind(product: ProductDTO) {
-            productDTO = product
+        fun bind(pair: Pair<Product, Bitmap?>) {
+            val (product, image) = pair
 
-            // Try to get product images
-            if(product.nbImages > 0)
-                product.id?.let { id ->
-                    viewModel.getImages(id, 1).observeOnce(owner, { pair ->
-                        val exception = pair.first
-                        val images = pair.second
+            this.product = product
 
-                        if(exception == -1 && images.isNotEmpty())
-                            itemView.imageViewProduct.setImageBitmap(images.first())
-                    })
-                }
+            // Display product image if available
+            if(image != null)
+                itemView.imageViewProduct.setImageBitmap(image)
 
             // Fill product with informations
             itemView.textViewTitle.text = product.title
@@ -56,24 +46,22 @@ class ProductAdapter(private val viewModel: FirestoreViewModel, private val owne
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.product_item, parent, false)
-        return ProductViewHolder(viewModel, owner, view, onClick)
+        return ProductViewHolder(view, onClick)
     }
 
     // Get current product and use it to bind view.
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = getItem(position)
-        holder.bind(product)
+        holder.bind(getItem(position))
     }
 
 }
 
-object ProductDiffCallback : DiffUtil.ItemCallback<ProductDTO>() {
-    override fun areItemsTheSame(oldItem: ProductDTO, newItem: ProductDTO): Boolean {
+object ProductDiffCallback : DiffUtil.ItemCallback<Pair<Product, Bitmap?>>() {
+    override fun areItemsTheSame(oldItem: Pair<Product, Bitmap?>, newItem: Pair<Product, Bitmap?>): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: ProductDTO, newItem: ProductDTO): Boolean {
-        return oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Pair<Product, Bitmap?>, newItem: Pair<Product, Bitmap?>): Boolean {
+        return oldItem.first.id == newItem.first.id
     }
 }
-

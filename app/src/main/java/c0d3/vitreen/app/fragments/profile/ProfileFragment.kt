@@ -1,21 +1,26 @@
 package c0d3.vitreen.app.fragments.profile
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.adapter.ProductAdapter
+import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.models.User
-import c0d3.vitreen.app.models.dto.ProductDTO
-import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRODUCT_ID
+import c0d3.vitreen.app.utils.SearchQuery
 import c0d3.vitreen.app.utils.VFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.android.synthetic.main.empty_view.*
+import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_product.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.recyclerViewProducts
-import java.lang.NullPointerException
-
+import kotlinx.android.synthetic.main.loading_spinner.*
 
 class ProfileFragment : VFragment(
     layoutId = R.layout.fragment_profile,
@@ -26,56 +31,97 @@ class ProfileFragment : VFragment(
     loginNavigationId = R.id.from_profile_to_login
 ) {
 
-    private var userDTO: User? = null
+    private var user: User? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
-        setEmptyView(GONE)
-
         // If user is not signed in, skip this part
-        if (!isUserSignedIn())
+        if (!viewModel.isUserSignedIn)
             return
 
-        // Get current user informations
-        try {
-            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val user = pair.second
-                // If the call fails, show error message, hide loading spinner and show empty view
-                if (handleError(exception, R.string.error_placeholder)) return@observeOnce
+        // Set elements visibility (while loading)
+        profileDetails.visibility = GONE
+        setMenuItemVisibile(R.id.logout, false)
 
-                // Else, fill the profile with user informations and store them
-                showProducts(user.productsIds)
-                fillProfile(user)
-                userDTO = user
-            })
-        } catch(_: NullPointerException) {
-            showMessage()
-        }
+        // Get current user informations
+        viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+            if(exception != -1) {
+                this.user = null
+                showSnackbarMessage(exception)
+                goBack()
+                return@observe
+            }
+
+            this.user = user
+
+            fillProfile(user)
+
+            try {
+                viewModel.getProducts(SearchQuery(ownerId = user.id!!)).observe(viewLifecycleOwner, observe1@ { (exception, products) ->
+                    // When the call finishes, hide loading spinner
+                    loadingSpinner.visibility = GONE
+
+                    // If the call failed: show error message and show empty view
+                    if(exception != -1) {
+                        showSnackbarMessage(exception)
+                        goBack()
+                        return@observe1
+                    }
+
+                    setMenuItemVisibile(R.id.logout, true)
+
+                    // If there are no products: show empty view
+                    if(products.isEmpty()) {
+                        recyclerViewProducts.visibility = GONE
+                        textViewNoProducts.visibility = VISIBLE
+                        profileDetails.visibility = VISIBLE
+                        return@observe1
+                    }
+
+                    // Else, display products in the recycler view
+                    val adapter = ProductAdapter { product -> adapterOnClick(product) }
+                    adapter.submitList(products)
+                    recyclerViewProducts.adapter = adapter
+                    textViewNoProducts.visibility = GONE
+                    recyclerViewProducts.visibility = VISIBLE
+                    profileDetails.visibility = VISIBLE
+                })
+            } catch (e: NullPointerException) {
+                showSnackbarMessage(R.string.NetworkException)
+                goBack()
+                return@observe
+            }
+            buttonUpdateProfile.setOnClickListener {
+                navigateTo(R.id.from_profile_to_update_profile)
+            }
+        })
 
         // On delete button click, delete user account
         buttonDeleteAccount.setOnClickListener {
-            userDTO?.let { user -> deleteAccount(user) }
+            try {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.delete_account))
+                    .setMessage(getString(R.string.delete_account_question))
+                    .setNeutralButton(getString(R.string.cancel)) { dialog, _ -> dialog.cancel() }
+                    .setPositiveButton(getString(R.string.delete)){ dialog, _ -> deleteAccount(dialog) }
+                    .show()
+            } catch (_: IllegalStateException) {
+                showSnackbarMessage(R.string.error_placeholder)
+            }
         }
     }
 
-    // TODO : Ajouter les items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_logout -> {
-                auth.signOut()
-                navigateTo(R.id.from_profile_to_home)
-                true
-            }
+            R.id.logout -> { viewModel.signOut(); true }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun adapterOnClick(product: ProductDTO) {
-        navigateTo(R.id.from_profile_to_product, KEY_PRODUCT_ID to product.id)
+    private fun adapterOnClick(product: Product) {
+        viewModel.product = product
+        navigateTo(R.id.from_profile_to_product)
     }
 
     private fun fillProfile(user: User) {
@@ -89,92 +135,52 @@ class ProfileFragment : VFragment(
         // Remove checkmark on least prefered contact method
         if (user.contactByPhone)
             textViewEmailAddress.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.icon_envelope,
+                R.drawable.ic_envelope,
                 0,
                 0,
                 0
             )
         else
             textViewPhoneNumber.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.icon_phone,
+                R.drawable.ic_phone,
                 0,
                 0,
                 0
             )
 
-        // Show personal informations section
-        textViewPersonalInformations.visibility = VISIBLE
-        textViewUsername.visibility = VISIBLE
-        textViewEmailAddress.visibility = VISIBLE
-        textViewPhoneNumber.visibility = VISIBLE
-        textViewPostalAddress.visibility = VISIBLE
-
-        if (!user.isProfessional)
-            return
-
         // Fill professional informations (and show section)
-        textViewCompanyName.text = user.companyName
-        textViewSiretNumber.text = user.siretNumber
-        textViewProfessionalInformations.visibility = VISIBLE
-        textViewCompanyName.visibility = VISIBLE
-        textViewSiretNumber.visibility = VISIBLE
+        if(user.isProfessional) {
+            textViewCompanyName.text = user.companyName
+            textViewSiretNumber.text = user.siretNumber
+            textViewProfessionalInformations.visibility = VISIBLE
+            textViewCompanyName.visibility = VISIBLE
+            textViewSiretNumber.visibility = VISIBLE
+        } else {
+            textViewProfessionalInformations.visibility = GONE
+            textViewCompanyName.visibility = GONE
+            textViewSiretNumber.visibility = GONE
+        }
     }
 
-    private fun deleteAccount(user: User) {
+    private fun deleteAccount(dialog: DialogInterface) {
         // If user is not signed in, skip this part
-        if (!isUserSignedIn()) {
-            showMessage(R.string.not_connected)
+        if(!viewModel.isUserSignedIn) {
+            showSnackbarMessage(R.string.SignedOutException)
+            try { dialog.dismiss() } catch (_: Exception) { }
             return
         }
 
-        viewModel.deleteProducts(user.productsIds).observeOnce(viewLifecycleOwner, { exception ->
-            // If the call fails, show error message and hide loading spinner
-            if (handleError(exception)) return@observeOnce
+        try {
+            viewModel.deleteUser(user!!).observeOnce(viewLifecycleOwner, { exception ->
+                if(exception == -1)
+                    showSnackbarMessage(R.string.account_deleted)
+                else
+                    showSnackbarMessage(exception)
 
-            // Else, delete the user
-            try {
-                viewModel.deleteUser(auth.currentUser!!).observeOnce(viewLifecycleOwner, observeOnce2@{ exception2 ->
-                    // If the call fails, show error message and hide loading spinner
-                    if (handleError(exception2)) return@observeOnce2
-
-                    // Else, sign out from the app and return to home
-                    auth.signOut()
-                    navigateTo(R.id.from_profile_to_home)
-                    showMessage(R.string.account_deleted)
-                })
-            } catch(_: NullPointerException) {
-                showMessage()
-            }
-        })
+                try { dialog.dismiss() } catch (_: Exception) { }
+            })
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.NetworkException)
+        }
     }
-
-    private fun showProducts(ids: ArrayList<String>) {
-        viewModel.getProducts(limit = false, ids = ids).observe(viewLifecycleOwner, { pair ->
-            val exception = pair.first
-            val products = pair.second
-
-            // Show "My products" title
-            textViewMyProducts.visibility = VISIBLE
-
-            // If the call fails, show error message, hide loading spinner and show empty text
-            if (handleError(exception)) {
-                textViewNoProducts.visibility = VISIBLE
-                return@observe
-            }
-
-            // Else if there is no products to display, hide loading spinner and show empty text
-            if (products.isEmpty()) {
-                setSpinnerVisibility(GONE)
-                textViewNoProducts.visibility = VISIBLE
-                return@observe
-            }
-
-            // Else, show products in recycler view
-            val adapter = ProductAdapter(viewModel, viewLifecycleOwner) { product -> adapterOnClick(product) }
-            adapter.submitList(products.map { product -> product.toDTO() })
-            recyclerViewProducts.adapter = adapter
-            recyclerViewProducts.visibility = VISIBLE
-        })
-    }
-
 }

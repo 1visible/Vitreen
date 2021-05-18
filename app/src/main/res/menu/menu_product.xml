@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_add_favorite"
-        android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
+        android:id="@+id/add_to_favorites"
+        android:icon="@drawable/ic_favorite_outline"
+        android:title="@string/add_to_favorites"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_remove_favorite"
-        android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
+        android:id="@+id/remove_from_favorites"
+        android:title="@string/remove_from_favorites"
         android:visible="false"
+        android:icon="@drawable/ic_favorite_filled"
+        android:iconTint="?attr/colorPrimary"
+        app:showAsAction="ifRoom"
+        tools:targetApi="o" />
+
+    <item
+        android:id="@+id/send_message"
+        android:icon="@drawable/ic_message"
+        android:title="@string/send_message"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_statistics"
-        android:title="@string/search"
-        android:icon="@drawable/menu_icon_favorite"
+        android:id="@+id/contact_owner"
+        android:title="@string/contact_owner"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/show_statistics"
+        android:title="@string/show_statistics"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/report_product"
+        android:title="@string/report_product"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_product"
+        android:title="@string/delete_product"
         app:showAsAction="never" />
 
 </menu>

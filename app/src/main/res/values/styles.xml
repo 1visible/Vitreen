@@ -3,8 +3,8 @@
 
     <!-- TODO: Badge style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
-        <item name="backgroundColor">@color/teal</item>
-        <item name="android:background">@color/teal</item>
+        <item name="backgroundColor">?attr/colorPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
 
     <!-- ShapeAppearance style -->
@@ -82,6 +82,7 @@
     <style name="Vitreen.Button.Outline.Error" parent="Vitreen.Button.Outline">
         <item name="android:textColor">?attr/colorError</item>
         <item name="strokeColor">?attr/colorError</item>
+        <item name="rippleColor">?attr/colorError</item>
     </style>
 
 </resources>

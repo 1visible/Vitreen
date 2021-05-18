@@ -6,10 +6,10 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
-import android.view.View.VISIBLE
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.listeners.FetchLocation
 import c0d3.vitreen.app.listeners.OnLocationFetchListener
 import c0d3.vitreen.app.models.Category
@@ -21,44 +21,41 @@ import c0d3.vitreen.app.utils.Constants.Companion.KEY_PRICE
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
+import kotlinx.android.synthetic.main.fragment_adding1.editTextLocation
 import kotlinx.android.synthetic.main.fragment_register1.*
+import kotlinx.android.synthetic.main.fragment_register2.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Adding1Fragment : VFragment(
     layoutId = R.layout.fragment_adding1,
     topIcon = R.drawable.bigicon_adding,
-    hasOptionsMenu = true,
-    topMenuId = R.menu.menu_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_adding1_to_login
 ) {
 
+    private var categories: List<Category>? = null
     private var locationGPS = Location()
-    private var categoriesDTO = ArrayList<Category>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show loading spinner and hide empty view
-        setSpinnerVisibility(VISIBLE)
-
         // If user is not signed in, skip this part
-        if (!isUserSignedIn())
+        if (!viewModel.isUserSignedIn)
             return
 
         // Try to initialize location from GPS
         context?.let { context -> initializeLocation(context) }
 
         // Get categories to put them as edit text choices
-        viewModel.getCategories().observeOnce(viewLifecycleOwner, { pair ->
-            val exception = pair.first
-            val categories = pair.second
-            // If the call fails, show error message and hide loading spinner
-            if (handleError(exception)) return@observeOnce
+        viewModel.categories.observe(viewLifecycleOwner, { (exception, categories) ->
+            // If the call fails, show error message
+            if(exception != -1) {
+                showSnackbarMessage(exception)
+                return@observe
+            }
 
             // Else, put categories as edit text choices
-            categoriesDTO.addAll(categories)
+            this.categories = categories
             val categoryNames = categories.map { category -> category.name }
             val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, categoryNames) }
 
@@ -77,12 +74,12 @@ class Adding1Fragment : VFragment(
 
             // Double check category and location after conversion
             if (categoryName == null || locationName == null) {
-                showMessage()
+                showSnackbarMessage(R.string.error_placeholder)
                 return@setOnClickListener
             }
 
             // Get category according to input category
-            categoriesDTO.forEach { category ->
+            categories?.forEach { category ->
                 if (category.name == categoryName) {
                     categoryDTO = category
                     return@forEach
@@ -91,27 +88,29 @@ class Adding1Fragment : VFragment(
 
             // Check if category could be retrieved
             if (categoryDTO == null) {
-                showMessage()
+                showSnackbarMessage(R.string.NetworkException)
                 return@setOnClickListener
             }
 
             // Get location from city name
-            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                var location = pair.second
-                val zipCodeL = if(location.city == locationGPS.city) locationGPS.zipCode else null
-                // If the call fails, show error message and hide loading spinner
-                if(exception != R.string.error_404 && handleError(exception)) return@observeOnce
+            viewModel.getLocation(locationName).observeOnce(viewLifecycleOwner, { (exception, location) ->
+                val zipCode = if(location.city == locationGPS.city) locationGPS.zipCode else null
+                // If the call fails, show error message
+                if(exception != -1 && exception != R.string.NotFoundException) {
+                    showSnackbarMessage(exception)
+                    return@observeOnce
+                }
 
                 // Else if location could not be found, create new location
-                if(exception == R.string.error_404) {
-                    location = Location(locationName, zipCodeL)
+                if(exception == R.string.NotFoundException) {
+                    location.city = locationName
+                    location.zipCode = zipCode
                     viewModel.addLocation(location)
                 }
                 // Else if location has no zip code, update it
-                else if(location.zipCode == null && zipCodeL != null) {
-                    location.zipCode = zipCodeL
-                    location.id?.let { id -> viewModel.updateLocation(id, zipCodeL) }
+                else if(location.zipCode == null && zipCode != null) {
+                    location.zipCode = zipCode
+                    location.id?.let { id -> viewModel.updateLocation(id, zipCode) }
                 }
 
                 // Navigate to adding (part 2) with product informations
@@ -129,7 +128,7 @@ class Adding1Fragment : VFragment(
 
     private fun navigateToAdding2(category: Category?, location: Location) {
         if(category == null) {
-            showMessage()
+            showSnackbarMessage(R.string.error_placeholder)
             return
         }
 

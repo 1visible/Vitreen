@@ -10,28 +10,23 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <!-- Activity content -->
-    <include
-        android:id="@+id/activity_content"
+    <!-- Fragment content -->
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/activity_content" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/navigation"
+        tools:ignore="FragmentTagUsage" />
 
+    <!-- Snackbar guideline -->
     <View
         android:id="@+id/snackbarGuideline"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_sm"
         app:layout_anchor="@id/navContainer"
         android:layout_gravity="top" />
-
-    <!-- Loading linear spinner -->
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/navContainer"
-        app:layout_anchorGravity="top"
-        android:indeterminate="true" />
 
     <!-- Bottom navigation container -->
     <LinearLayout
@@ -40,7 +35,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_md"
         android:background="?attr/colorSurface"
-        app:layout_anchor="@+id/activity_content"
+        app:layout_anchor="@+id/nav_host_fragment"
         app:layout_anchorGravity="bottom|end" >
 
         <!-- Bottom navigation menu -->

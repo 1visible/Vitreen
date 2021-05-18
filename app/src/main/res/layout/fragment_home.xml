@@ -1,143 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:overScrollMode="never"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.home.HomeFragment">
+    android:fillViewport="true"
+    tools:context=".fragments.home.HomeFragment" >
 
+    <!-- Fragment container -->
     <LinearLayout
-        android:id="@+id/linearLayoutResearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_md"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="100dp" >
 
-        <!-- title input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/editTextResearchText"
+        <!-- Top view -->
+        <c0d3.vitreen.app.utils.TopView
+            android:id="@+id/topView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:hint="@string/research"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_location">
+            app:icon="@drawable/bigicon_logo"
+            app:title="@string/welcome" />
 
-            <com.google.android.material.textfield.TextInputEditText
+        <!-- Main content -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginBottom="@dimen/spacing_lg"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:layout_marginRight="@dimen/spacing_md" >
+
+            <!-- Empty view -->
+            <include
+                layout="@layout/empty_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Products list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewProducts"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Loading spinner -->
+            <include
+                layout="@layout/loading_spinner"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Category input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputCategory"
-            style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:hint="@string/product_category"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_tree">
-
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                tools:ignore="LabelFor" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Location input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/autoCompleteLocation"
-            style="@style/Vitreen.TextInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:completionHint="@string/researchSelectCountry"
-            android:hint="@string/researchSelectCountry"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_tree">
-
-            <AutoCompleteTextView
-                android:completionThreshold="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- brand input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/editTextBrand"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:hint="@string/product_brand"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_location">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- maxPrice input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/editTextMaxPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_md"
-            android:hint="@string/research_max_price"
-            app:errorEnabled="true"
-            app:helperText="@string/required_input"
-            app:helperTextEnabled="true"
-            app:startIconDrawable="@drawable/icon_location">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/buttonResearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/buttonResearch" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
-    <!-- Empty view -->
-    <include
-        layout="@layout/empty_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Products list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProducts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayoutResearch" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

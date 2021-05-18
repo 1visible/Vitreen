@@ -8,7 +8,7 @@
         android:title="@string/title_home"/>
 
     <item
-        android:id="@+id/navigation_messages"
+        android:id="@+id/navigation_discussions"
         android:enabled="true"
         android:icon="@drawable/menu_icon_messages"
         android:title="@string/title_messages"/>

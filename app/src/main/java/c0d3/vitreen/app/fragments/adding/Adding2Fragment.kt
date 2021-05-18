@@ -11,6 +11,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.models.Location
 import c0d3.vitreen.app.models.Product
@@ -37,8 +38,6 @@ import kotlin.collections.ArrayList
 class Adding2Fragment : VFragment(
     layoutId = R.layout.fragment_adding2,
     topIcon = R.drawable.bigicon_adding,
-    hasOptionsMenu = true,
-    topMenuId = R.menu.menu_adding,
     requireAuth = true,
     loginNavigationId = R.id.from_adding2_to_home
 ) {
@@ -67,7 +66,7 @@ class Adding2Fragment : VFragment(
         super.onViewCreated(view, savedInstanceState)
 
         // If user is not signed in, skip this part
-        if(!isUserSignedIn())
+        if (!viewModel.isUserSignedIn)
             return
 
         // Check if arguments could be retrieved
@@ -78,59 +77,56 @@ class Adding2Fragment : VFragment(
             || category !is Category
             || location == null
             || location !is Location) {
-            showMessage()
-            navigateTo(R.id.from_adding2_to_adding1)
+            showSnackbarMessage(R.string.error_placeholder)
+            goBack()
             return
         }
 
         // Get current user informations
-        try {
-            viewModel.getUser(user!!).observeOnce(viewLifecycleOwner, { pair ->
-                val exception = pair.first
-                val user = pair.second
-                // If the call fails, show error message, hide loading spinner and show empty view
-                if(handleError(exception, R.string.no_products)) return@observeOnce
+        viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+            if (exception != -1) {
+                showSnackbarMessage(exception)
+                goBack()
+                return@observe
+            }
 
-                // Else, set images max for this user
-                nbImagesMax = if(user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
+            // Else, set images max for this user
+            nbImagesMax = if(user.isProfessional) IMAGES_LIMIT_PROFESSIONAL else IMAGES_LIMIT_USER
 
-                buttonConfirmation.setOnClickListener {
-                    val brand = inputToString(editTextBrand)
-                    val size = inputToString(editTextDimensions)
+            buttonConfirmation.setOnClickListener {
+                val brand = inputToString(editTextBrand)
+                val size = inputToString(editTextDimensions)
 
-                    // Create product to add with informations
-                    try {
-                        val product = Product(
-                            title = title!!,
-                            description = description!!,
-                            price = price!!,
-                            brand = brand,
-                            size = size,
-                            location = location!!,
-                            category = category!!,
-                            nbImages = inputStreamList.size.toLong(),
-                            ownerId = user.id!!
-                        )
+                // Create product to add with informations
+                try {
+                    val product = Product(
+                        title = title!!,
+                        description = description!!,
+                        price = price!!,
+                        brand = brand,
+                        size = size,
+                        location = location!!,
+                        category = category!!,
+                        ownerId = user.id!!
+                    )
 
-                        viewModel.addProduct(product, inputStreamList, user).observeOnce(viewLifecycleOwner,  observeOnce2@ { exception2 ->
-                            // If the call fails, show error message and hide loading spinner
-                            if(handleError(exception2)) return@observeOnce2
+                    viewModel.addProduct(product, inputStreamList).observeOnce(viewLifecycleOwner, { (exception, _) ->
+                        // If the call fails, show error message
+                        if(exception != -1) {
+                            showSnackbarMessage(exception)
+                            return@observeOnce
+                        }
 
-                            // Else, navigate to home fragment and show confirmation message
-                            navigateTo(R.id.from_adding2_to_home)
-                            showMessage(R.string.add_product_success)
-                        })
-                    } catch (_: NullPointerException) {
-                        showMessage()
-                        navigateTo(R.id.from_adding2_to_adding1)
-                    }
+                        // Else, navigate to home fragment and show confirmation message
+                        navigateTo(R.id.from_adding2_to_home)
+                        showSnackbarMessage(R.string.add_product_success)
+                    })
+                } catch (_: NullPointerException) {
+                    showSnackbarMessage(R.string.error_placeholder)
+                    navigateTo(R.id.from_adding2_to_adding1)
                 }
-            })
-        } catch (_: NullPointerException) {
-            showMessage()
-            navigateTo(R.id.from_adding2_to_adding1)
-            return
-        }
+            }
+        })
 
         // On add image button click, open the gallery (or file system) and allow images picking
         buttonAddImage.setOnClickListener {
@@ -148,7 +144,7 @@ class Adding2Fragment : VFragment(
             if(uriList.isEmpty())
                 return@setOnClickListener
 
-            imageIndex = if (imageIndex <= 0) (uriList.size - 1) else imageIndex--
+            imageIndex = if (imageIndex-- <= 0) (uriList.size - 1) else imageIndex--
             imageViewProduct.setImageURI(uriList[imageIndex])
         }
 
@@ -157,7 +153,7 @@ class Adding2Fragment : VFragment(
             if(uriList.isEmpty())
                 return@setOnClickListener
 
-            imageIndex = if (imageIndex >= uriList.size - 1) 0 else imageIndex++
+            imageIndex = if (imageIndex++ >= uriList.size - 1) 0 else imageIndex++
             imageViewProduct.setImageURI(uriList[imageIndex])
         }
 
@@ -179,7 +175,6 @@ class Adding2Fragment : VFragment(
             } else
                 imageViewProduct.setImageURI(uriList[0])
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -194,7 +189,7 @@ class Adding2Fragment : VFragment(
                 || (data.clipData != null && data.clipData!!.itemCount < 1))
                 return
         } catch (_: NullPointerException) {
-            showMessage()
+            showSnackbarMessage(R.string.ImageNotFoundException)
             return
         }
 
@@ -212,7 +207,7 @@ class Adding2Fragment : VFragment(
 
         // Check if the new images size does not exceed the max
         if(uriList.size + tempUriList.size > nbImagesMax) {
-            showMessage(R.string.max_images_error)
+            showSnackbarMessage(R.string.max_images_error)
             return
         }
 
@@ -225,7 +220,7 @@ class Adding2Fragment : VFragment(
 
         // Check if all streams could be retrieved
         if(tempUriList.size != tempInputStreamList.size) {
-            showMessage()
+            showSnackbarMessage(R.string.ImageNotFoundException)
             return
         }
 

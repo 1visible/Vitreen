@@ -1,17 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Placeholder text -->
-    <string name="errorMessage">Error: replace this soon</string>
     <string name="NIY">Not implemented yet</string>
     <!-- General strings -->
     <string name="app_name">Vitreen</string>
     <string name="required_input">Champ obligatoire</string>
-    <string name="press_back">Réappuyez sur la touche Retour pour quitter.</string>
-    <string name="network_error">Oups ! Vérifiez votre connexion internet puis réessayez.</string>
+    <string name="press_back_again">Réappuyez sur la touche Retour pour quitter.</string>
+    <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
+    <string name="choose_app">Choisissez une application</string>
+    <!-- Exceptions -->
     <string name="NetworkException">Vérifiez votre connexion Internet puis réessayez.</string>
     <string name="ImageNotAddedException">Produit créé, mais certaines images n\'ont pas pu être envoyées…</string>
     <string name="ImageNotFoundException">Certaines images n\'ont pas pu être chargées…</string>
-    <string name="anonymous_error">Oups ! Nous n\'avons pas pu vous authentifier…</string>
-    <string name="error_404">Nous n\'avons pas pu trouver ce que vous cherchez…</string>
+    <string name="ProductNotFoundException">Le produit n\'a pas pu être récupéré…</string>
+    <string name="SelfMessageException">Vous ne pouvez pas vous écrire un message privé.</string>
+    <string name="NotFoundException">Nous n\'avons pas pu trouver ce que vous cherchiez…</string>
+    <string name="ProductNotDeletedException">Impossible de supprimer le(s) produit(s), veuillez réessayer.</string>
+    <string name="AuthentificationException">Nous n\'avons pas pu vous authentifier…</string>
+    <string name="SignedOutException">Essayez de vous connecter à un compte, puis réessayez.</string>
     <!-- Fragment label -->
     <string name="label_home">Accueil</string>
     <string name="label_messages">Mes messages</string>
@@ -19,8 +24,11 @@
     <string name="label_adding2">Ajouter une annonce (2/2)</string>
     <string name="label_favorites">Mes favoris</string>
     <string name="label_profile">Mon profil</string>
-    <string name="label_register">Inscription</string>
+    <string name="label_register1">Inscription</string>
+    <string name="label_register2">Inscription</string>
+    <string name="label_statistics">Statistiques</string>
     <string name="label_login">Connexion</string>
+    <string name="label_search">Recherche</string>
     <string name="label_product">Détail du produit</string>
     <!-- Menu title -->
     <string name="title_home">Accueil</string>
@@ -30,10 +38,13 @@
     <string name="title_profile">Profil</string>
     <!-- Home fragment -->
     <string name="my_location">Ma localisation</string>
-    <string name="no_products">Aucune annonce à afficher.</string>
+    <string name="nothing_here">Il n\'y a rien à afficher ici pour le moment…</string>
+    <string name="product_price_min">Prix min.</string>
+    <string name="product_price_max">Prix max.</string>
     <!-- Login fragment -->
     <string name="have_no_account">Pas de compte ?</string>
     <string name="register_underline"><u>S\'inscrire</u></string>
+    <string name="reset_password"><u>Réinitialiser mon mot de passe</u></string>
     <string name="email_address">Adresse e-mail</string>
     <string name="password">Mot de passe</string>
     <string name="login">Se connecter</string>
@@ -46,8 +57,8 @@
     <!-- Register2 fragment -->
     <string name="username">Nom d\'utilisateur</string>
     <string name="phone_number">N° de téléphone</string>
-    <string name="contact_by_phone">Je veux être contacté par téléphone</string>
-    <string name="contact_by_email">Je veux être contacté par e-mail</string>
+    <string name="choice_contact_by_phone">Je veux être contacté par téléphone</string>
+    <string name="choice_contact_by_email">Je veux être contacté par e-mail</string>
     <string name="professional_account">Je suis un professionnel</string>
     <string name="company_name">Nom de l\'entreprise</string>
     <string name="siret_number">N° de SIRET</string>
@@ -55,7 +66,7 @@
     <string name="register_success">Votre compte a été créé avec succès !</string>
     <!-- Adding1 fragment -->
     <string name="product_category">Catégorie</string>
-    <string name="product_title">Titre</string>
+    <string name="product_name">Nom du produit</string>
     <string name="product_price">Prix</string>
     <string name="product_location">Ville</string>
     <string name="product_description">Description</string>
@@ -78,12 +89,28 @@
     <string name="location_template">%1$s (%2$s)</string>
     <string name="not_connected">Vous n\'êtes pas connecté(e)…</string>
     <string name="account_deleted">Votre compte a été supprimé avec succès !</string>
-    <!-- Favorites fragment -->
-    <string name="no_favorites">Aucun favori à afficher.</string>
     <!-- Product fragment -->
     <string name="further_informations">Informations complémentaires</string>
     <string name="postal_address">Ville</string>
+    <string name="add_to_favorites">Ajouter aux favoris</string>
+    <string name="remove_from_favorites">Retirer des favoris</string>
+    <string name="send_message">Envoyer un message privé</string>
+    <string name="contact_owner">Contacter l\'annonceur</string>
+    <string name="show_statistics">Voir les statistiques</string>
+    <string name="report_product">Signaler l\'annonce</string>
+    <string name="product_reported">L\'annonce a bien été signalée !</string>
+    <string name="already_reported">Vous avez déjà signalé cette annonce.</string>
+    <string name="product_reference">Référence du produit</string>
+    <string name="delete_product">Supprimer le produit</string>
+    <string name="product_deleted">Le produit a été supprimé avec succès !</string>
     <!-- Statistics fragment -->
+    <string name="general_informations">Informations générales</string>
+    <string name="product_statistics">Statistiques du produit</string>
+    <string name="total_consultations">Votre annonce a été visitée %1$d fois au total.</string>
+    <string name="total_reports">Votre annonce a été signalée %1$d fois.</string>
+    <string name="sorted_by_time">Consultations par temporalité</string>
+    <string name="sorted_by_city">Consultations par zone géographique</string>
+    <string name="not_enough_data">Il n\'y a pas assez de données pour le moment.</string>
     <string name="day_monday">LUN</string>
     <string name="day_tuesday">MAR</string>
     <string name="day_wednesday">MER</string>
@@ -103,18 +130,72 @@
     <string name="month_october">OCT</string>
     <string name="month_november">NOV</string>
     <string name="month_december">DÉC</string>
+    <string name="this_week">Données hebdomadaires</string>
+    <string name="this_year">Données annuelles</string>
+    <string name="other_label">Autre</string>
+    <!-- Discussions fragment -->
+    <string name="about_product">À propos de %1$s</string>
+    <string name="date_format">dd/MM, HH:mm</string>
+    <string name="no_message">Aucun message</string>
+    <!-- Messages fragment -->
+    <string name="write_message">Écrivez un message…</string>
 
     <!-- TODO : Enlever les strings inutiles -->
     <string name="signup">Se connecter</string>
     <string name="label_error">erreur</string>
-    <string name="welcome">Bienvenue</string>
+    <string name="welcome">Bienvenue sur Vitreen !</string>
     <!-- Appbar menu items -->
     <string name="search">Rechercher</string>
     <string name="logout">Se déconnecter</string>
-    <!-- Error view -->
-    <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
+
     <string name="research">Entrez votre Recherche...</string>
     <string name="research_max_price">Prix Max...</string>
     <string name="buttonResearch">Rechercher</string>
-    <string name="researchSelectCountry">Sélectionnez une Ville</string>
+    <string name="researchSelectCity">Sélectionnez une Ville</string>
+    <string name="sendMessage">Envoyer un message</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_account_question">Voulez-vous supprimer votre compte?</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
+    <string name="ownerTitle">Trouver un nom(Mes produits)</string>
+    <string name="otherTitle">Trouver un autre titre (Autre produit)</string>
+    <string name="createDiscussion">Vous avez créé la discussion</string>
+    <string name="label_discussion">Mes discussions</string>
+    <string name="message">Message</string>
+    <string name="placeholer_me">Moi</string>
+    <string name="placeholder_date">Mardi 12 novembre 2021 à 14h21</string>
+    <string name="placeholder_name">Jean Philippe</string>
+    <string name="label_modify1">Modifier un produit (1/2)</string>
+    <string name="label_modify2">Modifier un produit (2/2)</string>
+    <string name="modifyButton">Modifier</string>
+    <string name="send_email">Un email a été envoyé</string>
+    <string name="label_update_profil">Modifier le profil</string>
+    <string name="update_profile">Modifier mon profil</string>
+    <string name="old_password">Ancien Mot de passe</string>
+    <string name="new_password">Nouveau Mot de passe</string>
+    <string name="update">Mettre à jour</string>
+    <string name="passwords_equals">Votre nouveau Mot de passe doit être différent</string>
+    <string name="update_profil_failed">La mise à jour du profil a échoué</string>
+    <string name="update_password_OK">Votre mot de passe a bien été mis à jour</string>
+    <string name="update_profil_OK">Les informations de votre profils ont bien été mise à jour</string>
+    <string name="update_email_OK">Votre adresse mail a bien été mise à jour</string>
+    <string name="old_password_required">Pour modifer votre adresse mail vous devez entrez votre mot de passe dans le champs Ancien Mot de Passe</string>
+    <string name="password_email_exception">Adresse e-mail ou Mot de Passe incorrect</string>
+    <string name="invalid_user_exception">Utilisateur invalide</string>
+    <string name="conflict_user_exception">Un utilisateur identique existe déjà</string>
+    <string name="auth_email_exception">L\'envoi du mail a échoué</string>
+    <string name="expired_code_exception">Le code est incorrect ou à expirer</string>
+    <string name="weak_password_exception">Renforcez la sécurité de votre mot de passe</string>
+    <string name="incomplete_operation_exception">L\'opération n\'a pas pu aboutir</string>
+    <string name="sign_in_user_exception">Veuillez vous connecter</string>
+    <string name="aborted">L\'opération a été annulée</string>
+    <string name="canceled">L\'opération a été annulée</string>
+    <string name="data_loss_exception">Impossible de récupérer les données à cause d\'une corruption ou perte des données</string>
+    <string name="already_exist_exception">Les données que vous souhaitez créer existent déjà</string>
+    <string name="internal_exception">Une erreur interne s\'est produite</string>
+    <string name="unknown_exception">Une erreur inconnue s\'est produite</string>
+    <string name="permission_denied_exception">Vous n\'avez pas la permission pour effectuer cette opération</string>
+    <string name="unauthentificated_exception">Veuillez vous authentifier pour avoir accès à cette ressource</string>
+    <string name="firestore_exception">Une erreur avec la base de données s\'est produites</string>
 </resources>

@@ -3,6 +3,7 @@ package c0d3.vitreen.app.fragments.auth
 import android.os.Bundle
 import android.view.View
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.utils.Constants.Companion.KEY_EMAIL
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_register1.*
@@ -27,7 +28,7 @@ class Register1Fragment : VFragment(
 
             // Double check email and password after conversion
             if (email == null || password == null) {
-                showMessage()
+                showSnackbarMessage(R.string.error_placeholder)
                 return@setOnClickListener
             }
 
@@ -35,28 +36,20 @@ class Register1Fragment : VFragment(
             if(password != passwordConfirmation) {
                 editTextPassword.editText?.text?.clear()
                 editTextPasswordConfirmation.editText?.text?.clear()
-                showMessage(R.string.passwords_not_equals)
+                editTextPassword.error = getString(R.string.passwords_not_equals)
                 return@setOnClickListener
             }
 
-            if(user == null) {
+            if(!viewModel.isUserSignedIn) {
                 viewModel.registerUser(email, password).observeOnce(viewLifecycleOwner, { exception ->
-                    // If the call fails, show error message and hide loading spinner
-                    if(handleError(exception)) return@observeOnce
-                    // Else, navigate to Register2 fragment
+                    // TODO : Gérer les différents erreurs
+                    if(exception != -1) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
                     navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
                 })
-            } else if(!isUserSignedIn()) {
-                try {
-                    viewModel.linkUser(user!!, email, password).observeOnce(viewLifecycleOwner, { exception ->
-                        // If the call fails, show error message and hide loading spinner
-                        if(handleError(exception)) return@observeOnce
-                        // Else, navigate to Register2 fragment
-                        navigateTo(R.id.from_register1_to_register2, KEY_EMAIL to email)
-                    })
-                } catch (_: NullPointerException) {
-                    showMessage()
-                }
             } else
                 navigateTo(R.id.from_register1_to_home)
         }

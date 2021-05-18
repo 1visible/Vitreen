@@ -2,25 +2,18 @@ package c0d3.vitreen.app.utils
 
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.annotation.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
+import c0d3.vitreen.app.activities.observeOnce
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.empty_view.*
-
+import kotlinx.android.synthetic.main.loading_spinner.*
 
 abstract class VFragment(
     @LayoutRes private val layoutId: Int,
@@ -32,10 +25,8 @@ abstract class VFragment(
     @IdRes private val loginNavigationId: Int = -1
 ) : Fragment() {
 
-    private lateinit var menu: Menu
-    lateinit var viewModel: FirestoreViewModel
-    lateinit var auth: FirebaseAuth
-    var user: FirebaseUser? = null
+    val viewModel: FirestoreViewModel by activityViewModels()
+    lateinit var menu: MutableLiveData<Menu>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,14 +40,17 @@ abstract class VFragment(
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
-        auth = Firebase.auth
-        user = auth.currentUser
-
-        if (requireAuth && !isUserSignedIn())
+        if (requireAuth && !viewModel.isUserSignedIn)
             navigateTo(loginNavigationId)
 
         return inflater.inflate(layoutId, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Show loading spinner
+        loadingSpinner?.visibility = VISIBLE
+        menu = viewModel.getMenu()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -64,7 +58,6 @@ abstract class VFragment(
 
         val topTitle: String = if (topTitleId == -1) "" else getString(topTitleId)
         (activity as? MainActivity)?.setTopViewAttributes(topTitle, topIcon)
-        setSpinnerVisibility(GONE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -72,18 +65,12 @@ abstract class VFragment(
 
         if (hasOptionsMenu)
             inflater.inflate(topMenuId, menu)
-
-        this.menu = menu
     }
 
-    fun isUserSignedIn(): Boolean {
-        try {
-            if (user == null || user!!.isAnonymous)
-                return false
-        } catch (_: NullPointerException) {
-            return false
-        }
-        return true
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        this.menu.value = menu
     }
 
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
@@ -101,7 +88,7 @@ abstract class VFragment(
 
     fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
-            if (input != null && input.editText?.text.isNullOrBlank()) {
+            if (input != null && !input.editText?.text.isNullOrBlank()) {
                 return false
             }
         }
@@ -131,7 +118,7 @@ abstract class VFragment(
         return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
     }
 
-    fun showMessage(@StringRes messageId: Int = R.string.error_placeholder) {
+    fun showSnackbarMessage(@StringRes messageId: Int) {
         (activity as? MainActivity)?.showMessage(messageId)
     }
 
@@ -144,26 +131,10 @@ abstract class VFragment(
         return false
     }
 
-    fun setEmptyView(visibility: Int, @StringRes messageId: Int = R.string.error_placeholder) {
-        emptyView.visibility = visibility
-        if(visibility == VISIBLE)
-            textViewEmpty.text = getString(messageId)
-    }
-
-    fun setSpinnerVisibility(visibility: Int) {
-        (activity as? MainActivity)?.setSpinnerVisibility(visibility)
-    }
-
-    fun handleError(@StringRes exception: Int, @StringRes messageId: Int = -1): Boolean {
-        if(exception == -1) return false
-        showMessage(exception)
-        setSpinnerVisibility(GONE)
-        if(messageId != -1) setEmptyView(VISIBLE, messageId)
-        return true
-    }
-
-    fun setIconVisibility(@IdRes id: Int, visible: Boolean) {
-        menu.findItem(id)?.isVisible = visible
+    fun setMenuItemVisibile(@IdRes id: Int, visible: Boolean) {
+        menu.observeOnce(viewLifecycleOwner, { menu ->
+            menu.findItem(id)?.isVisible = visible
+        })
     }
 
 }

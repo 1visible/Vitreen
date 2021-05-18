@@ -1,34 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:overScrollMode="never"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.product.StatisticsFragment">
+    android:fillViewport="true"
+    tools:context=".fragments.product.StatisticsFragment" >
 
-    <!-- Empty view -->
-    <include
-        layout="@layout/empty_view"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Consultations chart -->
-    <com.db.williamchart.view.HorizontalBarChartView
-        android:id="@+id/myChart"
+    <!-- Fragment container -->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        app:chart_labelsColor="?attr/colorOnBackground"
-        app:chart_labelsSize="10dp"
-        app:chart_barsColor="?attr/colorOnBackground"
-        app:chart_barsBackgroundColor="@color/white_4dp"
-        app:chart_barsRadius="@dimen/spacing_sm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content"
+        android:paddingBottom="100dp" >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Top view -->
+        <c0d3.vitreen.app.utils.TopView
+            android:id="@+id/topView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/bigicon_authentification"
+            app:title="@string/welcome" />
+
+        <!-- Main content -->
+        <LinearLayout
+            android:id="@+id/statisticsDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:layout_marginBottom="@dimen/spacing_lg"
+            android:layout_marginLeft="@dimen/spacing_md"
+            android:layout_marginRight="@dimen/spacing_md" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/general_informations"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewConsultations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:text="@string/total_consultations" />
+
+            <TextView
+                android:id="@+id/textViewReports"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:text="@string/total_reports" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/product_statistics"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewChartTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:text="@string/sorted_by_time" />
+
+            <!-- Consultations timeline chart -->
+            <com.db.williamchart.view.HorizontalBarChartView
+                android:id="@+id/chartViewTimeline"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:chart_barsBackgroundColor="@color/white_4dp"
+                app:chart_barsColor="?attr/colorOnBackground"
+                app:chart_barsRadius="@dimen/spacing_sm"
+                app:chart_labelsColor="?attr/colorOnBackground"
+                app:chart_labelsSize="12sp" />
+
+            <TextView
+                android:id="@+id/textViewEmptyTimeline"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/not_enough_data" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:text="@string/sorted_by_city" />
+
+            <!-- Consultations cities chart -->
+            <com.db.williamchart.view.HorizontalBarChartView
+                android:id="@+id/chartViewCities"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:chart_barsBackgroundColor="@color/white_4dp"
+                app:chart_barsColor="?attr/colorOnBackground"
+                app:chart_barsRadius="@dimen/spacing_sm"
+                app:chart_labelsColor="?attr/colorOnBackground"
+                app:chart_labelsSize="12sp" />
+
+            <TextView
+                android:id="@+id/textViewEmptyCities"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/not_enough_data" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

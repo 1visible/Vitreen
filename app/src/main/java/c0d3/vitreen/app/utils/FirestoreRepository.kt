@@ -2,16 +2,14 @@ package c0d3.vitreen.app.utils
 
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.CATEGORIES_COLLECTION
+import c0d3.vitreen.app.utils.Constants.Companion.DISCUSSIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.DOCUMENTS_LIMIT
 import c0d3.vitreen.app.utils.Constants.Companion.IMAGE_SIZE
 import c0d3.vitreen.app.utils.Constants.Companion.LOCATIONS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.PRODUCTS_COLLECTION
 import c0d3.vitreen.app.utils.Constants.Companion.USERS_COLLECTION
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -20,72 +18,79 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.InputStream
+import java.util.*
 
 class FirestoreRepository {
     private val db = Firebase.firestore
     private val auth: FirebaseAuth = Firebase.auth
     private val storage = Firebase.storage
 
-    fun getProducts(
-        limit: Boolean,
-        title: String?,
-        price: Double?,
-        brand: String?,
-        location: Location?,
-        category: Category?,
-        ownerId: String?
-    ): Query {
+    fun getProducts(search: SearchQuery): Query {
+        val (title, priceMin, priceMax, brand, location, category, ownerId, ids) = search
         var query: Query = db.collection(PRODUCTS_COLLECTION)
+        var orderByDate = true
 
-        if (title != null)
-            query = query.whereEqualTo("title", title)
+        if (title != null) {
+            query = query.whereGreaterThanOrEqualTo("title", title)
+                .orderBy("title")
+            orderByDate = false
+        }
 
-        if (brand != null)
+        if (brand != null) {
             query = query.whereEqualTo("brand", brand)
+            orderByDate = false
+        }
 
-        if (location != null)
+        if (location != null) {
             query = query.whereEqualTo("location", location)
+            orderByDate = false
+        }
 
-        if (category != null)
+        if (category != null) {
             query = query.whereEqualTo("category", category)
+            orderByDate = false
+        }
 
-        if (ownerId != null)
+        if (ownerId != null) {
             query = query.whereEqualTo("ownerId", ownerId)
+            orderByDate = false
+        }
 
-        if (limit)
-            query = query.limit(DOCUMENTS_LIMIT)
+        if (!ids.isNullOrEmpty()) {
+            query = query.whereIn(FieldPath.documentId(), ids)
+            orderByDate = false
+        }
 
-        if (price != null)
-            query = query.whereLessThanOrEqualTo("price", price)
-                .orderBy("price", Query.Direction.ASCENDING)
-
-        query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
-
-        if(title != null)
-            query = query.orderBy("title", Query.Direction.DESCENDING)
+        if (orderByDate)
+            query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
+                .limit(DOCUMENTS_LIMIT)
 
         return query
     }
 
-    fun getProduct(id: String): Task<DocumentSnapshot> {
-        return db.collection(PRODUCTS_COLLECTION).document(id).get()
-    }
-
-    fun signInAnonymously(): Task<AuthResult> {
-        return auth.signInAnonymously()
+    fun deleteProduct(id: String): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id).delete()
     }
 
     fun signIn(email: String, password: String): Task<AuthResult> {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    fun getUser(user: FirebaseUser): Task<QuerySnapshot> {
-        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", user.email).limit(1).get()
+    fun signOut() {
+        auth.signOut()
     }
 
-    fun linkUser(user: FirebaseUser, email: String, password: String): Task<AuthResult> {
-        val credential = EmailAuthProvider.getCredential(email, password)
-        return user.linkWithCredential(credential)
+    fun getUser(email: String): Query {
+        return db.collection(USERS_COLLECTION).whereEqualTo("emailAddress", email).limit(1)
+    }
+
+    fun getUserById(id: String): Task<DocumentSnapshot> {
+        return db.collection(USERS_COLLECTION).document(id).get()
+    }
+
+    fun reportProduct(id: String, userId: String): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(id)
+            .update("reporters", FieldValue.arrayUnion(userId))
     }
 
     fun registerUser(email: String, password: String): Task<AuthResult> {
@@ -104,10 +109,6 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION)
     }
 
-    fun getLocation(city: String): Task<QuerySnapshot> {
-        return getLocations().whereEqualTo("city", city).get()
-    }
-
     fun getImage(path: String): Task<ByteArray> {
         return storage.reference.child("images/${path}").getBytes(IMAGE_SIZE)
     }
@@ -116,12 +117,45 @@ class FirestoreRepository {
         return db.collection(LOCATIONS_COLLECTION).document(id).update("zipCode", zipCode)
     }
 
-    fun updateProduct(id: String, consultation: Consultation): Task<Void> {
-        return db.collection(PRODUCTS_COLLECTION).document(id).update("consultations", FieldValue.arrayUnion(consultation))
+    fun updateUserLocation(id: String, zipCode: Long): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(id).update("location.zipCode", zipCode)
     }
 
-    fun updateUser(id: String, favoriteId: String): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(id).update("favoritesIds", FieldValue.arrayUnion(favoriteId))
+
+    fun updateProduct(product: Product): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(product.id!!).update(
+            "title",
+            product.title,
+            "description",
+            product.description,
+            "price",
+            product.price,
+            "brand",
+            product.brand,
+            "size",
+            product.size,
+            "location",
+            product.location,
+            "category",
+            product.category,
+            "modifiedAt",
+            Calendar.getInstance().time
+        )
+    }
+
+    fun addConsultation(productId: String, consultation: Consultation): Task<Void> {
+        return db.collection(PRODUCTS_COLLECTION).document(productId)
+            .update("consultations", FieldValue.arrayUnion(consultation))
+    }
+
+    fun addToFavorites(userId: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(userId)
+            .update("favoritesIds", FieldValue.arrayUnion(favoriteId))
+    }
+
+    fun removeFromFavorites(userId: String, favoriteId: String): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(userId)
+            .update("favoritesIds", FieldValue.arrayRemove(favoriteId))
     }
 
     fun addLocation(location: Location): Task<DocumentReference> {
@@ -137,7 +171,7 @@ class FirestoreRepository {
         return storage.reference.child("images/${path}").putStream(inputStream, metadata)
     }
 
-    fun deleteProducts(ids: ArrayList<String>): Task<Void> {
+    fun deleteProducts(vararg ids: String): Task<Void> {
         val products = db.batch()
 
         ids.forEach { id ->
@@ -152,7 +186,44 @@ class FirestoreRepository {
         return storage.reference.child("images/${path}").delete()
     }
 
-    fun deleteUser(user: FirebaseUser): Task<Void> {
-        return user.delete()
+    fun deleteUser(): Task<Void>? {
+        return auth.currentUser?.delete()
+    }
+
+    fun getDiscussions(userId: String): Query {
+        return db.collection(DISCUSSIONS_COLLECTION).whereArrayContains("usersIds", userId)
+    }
+
+    fun updateDiscussion(id: String, message: Message): Task<Void> {
+        return db.collection(DISCUSSIONS_COLLECTION).document(id)
+            .update("messages", FieldValue.arrayUnion(message), "haveMessages", true)
+    }
+
+    fun addDiscussion(discussion: Discussion): Task<DocumentReference> {
+        return db.collection(DISCUSSIONS_COLLECTION).add(discussion)
+    }
+
+    fun resetPassword(email: String): Task<Void> {
+        return auth.sendPasswordResetEmail(email)
+    }
+    fun updateUser(user: User): Task<Void> {
+        return db.collection(USERS_COLLECTION).document(user.id!!).update(
+            "username",
+            user.username,
+            "phoneNumber",
+            user.phoneNumber,
+            "contactByPhone",
+            user.contactByPhone,
+            "isProfessional",
+            user.isProfessional,
+            "location",
+            user.location,
+            "companyName",
+            user.companyName,
+            "siretNumber",
+            user.siretNumber,
+            "favoritesIds",
+            user.favoritesIds
+        )
     }
 }
