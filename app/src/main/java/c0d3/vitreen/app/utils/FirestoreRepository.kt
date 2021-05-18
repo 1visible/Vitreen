@@ -190,13 +190,8 @@ class FirestoreRepository {
         return auth.currentUser?.delete()
     }
 
-    fun getDiscussions(userId: String, withMessages: Boolean = false): Query {
-        var query = db.collection(DISCUSSIONS_COLLECTION).whereArrayContains("usersIds", userId)
-
-        if(withMessages)
-            query = query.whereEqualTo("haveMessages", true)
-
-        return query
+    fun getDiscussions(userId: String): Query {
+        return db.collection(DISCUSSIONS_COLLECTION).whereArrayContains("usersIds", userId)
     }
 
     fun updateDiscussion(id: String, message: Message): Task<Void> {

@@ -5,10 +5,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.adapter.DiscussionAdapter
 import c0d3.vitreen.app.models.Discussion
-import c0d3.vitreen.app.models.Product
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_discussions.*
 import kotlinx.android.synthetic.main.fragment_favorites.*
@@ -48,8 +49,10 @@ class DiscussionsFragment: VFragment(
                 return@observe
             }
 
+            val filteredDiscussions = discussions.filter { discussion -> discussion.messages.size > 0 }
+
             // If there are no discussions: show empty view
-            if(discussions.isEmpty()) {
+            if(filteredDiscussions.isEmpty()) {
                 recyclerViewDiscussions.visibility = GONE
                 emptyView.visibility = VISIBLE
                 return@observe
@@ -57,11 +60,16 @@ class DiscussionsFragment: VFragment(
 
             // Else, display discussions in the recycler view
             val adapter = DiscussionAdapter { discussion -> adapterOnClick(discussion) }
-            adapter.submitList(discussions)
+            adapter.submitList(filteredDiscussions)
             recyclerViewDiscussions.adapter = adapter
             emptyView.visibility = GONE
             recyclerViewDiscussions.visibility = VISIBLE
         })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as? MainActivity)?.hideBadge()
     }
 
     private fun adapterOnClick(discussion: Discussion) {

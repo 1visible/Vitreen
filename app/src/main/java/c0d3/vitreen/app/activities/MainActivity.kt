@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.annotation.DrawableRes
@@ -24,6 +25,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     private var backPressedOnce = false
+    private var discussionsSize = -1
     private lateinit var viewModel: FirestoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +73,20 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
              } catch(_: Exception) {
                  viewModel.discussions.value = R.string.NotFoundException to ArrayList()
              }
+        })
+
+        viewModel.discussions.observe(this, { (exception, discussions) ->
+            if(exception != -1)
+                return@observe
+
+            if(discussionsSize == -1)
+                discussionsSize = discussions.size
+            else if(discussionsSize == discussions.size
+                && navController.currentDestination?.id != R.id.navigation_discussions
+                && navController.currentDestination?.id != R.id.navigation_messages) {
+                val badge = navView.getOrCreateBadge(R.id.navigation_discussions)
+                badge.isVisible = true
+            }
         })
     }
 
@@ -143,6 +160,12 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     // Update user (model and state) on auth state changes
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
         viewModel.setUserState(firebaseAuth.currentUser != null, firebaseAuth.currentUser?.email)
+    }
+
+    fun hideBadge() {
+        val badge = navView.getBadge(R.id.navigation_discussions)
+        if (badge != null)
+            badge.isVisible = false
     }
 }
 

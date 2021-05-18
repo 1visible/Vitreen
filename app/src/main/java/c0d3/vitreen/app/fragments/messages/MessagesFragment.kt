@@ -1,23 +1,20 @@
 package c0d3.vitreen.app.fragments.messages
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.core.view.size
 import c0d3.vitreen.app.R
-import c0d3.vitreen.app.activities.observeOnce
+import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.adapter.MessageAdapter
 import c0d3.vitreen.app.models.Message
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.fragment_discussions.*
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.loading_spinner.*
-import java.lang.NullPointerException
 
 class MessagesFragment: VFragment(
     layoutId = R.layout.fragment_messages,
@@ -90,6 +87,11 @@ class MessagesFragment: VFragment(
                 }
             })
         })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as? MainActivity)?.hideBadge()
     }
 
 }
