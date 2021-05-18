@@ -96,14 +96,14 @@ class UpdateFragment : VFragment(
                 if (switchProfessionalAccount.isChecked != this.user!!.isProfessional)
                     this.user!!.isProfessional = switchProfessionalAccount.isChecked
                 if (!switchProfessionalAccount.isChecked) {
-                    if (inputToString(editTextCompany)!! != this.user!!.companyName)
+                    if (inputToString(editTextCompany) != this.user!!.companyName)
                         this.user!!.companyName = null
-                    if (inputToString(editTextSiret)!! != this.user!!.siretNumber)
+                    if (inputToString(editTextSiret) != this.user!!.siretNumber)
                         this.user!!.siretNumber = null
                 } else {
-                    if (inputToString(editTextCompany)!! != this.user!!.companyName)
+                    if (inputToString(editTextCompany) != this.user!!.companyName)
                         this.user!!.companyName = inputToString(editTextCompany)!!
-                    if (inputToString(editTextSiret)!! != this.user!!.siretNumber)
+                    if (inputToString(editTextSiret) != this.user!!.siretNumber)
                         this.user!!.siretNumber = inputToString(editTextSiret)!!
                 }
 
