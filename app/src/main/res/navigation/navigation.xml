@@ -209,7 +209,7 @@
 
     <fragment
         android:id="@+id/navigation_update_profil"
-        android:name="c0d3.vitreen.app.fragments.profile.UpdateProfilFragment"
+        android:name="c0d3.vitreen.app.fragments.profile.UpdateFragment"
         android:label="@string/label_update_profil"
         tools:layout="@layout/fragment_update">
         <action

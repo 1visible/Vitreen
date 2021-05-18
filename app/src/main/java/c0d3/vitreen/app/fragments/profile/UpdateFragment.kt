@@ -2,13 +2,15 @@ package c0d3.vitreen.app.fragments.profile
 
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_update.*
 
-class UpdateProfilFragment : VFragment(
+class UpdateFragment : VFragment(
     layoutId = R.layout.fragment_update,
     topIcon = R.drawable.bigicon_profile,
     requireAuth = true,
@@ -23,6 +25,7 @@ class UpdateProfilFragment : VFragment(
         // If user is not signed in, skip this part
         if (!viewModel.isUserSignedIn)
             return
+
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
             if (exception != -1) {
                 this.user = null
@@ -30,6 +33,7 @@ class UpdateProfilFragment : VFragment(
                 goBack()
                 return@observe
             }
+
             this.user = user
             this.oldUser = User(
                 user.username,
@@ -42,6 +46,7 @@ class UpdateProfilFragment : VFragment(
                 user.siretNumber,
                 user.favoritesIds
             )
+
             fillFields()
         })
         buttonUpdate.setOnClickListener {
@@ -50,20 +55,25 @@ class UpdateProfilFragment : VFragment(
                     editTextPhoneNumber,
                     editTextLocation
                 )
-            ) return@setOnClickListener
+            )
+                return@setOnClickListener
+
             if ((switchProfessionalAccount.isChecked) && (isAnyRequiredInputEmpty(
                     editTextCompany,
                     editTextSiret
                 ))
-            ) return@setOnClickListener
+            )
+                return@setOnClickListener
+
             if (hasAnyChanged(oldUser!!, this.user!!)) {
-                if (!inputToString(editTextUsername)!!.equals(this.user!!.username)) this.user!!.username =
-                    inputToString(editTextUsername)!!
-                if (!inputToString(editTextPhoneNumber)!!.equals(this.user!!.phoneNumber)) this.user!!.phoneNumber =
-                    inputToString(editTextPhoneNumber)!!
-                if (!inputToString(editTextLocation)!!.equals(this.user!!.location.city)) {
-                    viewModel.getLocation(inputToString(editTextLocation)!!)
-                        .observeOnce(viewLifecycleOwner, { (exception, location) ->
+                if (inputToString(editTextUsername)!! != this.user!!.username)
+                    this.user!!.username = inputToString(editTextUsername)!!
+
+                if (inputToString(editTextPhoneNumber)!! != this.user!!.phoneNumber)
+                    this.user!!.phoneNumber = inputToString(editTextPhoneNumber)!!
+
+                if (inputToString(editTextLocation)!! != this.user!!.location.city) {
+                    viewModel.getLocation(inputToString(editTextLocation)!!).observeOnce(viewLifecycleOwner, { (exception, location) ->
                             // If the call fails, show error message
                             if (exception != -1 && exception != R.string.NotFoundException) {
                                 showSnackbarMessage(exception)
@@ -76,23 +86,25 @@ class UpdateProfilFragment : VFragment(
                                 location.zipCode = null
                                 viewModel.addLocation(location)
                             }
+
                             this.user!!.location = location
                         })
                 }
-                if (radioButtonPhone.isChecked != this.user!!.contactByPhone) this.user!!.contactByPhone =
-                    radioButtonPhone.isChecked
-                if (switchProfessionalAccount.isChecked != this.user!!.isProfessional) this.user!!.isProfessional =
-                    switchProfessionalAccount.isChecked
+
+                if (radioButtonPhone.isChecked != this.user!!.contactByPhone)
+                    this.user!!.contactByPhone = radioButtonPhone.isChecked
+                if (switchProfessionalAccount.isChecked != this.user!!.isProfessional)
+                    this.user!!.isProfessional = switchProfessionalAccount.isChecked
                 if (!switchProfessionalAccount.isChecked) {
-                    if (!inputToString(editTextCompany)!!.equals(this.user!!.companyName)) this.user!!.companyName =
-                        null
-                    if (!inputToString(editTextSiret)!!.equals(this.user!!.siretNumber)) this.user!!.siretNumber =
-                        null
+                    if (inputToString(editTextCompany)!! != this.user!!.companyName)
+                        this.user!!.companyName = null
+                    if (inputToString(editTextSiret)!! != this.user!!.siretNumber)
+                        this.user!!.siretNumber = null
                 } else {
-                    if (!inputToString(editTextCompany)!!.equals(this.user!!.companyName)) this.user!!.companyName =
-                        inputToString(editTextCompany)!!
-                    if (!inputToString(editTextSiret)!!.equals(this.user!!.siretNumber)) this.user!!.siretNumber =
-                        inputToString(editTextSiret)!!
+                    if (inputToString(editTextCompany)!! != this.user!!.companyName)
+                        this.user!!.companyName = inputToString(editTextCompany)!!
+                    if (inputToString(editTextSiret)!! != this.user!!.siretNumber)
+                        this.user!!.siretNumber = inputToString(editTextSiret)!!
                 }
 
                 viewModel.updateUser(this.user!!).observeOnce(viewLifecycleOwner, { exception ->
@@ -100,41 +112,48 @@ class UpdateProfilFragment : VFragment(
                         showSnackbarMessage(R.string.update_profil_failed)
                         return@observeOnce
                     }
+
                     showSnackbarMessage(R.string.update_profil_OK)
                 })
             }
+
             navigateTo(R.id.from_update_profile_to_profile)
         }
     }
 
     private fun hasAnyChanged(oldUser: User, newUser: User): Boolean {
-        return (oldUser.equals(newUser))
+        return (oldUser == newUser)
     }
 
     private fun fillFields() {
         editTextUsername.editText?.setText(this.user!!.username)
         editTextPhoneNumber.editText?.setText(this.user!!.phoneNumber)
         editTextLocation.editText?.setText(this.user!!.location.city)
-        if (this.user!!.contactByPhone) radioButtonPhone.isChecked = true
-        else radioButtonEmail.isChecked = true
+
+        if (this.user!!.contactByPhone)
+            radioButtonPhone.isChecked = true
+        else
+            radioButtonEmail.isChecked = true
+
         if (this.user!!.isProfessional) {
             switchProfessionalAccount.isChecked = true
-            editTextCompany.visibility = View.VISIBLE
-            editTextSiret.visibility = View.VISIBLE
+            editTextCompany.visibility = VISIBLE
+            editTextSiret.visibility = VISIBLE
             editTextCompany.editText?.setText(this.user!!.companyName)
             editTextSiret.editText?.setText(this.user!!.siretNumber)
         } else {
             switchProfessionalAccount.isChecked = false
-            editTextCompany.visibility = View.GONE
-            editTextSiret.visibility = View.GONE
+            editTextCompany.visibility = GONE
+            editTextSiret.visibility = GONE
         }
+
         switchProfessionalAccount.setOnClickListener {
             if (switchProfessionalAccount.isChecked) {
-                editTextCompany.visibility = View.VISIBLE
-                editTextSiret.visibility = View.VISIBLE
+                editTextCompany.visibility = VISIBLE
+                editTextSiret.visibility = VISIBLE
             } else {
-                editTextCompany.visibility = View.GONE
-                editTextSiret.visibility = View.GONE
+                editTextCompany.visibility = GONE
+                editTextSiret.visibility = GONE
             }
         }
     }

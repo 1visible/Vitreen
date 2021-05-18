@@ -17,33 +17,47 @@ class Modify2Fragment : VFragment(
     requireAuth = true,
     loginNavigationId = R.id.from_modify2_to_login
 ) {
-    private var product_title: String? = null
-    private var product_price: String? = null
-    private var product_location: String? = null
-    private var product_category: Category? = null
-    private var product_description: String? = null
+    private var productTitle: String? = null
+    private var productPrice: String? = null
+    private var productLocation: String? = null
+    private var productCategory: Category? = null
+    private var productDescription: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        product_title = arguments?.getString(Constants.KEY_TITLE)
-        product_price = arguments?.getString(Constants.KEY_PRICE)
-        product_category = arguments?.get(Constants.KEY_CATEGORY) as? Category?
-        product_location = arguments?.getString(Constants.KEY_LOCATION)
-        product_description = arguments?.getString(Constants.KEY_DESCRIPTION)
+        productTitle = arguments?.getString(Constants.KEY_TITLE)
+        productPrice = arguments?.getString(Constants.KEY_PRICE)
+        productCategory = arguments?.get(Constants.KEY_CATEGORY) as? Category?
+        productLocation = arguments?.getString(Constants.KEY_LOCATION)
+        productDescription = arguments?.getString(Constants.KEY_DESCRIPTION)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!viewModel.isUserSignedIn) return
-        if (product_title == null || product_price == null || product_location == null || product_category == null || product_category !is Category || product_description == null) {
+
+        if (!viewModel.isUserSignedIn)
+            return
+
+        if (productTitle == null
+            || productPrice == null
+            || productLocation == null
+            || productCategory == null
+            || productCategory !is Category
+            || productDescription == null) {
             showSnackbarMessage(R.string.error_placeholder)
             goBack()
             return
         }
-        if (viewModel.product.brand != null) editTextBrand.editText?.setText(viewModel.product.brand)
-        if (viewModel.product.size != null) editTextDimensions.editText?.setText(viewModel.product.size)
+
+        if (viewModel.product.brand != null)
+            editTextBrand.editText?.setText(viewModel.product.brand)
+
+        if (viewModel.product.size != null)
+            editTextDimensions.editText?.setText(viewModel.product.size)
+
         relativeLayoutProduct.visibility = View.GONE
         buttonAddImage.visibility = View.GONE
+
         buttonConfirmation.setOnClickListener {
             val product = Product(
                 viewModel.product.title,
@@ -59,47 +73,61 @@ class Modify2Fragment : VFragment(
                 viewModel.product.ownerId,
                 viewModel.product.modifiedAt
             )
-            val product_brand = inputToString(editTextBrand)
-            val product_dimensions = inputToString(editTextDimensions)
-            if (viewModel.product.title != product_title) viewModel.product.title = product_title!!
-            if (!viewModel.product.category.equals(product_category)) viewModel.product.category =
-                product_category!!
-            if (viewModel.product.price != product_price!!.toDouble()) viewModel.product.price =
-                product_price!!.toDouble()
-            if (viewModel.product.description != product_description) viewModel.product.description =
-                product_description!!
-            if (viewModel.product.location.city != product_location) {
-                viewModel.getLocation(product_location!!)
-                    .observeOnce(viewLifecycleOwner, { (exception, location) ->
-                        // If the call fails, show error message
-                        if (exception != -1 && exception != R.string.NotFoundException) {
-                            showSnackbarMessage(exception)
-                            return@observeOnce
-                        }
 
-                        // Else if location could not be found, create new location
-                        if (exception == R.string.NotFoundException) {
-                            location.city = product_location!!
-                            location.zipCode = null
-                            viewModel.addLocation(location)
-                        }
-                        viewModel.product.location = location
-                    })
+            val productBrand = inputToString(editTextBrand)
+            val productDimensions = inputToString(editTextDimensions)
+
+            if (viewModel.product.title != productTitle)
+                viewModel.product.title = productTitle!!
+
+            if (viewModel.product.category != productCategory)
+                viewModel.product.category = productCategory!!
+
+            if (viewModel.product.price != productPrice!!.toDouble())
+                viewModel.product.price = productPrice!!.toDouble()
+
+            if (viewModel.product.description != productDescription)
+                viewModel.product.description = productDescription!!
+
+            if (viewModel.product.location.city != productLocation) {
+                viewModel.getLocation(productLocation!!).observeOnce(viewLifecycleOwner, { (exception, location) ->
+                    // If the call fails, show error message
+                    if (exception != -1 && exception != R.string.NotFoundException) {
+                        showSnackbarMessage(exception)
+                        return@observeOnce
+                    }
+
+                    // Else if location could not be found, create new location
+                    if (exception == R.string.NotFoundException) {
+                        location.city = productLocation!!
+                        location.zipCode = null
+                        viewModel.addLocation(location)
+                    }
+
+                    viewModel.product.location = location
+                })
             }
-            if (viewModel.product.brand != product_brand) viewModel.product.brand =
-                product_brand
-            if (viewModel.product.size != product_dimensions) viewModel.product.size =
-                product_dimensions
-            if (isProductChanged(product, viewModel.product)) {
+
+            if (viewModel.product.brand != productBrand)
+                viewModel.product.brand = productBrand
+
+            if (viewModel.product.size != productDimensions)
+                viewModel.product.size = productDimensions
+
+            if (isProductChanged(product, viewModel.product))
                 viewModel.updateProduct(viewModel.product)
-            }
+
             navigateTo(R.id.from_modify2_to_product)
         }
     }
 
     private fun isProductChanged(oldProduct: Product, newProduct: Product): Boolean {
-        return ((oldProduct.title != newProduct.title) || (!oldProduct.category.equals(newProduct.category)) || (oldProduct.price != newProduct.price) || (oldProduct.description != newProduct.description) || (!oldProduct.location.equals(
-            newProduct.location
-        )) || (oldProduct.brand != newProduct.brand) || (oldProduct.size != newProduct.size))
+        return (oldProduct.title != newProduct.title
+                || oldProduct.category != newProduct.category
+                || oldProduct.price != newProduct.price
+                || oldProduct.description != newProduct.description
+                || oldProduct.location != newProduct.location
+                || oldProduct.brand != newProduct.brand
+                || oldProduct.size != newProduct.size)
     }
 }
