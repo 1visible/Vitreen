@@ -26,98 +26,104 @@ class UpdateFragment : VFragment(
         if (!viewModel.isUserSignedIn)
             return
 
-        viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
-            if (exception != -1) {
-                this.user = null
-                showSnackbarMessage(exception)
-                goBack()
-                return@observe
-            }
+        try {
+            viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
+                if (exception != -1) {
+                    this.user = null
+                    showSnackbarMessage(exception)
+                    goBack()
+                    return@observe
+                }
 
-            this.user = user
-            this.oldUser = User(
-                user.username,
-                user.emailAddress,
-                user.phoneNumber,
-                user.contactByPhone,
-                user.isProfessional,
-                user.location,
-                user.companyName,
-                user.siretNumber,
-                user.favoritesIds
-            )
-
-            fillFields()
-        })
-        buttonUpdate.setOnClickListener {
-            if (isAnyRequiredInputEmpty(
-                    editTextUsername,
-                    editTextPhoneNumber,
-                    editTextLocation
+                this.user = user
+                this.oldUser = User(
+                    user.username,
+                    user.emailAddress,
+                    user.phoneNumber,
+                    user.contactByPhone,
+                    user.isProfessional,
+                    user.location,
+                    user.companyName,
+                    user.siretNumber,
+                    user.favoritesIds
                 )
-            )
-                return@setOnClickListener
 
-            if ((switchProfessionalAccount.isChecked) && (isAnyRequiredInputEmpty(
-                    editTextCompany,
-                    editTextSiret
-                ))
-            )
-                return@setOnClickListener
+                fillFields()
+            })
+            buttonUpdate.setOnClickListener {
+                if (isAnyRequiredInputEmpty(
+                        editTextUsername,
+                        editTextPhoneNumber,
+                        editTextLocation
+                    )
+                )
+                    return@setOnClickListener
 
-            if (hasAnyChanged(oldUser!!, this.user!!)) {
-                if (inputToString(editTextUsername)!! != this.user!!.username)
-                    this.user!!.username = inputToString(editTextUsername)!!
+                if ((switchProfessionalAccount.isChecked) && (isAnyRequiredInputEmpty(
+                        editTextCompany,
+                        editTextSiret
+                    ))
+                )
+                    return@setOnClickListener
 
-                if (inputToString(editTextPhoneNumber)!! != this.user!!.phoneNumber)
-                    this.user!!.phoneNumber = inputToString(editTextPhoneNumber)!!
+                if (hasAnyChanged(oldUser!!, this.user!!)) {
+                    if (inputToString(editTextUsername)!! != this.user!!.username)
+                        this.user!!.username = inputToString(editTextUsername)!!
 
-                if (inputToString(editTextLocation)!! != this.user!!.location.city) {
-                    viewModel.getLocation(inputToString(editTextLocation)!!).observeOnce(viewLifecycleOwner, { (exception, location) ->
-                            // If the call fails, show error message
-                            if (exception != -1 && exception != R.string.NotFoundException) {
-                                showSnackbarMessage(exception)
-                                return@observeOnce
-                            }
+                    if (inputToString(editTextPhoneNumber)!! != this.user!!.phoneNumber)
+                        this.user!!.phoneNumber = inputToString(editTextPhoneNumber)!!
 
-                            // Else if location could not be found, create new location
-                            if (exception == R.string.NotFoundException) {
-                                location.city = inputToString(editTextLocation)!!
-                                location.zipCode = null
-                                viewModel.addLocation(location)
-                            }
+                    if (inputToString(editTextLocation)!! != this.user!!.location.city) {
+                        viewModel.getLocation(inputToString(editTextLocation)!!).observeOnce(viewLifecycleOwner, { (exception, location) ->
+                                // If the call fails, show error message
+                                if (exception != -1 && exception != R.string.NotFoundException) {
+                                    showSnackbarMessage(exception)
+                                    return@observeOnce
+                                }
 
-                            this.user!!.location = location
-                        })
-                }
+                                // Else if location could not be found, create new location
+                                if (exception == R.string.NotFoundException) {
+                                    location.city = inputToString(editTextLocation)!!
+                                    location.zipCode = null
+                                    viewModel.addLocation(location)
+                                }
 
-                if (radioButtonPhone.isChecked != this.user!!.contactByPhone)
-                    this.user!!.contactByPhone = radioButtonPhone.isChecked
-                if (switchProfessionalAccount.isChecked != this.user!!.isProfessional)
-                    this.user!!.isProfessional = switchProfessionalAccount.isChecked
-                if (!switchProfessionalAccount.isChecked) {
-                    if (inputToString(editTextCompany) != this.user!!.companyName)
-                        this.user!!.companyName = null
-                    if (inputToString(editTextSiret) != this.user!!.siretNumber)
-                        this.user!!.siretNumber = null
-                } else {
-                    if (inputToString(editTextCompany) != this.user!!.companyName)
-                        this.user!!.companyName = inputToString(editTextCompany)!!
-                    if (inputToString(editTextSiret) != this.user!!.siretNumber)
-                        this.user!!.siretNumber = inputToString(editTextSiret)!!
-                }
-
-                viewModel.updateUser(this.user!!).observeOnce(viewLifecycleOwner, { exception ->
-                    if (exception != -1) {
-                        showSnackbarMessage(R.string.update_profil_failed)
-                        return@observeOnce
+                                this.user!!.location = location
+                            })
                     }
 
-                    showSnackbarMessage(R.string.update_profil_OK)
-                })
-            }
+                    if (radioButtonPhone.isChecked != this.user!!.contactByPhone)
+                        this.user!!.contactByPhone = radioButtonPhone.isChecked
+                    if (switchProfessionalAccount.isChecked != this.user!!.isProfessional)
+                        this.user!!.isProfessional = switchProfessionalAccount.isChecked
+                    if (!switchProfessionalAccount.isChecked) {
+                        if (inputToString(editTextCompany) != this.user!!.companyName)
+                            this.user!!.companyName = null
+                        if (inputToString(editTextSiret) != this.user!!.siretNumber)
+                            this.user!!.siretNumber = null
+                    } else {
+                        if (inputToString(editTextCompany) != this.user!!.companyName)
+                            this.user!!.companyName = inputToString(editTextCompany)!!
+                        if (inputToString(editTextSiret) != this.user!!.siretNumber)
+                            this.user!!.siretNumber = inputToString(editTextSiret)!!
+                    }
 
-            navigateTo(R.id.from_update_profile_to_profile)
+                    viewModel.updateUser(this.user!!).observeOnce(viewLifecycleOwner, { exception ->
+                        if (exception != -1) {
+                            showSnackbarMessage(R.string.update_profil_failed)
+                            return@observeOnce
+                        }
+
+                        showSnackbarMessage(R.string.update_profil_OK)
+                    })
+                }
+
+                navigateTo(R.id.from_update_profile_to_profile)
+            }
+        } catch (_: NullPointerException) {
+            showSnackbarMessage(R.string.error_placeholder)
+            goBack()
+            return
         }
     }
 
