@@ -34,7 +34,6 @@ class LoginFragment : VFragment(
             // If the user is signed out, sign in
             if (!viewModel.isUserSignedIn)
                 viewModel.signIn(email, password).observeOnce(viewLifecycleOwner, { exception ->
-                    // TODO : Gérer les différents erreurs
                     if (exception != -1) {
                         showSnackbarMessage(exception)
                         return@observeOnce

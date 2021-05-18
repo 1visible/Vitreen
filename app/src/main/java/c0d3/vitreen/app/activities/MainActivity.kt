@@ -88,8 +88,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
                 && navController.currentDestination?.id != R.id.navigation_messages) {
 
                 val badge = navView.getOrCreateBadge(R.id.navigation_discussions)
-
-                badge.backgroundColor = ContextCompat.getColor(this, R.color.teal)
                 badge.isVisible = true
 
                 vibratePhone()
@@ -126,7 +124,6 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
                 Handler(Looper.getMainLooper()).postDelayed(2000) {
                     backPressedOnce = false
                 }
-                // TODO : Gérer les cas de login, register 1 et register 2 avec comportement de back button (si nécessaire)
             }
             navController.currentDestination?.id == R.id.navigation_login -> {
                 navController.navigate(R.id.from_login_to_home)

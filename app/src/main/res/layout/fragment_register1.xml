@@ -86,6 +86,7 @@
                 app:startIconDrawable="@drawable/ic_lockpad"
                 app:helperText="@string/required_input"
                 app:helperTextEnabled="true"
+                app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 android:hint="@string/password" >
                 <com.google.android.material.textfield.TextInputEditText
@@ -103,6 +104,7 @@
                 app:startIconDrawable="@drawable/ic_lockpad"
                 app:helperText="@string/required_input"
                 app:helperTextEnabled="true"
+                app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 android:hint="@string/confirmation" >
                 <com.google.android.material.textfield.TextInputEditText

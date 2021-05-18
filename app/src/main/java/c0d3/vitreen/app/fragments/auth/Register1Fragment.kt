@@ -42,7 +42,6 @@ class Register1Fragment : VFragment(
 
             if(!viewModel.isUserSignedIn) {
                 viewModel.registerUser(email, password).observeOnce(viewLifecycleOwner, { exception ->
-                    // TODO : Gérer les différents erreurs
                     if(exception != -1) {
                         showSnackbarMessage(exception)
                         return@observeOnce

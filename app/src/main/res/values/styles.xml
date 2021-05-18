@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- TODO: Badge style -->
     <style name="Vitreen.Badge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">?attr/colorPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>

@@ -82,10 +82,11 @@
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_lg"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 app:startIconDrawable="@drawable/ic_lockpad"
                 app:helperText="@string/required_input"
                 app:helperTextEnabled="true"
+                app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 android:hint="@string/password" >
                 <com.google.android.material.textfield.TextInputEditText
@@ -93,13 +94,16 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonToResetPassword"
                 style="?attr/borderlessButtonStyle"
-                android:maxLines="1"
                 android:layout_marginBottom="@dimen/spacing_lg"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/white_40"
                 android:layout_width="wrap_content"
-                android:layout_height="50sp"
+                android:layout_height="wrap_content"
                 android:text="@string/reset_password" />
 
             <com.google.android.material.button.MaterialButton
