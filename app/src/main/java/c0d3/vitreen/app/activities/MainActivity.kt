@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     private var backPressedOnce = false
-    private var discussionsSize = -1
+    private var discussionsSize = -2
     private lateinit var viewModel: FirestoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +63,11 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
             }
 
              try {
-                 viewModel.getDiscussions(userId = user.id!!)
-             } catch(_: Exception) {
+                 if (discussionsSize == -2) {
+                     discussionsSize = -1
+                     viewModel.getDiscussions(userId = user.id!!)
+                 }
+             } catch(_: NullPointerException) {
                  viewModel.discussions.value = R.string.NotFoundException to ArrayList()
              }
         })
