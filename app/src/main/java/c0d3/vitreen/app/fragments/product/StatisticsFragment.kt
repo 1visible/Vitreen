@@ -80,7 +80,7 @@ class StatisticsFragment : VFragment(
         val citiesParams: ViewGroup.LayoutParams = chartViewCities.layoutParams
         val (perDate, perCity) = if(week) orderByWeek() else orderByYear()
 
-        if(perDate.isEmpty()) {
+        if(perDate.size < 4) {
             chartViewTimeline.visibility = GONE
             textViewEmptyTimeline.visibility = VISIBLE
         } else {
@@ -92,7 +92,7 @@ class StatisticsFragment : VFragment(
             chartViewTimeline.show(perDate)
         }
 
-        if(perCity.isEmpty()) {
+        if(perCity.size < 4) {
             chartViewCities.visibility = GONE
             textViewEmptyCities.visibility = VISIBLE
         } else {

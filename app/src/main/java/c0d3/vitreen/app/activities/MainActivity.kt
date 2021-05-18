@@ -78,9 +78,12 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
             if(exception != -1)
                 return@observe
 
-            if(discussionsSize == -1)
+            if(discussionsSize == -1) {
                 discussionsSize = discussions.size
-            else if(discussionsSize == discussions.size
+                return@observe
+            }
+
+            if(discussionsSize == discussions.size
                 && navController.currentDestination?.id != R.id.navigation_discussions
                 && navController.currentDestination?.id != R.id.navigation_messages) {
 
@@ -91,6 +94,8 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
 
                 vibratePhone()
             }
+
+            discussionsSize = discussions.size
         })
     }
 
