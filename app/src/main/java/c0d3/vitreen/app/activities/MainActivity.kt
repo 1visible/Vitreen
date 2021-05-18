@@ -1,11 +1,9 @@
 package c0d3.vitreen.app.activities
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
@@ -14,6 +12,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.postDelayed
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -84,8 +83,13 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
             else if(discussionsSize == discussions.size
                 && navController.currentDestination?.id != R.id.navigation_discussions
                 && navController.currentDestination?.id != R.id.navigation_messages) {
+
                 val badge = navView.getOrCreateBadge(R.id.navigation_discussions)
+
+                badge.backgroundColor = ContextCompat.getColor(this, R.color.teal)
                 badge.isVisible = true
+
+                vibratePhone()
             }
         })
     }
@@ -166,6 +170,15 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         val badge = navView.getBadge(R.id.navigation_discussions)
         if (badge != null)
             badge.isVisible = false
+    }
+
+    fun vibratePhone() {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        if (Build.VERSION.SDK_INT >= 26)
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+        else
+            vibrator.vibrate(200)
     }
 }
 
