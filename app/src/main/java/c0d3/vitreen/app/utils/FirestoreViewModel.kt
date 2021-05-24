@@ -39,6 +39,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return MutableLiveData()
     }
 
+    /**
+     * Check if user is available
+     *
+     * @return if user is available
+     */
     private fun isUserAvailable(): Boolean {
         user.value?.let { (exception, user) ->
             if (exception == -1 && user.emailAddress.isNotEmpty())
@@ -48,6 +53,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return false
     }
 
+    /**
+     * Set User State
+     *
+     * @param isUserSignedIn
+     * @param email
+     */
     fun setUserState(isUserSignedIn: Boolean, email: String? = null) {
         this.isUserSignedIn = isUserSignedIn
 
@@ -57,6 +68,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get product from Firebase
+     *
+     * @param search
+     * @return productsContainer
+     */
     fun getProducts(search: SearchQuery): MutableLiveData<ProductsContainer> {
         val productsContainer = MutableLiveData<ProductsContainer>()
         val query = repository.getProducts(search)
@@ -126,10 +143,23 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productsContainer
     }
 
+    /**
+     * Authentificate User
+     *
+     * @param email
+     * @param password
+     * @return errorCode
+     */
     fun signIn(email: String, password: String): LiveData<Int> {
         return request(repository.signIn(email, password))
     }
 
+    /**
+     * Get User from Firebase using email
+     *
+     * @param email
+     * @return LiveData<Pair<errorCode,User>>
+     */
     private fun getUser(email: String): LiveData<Pair<Int, User>> {
         repository.getUser(email).addSnapshotListener { value, error ->
             var exception = if (error == null) -1 else R.string.FirestoreException
@@ -169,6 +199,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return user
     }
 
+    /**
+     * Get User from Firebase using id
+     *
+     * @param id
+     * @return LiveData<Pair<errorCode,User>>
+     */
     fun getUserById(id: String): LiveData<Pair<Int, User>> {
         val userLiveData = MutableLiveData<Pair<Int, User>>()
 
@@ -215,14 +251,34 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return userLiveData
     }
 
+    /**
+     * Report product by adding productId and userId in database
+     *
+     * @param id
+     * @param userId
+     * @return errorCode
+     */
     fun reportProduct(id: String, userId: String): LiveData<Int> {
         return request(repository.reportProduct(id, userId))
     }
 
+    /**
+     * Register user in Firebase with email and password
+     *
+     * @param email
+     * @param password
+     * @return errorCode
+     */
     fun registerUser(email: String, password: String): LiveData<Int> {
         return request(repository.registerUser(email, password))
     }
 
+    /**
+     * Add User's information in Firebase
+     *
+     * @param user
+     * @return errorCode
+     */
     fun addUser(user: User): LiveData<Int> {
         return request(repository.addUser(user))
     }
@@ -231,10 +287,21 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return requestList(repository.getCategories(), categories)
     }
 
+    /**
+     * Get locations from Firebase
+     *
+     * @return LiveData<Pair<errorCode, LocationsList>>
+     */
     private fun getLocations(): LiveData<Pair<Int, List<Location>>> {
         return requestList(repository.getLocations(), locations)
     }
 
+    /**
+     * Get location from Firebase using city name
+     *
+     * @param city
+     * @return LiveData<Pair<errorCode, location>>
+     */
     fun getLocation(city: String): LiveData<Pair<Int, Location>> {
         return Transformations.map(locations) { (exception, locations) ->
             if (exception == -1) {
@@ -248,6 +315,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get product from Firebase using product attribute
+     *
+     * @return LiveData<productContainer>
+     */
     fun getProduct(): LiveData<ProductContainer> {
         val imagesPaths = product.imagesPaths
         val productContainer = MutableLiveData<ProductContainer>()
@@ -281,30 +353,77 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productContainer
     }
 
+    /**
+     * Update a product
+     *
+     * @param product
+     * @return errorCode
+     */
     fun updateProduct(product: Product): LiveData<Int> {
         return request(repository.updateProduct(product))
     }
 
+    /**
+     * Update location's zipcode
+     *
+     * @param locationId
+     * @param zipCode
+     * @return errorCode
+     */
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
         return request(repository.updateLocation(locationId, zipCode))
     }
 
+    /**
+     * Add to Firebase a consultation
+     *
+     * @param productId
+     * @param consultation
+     * @return errorCode
+     */
     fun addConsultation(productId: String, consultation: Consultation): LiveData<Int> {
         return request(repository.addConsultation(productId, consultation))
     }
 
+    /**
+     * Add a product to the current user's favorites in Firebase
+     *
+     * @param userId
+     * @param favoriteId
+     * @return errorCode
+     */
     fun addToFavorites(userId: String, favoriteId: String): LiveData<Int> {
         return request(repository.addToFavorites(userId, favoriteId))
     }
 
+    /**
+     * Remove a product from current user's favorites in Firebase
+     *
+     * @param userId
+     * @param favoriteId
+     * @return errorCode
+     */
     fun removeFromFavorites(userId: String, favoriteId: String): LiveData<Int> {
         return request(repository.removeFromFavorites(userId, favoriteId))
     }
 
+    /**
+     * add location to Firebase
+     *
+     * @param location
+     * @return errorCode
+     */
     fun addLocation(location: Location): LiveData<Int> {
         return request(repository.addLocation(location))
     }
 
+    /**
+     * Add product's images to Firebase
+     *
+     * @param product
+     * @param images
+     * @return LiveData<Pair<errorCode,product>>
+     */
     private fun addProductImages(
         product: Product,
         images: ArrayList<InputStream>
@@ -338,6 +457,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productLiveData
     }
 
+    /**
+     * Add product to Firebase
+     *
+     * @param product
+     * @param images
+     * @return LiveData<Pair<errorCode,product>>
+     */
     fun addProduct(product: Product, images: ArrayList<InputStream>): LiveData<Pair<Int, Product>> {
         val productImages = addProductImages(product, images)
 
@@ -350,6 +476,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Add product to Firebase
+     *
+     * @param product
+     * @param exception
+     * @return LiveData<Pair<Int,Product>>
+     */
     private fun productAdding(product: Product, exception: Int): LiveData<Pair<Int, Product>> {
         val productLiveData = MutableLiveData<Pair<Int, Product>>()
 
@@ -396,12 +529,25 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productLiveData
     }
 
+    /**
+     * Delete product and images from Firebase
+     *
+     * @param id
+     * @param imagesPaths
+     * @return errorCode
+     */
     fun deleteProduct(id: String, imagesPaths: ArrayList<String>): LiveData<Int> {
         deleteImages(imagesPaths)
 
         return request(repository.deleteProduct(id))
     }
 
+    /**
+     * Delete products and images using ownerId from Firebase
+     *
+     * @param ownerId
+     * @return errorCode
+     */
     private fun deleteProducts(ownerId: String?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
@@ -495,12 +641,23 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return exceptionLiveData
     }
 
+    /**
+     * Delete images using path from Firebase
+     *
+     * @param paths
+     */
     private fun deleteImages(paths: ArrayList<String>) {
         paths.forEach { path ->
             repository.deleteImage(path)
         }
     }
 
+    /**
+     * Delete User from firebase
+     *
+     * @param user
+     * @return errorCode
+     */
     fun deleteUser(user: User): LiveData<Int> {
         val deleteProducts = deleteProducts(user.id)
 
@@ -516,18 +673,41 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Unauthenficate current user
+     *
+     */
     fun signOut() {
         repository.signOut()
     }
 
+    /**
+     * Get discussions from Firebase using current user's Id
+     *
+     * @param userId
+     * @return Livedata<Pair<errorCode,discussions>>
+     */
     fun getDiscussions(userId: String): LiveData<Pair<Int, List<Discussion>>> {
         return requestList(repository.getDiscussions(userId), discussions)
     }
 
+    /**
+     * Add a new Message to a discussion then update the discussion in Firebase
+     *
+     * @param id
+     * @param message
+     * @return errorCode
+     */
     fun updateDiscussion(id: String, message: Message): LiveData<Int> {
         return request(repository.updateDiscussion(id, message))
     }
 
+    /**
+     * Add a new discussion to Firebase
+     *
+     * @param discussion
+     * @return LiveData<Pair<errorCode,discussion>>
+     */
     fun addDiscussion(discussion: Discussion): MutableLiveData<Pair<Int, Discussion>> {
         val discussionLiveData = MutableLiveData<Pair<Int, Discussion>>()
 
@@ -572,6 +752,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return discussionLiveData
     }
 
+    /**
+     * Get discussion from Firebase using id
+     *
+     * @param id
+     * @return Livedata<Pair<errorCode,discussion>>
+     */
     fun getDiscussion(id: String): LiveData<Pair<Int, Discussion>> {
         return Transformations.map(discussions) { (exception, discussions) ->
             if (exception == -1) {
@@ -586,6 +772,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get a discussion's id from Firebase
+     *
+     * @param discussion
+     * @param discussions
+     * @return Id
+     */
     fun getDiscussionId(discussion: Discussion, discussions: List<Discussion>): String? {
         return discussions.find { conv ->
             discussion.productId == conv.productId
@@ -594,14 +787,34 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }?.id
     }
 
+    /**
+     * reset current user's password
+     *
+     * @param email
+     * @return errorCode
+     */
     fun resetPassword(email: String): LiveData<Int> {
         return request(repository.resetPassword(email))
     }
 
+    /**
+     * update current user's information
+     *
+     * @param user
+     * @return errorCode
+     */
     fun updateUser(user: User): LiveData<Int> {
         return request(repository.updateUser(user))
     }
 
+    /**
+     *
+     *
+     * @param T
+     * @param query
+     * @param liveData
+     * @return
+     */
     private inline fun <reified T : Entity> requestList(
         query: Query,
         liveData: MutableLiveData<Pair<Int, List<T>>>
