@@ -96,7 +96,7 @@ tools:context=".fragments.adding.Adding1Fragment" >
                 app:helperText="@string/required_input"
                 app:helperTextEnabled="true"
                 app:errorEnabled="true"
-                android:hint="@string/product_location" >
+                android:hint="@string/postal_address" >
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

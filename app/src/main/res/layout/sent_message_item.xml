@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/placeholer_me"
+                android:text="@string/placeholder_me"
                 android:textStyle="bold" />
 
         </LinearLayout>

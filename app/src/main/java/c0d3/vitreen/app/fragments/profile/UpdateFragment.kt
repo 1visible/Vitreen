@@ -109,11 +109,11 @@ class UpdateFragment : VFragment(
 
                     viewModel.updateUser(this.user!!).observeOnce(viewLifecycleOwner, { exception ->
                         if (exception != -1) {
-                            showSnackbarMessage(R.string.update_profil_failed)
+                            showSnackbarMessage(R.string.update_profile_failed)
                             return@observeOnce
                         }
 
-                        showSnackbarMessage(R.string.update_profil_OK)
+                        showSnackbarMessage(R.string.profile_updated)
                     })
                 }
 
