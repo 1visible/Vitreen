@@ -808,12 +808,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     }
 
     /**
-     *
+     * Execute the query
      *
      * @param T
      * @param query
      * @param liveData
-     * @return
+     * @return Objects list or EmptyList + errorCode
      */
     private inline fun <reified T : Entity> requestList(
         query: Query,
@@ -846,6 +846,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return liveData
     }
 
+    /**
+     * Execute the query
+     *
+     * @param T
+     * @param request
+     * @return errorCode
+     */
     private fun <T> request(request: Task<T>?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
@@ -889,6 +896,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return exceptionLiveData
     }
 
+    /**
+     * Convert Firebase's document to Object
+     *
+     * @param T
+     * @param document
+     * @param type
+     * @return Model
+     */
     private inline fun <reified T : Entity> toObject(
         document: DocumentSnapshot,
         @NonNull type: Class<T>
@@ -906,6 +921,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return value
     }
 
+    /**
+     * Convert Firebase's documents to List
+     *
+     * @param T
+     * @param documents
+     * @param type
+     * @return List of Model
+     */
     private inline fun <reified T : Entity> toObjects(
         documents: QuerySnapshot?,
         @NonNull type: Class<T>
@@ -920,6 +943,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     }
 }
 
+/**
+ * Product model + images
+ *
+ * @property exception
+ * @property product
+ * @property images
+ */
 class ProductContainer(
     val exception: Int,
     val product: Product,
@@ -938,6 +968,12 @@ class ProductContainer(
     }
 }
 
+/**
+ * List of Products + image
+ *
+ * @property exception
+ * @property products
+ */
 class ProductsContainer(
     val exception: Int,
     val products: List<Pair<Product, Bitmap?>>
