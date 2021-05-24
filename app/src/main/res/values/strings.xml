@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- General strings -->
-    <string name="app_name">Vitreen</string>
+    <string name="app_name" translatable="false">Vitreen</string>
     <string name="required_input">Champ obligatoire</string>
     <string name="press_back_again">Réappuyez sur la touche Retour pour quitter.</string>
     <string name="error_placeholder">Oups ! Une erreur est survenue…</string>
@@ -42,7 +42,7 @@
     <string name="label_statistics">Statistiques</string>
     <string name="label_login">Connexion</string>
     <string name="label_search">Recherche</string>
-    <string name="label_product">Détail du produit</string>
+    <string name="label_product">Détails du produit</string>
     <string name="label_modify1" tools:ignore="TypographyFractions">Modifier un produit (1/2)</string>
     <string name="label_modify2">Modifier un produit (2/2)</string>
     <string name="label_update_profile">Modifier le profil</string>
@@ -64,7 +64,7 @@
     <string name="email_address">Adresse e-mail</string>
     <string name="password">Mot de passe</string>
     <string name="login">Se connecter</string>
-    <string name="email_sent">Un email vous a été envoyé !</string>
+    <string name="email_sent">Un e-mail vous a été envoyé !</string>
     <!-- Register1 fragment -->
     <string name="have_an_account">Déjà un compte ?</string>
     <string name="login_underline"><u>Se connecter</u></string>
@@ -100,7 +100,7 @@
     <string name="professional_informations">Informations professionnelles</string>
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
-    <string name="location_template">%1$s (%2$s)</string>
+    <string name="location_template" translatable="false">%1$s (%2$s)</string>
     <string name="delete_account_question">Voulez-vous supprimer votre compte ?</string>
     <string name="account_deleted">Votre compte a été supprimé avec succès !</string>
     <string name="update_profile">Modifier mon profil</string>
@@ -158,6 +158,6 @@
     <string name="placeholder_me">Moi</string>
     <!-- Update profile -->
     <string name="update">Mettre à jour</string>
-    <string name="update_profile_failed">La mise à jour du profil a échouée</string>
-    <string name="profile_updated">Votre profil a bien été mis à jour</string>
+    <string name="update_profile_failed">La mise à jour du profil a échouée…</string>
+    <string name="profile_updated">Votre profil a bien été mis à jour !</string>
 </resources>
