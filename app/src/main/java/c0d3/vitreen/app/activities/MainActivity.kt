@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.*
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.annotation.StringRes
@@ -21,6 +22,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
+import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -57,10 +59,10 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         requestLocationPermission()
 
         viewModel.user.observe(this, { (exception, user) ->
-            if (exception != -1) {
-                viewModel.discussions.value = exception to ArrayList()
+            viewModel.discussions.value = exception to ArrayList()
+
+            if (exception != -1)
                 return@observe
-            }
 
              try {
                  if (discussionsSize == -2) {
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         })
 
         viewModel.discussions.observe(this, { (exception, discussions) ->
-            if(exception != -1)
+            if(exception != -1 || discussionsSize == -2)
                 return@observe
 
             if(discussionsSize == -1) {
