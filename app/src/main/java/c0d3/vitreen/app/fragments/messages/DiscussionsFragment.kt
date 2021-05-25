@@ -50,7 +50,7 @@ class DiscussionsFragment: VFragment(
                 return@observe
             }
 
-            val filteredDiscussions = discussions.filter { discussion -> discussion.messages.size > 0 }
+            val filteredDiscussions = ArrayList(discussions.filter { discussion -> discussion.messages.size > 0 })
 
             // If there are no discussions: show empty view
             if(filteredDiscussions.isEmpty()) {
@@ -58,6 +58,8 @@ class DiscussionsFragment: VFragment(
                 emptyView.visibility = VISIBLE
                 return@observe
             }
+
+            filteredDiscussions.sortByDescending { discussion -> discussion.messages.lastOrNull()?.date }
 
             // Else, display discussions in the recycler view
             val adapter = DiscussionAdapter { discussion -> adapterOnClick(discussion) }
