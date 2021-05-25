@@ -54,6 +54,7 @@ This project was carried out as a team during our training in M1 Computer Scienc
 git clone https://github.com/1visible/Vitreen.git
 ```
 
+🔒 In order to launch the projet, you must have the secret "google-services.json" file of the project. If the authors gave it to you, just place it in "Vitreen > app" folder and build the project.
 
 
 <!-- USAGE EXAMPLES -->
