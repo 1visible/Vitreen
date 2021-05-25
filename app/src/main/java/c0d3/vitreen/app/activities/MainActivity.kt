@@ -21,6 +21,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
+import c0d3.vitreen.app.models.Discussion
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
 import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.FirestoreViewModel
@@ -59,10 +60,13 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
         requestLocationPermission()
 
         viewModel.user.observe(this, { (exception, user) ->
-            viewModel.discussions.value = exception to ArrayList()
+            val messages: List<Discussion> = viewModel.discussions.value?.second ?: ArrayList()
+            viewModel.discussions.value = exception to messages
 
-            if (exception != -1)
+            if (exception != -1) {
+                discussionsSize = -2
                 return@observe
+            }
 
              try {
                  if (discussionsSize == -2) {
