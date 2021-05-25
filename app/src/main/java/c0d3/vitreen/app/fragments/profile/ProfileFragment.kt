@@ -103,7 +103,7 @@ class ProfileFragment : VFragment(
                     .setTitle(getString(R.string.delete_account))
                     .setMessage(getString(R.string.delete_account_question))
                     .setNeutralButton(getString(R.string.cancel)) { dialog, _ -> dialog.cancel() }
-                    .setPositiveButton(getString(R.string.delete)){ dialog, _ -> deleteAccount(dialog) }
+                    .setPositiveButton(getString(R.string.delete_account)){ dialog, _ -> deleteAccount(dialog) }
                     .show()
             } catch (_: IllegalStateException) {
                 showSnackbarMessage(R.string.error_placeholder)
