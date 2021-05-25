@@ -64,10 +64,8 @@ git clone https://github.com/1visible/Vitreen.git
 📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/up754cywcfysrmc/Watizit.apk?dl=1)
 
 <p align="center">
-  <img alt="Demo" src="https://imgur.com/G3gVlrJ/demo.png" width="700">
+  <img alt="Demo" src="https://imgur.com/imgur.com/az00ES0/demo.png" width="700">
 </p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
