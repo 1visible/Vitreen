@@ -146,8 +146,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
     private fun requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCALISATION_REQUEST)
     }
 
