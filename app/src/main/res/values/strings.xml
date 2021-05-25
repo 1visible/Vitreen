@@ -98,6 +98,7 @@
     <string name="logout">Se déconnecter</string>
     <string name="personal_informations">Informations personnelles</string>
     <string name="professional_informations">Informations professionnelles</string>
+    <string name="cancel">Annuler</string>
     <string name="my_products">Mes annonces</string>
     <string name="delete_account">Supprimer mon compte</string>
     <string name="location_template" translatable="false">%1$s (%2$s)</string>
