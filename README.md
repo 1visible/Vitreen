@@ -61,10 +61,10 @@ git clone https://github.com/1visible/Vitreen.git
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/up754cywcfysrmc/Watizit.apk?dl=1)
+📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/wg0xozpsuu6nz1i/Vitreen.apk?dl=1)
 
 <p align="center">
-  <img alt="Demo" src="https://drive.google.com/file/d/1D3TdrJETyYnNETtcEhtR82EB80ptOwkq/view?usp=sharing" width="700">
+  <img alt="Demo" src="https://www.dropbox.com/s/7q7mqnjaw84w9zc/demo.png?dl=0" width="700">
 </p>
 
 <!-- ROADMAP -->
