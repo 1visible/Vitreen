@@ -97,10 +97,11 @@ tools:context=".fragments.adding.Adding1Fragment" >
                 app:helperTextEnabled="true"
                 app:errorEnabled="true"
                 android:hint="@string/postal_address" >
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:completionThreshold="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Description input -->
