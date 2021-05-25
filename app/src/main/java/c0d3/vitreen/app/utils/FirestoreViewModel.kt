@@ -2,14 +2,12 @@ package c0d3.vitreen.app.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.Menu
 import androidx.annotation.NonNull
 import androidx.lifecycle.*
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
@@ -93,9 +91,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             }
             val list = arrayListOf<Pair<Product, Bitmap?>>()
             var products = toObjects(value, Product::class.java)
-            if(search.title != null)products = products.filter { product -> product.title.contains(search.title)  }
-            if(search.priceMin != null)products = products.filter { product -> product.price >= search.priceMin }
-            if(search.priceMax != null)products = products.filter { product -> product.price <= search.priceMax }
+
+            if(search.title != null) products = products.filter { product -> product.title.contains(search.title, true)  }
+            if(search.brand != null) products = products.filter { product -> product.brand?.contains(search.brand, true) ?: false }
+            if(search.priceMin != null) products = products.filter { product -> product.price >= search.priceMin }
+            if(search.priceMax != null) products = products.filter { product -> product.price <= search.priceMax }
             var productsTaskCounter = 0
 
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
@@ -112,8 +112,10 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                     list.add(product to null)
                     productsTaskCounter++
 
-                    if (productsTaskCounter == products.size)
+                    if (productsTaskCounter == products.size) {
+                        list.sortByDescending { pair -> pair.first.modifiedAt }
                         productsContainer.value = ProductsContainer(exception, list)
+                    }
 
                     return@forEach
                 }
@@ -132,12 +134,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
 
                     productsTaskCounter++
 
-                    if (productsTaskCounter == products.size)
+                    if (productsTaskCounter == products.size) {
+                        list.sortByDescending { pair -> pair.first.modifiedAt }
                         productsContainer.value = ProductsContainer(exception, list)
+                    }
                 }
             }
 
-            error?.message?.let { Log.i(VTAG, it) }
         }
 
         return productsContainer

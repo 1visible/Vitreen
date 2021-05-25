@@ -32,44 +32,32 @@ class FirestoreRepository {
      * @return Query
      */
     fun getProducts(search: SearchQuery): Query {
-        val (title, _, _, brand, location, category, ownerId, ids) = search
+        val (_, _, _, _, location, category, ownerId, ids) = search
         var query: Query = db.collection(PRODUCTS_COLLECTION)
-        var orderByDate = true
-
-        if (title != null) {
-            query = query.whereGreaterThanOrEqualTo("title", title)
-                .orderBy("title")
-            orderByDate = false
-        }
-
-        if (brand != null) {
-            query = query.whereEqualTo("brand", brand)
-            orderByDate = false
-        }
+        var limit = true
 
         if (location != null) {
             query = query.whereEqualTo("location", location)
-            orderByDate = false
+            limit = false
         }
 
         if (category != null) {
             query = query.whereEqualTo("category", category)
-            orderByDate = false
+            limit = false
         }
 
         if (ownerId != null) {
             query = query.whereEqualTo("ownerId", ownerId)
-            orderByDate = false
+            limit = false
         }
 
         if (!ids.isNullOrEmpty()) {
             query = query.whereIn(FieldPath.documentId(), ids)
-            orderByDate = false
+            limit = false
         }
 
-        if (orderByDate)
-            query = query.orderBy("modifiedAt", Query.Direction.DESCENDING)
-                .limit(DOCUMENTS_LIMIT)
+        if (limit)
+            query = query.limit(DOCUMENTS_LIMIT)
 
         return query
     }

@@ -83,6 +83,20 @@
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Brand input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextBrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:startIconDrawable="@drawable/ic_tag"
+                android:hint="@string/product_brand" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- Price input -->
             <LinearLayout
                 android:layout_width="match_parent"
