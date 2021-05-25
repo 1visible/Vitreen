@@ -53,7 +53,6 @@ This project was carried out as a team during our training in M1 Computer Scienc
 ```sh
 git clone https://github.com/1visible/Vitreen.git
 ```
-📗 The Javadoc files can be found [here](https://1visible.github.io/Vitreen/index.html).
 
 
 
