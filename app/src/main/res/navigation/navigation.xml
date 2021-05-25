@@ -80,7 +80,7 @@
 
         <action
             android:id="@+id/from_profile_to_update_profile"
-            app:destination="@id/navigation_update_profil" />
+            app:destination="@id/navigation_update_profile" />
     </fragment>
 
     <fragment
@@ -208,9 +208,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_update_profil"
+        android:id="@+id/navigation_update_profile"
         android:name="c0d3.vitreen.app.fragments.profile.UpdateFragment"
-        android:label="@string/label_update_profil"
+        android:label="@string/label_update_profile"
         tools:layout="@layout/fragment_update">
         <action
             android:id="@+id/from_update_profile_to_login"

@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 app:startIconDrawable="@drawable/ic_location"
-                android:hint="@string/product_location" >
+                android:hint="@string/postal_address" >
                 <AutoCompleteTextView
                     android:completionThreshold="1"
                     android:layout_width="match_parent"

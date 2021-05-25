@@ -35,7 +35,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_marginBottom="@dimen/spacing_sm"
-                android:text="@string/placeholder_title"
+                android:text="@string/product_name"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
                         android:id="@+id/textViewCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/placeholder_category"
+                        android:text="@string/product_category"
 
                         android:ellipsize="end"
                         android:maxLines="1" />
@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@string/placeholder_location" />
+                        android:text="@string/postal_address" />
 
                 </LinearLayout>
 

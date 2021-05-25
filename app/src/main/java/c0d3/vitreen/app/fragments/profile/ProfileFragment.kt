@@ -41,7 +41,7 @@ class ProfileFragment : VFragment(
 
         // Set elements visibility (while loading)
         profileDetails.visibility = GONE
-        setMenuItemVisibile(R.id.logout, false)
+        setMenuItemVisible(R.id.logout, false)
 
         // Get current user informations
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
@@ -68,7 +68,7 @@ class ProfileFragment : VFragment(
                         return@observe1
                     }
 
-                    setMenuItemVisibile(R.id.logout, true)
+                    setMenuItemVisible(R.id.logout, true)
 
                     // If there are no products: show empty view
                     if(products.isEmpty()) {

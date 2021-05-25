@@ -38,14 +38,14 @@ class ProductFragment : VFragment(
         productDetails.visibility = GONE
         buttonPreviousImage.visibility = GONE
         buttonNextImage.visibility = GONE
-        setMenuItemVisibile(R.id.add_to_favorites, false)
-        setMenuItemVisibile(R.id.remove_from_favorites, false)
-        setMenuItemVisibile(R.id.send_message, false)
-        setMenuItemVisibile(R.id.contact_owner, false)
-        setMenuItemVisibile(R.id.show_statistics, false)
-        setMenuItemVisibile(R.id.report_product, false)
-        setMenuItemVisibile(R.id.delete_product, false)
-        setMenuItemVisibile(R.id.modify_product, false)
+        setMenuItemVisible(R.id.add_to_favorites, false)
+        setMenuItemVisible(R.id.remove_from_favorites, false)
+        setMenuItemVisible(R.id.send_message, false)
+        setMenuItemVisible(R.id.contact_owner, false)
+        setMenuItemVisible(R.id.show_statistics, false)
+        setMenuItemVisible(R.id.report_product, false)
+        setMenuItemVisible(R.id.delete_product, false)
+        setMenuItemVisible(R.id.modify_product, false)
 
         try {
             viewModel.discussions.observe(viewLifecycleOwner, { (exception, discussions) ->
@@ -70,33 +70,33 @@ class ProductFragment : VFragment(
                         setFavoriteItemVisibility(user, product)
 
                         if (user.id == product.ownerId) {
-                            setMenuItemVisibile(R.id.send_message, false)
-                            setMenuItemVisibile(R.id.contact_owner, false)
-                            setMenuItemVisibile(R.id.report_product, false)
-                            setMenuItemVisibile(R.id.delete_product, true)
-                            setMenuItemVisibile(R.id.modify_product, true)
+                            setMenuItemVisible(R.id.send_message, false)
+                            setMenuItemVisible(R.id.contact_owner, false)
+                            setMenuItemVisible(R.id.report_product, false)
+                            setMenuItemVisible(R.id.delete_product, true)
+                            setMenuItemVisible(R.id.modify_product, true)
                             if (user.isProfessional)
-                                setMenuItemVisibile(R.id.show_statistics, true)
+                                setMenuItemVisible(R.id.show_statistics, true)
                             else
-                                setMenuItemVisibile(R.id.show_statistics, false)
+                                setMenuItemVisible(R.id.show_statistics, false)
                         } else {
-                            setMenuItemVisibile(R.id.send_message, true)
-                            setMenuItemVisibile(R.id.contact_owner, true)
-                            setMenuItemVisibile(R.id.show_statistics, false)
-                            setMenuItemVisibile(R.id.report_product, true)
-                            setMenuItemVisibile(R.id.delete_product, false)
-                            setMenuItemVisibile(R.id.modify_product, false)
+                            setMenuItemVisible(R.id.send_message, true)
+                            setMenuItemVisible(R.id.contact_owner, true)
+                            setMenuItemVisible(R.id.show_statistics, false)
+                            setMenuItemVisible(R.id.report_product, true)
+                            setMenuItemVisible(R.id.delete_product, false)
+                            setMenuItemVisible(R.id.modify_product, false)
                         }
                     } else {
                         this.user = null
-                        setMenuItemVisibile(R.id.add_to_favorites, false)
-                        setMenuItemVisibile(R.id.remove_from_favorites, false)
-                        setMenuItemVisibile(R.id.send_message, false)
-                        setMenuItemVisibile(R.id.contact_owner, true)
-                        setMenuItemVisibile(R.id.show_statistics, false)
-                        setMenuItemVisibile(R.id.report_product, false)
-                        setMenuItemVisibile(R.id.delete_product, false)
-                        setMenuItemVisibile(R.id.modify_product, false)
+                        setMenuItemVisible(R.id.add_to_favorites, false)
+                        setMenuItemVisible(R.id.remove_from_favorites, false)
+                        setMenuItemVisible(R.id.send_message, false)
+                        setMenuItemVisible(R.id.contact_owner, true)
+                        setMenuItemVisible(R.id.show_statistics, false)
+                        setMenuItemVisible(R.id.report_product, false)
+                        setMenuItemVisible(R.id.delete_product, false)
+                        setMenuItemVisible(R.id.modify_product, false)
                     }
 
                     if (!hasConsulted) {
@@ -376,15 +376,15 @@ class ProductFragment : VFragment(
     private fun setFavoriteItemVisibility(user: User, product: Product) {
         try {
             if (user.favoritesIds.contains(product.id!!)) {
-                setMenuItemVisibile(R.id.add_to_favorites, false)
-                setMenuItemVisibile(R.id.remove_from_favorites, true)
+                setMenuItemVisible(R.id.add_to_favorites, false)
+                setMenuItemVisible(R.id.remove_from_favorites, true)
             } else {
-                setMenuItemVisibile(R.id.remove_from_favorites, false)
-                setMenuItemVisibile(R.id.add_to_favorites, true)
+                setMenuItemVisible(R.id.remove_from_favorites, false)
+                setMenuItemVisible(R.id.add_to_favorites, true)
             }
         } catch (_: NullPointerException) {
-            setMenuItemVisibile(R.id.remove_from_favorites, false)
-            setMenuItemVisibile(R.id.add_to_favorites, false)
+            setMenuItemVisible(R.id.remove_from_favorites, false)
+            setMenuItemVisible(R.id.add_to_favorites, false)
             showSnackbarMessage(R.string.error_placeholder)
         }
     }

@@ -10,8 +10,6 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.*
 import c0d3.vitreen.app.utils.Constants.Companion.REPORT_THRESHOLD
 import c0d3.vitreen.app.utils.Constants.Companion.VTAG
-import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
-import com.firebase.ui.auth.util.FirebaseAuthError
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
@@ -41,6 +39,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return MutableLiveData()
     }
 
+    /**
+     * Check if user is available
+     *
+     * @return true if the user is signed in and informations are available, false otherwise
+     */
     private fun isUserAvailable(): Boolean {
         user.value?.let { (exception, user) ->
             if (exception == -1 && user.emailAddress.isNotEmpty())
@@ -50,6 +53,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return false
     }
 
+    /**
+     * Set user state (exception and/or user informations) according to auth state
+     *
+     * @param isUserSignedIn
+     * @param email
+     */
     fun setUserState(isUserSignedIn: Boolean, email: String? = null) {
         this.isUserSignedIn = isUserSignedIn
 
@@ -59,28 +68,34 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get product from Firebase
+     *
+     * @param search
+     * @return productsContainer
+     */
     fun getProducts(search: SearchQuery): MutableLiveData<ProductsContainer> {
         val productsContainer = MutableLiveData<ProductsContainer>()
         val query = repository.getProducts(search)
 
         query.addSnapshotListener { value, error ->
-            var exception = if (error == null) -1 else R.string.firestore_exception
+            var exception = if (error == null) -1 else R.string.FirestoreException
             when(error?.code){
-                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
+                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.DataLossException
+                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.AlreadyExistsException
+                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.InternalException
                 FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
+                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.UnknownException
+                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.PermissionDeniedException
+                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.UnauthentificatedException
             }
             val list = arrayListOf<Pair<Product, Bitmap?>>()
             var products = toObjects(value, Product::class.java)
-            if(search.title!=null)products = products.filter { product -> product.title.contains(search.title)  }
-            if(search.priceMin!=null)products = products.filter { product -> product.price >= search.priceMin }
-            if(search.priceMax!=null)products = products.filter { product -> product.price <= search.priceMax }
+            if(search.title != null)products = products.filter { product -> product.title.contains(search.title)  }
+            if(search.priceMin != null)products = products.filter { product -> product.price >= search.priceMin }
+            if(search.priceMax != null)products = products.filter { product -> product.price <= search.priceMax }
             var productsTaskCounter = 0
 
             products = products.filter { product -> product.reporters.size < REPORT_THRESHOLD }
@@ -128,23 +143,36 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productsContainer
     }
 
+    /**
+     * Authenticate user
+     *
+     * @param email
+     * @param password
+     * @return errorCode
+     */
     fun signIn(email: String, password: String): LiveData<Int> {
         return request(repository.signIn(email, password))
     }
 
+    /**
+     * Get user's informations from Firebase using email
+     *
+     * @param email
+     * @return LiveData<Pair<errorCode,User>>
+     */
     private fun getUser(email: String): LiveData<Pair<Int, User>> {
         repository.getUser(email).addSnapshotListener { value, error ->
-            var exception = if (error == null) -1 else R.string.firestore_exception
+            var exception = if (error == null) -1 else R.string.FirestoreException
             when(error?.code){
-                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
+                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.DataLossException
+                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.AlreadyExistsException
+                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.InternalException
                 FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
+                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.UnknownException
+                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.PermissionDeniedException
+                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.UnauthentificatedException
             }
             var user = User()
 
@@ -171,6 +199,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return user
     }
 
+    /**
+     * Get user's informations from Firebase using id
+     *
+     * @param id
+     * @return LiveData<Pair<errorCode,User>>
+     */
     fun getUserById(id: String): LiveData<Pair<Int, User>> {
         val userLiveData = MutableLiveData<Pair<Int, User>>()
 
@@ -178,29 +212,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             val value = task.result
             var exception = if (task.isSuccessful) -1 else R.string.NetworkException
             when(task.exception){
-                is FirebaseAuthInvalidCredentialsException -> exception = R.string.password_email_exception
-                is FirebaseAuthInvalidUserException -> exception = R.string.invalid_user_exception
-                is FirebaseAuthUserCollisionException -> exception = R.string.conflict_user_exception
-                is FirebaseAuthEmailException -> exception = R.string.auth_email_exception
-                is FirebaseAuthActionCodeException -> exception = R.string.expired_code_exception
-                is FirebaseAuthWeakPasswordException -> exception = R.string.weak_password_exception
-                is FirebaseAuthWebException -> exception = R.string.incomplete_operation_exception
+                is FirebaseAuthInvalidCredentialsException -> exception = R.string.AuthCredentialsException
+                is FirebaseAuthInvalidUserException -> exception = R.string.InvalidUserException
+                is FirebaseAuthUserCollisionException -> exception = R.string.ConflictUserException
+                is FirebaseAuthEmailException -> exception = R.string.AuthEmailException
+                is FirebaseAuthActionCodeException -> exception = R.string.ExpirationException
+                is FirebaseAuthWeakPasswordException -> exception = R.string.WeakPasswordException
+                is FirebaseAuthWebException -> exception = R.string.IncompleteOperationException
                 is FirebaseAuthException -> exception = R.string.AuthentificationException
                 is FirebaseNetworkException -> exception = R.string.NetworkException
-                is FirebaseNoSignedInUserException -> exception = R.string.sign_in_user_exception
+                is FirebaseNoSignedInUserException -> exception = R.string.SignedOutException
                 is FirebaseFirestoreException -> {
                     val currentException = task.exception as FirebaseFirestoreException
-                    when(currentException.code){
-                        FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                        FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                        FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                        FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
-                        FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                        FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
-                        else->exception = R.string.firestore_exception
+                    exception = when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                        FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                        FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                        else -> R.string.FirestoreException
                     }
                 }
             }
@@ -217,14 +251,34 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return userLiveData
     }
 
+    /**
+     * Report product by adding productId and userId in database
+     *
+     * @param id
+     * @param userId
+     * @return errorCode
+     */
     fun reportProduct(id: String, userId: String): LiveData<Int> {
         return request(repository.reportProduct(id, userId))
     }
 
+    /**
+     * Register user in Firebase with email and password
+     *
+     * @param email
+     * @param password
+     * @return errorCode
+     */
     fun registerUser(email: String, password: String): LiveData<Int> {
         return request(repository.registerUser(email, password))
     }
 
+    /**
+     * Add user's informations in Firebase
+     *
+     * @param user
+     * @return errorCode
+     */
     fun addUser(user: User): LiveData<Int> {
         return request(repository.addUser(user))
     }
@@ -233,10 +287,21 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return requestList(repository.getCategories(), categories)
     }
 
+    /**
+     * Get locations from Firebase
+     *
+     * @return LiveData<Pair<errorCode, LocationsList>>
+     */
     private fun getLocations(): LiveData<Pair<Int, List<Location>>> {
         return requestList(repository.getLocations(), locations)
     }
 
+    /**
+     * Get location from Firebase using city name
+     *
+     * @param city
+     * @return LiveData<Pair<errorCode, location>>
+     */
     fun getLocation(city: String): LiveData<Pair<Int, Location>> {
         return Transformations.map(locations) { (exception, locations) ->
             if (exception == -1) {
@@ -250,6 +315,11 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get product (with images) from Firebase using product attribute
+     *
+     * @return LiveData<productContainer>
+     */
     fun getProduct(): LiveData<ProductContainer> {
         val imagesPaths = product.imagesPaths
         val productContainer = MutableLiveData<ProductContainer>()
@@ -283,30 +353,77 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productContainer
     }
 
+    /**
+     * Update a product
+     *
+     * @param product
+     * @return errorCode
+     */
     fun updateProduct(product: Product): LiveData<Int> {
         return request(repository.updateProduct(product))
     }
 
+    /**
+     * Update location's zipcode
+     *
+     * @param locationId
+     * @param zipCode
+     * @return errorCode
+     */
     fun updateLocation(locationId: String, zipCode: Long): LiveData<Int> {
         return request(repository.updateLocation(locationId, zipCode))
     }
 
+    /**
+     * Add a consultation to Firebase
+     *
+     * @param productId
+     * @param consultation
+     * @return errorCode
+     */
     fun addConsultation(productId: String, consultation: Consultation): LiveData<Int> {
         return request(repository.addConsultation(productId, consultation))
     }
 
+    /**
+     * Add a product to the current user's favorites in Firebase
+     *
+     * @param userId
+     * @param favoriteId
+     * @return errorCode
+     */
     fun addToFavorites(userId: String, favoriteId: String): LiveData<Int> {
         return request(repository.addToFavorites(userId, favoriteId))
     }
 
+    /**
+     * Remove a product from current user's favorites in Firebase
+     *
+     * @param userId
+     * @param favoriteId
+     * @return errorCode
+     */
     fun removeFromFavorites(userId: String, favoriteId: String): LiveData<Int> {
         return request(repository.removeFromFavorites(userId, favoriteId))
     }
 
+    /**
+     * Add location to Firebase
+     *
+     * @param location
+     * @return errorCode
+     */
     fun addLocation(location: Location): LiveData<Int> {
         return request(repository.addLocation(location))
     }
 
+    /**
+     * Add product's images to Firebase
+     *
+     * @param product
+     * @param images
+     * @return LiveData<Pair<errorCode,product>>
+     */
     private fun addProductImages(
         product: Product,
         images: ArrayList<InputStream>
@@ -340,6 +457,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productLiveData
     }
 
+    /**
+     * Add product (with images) to Firebase
+     *
+     * @param product
+     * @param images
+     * @return LiveData<Pair<errorCode,product>>
+     */
     fun addProduct(product: Product, images: ArrayList<InputStream>): LiveData<Pair<Int, Product>> {
         val productImages = addProductImages(product, images)
 
@@ -352,6 +476,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Add product to Firebase (don't use this as is)
+     *
+     * @param product
+     * @param exception
+     * @return LiveData<Pair<Int,Product>>
+     */
     private fun productAdding(product: Product, exception: Int): LiveData<Pair<Int, Product>> {
         val productLiveData = MutableLiveData<Pair<Int, Product>>()
 
@@ -360,29 +491,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             var exception2 =
                 if (task.isSuccessful && productData != null) -1 else R.string.NetworkException
             when(task.exception){
-                is FirebaseAuthInvalidCredentialsException -> exception2 = R.string.password_email_exception
-                is FirebaseAuthInvalidUserException -> exception2 = R.string.invalid_user_exception
-                is FirebaseAuthUserCollisionException -> exception2 = R.string.conflict_user_exception
-                is FirebaseAuthEmailException -> exception2 = R.string.auth_email_exception
-                is FirebaseAuthActionCodeException -> exception2 = R.string.expired_code_exception
-                is FirebaseAuthWeakPasswordException -> exception2 = R.string.weak_password_exception
-                is FirebaseAuthWebException -> exception2 = R.string.incomplete_operation_exception
+                is FirebaseAuthInvalidCredentialsException -> exception2 = R.string.AuthCredentialsException
+                is FirebaseAuthInvalidUserException -> exception2 = R.string.InvalidUserException
+                is FirebaseAuthUserCollisionException -> exception2 = R.string.ConflictUserException
+                is FirebaseAuthEmailException -> exception2 = R.string.AuthEmailException
+                is FirebaseAuthActionCodeException -> exception2 = R.string.ExpirationException
+                is FirebaseAuthWeakPasswordException -> exception2 = R.string.WeakPasswordException
+                is FirebaseAuthWebException -> exception2 = R.string.IncompleteOperationException
                 is FirebaseAuthException -> exception2 = R.string.AuthentificationException
                 is FirebaseNetworkException -> exception2 = R.string.NetworkException
-                is FirebaseNoSignedInUserException -> exception2 = R.string.sign_in_user_exception
+                is FirebaseNoSignedInUserException -> exception2 = R.string.SignedOutException
                 is FirebaseFirestoreException -> {
                     val currentException = task.exception as FirebaseFirestoreException
-                    when(currentException.code){
-                        FirebaseFirestoreException.Code.ABORTED -> exception2 = R.string.aborted
-                        FirebaseFirestoreException.Code.CANCELLED -> exception2 = R.string.canceled
-                        FirebaseFirestoreException.Code.DATA_LOSS -> exception2 = R.string.data_loss_exception
-                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception2 = R.string.already_exist_exception
-                        FirebaseFirestoreException.Code.INTERNAL -> exception2 = R.string.internal_exception
-                        FirebaseFirestoreException.Code.NOT_FOUND -> exception2 = R.string.NotFoundException
-                        FirebaseFirestoreException.Code.UNKNOWN -> exception2 = R.string.unknown_exception
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception2 = R.string.permission_denied_exception
-                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception2 = R.string.unauthentificated_exception
-                        else->exception2 = R.string.firestore_exception
+                    exception2 = when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                        FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                        FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                        else-> R.string.FirestoreException
                     }
                 }
             }
@@ -398,12 +529,25 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return productLiveData
     }
 
+    /**
+     * Delete product and images from Firebase
+     *
+     * @param id
+     * @param imagesPaths
+     * @return errorCode
+     */
     fun deleteProduct(id: String, imagesPaths: ArrayList<String>): LiveData<Int> {
         deleteImages(imagesPaths)
 
         return request(repository.deleteProduct(id))
     }
 
+    /**
+     * Delete products and images using ownerId from Firebase
+     *
+     * @param ownerId
+     * @return errorCode
+     */
     private fun deleteProducts(ownerId: String?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
@@ -415,29 +559,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         repository.getProducts(SearchQuery(ownerId = ownerId)).get().addOnCompleteListener { task ->
             var exception = if (task.isSuccessful) -1 else R.string.ProductNotDeletedException
             when(task.exception){
-                is FirebaseAuthInvalidCredentialsException -> exception = R.string.password_email_exception
-                is FirebaseAuthInvalidUserException -> exception = R.string.invalid_user_exception
-                is FirebaseAuthUserCollisionException -> exception = R.string.conflict_user_exception
-                is FirebaseAuthEmailException -> exception = R.string.auth_email_exception
-                is FirebaseAuthActionCodeException -> exception = R.string.expired_code_exception
-                is FirebaseAuthWeakPasswordException -> exception = R.string.weak_password_exception
-                is FirebaseAuthWebException -> exception = R.string.incomplete_operation_exception
+                is FirebaseAuthInvalidCredentialsException -> exception = R.string.AuthCredentialsException
+                is FirebaseAuthInvalidUserException -> exception = R.string.InvalidUserException
+                is FirebaseAuthUserCollisionException -> exception = R.string.ConflictUserException
+                is FirebaseAuthEmailException -> exception = R.string.AuthEmailException
+                is FirebaseAuthActionCodeException -> exception = R.string.ExpirationException
+                is FirebaseAuthWeakPasswordException -> exception = R.string.WeakPasswordException
+                is FirebaseAuthWebException -> exception = R.string.IncompleteOperationException
                 is FirebaseAuthException -> exception = R.string.AuthentificationException
                 is FirebaseNetworkException -> exception = R.string.NetworkException
-                is FirebaseNoSignedInUserException -> exception = R.string.sign_in_user_exception
+                is FirebaseNoSignedInUserException -> exception = R.string.SignedOutException
                 is FirebaseFirestoreException -> {
                     val currentException = task.exception as FirebaseFirestoreException
-                    when(currentException.code){
-                        FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                        FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                        FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                        FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
-                        FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                        FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
-                        else->exception = R.string.firestore_exception
+                    exception = when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                        FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                        FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                        else-> R.string.FirestoreException
                     }
                 }
             }
@@ -459,29 +603,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
                         var exception2 =
                             if (task2.isSuccessful) -1 else R.string.ProductNotDeletedException
                         when(task2.exception){
-                            is FirebaseAuthInvalidCredentialsException -> exception2 = R.string.password_email_exception
-                            is FirebaseAuthInvalidUserException -> exception2 = R.string.invalid_user_exception
-                            is FirebaseAuthUserCollisionException -> exception2 = R.string.conflict_user_exception
-                            is FirebaseAuthEmailException -> exception2 = R.string.auth_email_exception
-                            is FirebaseAuthActionCodeException -> exception2 = R.string.expired_code_exception
-                            is FirebaseAuthWeakPasswordException -> exception2 = R.string.weak_password_exception
-                            is FirebaseAuthWebException -> exception2 = R.string.incomplete_operation_exception
+                            is FirebaseAuthInvalidCredentialsException -> exception2 = R.string.AuthCredentialsException
+                            is FirebaseAuthInvalidUserException -> exception2 = R.string.InvalidUserException
+                            is FirebaseAuthUserCollisionException -> exception2 = R.string.ConflictUserException
+                            is FirebaseAuthEmailException -> exception2 = R.string.AuthEmailException
+                            is FirebaseAuthActionCodeException -> exception2 = R.string.ExpirationException
+                            is FirebaseAuthWeakPasswordException -> exception2 = R.string.WeakPasswordException
+                            is FirebaseAuthWebException -> exception2 = R.string.IncompleteOperationException
                             is FirebaseAuthException -> exception2 = R.string.AuthentificationException
                             is FirebaseNetworkException -> exception2 = R.string.NetworkException
-                            is FirebaseNoSignedInUserException -> exception2 = R.string.sign_in_user_exception
+                            is FirebaseNoSignedInUserException -> exception2 = R.string.SignedOutException
                             is FirebaseFirestoreException -> {
                                 val currentException = task2.exception as FirebaseFirestoreException
-                                when(currentException.code){
-                                    FirebaseFirestoreException.Code.ABORTED -> exception2 = R.string.aborted
-                                    FirebaseFirestoreException.Code.CANCELLED -> exception2 = R.string.canceled
-                                    FirebaseFirestoreException.Code.DATA_LOSS -> exception2 = R.string.data_loss_exception
-                                    FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception2 = R.string.already_exist_exception
-                                    FirebaseFirestoreException.Code.INTERNAL -> exception2 = R.string.internal_exception
-                                    FirebaseFirestoreException.Code.NOT_FOUND -> exception2 = R.string.NotFoundException
-                                    FirebaseFirestoreException.Code.UNKNOWN -> exception2 = R.string.unknown_exception
-                                    FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception2 = R.string.permission_denied_exception
-                                    FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception2 = R.string.unauthentificated_exception
-                                    else->exception2 = R.string.firestore_exception
+                                exception2 = when(currentException.code){
+                                    FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                                    FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                                    FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                                    FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                                    FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                                    FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                                    FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                                    FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                                    FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                                    else -> R.string.FirestoreException
                                 }
                             }
                         }
@@ -497,12 +641,23 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return exceptionLiveData
     }
 
+    /**
+     * Delete images using image path from Firebase Storage
+     *
+     * @param paths
+     */
     private fun deleteImages(paths: ArrayList<String>) {
         paths.forEach { path ->
             repository.deleteImage(path)
         }
     }
 
+    /**
+     * Delete user's informations from firebase
+     *
+     * @param user
+     * @return errorCode
+     */
     fun deleteUser(user: User): LiveData<Int> {
         val deleteProducts = deleteProducts(user.id)
 
@@ -518,18 +673,41 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Unauthenticate current user
+     *
+     */
     fun signOut() {
         repository.signOut()
     }
 
+    /**
+     * Get discussions from Firebase using current user's id
+     *
+     * @param userId
+     * @return Livedata<Pair<errorCode,discussions>>
+     */
     fun getDiscussions(userId: String): LiveData<Pair<Int, List<Discussion>>> {
         return requestList(repository.getDiscussions(userId), discussions)
     }
 
+    /**
+     * Add a new message to a discussion then update the discussion in Firebase
+     *
+     * @param id
+     * @param message
+     * @return errorCode
+     */
     fun updateDiscussion(id: String, message: Message): LiveData<Int> {
         return request(repository.updateDiscussion(id, message))
     }
 
+    /**
+     * Add a new discussion to Firebase
+     *
+     * @param discussion
+     * @return LiveData<Pair<errorCode,discussion>>
+     */
     fun addDiscussion(discussion: Discussion): MutableLiveData<Pair<Int, Discussion>> {
         val discussionLiveData = MutableLiveData<Pair<Int, Discussion>>()
 
@@ -538,29 +716,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
             var exception =
                 if (task.isSuccessful && discussionData != null) -1 else R.string.NetworkException
             when(task.exception){
-                is FirebaseAuthInvalidCredentialsException -> exception = R.string.password_email_exception
-                is FirebaseAuthInvalidUserException -> exception = R.string.invalid_user_exception
-                is FirebaseAuthUserCollisionException -> exception = R.string.conflict_user_exception
-                is FirebaseAuthEmailException -> exception = R.string.auth_email_exception
-                is FirebaseAuthActionCodeException -> exception = R.string.expired_code_exception
-                is FirebaseAuthWeakPasswordException -> exception = R.string.weak_password_exception
-                is FirebaseAuthWebException -> exception = R.string.incomplete_operation_exception
+                is FirebaseAuthInvalidCredentialsException -> exception = R.string.AuthCredentialsException
+                is FirebaseAuthInvalidUserException -> exception = R.string.InvalidUserException
+                is FirebaseAuthUserCollisionException -> exception = R.string.ConflictUserException
+                is FirebaseAuthEmailException -> exception = R.string.AuthEmailException
+                is FirebaseAuthActionCodeException -> exception = R.string.ExpirationException
+                is FirebaseAuthWeakPasswordException -> exception = R.string.WeakPasswordException
+                is FirebaseAuthWebException -> exception = R.string.IncompleteOperationException
                 is FirebaseAuthException -> exception = R.string.AuthentificationException
                 is FirebaseNetworkException -> exception = R.string.NetworkException
-                is FirebaseNoSignedInUserException -> exception = R.string.sign_in_user_exception
+                is FirebaseNoSignedInUserException -> exception = R.string.SignedOutException
                 is FirebaseFirestoreException -> {
                     val currentException = task.exception as FirebaseFirestoreException
-                    when(currentException.code){
-                        FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                        FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                        FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                        FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
-                        FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                        FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
-                        else->exception = R.string.firestore_exception
+                    exception = when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                        FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                        FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                        else -> R.string.FirestoreException
                     }
                 }
             }
@@ -574,6 +752,12 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return discussionLiveData
     }
 
+    /**
+     * Get discussion from Firebase using id
+     *
+     * @param id
+     * @return Livedata<Pair<errorCode,discussion>>
+     */
     fun getDiscussion(id: String): LiveData<Pair<Int, Discussion>> {
         return Transformations.map(discussions) { (exception, discussions) ->
             if (exception == -1) {
@@ -588,6 +772,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }
     }
 
+    /**
+     * Get a discussion's id from Firebase
+     *
+     * @param discussion
+     * @param discussions
+     * @return Id
+     */
     fun getDiscussionId(discussion: Discussion, discussions: List<Discussion>): String? {
         return discussions.find { conv ->
             discussion.productId == conv.productId
@@ -596,30 +787,50 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         }?.id
     }
 
+    /**
+     * reset current user's password
+     *
+     * @param email
+     * @return errorCode
+     */
     fun resetPassword(email: String): LiveData<Int> {
         return request(repository.resetPassword(email))
     }
 
+    /**
+     * update current user's informations
+     *
+     * @param user
+     * @return errorCode
+     */
     fun updateUser(user: User): LiveData<Int> {
         return request(repository.updateUser(user))
     }
 
+    /**
+     * Execute the query
+     *
+     * @param T
+     * @param query
+     * @param liveData
+     * @return Objects list or EmptyList + errorCode
+     */
     private inline fun <reified T : Entity> requestList(
         query: Query,
         liveData: MutableLiveData<Pair<Int, List<T>>>
     ): LiveData<Pair<Int, List<T>>> {
         query.addSnapshotListener { documents, error ->
-            var exception = if (error == null) -1 else R.string.firestore_exception
+            var exception = if (error == null) -1 else R.string.FirestoreException
             when(error?.code){
-                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
+                FirebaseFirestoreException.Code.ABORTED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.CancelledException
+                FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.DataLossException
+                FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.AlreadyExistsException
+                FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.InternalException
                 FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
+                FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.UnknownException
+                FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.PermissionDeniedException
+                FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.UnauthentificatedException
             }
 
             val values: ArrayList<T> = ArrayList()
@@ -635,6 +846,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return liveData
     }
 
+    /**
+     * Execute the query
+     *
+     * @param T
+     * @param request
+     * @return errorCode
+     */
     private fun <T> request(request: Task<T>?): LiveData<Int> {
         val exceptionLiveData = MutableLiveData<Int>()
 
@@ -646,29 +864,29 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         request.addOnCompleteListener { task ->
             var exception = if (task.isSuccessful) -1 else R.string.NetworkException
             when(task.exception){
-                is FirebaseAuthInvalidCredentialsException -> exception = R.string.password_email_exception
-                is FirebaseAuthInvalidUserException -> exception = R.string.invalid_user_exception
-                is FirebaseAuthUserCollisionException -> exception = R.string.conflict_user_exception
-                is FirebaseAuthEmailException -> exception = R.string.auth_email_exception
-                is FirebaseAuthActionCodeException -> exception = R.string.expired_code_exception
-                is FirebaseAuthWeakPasswordException -> exception = R.string.weak_password_exception
-                is FirebaseAuthWebException -> exception = R.string.incomplete_operation_exception
+                is FirebaseAuthInvalidCredentialsException -> exception = R.string.AuthCredentialsException
+                is FirebaseAuthInvalidUserException -> exception = R.string.InvalidUserException
+                is FirebaseAuthUserCollisionException -> exception = R.string.ConflictUserException
+                is FirebaseAuthEmailException -> exception = R.string.AuthEmailException
+                is FirebaseAuthActionCodeException -> exception = R.string.ExpirationException
+                is FirebaseAuthWeakPasswordException -> exception = R.string.WeakPasswordException
+                is FirebaseAuthWebException -> exception = R.string.IncompleteOperationException
                 is FirebaseAuthException -> exception = R.string.AuthentificationException
                 is FirebaseNetworkException -> exception = R.string.NetworkException
-                is FirebaseNoSignedInUserException -> exception = R.string.sign_in_user_exception
+                is FirebaseNoSignedInUserException -> exception = R.string.SignedOutException
                 is FirebaseFirestoreException -> {
                     val currentException = task.exception as FirebaseFirestoreException
-                    when(currentException.code){
-                        FirebaseFirestoreException.Code.ABORTED -> exception = R.string.aborted
-                        FirebaseFirestoreException.Code.CANCELLED -> exception = R.string.canceled
-                        FirebaseFirestoreException.Code.DATA_LOSS -> exception = R.string.data_loss_exception
-                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> exception = R.string.already_exist_exception
-                        FirebaseFirestoreException.Code.INTERNAL -> exception = R.string.internal_exception
-                        FirebaseFirestoreException.Code.NOT_FOUND -> exception = R.string.NotFoundException
-                        FirebaseFirestoreException.Code.UNKNOWN -> exception = R.string.unknown_exception
-                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> exception = R.string.permission_denied_exception
-                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> exception = R.string.unauthentificated_exception
-                        else->exception = R.string.firestore_exception
+                    exception = when(currentException.code){
+                        FirebaseFirestoreException.Code.ABORTED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.CANCELLED -> R.string.CancelledException
+                        FirebaseFirestoreException.Code.DATA_LOSS -> R.string.DataLossException
+                        FirebaseFirestoreException.Code.ALREADY_EXISTS -> R.string.AlreadyExistsException
+                        FirebaseFirestoreException.Code.INTERNAL -> R.string.InternalException
+                        FirebaseFirestoreException.Code.NOT_FOUND -> R.string.NotFoundException
+                        FirebaseFirestoreException.Code.UNKNOWN -> R.string.UnknownException
+                        FirebaseFirestoreException.Code.PERMISSION_DENIED -> R.string.PermissionDeniedException
+                        FirebaseFirestoreException.Code.UNAUTHENTICATED -> R.string.UnauthentificatedException
+                        else -> R.string.FirestoreException
                     }
                 }
             }
@@ -678,6 +896,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return exceptionLiveData
     }
 
+    /**
+     * Convert Firebase's document to Object
+     *
+     * @param T
+     * @param document
+     * @param type
+     * @return Model
+     */
     private inline fun <reified T : Entity> toObject(
         document: DocumentSnapshot,
         @NonNull type: Class<T>
@@ -695,6 +921,14 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
         return value
     }
 
+    /**
+     * Convert Firebase's documents to List
+     *
+     * @param T
+     * @param documents
+     * @param type
+     * @return List of Model
+     */
     private inline fun <reified T : Entity> toObjects(
         documents: QuerySnapshot?,
         @NonNull type: Class<T>
@@ -709,6 +943,13 @@ class FirestoreViewModel(val state: SavedStateHandle) : ViewModel() {
     }
 }
 
+/**
+ * Product model + images
+ *
+ * @property exception
+ * @property product
+ * @property images
+ */
 class ProductContainer(
     val exception: Int,
     val product: Product,
@@ -727,6 +968,12 @@ class ProductContainer(
     }
 }
 
+/**
+ * List of Products + image
+ *
+ * @property exception
+ * @property products
+ */
 class ProductsContainer(
     val exception: Int,
     val products: List<Pair<Product, Bitmap?>>

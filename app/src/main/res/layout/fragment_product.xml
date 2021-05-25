@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_sm"
-                    android:text="@string/placeholder_title"
+                    android:text="@string/product_name"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -133,7 +133,7 @@
                     android:drawableStart="@drawable/ic_category"
                     android:drawableLeft="@drawable/ic_category"
                     android:drawablePadding="@dimen/spacing_sm"
-                    android:text="@string/placeholder_category"
+                    android:text="@string/product_category"
                     tools:ignore="UseCompatTextViewDrawableXml" />
 
                 <TextView
@@ -144,7 +144,7 @@
                     android:drawableStart="@drawable/ic_location"
                     android:drawableLeft="@drawable/ic_location"
                     android:drawablePadding="@dimen/spacing_sm"
-                    android:text="@string/placeholder_location"
+                    android:text="@string/postal_address"
                     tools:ignore="UseCompatTextViewDrawableXml" />
 
                 <TextView

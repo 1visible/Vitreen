@@ -57,7 +57,7 @@ class LoginFragment : VFragment(
                 viewModel.resetPassword(email).observeOnce(viewLifecycleOwner, { exception ->
                     if (exception != -1) showSnackbarMessage(exception)
                     else
-                        showSnackbarMessage(R.string.send_email)
+                        showSnackbarMessage(R.string.email_sent)
                 })
             }
         }

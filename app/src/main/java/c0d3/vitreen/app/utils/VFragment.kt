@@ -15,6 +15,15 @@ import c0d3.vitreen.app.activities.observeOnce
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.loading_spinner.*
 
+/**
+ * Generic class for fragment, extends this class to create a pre-made fragment
+ *
+ * @property layoutId
+ * @property hasOptionsMenu
+ * @property topMenuId
+ * @property requireAuth
+ * @property loginNavigationId
+ */
 abstract class VFragment(
     @LayoutRes private val layoutId: Int,
     private val hasOptionsMenu: Boolean = false,
@@ -64,11 +73,23 @@ abstract class VFragment(
         this.menu.value = menu
     }
 
+    /**
+     * Navigate to another Fragment with eventually some args
+     *
+     * @param destinationId
+     * @param args
+     */
     fun navigateTo(@IdRes destinationId: Int, vararg args: Pair<String, Any?>) {
         val bundle = bundleOf(*args)
         findNavController().navigate(destinationId, bundle)
     }
 
+    /**
+     * Check if any input is empty
+     *
+     * @param inputs
+     * @return if any input is empty
+     */
     private fun isAnyInputEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
             if (input?.editText?.text.isNullOrBlank())
@@ -77,6 +98,12 @@ abstract class VFragment(
         return false
     }
 
+    /**
+     * Check if all inputs are empty
+     *
+     * @param inputs
+     * @return if all inputs are empty
+     */
     fun areAllInputsEmpty(vararg inputs: TextInputLayout?): Boolean {
         inputs.forEach { input ->
             if (input != null && !input.editText?.text.isNullOrBlank()) {
@@ -92,6 +119,12 @@ abstract class VFragment(
         return true
     }
 
+    /**
+     * Check if any required input is empty
+     *
+     * @param inputs
+     * @return if any required input is empty
+     */
     fun isAnyRequiredInputEmpty(vararg inputs: TextInputLayout?): Boolean {
         var result = false
         inputs.forEach { input ->
@@ -105,14 +138,30 @@ abstract class VFragment(
         return result
     }
 
+    /**
+     * Convert an input editText to String
+     *
+     * @param input
+     * @return String
+     */
     fun inputToString(input: TextInputLayout): String? {
         return if(isAnyInputEmpty(input)) null else input.editText?.text?.trim().toString()
     }
 
+    /**
+     * Show a snackbar with a message
+     *
+     * @param messageId
+     */
     fun showSnackbarMessage(@StringRes messageId: Int) {
         (activity as? MainActivity)?.showMessage(messageId)
     }
 
+    /**
+     * Go back using activity onBackPressed()
+     *
+     * @return boolean
+     */
     fun goBack(): Boolean {
         activity?.let { activity ->
             activity.onBackPressed()
@@ -122,7 +171,13 @@ abstract class VFragment(
         return false
     }
 
-    fun setMenuItemVisibile(@IdRes id: Int, visible: Boolean) {
+    /**
+     * Set an menu item visibility
+     *
+     * @param id
+     * @param visible
+     */
+    fun setMenuItemVisible(@IdRes id: Int, visible: Boolean) {
         menu.observeOnce(viewLifecycleOwner, { menu ->
             menu.findItem(id)?.isVisible = visible
         })
