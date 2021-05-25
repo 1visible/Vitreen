@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
 import c0d3.vitreen.app.models.User
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_update.*
+import kotlinx.android.synthetic.main.fragment_update.editTextLocation
 
 class UpdateFragment : VFragment(
     layoutId = R.layout.fragment_update,
@@ -48,6 +51,20 @@ class UpdateFragment : VFragment(
                 )
 
                 fillFields()
+            })
+            // Fill locations in the search section
+            viewModel.locations.observe(viewLifecycleOwner, { (exception, locations) ->
+                // If the call failed: show error message
+                if(exception != -1) {
+                    showSnackbarMessage(exception)
+                    return@observe
+                }
+
+                // Else, put locations as edit text choices
+                val locationNames = locations.map { location -> location.city }
+                val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, locationNames) }
+
+                (editTextLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
             })
             buttonUpdate.setOnClickListener {
                 if (isAnyRequiredInputEmpty(

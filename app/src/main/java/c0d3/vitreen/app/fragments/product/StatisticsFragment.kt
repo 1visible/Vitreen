@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Consultation
+import c0d3.vitreen.app.utils.Constants.Companion.CONSULTATIONS_THRESHOLD
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
@@ -57,10 +58,24 @@ class StatisticsFragment : VFragment(
             consultationDate.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR)
         }
 
-        chartViewTimeline.labelsFormatter = { label -> label.roundToInt().toString() }
-        chartViewCities.labelsFormatter = { label -> label.roundToInt().toString() }
+        chartViewTimeline.labelsFormatter = { label -> if(label % 1 != 0F) "%.1f".format(label) else label.toInt().toString() }
+        chartViewCities.labelsFormatter = { label -> if(label % 1 != 0F) "%.1f".format(label) else label.toInt().toString() }
 
-        orderBy(true)
+        if(consultations.size < CONSULTATIONS_THRESHOLD) {
+            chartViewTimeline.visibility = GONE
+            textViewEmptyTimeline.visibility = VISIBLE
+
+            chartViewCities.visibility = GONE
+            textViewEmptyCities.visibility = VISIBLE
+        } else {
+            orderBy(true)
+
+            textViewEmptyTimeline.visibility = GONE
+            chartViewTimeline.visibility = VISIBLE
+
+            textViewEmptyCities.visibility = GONE
+            chartViewCities.visibility = VISIBLE
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -77,29 +92,13 @@ class StatisticsFragment : VFragment(
         val citiesParams: ViewGroup.LayoutParams = chartViewCities.layoutParams
         val (perDate, perCity) = if(week) orderByWeek() else orderByYear()
 
-        if(perDate.size < 4) {
-            chartViewTimeline.visibility = GONE
-            textViewEmptyTimeline.visibility = VISIBLE
-        } else {
-            textViewEmptyTimeline.visibility = GONE
-            chartViewTimeline.visibility = VISIBLE
+        timelineParams.height = ((24 * perDate.size + 12) * scale + 0.5f).toInt()
+        chartViewTimeline.layoutParams = timelineParams
+        chartViewTimeline.show(perDate)
 
-            timelineParams.height = ((24 * perDate.size + 12) * scale + 0.5f).toInt()
-            chartViewTimeline.layoutParams = timelineParams
-            chartViewTimeline.show(perDate)
-        }
-
-        if(perCity.size < 4) {
-            chartViewCities.visibility = GONE
-            textViewEmptyCities.visibility = VISIBLE
-        } else {
-            textViewEmptyCities.visibility = GONE
-            chartViewCities.visibility = VISIBLE
-
-            citiesParams.height = ((24 * perCity.size + 12) * scale + 0.5f).toInt()
-            chartViewCities.layoutParams = citiesParams
-            chartViewCities.show(perCity)
-        }
+        citiesParams.height = ((24 * perCity.size + 12) * scale + 0.5f).toInt()
+        chartViewCities.layoutParams = citiesParams
+        chartViewCities.show(perCity)
 
          return true
     }

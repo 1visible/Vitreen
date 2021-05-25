@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.app.ActivityCompat
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.observeOnce
@@ -55,6 +57,21 @@ class Register2Fragment : VFragment(
             editTextCompany.visibility = visibility
             editTextSiret.visibility = visibility
         }
+
+        // Fill locations in the search section
+        viewModel.locations.observe(viewLifecycleOwner, { (exception, locations) ->
+            // If the call failed: show error message
+            if(exception != -1) {
+                showSnackbarMessage(exception)
+                return@observe
+            }
+
+            // Else, put locations as edit text choices
+            val locationNames = locations.map { location -> location.city }
+            val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, locationNames) }
+
+            (editTextLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        })
 
         // On submit button click, create user account
         buttonSubmitRegister.setOnClickListener {

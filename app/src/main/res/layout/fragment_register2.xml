@@ -71,6 +71,7 @@
             <!-- Location input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editTextLocation"
+                style="@style/Vitreen.TextInputLayout.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
@@ -79,10 +80,11 @@
                 app:helperTextEnabled="true"
                 app:errorEnabled="true"
                 android:hint="@string/postal_address" >
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:completionThreshold="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Contact preference choice -->

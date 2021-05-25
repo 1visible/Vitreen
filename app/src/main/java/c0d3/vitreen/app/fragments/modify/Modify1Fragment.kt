@@ -8,7 +8,14 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Category
 import c0d3.vitreen.app.utils.Constants
 import c0d3.vitreen.app.utils.VFragment
+import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_modify1.*
+import kotlinx.android.synthetic.main.fragment_modify1.buttonToAdding2
+import kotlinx.android.synthetic.main.fragment_modify1.editTextDescription
+import kotlinx.android.synthetic.main.fragment_modify1.editTextLocation
+import kotlinx.android.synthetic.main.fragment_modify1.editTextPrice
+import kotlinx.android.synthetic.main.fragment_modify1.editTextTitle
+import kotlinx.android.synthetic.main.fragment_modify1.textInputCategory
 import java.util.*
 
 class Modify1Fragment : VFragment(
@@ -42,6 +49,21 @@ class Modify1Fragment : VFragment(
             }
 
             (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        })
+
+        // Fill locations in the search section
+        viewModel.locations.observe(viewLifecycleOwner, { (exception, locations) ->
+            // If the call failed: show error message
+            if(exception != -1) {
+                showSnackbarMessage(exception)
+                return@observe
+            }
+
+            // Else, put locations as edit text choices
+            val locationNames = locations.map { location -> location.city }
+            val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, locationNames) }
+
+            (editTextLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         })
 
         editTextTitle.editText?.setText(viewModel.product.title)

@@ -88,6 +88,8 @@
             <TextView
                 android:id="@+id/textViewEmptyTimeline"
                 android:visibility="gone"
+                android:gravity="center"
+                android:textColor="?attr/colorError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/not_enough_data" />
@@ -114,6 +116,8 @@
             <TextView
                 android:id="@+id/textViewEmptyCities"
                 android:visibility="gone"
+                android:gravity="center"
+                android:textColor="?attr/colorError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/not_enough_data" />

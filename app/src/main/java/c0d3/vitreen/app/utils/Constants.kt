@@ -23,6 +23,7 @@ class Constants {
         const val IMAGE_SIZE = 5242880L // = 1024 * 1024 * 5
         const val DOCUMENTS_LIMIT = 25L
         const val REPORT_THRESHOLD = 50
+        const val CONSULTATIONS_THRESHOLD = 5
 
         const val USERS_COLLECTION = "users"
         const val PRODUCTS_COLLECTION = "products"

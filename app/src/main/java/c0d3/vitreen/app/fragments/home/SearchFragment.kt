@@ -57,13 +57,22 @@ class SearchFragment : VFragment(
         // On search button click, make the query
         buttonSearch.setOnClickListener {
             // Check if required inputs are filled
-            if(areAllInputsEmpty(textInputCategory, textInputLocation, editTextTitle, editTextPriceMin, editTextPriceMax)) {
+            if(areAllInputsEmpty(
+                    textInputCategory,
+                    textInputLocation,
+                    editTextTitle,
+                    editTextBrand,
+                    editTextPriceMin,
+                    editTextPriceMax
+            )) {
+                viewModel.searchQuery = SearchQuery()
                 goBack()
                 return@setOnClickListener
             }
 
             // Get all search filters
             val title = inputToString(editTextTitle)
+            val brand = inputToString(editTextBrand)
             val priceMin = inputToString(editTextPriceMin)?.toDoubleOrNull()
             val priceMax = inputToString(editTextPriceMax)?.toDoubleOrNull()
             val location: Location? = viewModel.locations.value?.second?.firstOrNull { it.city == inputToString(textInputLocation) }
@@ -71,6 +80,7 @@ class SearchFragment : VFragment(
 
             viewModel.searchQuery = SearchQuery(
                 title = title,
+                brand = brand,
                 priceMin = priceMin,
                 priceMax = priceMax,
                 location = location,

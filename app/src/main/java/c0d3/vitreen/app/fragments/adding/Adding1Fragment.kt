@@ -22,8 +22,11 @@ import c0d3.vitreen.app.utils.Constants.Companion.KEY_TITLE
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_adding1.*
 import kotlinx.android.synthetic.main.fragment_adding1.editTextLocation
+import kotlinx.android.synthetic.main.fragment_adding1.editTextTitle
+import kotlinx.android.synthetic.main.fragment_adding1.textInputCategory
 import kotlinx.android.synthetic.main.fragment_register1.*
 import kotlinx.android.synthetic.main.fragment_register2.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import java.util.*
 
 class Adding1Fragment : VFragment(
@@ -59,6 +62,20 @@ class Adding1Fragment : VFragment(
             val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, categoryNames) }
 
             (textInputCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        })
+        // Fill locations in the search section
+        viewModel.locations.observe(viewLifecycleOwner, { (exception, locations) ->
+            // If the call failed: show error message
+            if(exception != -1) {
+                showSnackbarMessage(exception)
+                return@observe
+            }
+
+            // Else, put locations as edit text choices
+            val locationNames = locations.map { location -> location.city }
+            val adapter = context?.let { context -> ArrayAdapter(context, R.layout.dropdown_menu_item, locationNames) }
+
+            (editTextLocation.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         })
 
         // On adding (part 2) button click, navigate to Adding2 fragment
