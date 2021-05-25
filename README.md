@@ -64,7 +64,7 @@ git clone https://github.com/1visible/Vitreen.git
 📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/wg0xozpsuu6nz1i/Vitreen.apk?dl=1)
 
 <p align="center">
-  <img alt="Demo" src="https://www.dropbox.com/s/7q7mqnjaw84w9zc/demo.png?dl=0" width="700">
+  <img alt="Demo" src="https://www.dropbox.com/s/7q7mqnjaw84w9zc/demo.png?dl=1" width="700">
 </p>
 
 <!-- ROADMAP -->
