@@ -81,6 +81,9 @@ class Adding2Fragment : VFragment(
             return
         }
 
+        if (category?.name == "Maison")
+            editTextBrand.visibility = GONE
+
         // Get current user informations
         viewModel.user.observe(viewLifecycleOwner, { (exception, user) ->
             if (exception != -1) {
