@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.loading_spinner.*
 
 /**
- * Trouver une description
+ * Generic class for fragment, extends this class to create a pre-made fragment
  *
  * @property layoutId
  * @property hasOptionsMenu
@@ -74,7 +74,7 @@ abstract class VFragment(
     }
 
     /**
-     * navigate to another Fragment with eventually some args
+     * Navigate to another Fragment with eventually some args
      *
      * @param destinationId
      * @param args
@@ -149,7 +149,7 @@ abstract class VFragment(
     }
 
     /**
-     * Show a snackbar with the parameter message
+     * Show a snackbar with a message
      *
      * @param messageId
      */
@@ -158,7 +158,7 @@ abstract class VFragment(
     }
 
     /**
-     * Go back using on Backpressed
+     * Go back using activity onBackPressed()
      *
      * @return boolean
      */
@@ -172,7 +172,7 @@ abstract class VFragment(
     }
 
     /**
-     * Set an menu item Visible
+     * Set an menu item visibility
      *
      * @param id
      * @param visible

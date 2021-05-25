@@ -32,7 +32,7 @@ class FirestoreRepository {
      * @return Query
      */
     fun getProducts(search: SearchQuery): Query {
-        val (title, priceMin, priceMax, brand, location, category, ownerId, ids) = search
+        val (title, _, _, brand, location, category, ownerId, ids) = search
         var query: Query = db.collection(PRODUCTS_COLLECTION)
         var orderByDate = true
 
@@ -104,7 +104,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Create a query to get current user's information
+     * Create a query to get current user's informations using his/her email address
      *
      * @param email
      * @return Query
@@ -114,7 +114,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Get current user's information using his/her id
+     * Get current user's informations using his/her id
      *
      * @param id
      * @return Task
@@ -136,7 +136,7 @@ class FirestoreRepository {
     }
 
     /**
-     * create a user with email and password
+     * Create a user account with email and password
      *
      * @param email
      * @param password
@@ -147,7 +147,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Add user's information to Firebase
+     * Add user's informations to Firebase
      *
      * @param user
      * @return Task
@@ -175,7 +175,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Get images using path from Firebase
+     * Get images from Firebase Storage using image path
      *
      * @param path
      * @return Task
@@ -196,7 +196,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Update user's location
+     * Update user's location zipcode
      *
      * @param id
      * @param zipCode
@@ -207,7 +207,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Update product's information
+     * Update product's informations
      *
      * @param product
      * @return Task
@@ -290,7 +290,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Add image to Firebase
+     * Add image to a certain path to Firebase Storage
      *
      * @param path
      * @param inputStream
@@ -302,7 +302,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Delete products from Firebase
+     * Delete products from Firebase by ids
      *
      * @param ids
      * @return Task
@@ -319,7 +319,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Delete image using path from Firebase
+     * Delete image using image path from Firebase Storage
      *
      * @param path
      * @return Task
@@ -380,7 +380,7 @@ class FirestoreRepository {
     }
 
     /**
-     * Update current user's information in Firebase
+     * Update current user's informations in Firebase
      *
      * @param user
      * @return Task
