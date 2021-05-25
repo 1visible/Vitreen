@@ -35,7 +35,6 @@
 Vitreen is an online classified ads mobile application project for individuals or professionals. Its goal is to allow users to put back in the showcase the objects they want to get rid of in order to give them a second life.
 Vitreen differs from other applications by its ability to accommodate inventory in a warehouse, avoiding waste, particularly due to the inability of companies to carry out their destocking.
 This project was carried out as a team during our training in M1 Computer Science at the University of Montpellier.
-If you want more details on the realization of this project, do not hesitate to consult our project report in french [here](https://github.com/1visible/Vitreen/blob/master/report/Vitreen%20report.pdf).
 
 ### Tools used
 🔨 We used various tools to carry out our project, from communication to design to programming. Below is the list of the main tools that have served us:
@@ -64,7 +63,7 @@ git clone https://github.com/1visible/Vitreen.git
 📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/wg0xozpsuu6nz1i/Vitreen.apk?dl=1)
 
 <p align="center">
-  <img alt="Demo" src="https://www.dropbox.com/s/7q7mqnjaw84w9zc/demo.png" width="700">
+  <img alt="Demo" src="content/demo.png" width="700">
 </p>
 
 <!-- ROADMAP -->
