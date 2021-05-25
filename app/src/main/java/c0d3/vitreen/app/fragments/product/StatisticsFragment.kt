@@ -13,7 +13,6 @@ import c0d3.vitreen.app.utils.Constants.Companion.CONSULTATIONS_THRESHOLD
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.fragment_statistics.*
 import java.util.*
-import kotlin.math.roundToInt
 
 class StatisticsFragment : VFragment(
     layoutId = R.layout.fragment_statistics,

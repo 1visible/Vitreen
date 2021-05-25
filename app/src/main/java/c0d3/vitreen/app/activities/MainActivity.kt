@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.*
-import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.annotation.StringRes
@@ -23,7 +22,6 @@ import androidx.navigation.ui.setupWithNavController
 import c0d3.vitreen.app.R
 import c0d3.vitreen.app.models.Discussion
 import c0d3.vitreen.app.utils.Constants.Companion.LOCALISATION_REQUEST
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.FirestoreViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth

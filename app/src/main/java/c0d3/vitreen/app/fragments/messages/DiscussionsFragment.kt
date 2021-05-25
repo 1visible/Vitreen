@@ -1,7 +1,6 @@
 package c0d3.vitreen.app.fragments.messages
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -9,7 +8,6 @@ import c0d3.vitreen.app.R
 import c0d3.vitreen.app.activities.MainActivity
 import c0d3.vitreen.app.adapter.DiscussionAdapter
 import c0d3.vitreen.app.models.Discussion
-import c0d3.vitreen.app.utils.Constants.Companion.VTAG
 import c0d3.vitreen.app.utils.VFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.empty_view.*
