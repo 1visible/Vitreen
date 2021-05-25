@@ -59,7 +59,7 @@ git clone https://github.com/1visible/Vitreen.git
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/wg0xozpsuu6nz1i/Vitreen.apk?dl=1)
+📱 Just download and install our app on your smartphone or tablet by clicking [here](https://www.dropbox.com/s/yyc4ny63spgo3im/Vitreen.apk?dl=1)
 
 <p align="center">
   <img alt="Demo" src="content/demo.png" width="700">
